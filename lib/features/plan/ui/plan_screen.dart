@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/diagnose/diagnose_dienst.dart';
 import '../../../core/l10n/app_strings.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
@@ -20,11 +21,25 @@ import 'widgets/checkliste_karte.dart';
 /// Der Plan ist der Endpunkt des Foto-Flows: von hier fuehren sowohl der
 /// Button als auch die System-Zurueck-Geste direkt aufs Dashboard, statt den
 /// Nutzer rueckwaerts durch Analyse und Fotos zu schicken.
-class PlanScreen extends ConsumerWidget {
+class PlanScreen extends ConsumerStatefulWidget {
   const PlanScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PlanScreen> createState() => _PlanScreenState();
+}
+
+class _PlanScreenState extends ConsumerState<PlanScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Einmal je Aufruf des Screens, nicht bei jedem Neuzeichnen.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(diagnoseDienstProvider).melde(DiagnoseEreignis.planGeoeffnet);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final analyse = ref.watch(aktuelleAnalyseProvider);
     final fortschritt = ref.watch(planFortschrittProvider);
     final farben = context.farben;

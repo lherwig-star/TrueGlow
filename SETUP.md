@@ -791,6 +791,86 @@ Splash beim Kaltstart in beiden Systemschemata.
 
 ---
 
+## 14 · Crashlytics und Analytics freischalten (Phase 4.3)
+
+Der Code ist fertig und standardmäßig **aus** — er springt erst an, wenn
+jemand in den Einstellungen zustimmt. In der Firebase-Konsole müssen die
+beiden Dienste trotzdem einmal eingeschaltet werden, sonst kommt nichts an.
+
+☐ **14.1 Crashlytics einschalten**
+
+1. Firebase-Konsole → **Release und Monitoring → Crashlytics**
+2. **Crashlytics aktivieren** — die Einrichtungsschritte der Konsole kannst du
+   überspringen, das SDK ist schon eingebunden
+3. Die Konsole wartet auf den ersten Bericht (Schritt 14.4)
+
+☐ **14.2 Analytics einschalten**
+
+Google Analytics war beim Anlegen des Projekts bewusst aus (Abschnitt 1.1),
+weil es vorher in der Datenschutzerklärung stehen musste. Jetzt steht es dort:
+
+1. Firebase-Konsole → Zahnrad → **Projekteinstellungen** → Reiter
+   **Integrationen**
+2. **Google Analytics** → **Aktivieren** → Konto auswählen oder anlegen
+3. Datenaufbewahrung prüfen: **Analytics-Konsole → Verwaltung →
+   Datenaufbewahrung**. Der Standard sind 2 Monate; mehr braucht ein Funnel
+   nicht, und weniger Aufbewahrung ist die datensparsamere Antwort.
+
+☐ **14.3 `google-services.json` neu herunterladen**
+
+Analytics ergänzt Werte in der Datei. Ohne den neuen Stand meldet die App
+nichts.
+
+1. **Projekteinstellungen → Allgemein → Deine Apps → google-services.json**
+2. Nach `android/app/google-services.json` legen
+
+☐ **14.4 Prüfen, dass wirklich nur mit Einwilligung gesendet wird**
+
+Das ist der Punkt, der zählt — die Zusage steht in der Datenschutzerklärung.
+
+1. App frisch installieren, Onboarding durchlaufen, **„Absturzberichte und
+   Nutzungsstatistik" nicht ankreuzen**
+2. Ein paar Schritte gehen: Analyse starten, Plan öffnen
+3. Firebase-Konsole → **Analytics → Echtzeit**: Es darf **nichts** erscheinen
+4. Jetzt in den Einstellungen zustimmen, dieselben Schritte wiederholen
+5. Jetzt müssen die Ereignisse in der Echtzeit-Ansicht auftauchen
+
+> Analytics-Ereignisse brauchen bis zu einer Minute. Die Echtzeit-Ansicht ist
+> der schnellste Weg; die normalen Berichte kommen erst am Folgetag.
+
+☐ **14.5 Einen echten Absturzbericht erzeugen**
+
+Crashlytics zeigt erst etwas, wenn ein Absturz **hochgeladen** wurde — und das
+passiert beim nächsten App-Start, nicht sofort.
+
+1. Mit erteilter Einwilligung: einen Absturz auslösen. Am einfachsten über die
+   Dart-Konsole während `flutter run`:
+   `FirebaseCrashlytics.instance.crash()` — oder testweise vorübergehend einen
+   Knopf damit belegen.
+2. App neu starten
+3. Firebase-Konsole → **Crashlytics**: Der Bericht erscheint nach wenigen
+   Minuten
+
+☐ **14.6 Kontrollieren, dass keine Kennungen im Bericht stehen**
+
+Öffne den Bericht und such nach deiner uid und deiner E-Mail-Adresse. Beides
+darf nicht vorkommen: Fehlermeldungen laufen vorher durch `bereinige()`
+(`lib/core/diagnose/bereinigung.dart`).
+
+Findest du doch etwas, gehört das Muster in diese Datei — und ein Testfall in
+`test/diagnose_test.dart` dazu.
+
+☐ **14.7 Nach dem Release-Build: Mapping-Datei**
+
+Der Crashlytics-Gradle-Plugin lädt die R8-Mapping-Datei automatisch hoch
+(`mappingFileUploadEnabled = true`). Nach dem ersten Release-Build in der
+Crashlytics-Konsole prüfen, ob die Stacktraces lesbare Klassennamen zeigen.
+Tun sie das nicht, ist der Upload nicht gelaufen — dann hilft die Datei unter
+`build/app/outputs/mapping/release/mapping.txt`, die du ohnehin archivierst
+(Abschnitt 12.3).
+
+---
+
 ## Offen, sobald es soweit ist
 
 Diese Punkte gehören zu späteren Phasen und stehen hier nur als Merkposten:

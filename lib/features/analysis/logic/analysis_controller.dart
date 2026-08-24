@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/cloud/cloud_modell.dart';
+import '../../../core/diagnose/diagnose_dienst.dart';
 import '../../../core/netz/wiederholung.dart';
 import '../../../core/storage/hive_service.dart';
 import '../../capture/logic/aufnahme_flow.dart';
@@ -123,6 +124,7 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
     }
 
     state = const AnalyseLaeuft();
+    _melde(DiagnoseEreignis.analyseGestartet);
     final abbruch = _abbruch = Abbruch();
     // Marke fuer den Fall, dass die App mitten im Lauf beendet wird.
     _laufmarke(DateTime.now());
@@ -143,6 +145,7 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
 
       await _ref.read(analysenProvider.notifier).speichern(ergebnis);
       _laufmarke(null);
+      _melde(DiagnoseEreignis.analyseFertig);
       if (!mounted) return;
       state = AnalyseFertig(ergebnis);
     } on AbbruchException {
@@ -161,6 +164,10 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
       state = const AnalyseFehlgeschlagen(AnalysisFehler.apiFehler);
     }
   }
+
+  /// Meldet ein Funnel-Ereignis. Ohne Einwilligung passiert dabei nichts.
+  void _melde(DiagnoseEreignis ereignis) =>
+      _ref.read(diagnoseDienstProvider).melde(ereignis);
 
   /// Haelt fest, dass gerade eine Analyse laeuft – oder raeumt die Marke weg.
   ///

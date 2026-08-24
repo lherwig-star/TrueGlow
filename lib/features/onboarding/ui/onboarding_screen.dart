@@ -7,6 +7,7 @@ import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/section_card.dart';
+import '../../../core/diagnose/diagnose_dienst.dart';
 import '../../consent/logic/einwilligung_controller.dart';
 import '../../consent/models/einwilligung.dart';
 import '../../consent/ui/einwilligungs_auswahl.dart';
@@ -46,6 +47,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       ref
           .read(einwilligungControllerProvider.notifier)
           .offeneAlsGefragtVermerken();
+      ref
+          .read(diagnoseDienstProvider)
+          .melde(DiagnoseEreignis.onboardingAbgeschlossen);
       context.go(Routes.home);
       return;
     }

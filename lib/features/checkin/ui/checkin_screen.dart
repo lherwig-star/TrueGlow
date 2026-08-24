@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/diagnose/diagnose_dienst.dart';
 import '../../../core/l10n/app_strings.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
@@ -46,6 +47,9 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
       final offen = ctrl.faelligerCheckin();
       if (offen != null && ref.read(checkinControllerProvider).entwurf == null) {
         ctrl.entwurfSichern(offen);
+        ref
+            .read(diagnoseDienstProvider)
+            .melde(DiagnoseEreignis.checkinGestartet);
       }
     });
   }

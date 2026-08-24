@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/l10n/app_strings.dart';
+import '../../../core/diagnose/diagnose_dienst.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
@@ -40,6 +41,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     try {
       await ref.read(authRepositoryProvider).anmelden(anbieter);
+      ref
+          .read(diagnoseDienstProvider)
+          .melde(DiagnoseEreignis.anmeldungAbgeschlossen);
       if (!mounted) return;
 
       // Beim ersten echten Login kommt die Frage nach dem lokalen Bestand –

@@ -25,10 +25,13 @@ wenn du eine Angabe anzweifelst, schau dort nach.
    Ergebnisse, Plan, Serie, Richtung, Check-in-Historie, Einwilligungsnachweis.
    *Woher:* `lib/core/cloud/cloud_modell.dart`.
 
-3. **Kein Tracking.** Keine Analytics, kein Crash-Reporting, keine Werbe-ID,
-   kein Standort, keine Kontakte. *Woher:* `pubspec.yaml` — keines dieser
-   Pakete ist eingebunden. (Crashlytics und Analytics kommen erst in Phase 4;
-   dann muss dieses Formular angefasst werden.)
+3. **Kein Tracking, und Diagnose nur mit Zustimmung.** Keine Werbe-ID, kein
+   Standort, keine Kontakte, keine Werbung. Absturzberichte und eine sparsame
+   Nutzungsstatistik gibt es seit Phase 4 — beide standardmäßig **aus** und
+   nur nach ausdrücklicher Einwilligung.
+   *Woher:* `lib/core/diagnose/diagnose_dienst.dart`
+   (`setCrashlyticsCollectionEnabled` / `setAnalyticsCollectionEnabled`
+   folgen dem Einwilligungsstand), `pubspec.yaml` für alles Übrige.
 
 ---
 
@@ -143,6 +146,44 @@ Körpergröße und Gewicht, freiwillig eingegeben.
 > sind Fitnessdaten — die App macht ausdrücklich keine Gesundheitsaussagen
 > (`store/listing-de.md`).
 
+### App-Aktivität → App-Interaktionen (Diagnose)
+
+| Feld | Angabe |
+|---|---|
+| Erhoben | **Ja** |
+| Geteilt | Nein |
+| Pflicht | **Optional** — Einwilligung, standardmäßig aus |
+| Zweck | Analysen (Produktverbesserung) |
+| Kurzlebig | Nein |
+
+Sieben Funnel-Ereignisse ohne jeden Parameter: „Onboarding abgeschlossen",
+„Anmeldung abgeschlossen", „Analyse gestartet", „Analyse fertig", „Plan
+geöffnet", „Check-in gestartet", „Check-in abgeschlossen". Gemeldet wird
+ausschließlich, *dass* der Schritt erreicht wurde.
+
+*Woher:* `lib/core/diagnose/diagnose_dienst.dart`, Enum `DiagnoseEreignis` —
+die vollständige Liste. Was dort nicht steht, kann nicht gesendet werden.
+
+### App-Info und Leistung → Absturzprotokolle
+
+| Feld | Angabe |
+|---|---|
+| Erhoben | **Ja** |
+| Geteilt | Nein |
+| Pflicht | **Optional** — dieselbe Einwilligung, standardmäßig aus |
+| Zweck | Analysen, Fehlerbehebung |
+| Kurzlebig | Nein |
+
+Absturzberichte über Firebase Crashlytics: Gerätemodell, Android-Version,
+App-Version, Stacktrace.
+
+> **Kennungen werden vorher entfernt.** Fehlermeldungen laufen durch
+> `bereinige()`: Dokumentpfade (`users/<uid>/…`), E-Mail-Adressen und
+> freistehende lange Bezeichner werden ersetzt, bevor etwas hochgeladen wird.
+> Der Fehlertyp bleibt erhalten, damit die Gruppierung funktioniert.
+> *Woher:* `lib/core/diagnose/bereinigung.dart`, geprüft in
+> `test/diagnose_test.dart`.
+
 ### App-Aktivität → Andere Aktionen in der App
 
 | Feld | Angabe |
@@ -173,7 +214,6 @@ persönliche Richtung inklusive Freitext.
 | Kontakte, Kalender, SMS | dito |
 | Finanzdaten | Keine Käufe (kommt erst mit Phase 3) |
 | Werbe-ID / Marketing | Keine Werbung, kein Tracking |
-| Absturzprotokolle, Diagnosedaten | Crashlytics ist **noch nicht** eingebunden |
 | Audio, Dateien, Dokumente | Werden nicht gelesen |
 | Nachrichten | Es gibt keine |
 
@@ -254,7 +294,7 @@ inhaltlich harmlos und trotzdem nichts für Minderjährige.
 ## Wann diese Datei angefasst werden muss
 
 - **Phase 3 (Käufe):** Finanzdaten, „Käufe digitaler Güter" im IARC
-- **Phase 4 (Crashlytics/Analytics):** Absturzprotokolle, Diagnosedaten,
-  eventuell Geräte-IDs — und die Datenschutzerklärung dazu
+- **Jedes neue Diagnose-Ereignis:** `DiagnoseEreignis` in
+  `lib/core/diagnose/diagnose_dienst.dart` ist die vollständige Liste
 - **Jede neue Cloud-Sammlung:** `lib/core/cloud/cloud_modell.dart` ist die
   vollständige Liste dessen, was das Gerät verlässt

@@ -111,6 +111,11 @@ class EinwilligungsHaken extends ConsumerWidget {
         Einwilligungsart.nutzung =>
           'Ich habe die Nutzungsbedingungen und die Datenschutzerklärung '
               'gelesen und stimme ihnen zu.',
+        Einwilligungsart.diagnose =>
+          'Ich willige ein, dass anonyme Absturzberichte und eine sparsame '
+              'Nutzungsstatistik erfasst werden. Erfasst wird nur, DASS ein '
+              'Schritt erreicht wurde – keine Fotos, keine Analyse-Inhalte, '
+              'keine Freitexte, keine Profilangaben.',
         Einwilligungsart.fotoKi =>
           'Ich willige ein, dass meine Fotos – darunter Aufnahmen meines '
               'Gesichts – zur Auswertung an den KI-Dienst Google Gemini '
@@ -127,6 +132,9 @@ class EinwilligungsHaken extends ConsumerWidget {
         Einwilligungsart.mindestalter =>
           'Ohne Bestätigung bleibt der Analyse-Bereich zu. Plan, Checklisten '
               'und Check-ins kannst du trotzdem nutzen.',
+        Einwilligungsart.diagnose =>
+          'Freiwillig, standardmäßig aus und jederzeit widerrufbar. Hilft '
+              'uns, Abstürze zu finden, bevor sie in einer Bewertung landen.',
         Einwilligungsart.nutzung => '',
       };
 }

@@ -23,6 +23,9 @@ plugins {
     id("org.jetbrains.kotlin.android") version "2.4.0" apply false
     // Liest android/app/google-services.json (siehe SETUP.md, Abschnitt 2).
     id("com.google.gms.google-services") version "4.4.3" apply false
+    // Laedt die R8-Mapping-Datei zu Crashlytics hoch – ohne sie sind
+    // Release-Stacktraces unlesbar.
+    id("com.google.firebase.crashlytics") version "3.0.6" apply false
 }
 
 include(":app")

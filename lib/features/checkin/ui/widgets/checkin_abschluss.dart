@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/diagnose/diagnose_dienst.dart';
 import '../../../../core/l10n/app_strings.dart';
 import '../../../../core/netz/wiederholung.dart';
 import '../../../../core/router/app_router.dart';
@@ -137,6 +138,9 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
 
     final auswertung = _auswertung ?? CheckinAuswertung.leer;
     final ctrl = ref.read(checkinControllerProvider.notifier);
+    ref
+        .read(diagnoseDienstProvider)
+        .melde(DiagnoseEreignis.checkinAbgeschlossen);
 
     if (mitAnpassung && auswertung.aendertPlan) {
       final angepasst = planAnwenden(widget.analyse, auswertung.anpassungen);

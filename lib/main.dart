@@ -1,9 +1,12 @@
+import 'dart:ui' show PlatformDispatcher;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/cloud/cloud_provider.dart';
 import 'core/cloud/cloud_speicher.dart';
+import 'core/diagnose/diagnose_dienst.dart';
 import 'core/firebase/einrichtung_hinweis.dart';
 import 'core/firebase/firebase_start.dart';
 import 'core/l10n/app_strings.dart';
@@ -41,6 +44,7 @@ Future<void> main() async {
   // Im Demo-Modus bleibt die Fabrik leer: Ohne Cloud-Speicher laufen
   // Migration und Sync ins Leere, statt Firestore zu rufen.
   CloudSpeicher Function(String uid)? cloudFabrik;
+  DiagnoseDienst diagnose = DiagnoseOhneBackend();
 
   if (AnalysisConfig.useMockData) {
     anmeldung = FakeAuthRepository();
@@ -55,7 +59,29 @@ Future<void> main() async {
     await FirebaseAuthRepository.sitzungAbwarten();
     anmeldung = FirebaseAuthRepository();
     cloudFabrik = (uid) => FirestoreSpeicher(uid: uid);
+    diagnose = FirebaseDiagnose();
   }
+
+  // Die Erfassung startet aus. Eingeschaltet wird sie erst durch den
+  // diagnoseSchalterProvider, und der haengt an der Einwilligung.
+  await diagnose.erfassungErlauben(false);
+
+  // Zwei Kanaele, zwei Handler: FlutterError.onError faengt, was im
+  // Widget-Baum passiert, PlatformDispatcher.onError alles andere aus dem
+  // Isolate. Ohne den zweiten fehlt genau die Sorte Absturz, die niemand
+  // reproduzieren kann.
+  final flutterFehler = FlutterError.onError;
+  FlutterError.onError = (details) {
+    flutterFehler?.call(details);
+    diagnose.fehler(details.exception, details.stack, schwer: true);
+  };
+  PlatformDispatcher.instance.onError = (fehler, spur) {
+    diagnose.fehler(fehler, spur, schwer: true);
+    // false: Der Fehler gilt weiter als unbehandelt und landet in der
+    // Konsole. Ihn hier zu schlucken hiesse, ihn im Debug-Build zu
+    // verstecken.
+    return false;
+  };
 
   await HiveService.init();
 
@@ -72,6 +98,7 @@ Future<void> main() async {
         kontoDienstProvider.overrideWithValue(
           cloudFabrik == null ? null : KontoDienst(),
         ),
+        diagnoseDienstProvider.overrideWithValue(diagnose),
       ],
       child: const TrueGlowApp(),
     ),
@@ -115,6 +142,10 @@ class _TrueGlowAppState extends ConsumerState<TrueGlowApp> {
     // Nach jedem Wechsel des Kontos – Anmeldung, Abmeldung, Verknuepfung –
     // wird neu abgeglichen.
     ref.listen(cloudSpeicherProvider, (_, _) => _abgleichen());
+
+    // Haelt die Diagnose-Erfassung an der Einwilligung. `watch` und nicht
+    // `read`: Der Widerruf soll sofort wirken, nicht beim naechsten Start.
+    ref.watch(diagnoseSchalterProvider);
 
     return MaterialApp.router(
       title: S.appName,

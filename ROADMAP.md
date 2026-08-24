@@ -423,8 +423,10 @@ Minuten ausgehebelt — und jeder unberechtigte Aufruf kostet dich echtes Geld.
 
 ### 4.3 Crash-Reporting & Analytics
 
-- [ ] Crashlytics einbinden, `FlutterError.onError` und `PlatformDispatcher.onError` verdrahten — **S**
-- [ ] Minimale Analytics (Funnel: Onboarding → Analyse → Plan → Check-in), datensparsam, opt-in, in der DSE genannt — **M**
+- [x] Crashlytics einbinden, `FlutterError.onError` und `PlatformDispatcher.onError` verdrahten — **S** — *Fehlermeldungen laufen vorher durch `bereinige()`; der Restfall „uid in Fehlermeldungen" aus dem Phase-2-Bericht ist damit erledigt*
+- [x] Minimale Analytics (Funnel: Onboarding → Analyse → Plan → Check-in), datensparsam, opt-in — **M** — *sieben Ereignisse **ohne Parameter**, als Enum abgeschlossen; standardmäßig aus, eigene Einwilligung*
+- [x] In den Bausteinen für die DSE und in der Data-Safety-Hilfe ergänzt — **S** — *`store/rechtstexte-bausteine.md` (6), `store/data-safety.md`*
+- [ ] Crashlytics und Analytics in der Firebase-Konsole freischalten und prüfen, dass ohne Einwilligung nichts ankommt — **S** — *`SETUP.md`, Abschnitt 14 (nur von dir ausführbar)*
 
 **Begründung:** Ohne Crash-Reporting erfährst du von Abstürzen erst über
 Ein-Sterne-Bewertungen. **Abhängigkeiten:** 2.1 (muss in der DSE stehen).

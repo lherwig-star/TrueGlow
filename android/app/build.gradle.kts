@@ -6,6 +6,7 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
     // Muss nach dem Flutter-Plugin stehen.
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 // Signierung: Passwoerter und Keystore-Pfad stehen in android/key.properties,
@@ -75,6 +76,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+
+            // Ohne die Mapping-Datei zeigt Crashlytics verschleierte
+            // Klassennamen – ein Absturzbericht waere dann nichts wert.
+            configure<com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension> {
+                mappingFileUploadEnabled = true
+            }
         }
     }
 }

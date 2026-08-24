@@ -36,6 +36,15 @@ enum Einwilligungsart {
   fotoKi(
     titel: 'Analyse meiner Fotos durch den KI-Dienst',
     pflicht: false,
+  ),
+
+  /// Absturzberichte und eine sehr sparsame Nutzungsstatistik.
+  ///
+  /// Standardmaessig aus. Ohne sie erfaehrt niemand von Abstuerzen ausser
+  /// ueber Ein-Sterne-Bewertungen – deshalb wird gefragt, aber eben gefragt.
+  diagnose(
+    titel: 'Absturzberichte und Nutzungsstatistik',
+    pflicht: false,
   );
 
   const Einwilligungsart({required this.titel, required this.pflicht});
