@@ -80,3 +80,8 @@ functions/.env.*
 functions/node_modules/
 functions/lib/
 node_modules/
+
+# --- Diagnose-Stichprobe (SETUP.md 6.5) ---
+# Echte Analysetexte und die vom Geraet gezogene Hive-Box. Personenbezogen,
+# gehoert nicht ins Repo. Erzeugt von tool/analysen_exportieren.dart.
+tool/stichprobe/

@@ -596,11 +596,17 @@ Bestätigt wurde:
 > firebase functions:log --only analysiere --lines 100 --project trueglow-b2c1c
 > ```
 
-☐ **6.3 Abweichungen notieren**
+☑ **6.3 Abweichungen notieren** — Tabelle in `DECISIONS.md`, Abschnitt
+„Mock vs. Live", ist gefüllt
 
 Unterschiede zwischen Mock- und Realantwort in `DECISIONS.md` festhalten
 (Abschnitt „Mock vs. Live"). Interessant sind vor allem: fehlende Felder,
 abgeschnittene Antworten, Sicherheitsfilter, Antwortdauer.
+
+Kurzfassung des Befunds: nichts abgeschnitten, kein Sicherheitsfilter, kein
+Nachfass-Versuch nötig. Zwei Auffälligkeiten — einmal lieferte ein Kapitel nur
+3 statt der geforderten 4–7 Habits, und `plan.taeglicheHabits` ist ein totes
+Feld, das niemand anfordert, füllt oder liest.
 
 ☑ **6.4 Rate-Limit prüfen** — bestanden am 24.08.2026
 
@@ -627,7 +633,8 @@ Kosten, nicht nur vor Nutzung.
 > zu verwechseln mit der schärferen Regel für Crashlytics (Abschnitt 14.6), wo
 > uid und E-Mail nicht vorkommen dürfen.
 
-☐ **6.5 Stichprobe: Klingt etwas wie eine Diagnose?**
+☑ **6.5 Stichprobe: Klingt etwas wie eine Diagnose?** — 3 von 3 ohne Befund
+(24.08.2026). Prompt muss nicht nachgeschärft werden.
 
 > ## ⚠️ Korrektur: Die Antworten stehen **nicht** in den Function-Logs
 >
@@ -637,15 +644,27 @@ Kosten, nicht nur vor Nutzung.
 > erweitern wäre genau der falsche Weg, denn dann läge der Analysetext eines
 > Nutzers im Cloud-Logging.
 >
-> **Richtige Quelle ist Firestore.** Die gespeicherten Reports liegen unter:
+> **Richtige Quelle ist das Gerät.** Die App legt jede Analyse lokal als
+> JSON-String in einer Hive-Box ab (`lib/core/storage/hive_service.dart`,
+> bewusst ohne TypeAdapter). Dieselben Daten stehen zwar auch in Firestore
+> unter `users/{uid}/analysen/{analyseId}` — aber die Firebase-Konsole kann
+> einzelne Dokumente **nicht** als JSON exportieren, das wäre Abtipparbeit.
 >
-> ```
-> users/{uid}/analysen/{analyseId}
+> Mit angestecktem Gerät (Debug-Build, USB-Debugging an):
+>
+> ```bash
+> adb exec-out run-as com.trueglow.app cat app_flutter/analysen.hive > tool/stichprobe/analysen.hive
+> dart run tool/analysen_exportieren.dart tool/stichprobe
 > ```
 >
-> Firebase-Konsole → **Firestore Database** → zu dieser Sammlung navigieren →
-> Dokument öffnen → über das Dreipunkt-Menü als JSON exportieren, oder die
-> Felder von Hand in eine `.json` übernehmen.
+> Daraus fällt je Analyse eine `analyse_<id>.json`.
+>
+> `adb exec-out` statt `adb shell`: Letzteres wandelt Zeilenenden um und
+> beschädigt die Binärdatei. Der Umweg über `/sdcard` funktioniert nicht —
+> `run-as` darf dort seit Android 11 nicht schreiben.
+>
+> `tool/stichprobe/` ist über `.gitignore` ausgeschlossen: Da liegen echte
+> Analysetexte.
 
 Das Antwortobjekt von 3–5 echten Analysen je als `.json` speichern und
 prüfen:

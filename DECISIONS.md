@@ -637,10 +637,51 @@ gehört vor die Einreichung — nicht an sie.
 
 ## Mock vs. Live
 
-*(Wird nach dem ersten echten Durchlauf gefüllt — siehe `SETUP.md`,
-Abschnitt 6.3. Der Durchlauf braucht ein Firebase-Projekt und einen
-Gemini-Key und kann deshalb nur von dir ausgeführt werden.)*
+Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`
+(Module `basis`, `zaehneLaecheln`, `hautFarbtyp`, `figurPassform`, sieben
+Kapitel insgesamt). Die Antworten liegen nicht im Repo — sie enthalten echte
+Analysetexte. Nachstellen:
+
+```bash
+adb exec-out run-as com.trueglow.app cat app_flutter/analysen.hive > tool/stichprobe/analysen.hive
+dart run tool/analysen_exportieren.dart tool/stichprobe
+dart run tool/diagnose_stichprobe.dart tool/stichprobe/analyse_*.json
+```
 
 | Beobachtung | Mock | Live | Konsequenz |
 |---|---|---|---|
-| *noch offen* | | | |
+| Antwort lesbar beim ersten Versuch | immer | 3 von 3 | Der Nachfass-Pfad (`index.ts`, „Erste Antwort nicht lesbar") wurde kein einziges Mal betreten. Er bleibt trotzdem — eine Stichprobe von drei sagt nichts über den Ausnahmefall. |
+| Antwort abgeschnitten | nie | nie | 2.796 bis 4.657 Zeichen, jede Struktur vollständig geschlossen. Kein Hinweis auf ein Token-Limit. |
+| Sicherheitsfilter | entfällt | kein Treffer | Keine Blockade, keine leere Antwort — trotz Gesichts- und Ganzkörperfotos. |
+| Diagnose-Vokabular (`tool/diagnose_stichprobe.dart`) | sauber | sauber | 3 von 3 ohne Befund. Der Prompt hält, was `analyse_prompt.ts` verspricht. Nachschärfen nicht nötig. |
+| `habits` pro Kapitel | immer 4 | 6 × 4, **1 × 3** | Der Prompt verlangt „4 bis 7 pro Kapitel" (`analyse_prompt.ts`). Einmal kamen nur 3. Kein Fehlerfall — die App zeigt einfach eine kürzere Liste —, aber der Beleg, dass Mengenangaben im Prompt Wünsche sind und keine Garantien. Nichts darf davon abhängen, dass genau *n* Einträge ankommen. |
+| `plan.taeglicheHabits` | leer | leer (3 von 3) | **Totes Feld.** Siehe unten. |
+
+### Das tote Feld `plan.taeglicheHabits`
+
+Aufgefallen beim Vergleich, und es ist keine Mock-Live-Abweichung, sondern
+etwas Grundsätzlicheres: Das Feld wird
+
+- vom Prompt **nie angefordert** (`functions/src/analyse_prompt.ts` kennt es
+  nicht),
+- vom Mock **nie geliefert** (`_plan` hat nur `sofort`, `dreissigTage`,
+  `langfristig`),
+- von der Oberfläche **nie gelesen** — kein einziger Treffer außerhalb von
+  `lib/features/analysis/models/analysis_result.dart`.
+
+Trotzdem wird es geparst, gespeichert, synchronisiert und beim Zusammenführen
+zweier Ergebnisse gemergt. Es ist also Code, der aussieht, als trüge er etwas,
+und der in Wahrheit immer `[]` durchreicht.
+
+Nicht zu verwechseln mit `kapitel[].habits` — das ist das echte Feld: Der
+Prompt fordert es an, die Checkliste (`plan/ui/widgets/checkliste_karte.dart`)
+und der Check-in (`checkin/logic/`) bauen darauf auf. Die tägliche Aufgabenliste
+funktioniert vollständig, sie hängt nur an einer anderen Stelle als der Name
+`taeglicheHabits` vermuten lässt.
+
+**Entscheidung:** Das Feld gehört entfernt statt gefüllt. Eine zweite Quelle
+für Habits neben `kapitel[].habits` würde die Frage aufwerfen, welche gilt —
+und die Check-in-Logik ordnet Habits ihrem Modul zu
+(`checkin_service.dart:153`), was bei modul-losen Plan-Habits nicht ginge. Der
+Ausbau ist nicht dringend, aber er sollte vor der Einreichung passieren,
+solange das Datenformat noch keine veröffentlichte Version hat.
