@@ -346,12 +346,15 @@ wann wozu zugestimmt wurde, hält einer Prüfung nicht stand.
 
 ### 2.6 Release-Build 🔴
 
-- [ ] Keystore erzeugen, `key.properties` **außerhalb** des Repos, Signing-Config im Gradle — **S**
-- [ ] App Bundle (`flutter build appbundle --release`) statt APK — **S**
-- [ ] `minifyEnabled` + `shrinkResources` aktivieren, ProGuard-Regeln für ML Kit und Hive prüfen, danach vollständigen Durchlauf auf dem Gerät testen — **M**
-- [ ] `targetSdk` explizit setzen und auf die aktuelle Play-Anforderung heben — **S**
-- [ ] Merged Manifest prüfen: welche Berechtigungen ziehen die Plugins mit? Unnötige per `tools:node="remove"` entfernen — **S**
-- [ ] `android:allowBackup` bewusst setzen (Empfehlung: `false` oder Backup-Regel ohne Fotos) — **S**
+- [x] Signing-Config im Gradle, `key.properties` **außerhalb** des Repos — **S** — *ohne Keystore bricht der Release-Build ab, statt auf Debug-Schlüssel zurückzufallen (`DECISIONS.md`, 22)*
+- [ ] Keystore erzeugen und sichern — **S** — *`SETUP.md`, Abschnitt 12.1 (nur von dir ausführbar; **Verlust ist unheilbar**)*
+- [x] App Bundle (`flutter build appbundle --release`) statt APK — **S** — *Befehl in `SETUP.md` 12.2*
+- [x] `minifyEnabled` + `shrinkResources` aktivieren, ProGuard-/R8-Regeln für ML Kit, Hive und Firebase — **M** — *`android/app/proguard-rules.pro`*
+- [ ] Vollständigen Durchlauf im Release-Build auf dem Gerät testen — **M** — *10-Schritte-Anleitung in `SETUP.md`, Abschnitt 12.3 (braucht Gerät und Keystore)*
+- [x] `targetSdk` explizit setzen — **S** — *`targetSdk = 36`, ausdrücklich statt aus dem Flutter-Standard; der Play-Mindestwert ist beim Upload zu prüfen*
+- [x] Merged Manifest prüfen: `RECORD_AUDIO` und `WRITE_EXTERNAL_STORAGE` entfernt, `camera.any` auf `required="false"` — **S** — *vollständige Herleitung in `DECISIONS.md`, 23*
+- [x] `android:allowBackup="false"` gesetzt, dazu `dataExtractionRules` für Android 12+ — **S** — *keine Gesichtsfotos in Auto-Backups und auch nicht im Gerätetransfer*
+- [x] Versionsschema festgelegt und dokumentiert — **S** — *`DECISIONS.md`, 24*
 
 ### 2.7 Markenauftritt 🔴
 
@@ -486,6 +489,11 @@ großzügig für echte Nutzung und deckelt den Schaden.
 
 # Checkliste für den Einreichungstag
 
+*Schema für die Version: `DECISIONS.md`, Abschnitt 24. Die Befehle dazu stehen
+in `SETUP.md`, Abschnitt 12.*
+
+- [ ] `dart run tool/rechtstexte_pruefen.dart` läuft ohne Fehler
+- [ ] Merged Manifest gegen `DECISIONS.md` 23 geprüft — kam mit einem neuen Plugin eine Berechtigung dazu?
 - [ ] Version in `pubspec.yaml` erhöht (`versionCode` muss steigen)
 - [ ] Release-Build mit eigenem Keystore signiert, als **App Bundle**
 - [ ] Build mit aktiviertem Minify auf einem echten Gerät durchgespielt (nicht nur kompiliert)
@@ -500,6 +508,8 @@ großzügig für echte Nutzung und deckelt den Schaden.
 - [ ] Crashlytics empfängt Ereignisse aus dem Release-Build
 - [ ] Rate-Limits und Budget-Alarm im Cloud-Projekt aktiv
 - [ ] Rollback-Plan: vorherige Version im Play-Konsolen-Track verfügbar
+- [ ] `build/app/outputs/mapping/release/mapping.txt` zu diesem Build archiviert — ohne sie ist kein Absturzbericht lesbar
+- [ ] Keystore und Passwörter liegen an zwei Orten (Verlust = keine Updates mehr)
 
 ---
 

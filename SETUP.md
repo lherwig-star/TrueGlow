@@ -602,6 +602,137 @@ Der Löschweg gehört auch in die DSE (Abschnitt 10).
 
 ---
 
+## 12 · Release-Build (Phase 2.6)
+
+### 12.1 Keystore erzeugen — einmalig, und dann für immer
+
+☐ **Schlüssel anlegen**
+
+```bash
+keytool -genkey -v -keystore trueglow-release.jks -keyalg RSA -keysize 2048 -validity 10000 -alias trueglow
+```
+
+Leg die Datei **außerhalb des Projektordners** ab, etwa unter
+`C:/Users/DEIN-NAME/schluessel/`. Im Repo hat sie nichts zu suchen.
+
+> ## ⚠️ Keystore und Passwörter sichern
+>
+> **Verlierst du diese Datei oder das Passwort, kannst du deine App nie wieder
+> aktualisieren.** Das kann niemand reparieren, Google auch nicht. Eine neue
+> App mit neuer ID wäre der einzige Ausweg — ohne Bewertungen, ohne
+> Installationen, ohne Käufe.
+>
+> Mach jetzt zwei Kopien an zwei verschiedenen Orten (Passwortmanager,
+> verschlüsselter Cloud-Speicher, USB-Stick im Schrank). Die Passwörter
+> gehören in den Passwortmanager, nicht in eine Textdatei daneben.
+>
+> Wenn du in der Play Console **Play App Signing** aktivierst — und das
+> solltest du —, verwahrt Google zusätzlich den Signaturschlüssel. Der
+> Upload-Schlüssel hier bleibt trotzdem deiner, und ohne ihn kommt kein
+> Update mehr in die Konsole.
+
+☐ **`android/key.properties` anlegen**
+
+`android/key.properties.example` kopieren und ausfüllen:
+
+```properties
+storeFile=C:/Users/DEIN-NAME/schluessel/trueglow-release.jks
+storePassword=dein-store-passwort
+keyAlias=trueglow
+keyPassword=dein-key-passwort
+```
+
+Schrägstriche auch unter Windows. Die Datei ist über `.gitignore`
+ausgeschlossen — prüf das einmal mit `git status`, bevor du committest.
+
+☐ **SHA-1 des Release-Keystores in Firebase eintragen**
+
+```bash
+keytool -list -v -keystore trueglow-release.jks -alias trueglow
+```
+
+SHA-1 und SHA-256 in die Firebase-App eintragen (Abschnitt 3.2), sonst
+schlägt Google Sign-In im Release fehl. Sobald Play App Signing aktiv ist,
+zusätzlich den dort angezeigten Fingerprint eintragen
+(**Play Console → Release → Setup → App-Integrität**).
+
+### 12.2 App Bundle bauen
+
+☐ **Vorher: Rechtstexte prüfen**
+
+```bash
+dart run tool/rechtstexte_pruefen.dart
+```
+
+☐ **Bauen**
+
+```bash
+flutter build appbundle --release
+```
+
+Das Ergebnis liegt unter `build/app/outputs/bundle/release/app-release.aab`.
+
+> Fehlt `key.properties`, bricht der Build mit einer Erklärung ab. Das ist
+> Absicht: Ein debug-signiertes Bundle lehnt Play ohnehin ab, und der Fehler
+> soll hier auffallen statt erst nach dem Upload.
+
+☐ **`targetSdk` gegen die Play-Anforderung prüfen**
+
+Im Projekt steht `targetSdk = 36` (`android/app/build.gradle.kts`). Play
+verlangt beim Upload einen Mindestwert, der **jedes Jahr steigt**. Steht in
+der Console eine höhere Zahl, hier anheben, neu bauen und Abschnitt 12.3
+komplett wiederholen — ein höheres `targetSdk` ändert Systemverhalten.
+
+### 12.3 Vollständiger Durchlauf im Release-Build
+
+Nicht optional. `minifyEnabled` entfernt Code, den R8 für unbenutzt hält —
+was über Reflexion gefunden wird, sieht R8 nicht. Solche Fehler treten
+**ausschließlich** im Release auf, und ein erfolgreicher Compile sagt darüber
+nichts.
+
+☐ Build auf ein echtes Gerät bringen:
+
+```bash
+flutter build apk --release
+flutter install --release
+```
+
+*(Für den Test genügt das APK; hochgeladen wird das App Bundle.)*
+
+☐ Diesen Weg einmal komplett gehen und auf Abstürze achten:
+
+1. App frisch installieren, Onboarding durchlaufen, **beide** Einwilligungen
+2. Mit Google anmelden — prüft Signatur-Fingerprint und App Check
+3. Kamera öffnen, Live-Gesichtserkennung im Sucher beobachten — prüft ML Kit
+   unter R8, der wahrscheinlichste Ausfall
+4. Ein Foto aus der Galerie importieren
+5. Analyse starten und Report öffnen — prüft Cloud Function und Firestore
+6. Habit abhaken, App schließen, neu öffnen: Haken noch da? — prüft Hive
+7. Check-in-Erinnerung: Gerät neu starten, Benachrichtigung kommt trotzdem —
+   prüft `RECEIVE_BOOT_COMPLETED` und den Receiver unter R8
+8. Einstellungen → Rechtliches → ein Dokument öffnen — prüft `url_launcher`
+9. Einstellungen → Daten löschen, Konto behalten
+10. Neu anmelden, Einstellungen → Konto endgültig löschen
+
+☐ Bei einem Absturz den Stacktrace lesbar machen:
+
+```bash
+flutter symbolize -i absturz.txt -d build/app/outputs/symbols
+```
+
+Die R8-Mapping-Datei liegt unter
+`build/app/outputs/mapping/release/mapping.txt`. **Heb sie zu jedem
+veröffentlichten Build auf** — ohne sie ist kein Absturzbericht lesbar.
+
+### 12.4 Version setzen
+
+Schema und Regeln stehen in `DECISIONS.md`, Abschnitt 24. Kurz:
+`version: 1.0.0+1` in `pubspec.yaml` — links SemVer, rechts eine fortlaufende
+Zahl, die **bei jedem Upload steigen muss**, auch bei einem korrigierten
+Build derselben Version.
+
+---
+
 ## Offen, sobald es soweit ist
 
 Diese Punkte gehören zu späteren Phasen und stehen hier nur als Merkposten:

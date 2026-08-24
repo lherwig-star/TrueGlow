@@ -382,6 +382,89 @@ dafür gibt es jetzt `wortmuster()` und Tests, die genau das prüfen.
 
 ---
 
+## 22 · Der Release-Build bricht ohne Keystore ab
+
+**Was:** Fehlt `android/key.properties`, scheitert jeder `assembleRelease` und
+`bundleRelease` mit einer Meldung, die den Weg beschreibt. Es gibt keinen
+Rückfall auf die Debug-Schlüssel mehr.
+
+**Warum:** Genau dieser Rückfall stand vorher im Gradle-Skript und war in der
+Bestandsaufnahme als Blocker vermerkt. Ein debug-signiertes App Bundle lehnt
+Play ab — die Frage ist nur, ob der Fehler beim Bauen auffällt oder erst nach
+dem Upload. Ein Build, der wortlos etwas Unbrauchbares erzeugt, ist die
+schlechtere Variante.
+
+**Preis:** `flutter run --release` funktioniert ohne Keystore nicht mehr. Für
+das Ausprobieren sind Debug und Profile da; für einen echten Release-Test
+braucht es ohnehin den echten Schlüssel.
+
+---
+
+## 23 · Was aus dem Merged Manifest fliegt — und was bleibt
+
+**Was:** Zwei Berechtigungen werden per `tools:node="remove"` entfernt, eine
+Funktionsanforderung wird entschärft.
+
+Vollständige Herkunft, aus den Plugin-Manifesten in `.dart_tool` gelesen:
+
+| Berechtigung | Woher | Entscheidung |
+|---|---|---|
+| `CAMERA` | eigenes Manifest + `camera_android_camerax` | **bleibt** — die In-App-Kamera |
+| `POST_NOTIFICATIONS` | eigenes Manifest + `flutter_local_notifications` | **bleibt** — Check-in-Erinnerung |
+| `RECEIVE_BOOT_COMPLETED` | eigenes Manifest | **bleibt** — geplante Erinnerungen überleben einen Neustart |
+| `INTERNET` | `google_sign_in_android`, Flutter-Debug-Manifest | **bleibt** — ohne Netz keine Analyse |
+| `VIBRATE` | `flutter_local_notifications` | **bleibt** — gehört zur Benachrichtigung und ist keine eigene Abfrage beim Nutzer |
+| `RECORD_AUDIO` | `camera_android_camerax` | **entfernt** — die App nimmt nie Ton oder Video auf. Eine Mikrofon-Berechtigung in einer Foto-App ist der Punkt, an dem Prüfer und Nutzer stutzen |
+| `WRITE_EXTERNAL_STORAGE` (max. API 28) | `camera_android_camerax` | **entfernt** — Fotos landen ausschließlich im app-eigenen Verzeichnis |
+
+| Funktion | Woher | Entscheidung |
+|---|---|---|
+| `android.hardware.camera.any` | `camera_android_camerax`, **ohne** `required`-Angabe und damit erforderlich | **auf `required="false"` gesetzt** — die App lässt sich vollständig über den Galerie-Import bedienen; sonst würde Play sie auf Geräten mit Kamera beschränken |
+
+**Warum die Herleitung hier steht:** Das Merged Manifest entsteht erst beim
+Bauen. Wer später eine Berechtigung sieht und nicht weiß, woher sie kommt,
+findet die Antwort sonst nur durch Nachbauen.
+
+**Preis:** Kommt ein Plugin dazu, ist diese Tabelle veraltet. Sie gehört
+deshalb in die Release-Checkliste — dort steht sie.
+
+**Nachprüfen nach dem nächsten Build:**
+`build/app/outputs/logs/manifest-merger-release-report.txt`, oder in Android
+Studio `AndroidManifest.xml` → Reiter *Merged Manifest*.
+
+---
+
+## 24 · Versionsschema
+
+**Was:** `version: <SemVer>+<Buildnummer>` in `pubspec.yaml`.
+
+- **`versionName` (links)** folgt SemVer: `MAJOR.MINOR.PATCH`.
+  - PATCH: Fehlerbehebungen, nichts Neues
+  - MINOR: neue Funktionen, alte bleiben
+  - MAJOR: Bruch — Umbau am Datenmodell, entfernte Funktionen
+- **`versionCode` (rechts)** ist eine einfach fortlaufende Zahl. Sie steigt
+  bei **jedem** Upload, auch wenn nur ein Build wiederholt wird. Sie wird nie
+  zurückgesetzt und hat mit dem SemVer keinen Zusammenhang.
+
+**Warum getrennt:** Play verweigert einen Upload mit gleichem oder kleinerem
+`versionCode`. Wer ihn an den SemVer koppelt (etwa `1.2.3` → `10203`), sitzt
+beim ersten korrigierten Build derselben Version fest.
+
+**Preis:** Zwei Zahlen, die man beide anfassen muss. Beide stehen in einer
+Zeile in `pubspec.yaml` — vergessen kann man höchstens eine davon, und der
+Upload sagt es dann sofort.
+
+**Beispiele**
+
+| Anlass | vorher | nachher |
+|---|---|---|
+| Erster Store-Upload | — | `1.0.0+1` |
+| Fehler im Login behoben | `1.0.0+1` | `1.0.1+2` |
+| Upload abgelehnt, korrigiert | `1.0.1+2` | `1.0.1+3` |
+| Neues Analyse-Modul | `1.0.1+3` | `1.1.0+4` |
+
+---
+
 ## Mock vs. Live
 
 *(Wird nach dem ersten echten Durchlauf gefüllt — siehe `SETUP.md`,

@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- Die In-App-Kamera mit Live-Vorschau braucht den Zugriff. Ohne
          Berechtigung bleibt der Import aus der Galerie als Weg offen,
          deshalb ist das Feature weiterhin nicht zwingend. -->
@@ -6,16 +7,46 @@
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 
+    <!-- camera_android_camerax fordert diese Funktion ohne required-Angabe an,
+         was "erforderlich" bedeutet. Play wuerde die App damit auf Geraeten mit
+         Kamera beschraenken – die App laesst sich aber komplett ueber die
+         Galerie bedienen. -->
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="false"
+        tools:replace="android:required" />
+
     <!-- Erinnerung an einen faelligen Check-in. Ohne Berechtigung faellt nur
          die Push weg – faellige Check-ins zeigt die App beim Start selbst. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Geplante Erinnerungen ueberleben einen Neustart des Geraets. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <!-- Aus dem Merged Manifest entfernt. Beide kommen von
+         camera_android_camerax und werden von dieser App nicht gebraucht:
+         Es wird nie Video oder Ton aufgenommen, und Fotos landen
+         ausschliesslich im app-eigenen Verzeichnis.
+         Vollstaendige Herleitung in DECISIONS.md, Abschnitt 23. -->
+    <uses-permission
+        android:name="android.permission.RECORD_AUDIO"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:node="remove" />
+
     <application
         android:label="TrueGlow"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        tools:replace="android:label"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:dataExtractionRules="@xml/datenausnahmen">
+        <!-- allowBackup=false ist eine bewusste Entscheidung aus der Roadmap:
+             Ohne sie wandern Hive-Dateien UND Gesichtsfotos in Googles
+             automatisches Cloud-Backup, ohne dass die App das je erwaehnt.
+             Was einen Geraetewechsel ueberleben soll, laeuft ueber das Konto
+             (Phase 1.6) – die Fotos ausdruecklich nicht. -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -38,22 +69,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <!-- Stellt geplante Check-in-Erinnerungen nach einem Neustart oder
-             App-Update wieder her. -->
-        <receiver
-            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"
-            android:exported="false" />
-
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
@@ -69,6 +84,12 @@
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
+        </intent>
+        <!-- url_launcher oeffnet die Rechtstexte im Browser. Ohne diesen
+             Eintrag meldet canLaunchUrl ab Android 11 immer false. -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
         </intent>
     </queries>
 </manifest>

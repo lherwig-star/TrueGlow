@@ -1,0 +1,12 @@
+# Vorlage. Kopieren nach android/key.properties und ausfuellen.
+#
+# Die echte Datei ist ueber .gitignore ausgeschlossen und darf das auch
+# bleiben: Sie enthaelt die Passwoerter deines Release-Keystores.
+#
+# Anlegen des Keystores und Bedeutung der Felder: SETUP.md, Abschnitt 12.1.
+
+# Absoluter Pfad zur .jks-Datei, mit Schraegstrichen auch unter Windows.
+storeFile=C:/Users/DEIN-NAME/schluessel/trueglow-release.jks
+storePassword=
+keyAlias=trueglow
+keyPassword=
