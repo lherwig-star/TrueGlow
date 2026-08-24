@@ -442,7 +442,7 @@ ist der wahrscheinlichste Ort für Abstürze auf schwächeren Telefonen.
 
 ### 4.5 Integrationstest
 
-- [ ] `integration_test` für den Hauptpfad (Onboarding → Foto → Analyse → Plan → Check-in) auf echter Hardware — **M**
+- [x] `integration_test` für den Hauptpfad (Onboarding → Foto → Analyse → Plan → Check-in) auf echter Hardware — **M** — *`integration_test/hauptpfad_test.dart`, **auf einem Samsung SM A525F (Android 13) durchgelaufen**. Läuft gegen den Mock-Modus, also ohne Backend und ohne Kosten.*
 
 ---
 

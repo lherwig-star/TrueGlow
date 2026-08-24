@@ -197,6 +197,14 @@ Der Befehl
 > `GoogleService-Info.plist` sind über `.gitignore` ausgeschlossen — bei einem
 > frischen Klon musst du `flutterfire configure` also erneut laufen lassen.
 
+> **Lokaler Platzhalter:** Im Arbeitsverzeichnis liegt bereits eine
+> `android/app/google-services.json` mit erfundenen Werten. Sie existiert nur,
+> damit sich die App ohne Firebase-Projekt bauen und im Demo-Modus auf einem
+> Geraet ausprobieren laesst — die Datei ist über `.gitignore` ausgeschlossen
+> und wird von `flutterfire configure` überschrieben. **Ersetze sie**, bevor
+> du gegen echtes Firebase baust; solange `lib/firebase_options.dart` noch den
+> Platzhalter enthält, zeigt die App ohnehin den Einrichtungshinweis.
+
 ☐ **2.2 Kontrolle**
 
 ```bash

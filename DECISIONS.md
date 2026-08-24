@@ -551,6 +551,70 @@ Ehrlichkeit, keine Glaubwürdigkeit.
 
 ---
 
+## 29 · Die Firebase-Pakete sind auf einen zusammenpassenden Satz festgenagelt
+
+**Was:** `firebase_core: >=4.13.0 <4.14.0`, `firebase_auth: 6.5.7`,
+`firebase_analytics: >=12.0.0 <12.5.0`, `firebase_crashlytics: ^5.2.7`. Die
+übrigen Firebase-Pakete folgen daraus.
+
+**Warum:** In `firebase_core 4.14.0` wurde `FlutterFirebaseCorePlugin` von
+Java nach Kotlin überführt und das Feld `customAuthDomain` in eine andere
+Klasse verschoben. `firebase_auth 6.5.7` sucht es noch am alten Ort — der
+Android-Build bricht mit „Symbol nicht gefunden" ab. Die Fassung, die das
+behebt (`firebase_auth 6.6.0`), scheitert ihrerseits am Kotlin-Compiler:
+
+```
+IdTokenChannelStreamHandler.kt:23:40 Type annotation class
+'org.checkerframework.checker.initialization.qual.UnknownInitialization'
+of the inferred type is inaccessible.
+```
+
+Beide Fehler treten **ausschließlich beim Android-Build** auf. `flutter
+analyze` und die 267 Dart-Tests laufen mit jeder der Kombinationen durch —
+gefunden wurden sie erst beim ersten echten Gradle-Lauf.
+
+`firebase_analytics 12.5.0` verlangt `firebase_core ^4.14.0` und zieht damit
+den kaputten Stand nach; deshalb steht auch dort eine Obergrenze.
+
+**Preis:** Vier Pakete hängen an einer Versionsobergrenze und werden von
+`flutter pub upgrade` nicht mitgenommen. Das ist Absicht — ohne die Grenzen
+wäre der nächste Build zufällig kaputt.
+
+**Wann das wieder weg kann:** Sobald eine `firebase_auth`-Fassung erscheint,
+die `firebase_core ≥ 4.14` benutzt *und* sich übersetzen lässt. Prüfen mit:
+
+```bash
+flutter pub upgrade --major-versions firebase_core firebase_auth firebase_analytics firebase_crashlytics
+flutter build apk --debug
+```
+
+Baut es durch, können die Obergrenzen in `pubspec.yaml` fallen. Baut es nicht,
+gehört der Stand zurückgesetzt (`git checkout pubspec.yaml pubspec.lock`).
+
+---
+
+## 30 · Was der erste echte Android-Build zutage gefördert hat
+
+Bis Phase 4 gab es auf dieser Maschine kein Java, also keinen Gradle-Lauf.
+Alles Android-Seitige war sorgfältig geschrieben, aber ungetestet. Beim ersten
+Build kamen drei Dinge heraus, die keine Analyse und kein Dart-Test hätte
+finden können:
+
+1. **Die Firebase-Versionskombination war nicht übersetzbar** (Abschnitt 29).
+2. **`GeneratedPluginRegistrant.java` war veraltet** und verwies nach einem
+   Paketwechsel auf Klassen, die es nicht mehr gab. `flutter clean` räumt das;
+   erwähnenswert, weil der Fehler wie ein Codefehler aussieht und keiner ist.
+3. **`splashHintergrund` gab es nur unter `values-night`.** `lintVital` bricht
+   den Release-Build dafür ab, und zu Recht: Eine Ressource, die es nur mit
+   Qualifier gibt, lässt die App in jeder anderen Konfiguration abstürzen. Die
+   Farbe steht jetzt auch in `values/colors.xml` — dort mit dem hellen Wert.
+
+**Der Punkt daraus:** Ein grüner Analyzer und grüne Tests sagen über die
+Plattformseite nichts. Der Release-Build ist ein eigener Prüfschritt, und er
+gehört vor die Einreichung — nicht an sie.
+
+---
+
 ## Mock vs. Live
 
 *(Wird nach dem ersten echten Durchlauf gefüllt — siehe `SETUP.md`,
