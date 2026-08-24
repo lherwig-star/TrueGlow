@@ -89,6 +89,15 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
   bool _startet = true;
   bool _loest = false;
 
+  /// Die eben gemachte Aufnahme, solange sie noch nicht bestaetigt ist.
+  ///
+  /// Sie liegt hier bewusst **vor** dem Qualitaetscheck: Verwackelt, Augen zu,
+  /// falscher Bildausschnitt – das sieht ein Mensch sofort und keine Pruefung
+  /// zuverlaessig. Erst „Passt" schickt die Datei durch den Check und in den
+  /// Aufnahmen-Index. Bei Ganzkoerperfotos aus drei Metern Abstand ist das der
+  /// einzige Moment, in dem das Ergebnis ueberhaupt zu beurteilen ist.
+  File? _vorschau;
+
   /// Verhindert, dass sich Frames stauen: waehrend eine Erkennung laeuft,
   /// werden neue Frames verworfen.
   bool _erkennungLaeuft = false;
@@ -204,7 +213,14 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
   }
 
   Future<void> _frameVerarbeiten(CameraImage bild) async {
-    if (_erkennungLaeuft || _loest || !widget.typ.mitLiveHilfe) return;
+    // Waehrend die Vorschau steht, ist der Sucher verdeckt – jede weitere
+    // Erkennung waere Rechenzeit fuer ein Bild, das niemand sieht.
+    if (_erkennungLaeuft ||
+        _loest ||
+        _vorschau != null ||
+        !widget.typ.mitLiveHilfe) {
+      return;
+    }
 
     final jetzt = DateTime.now();
     if (jetzt.difference(_letztePruefung) < _taktung) return;
@@ -222,6 +238,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
       final hinweis = _guide.bewerte(
         gesichter: [for (final g in gesichter) g.boundingBox],
         bildGroesse: _aufrechteGroesse(eingabe.metadata!),
+        helligkeit: _helligkeit(bild),
       );
       if (hinweis != _hinweis) setState(() => _hinweis = hinweis);
     } catch (e) {
@@ -229,6 +246,39 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
     } finally {
       _erkennungLaeuft = false;
     }
+  }
+
+  /// Mittlere Helligkeit des Frames (0–255), oder `null`, wenn sie sich nicht
+  /// bestimmen laesst.
+  ///
+  /// Nur jedes 16. Pixel wird gelesen. Ein Mittelwert braucht keine
+  /// Vollstaendigkeit, und bei vier Frames pro Sekunde in Vollaufloesung waere
+  /// sie auf schwachen Geraeten spuerbar.
+  int? _helligkeit(CameraImage bild) {
+    final bytes = bild.planes.first.bytes;
+    if (bytes.isEmpty) return null;
+
+    var summe = 0;
+    var anzahl = 0;
+
+    if (Platform.isAndroid) {
+      // NV21: Die erste Ebene ist der Luma-Kanal – ein Byte je Pixel, und
+      // genau die Groesse, die der Check nach dem Ausloesen misst.
+      for (var i = 0; i < bytes.length; i += 16) {
+        summe += bytes[i];
+        anzahl++;
+      }
+    } else {
+      // BGRA8888: Luminanz aus den Farbkanaelen, vier Bytes je Pixel.
+      for (var i = 0; i + 2 < bytes.length; i += 64) {
+        summe +=
+            (0.0722 * bytes[i] + 0.7152 * bytes[i + 1] + 0.2126 * bytes[i + 2])
+                .round();
+        anzahl++;
+      }
+    }
+
+    return anzahl == 0 ? null : summe ~/ anzahl;
   }
 
   /// Baut aus einem Vorschau-Frame die ML-Kit-Eingabe.
@@ -305,7 +355,12 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
 
   Future<void> _ausloesen() async {
     final controller = _controller;
-    if (controller == null || !controller.value.isInitialized || _loest) return;
+    if (controller == null ||
+        !controller.value.isInitialized ||
+        _loest ||
+        _vorschau != null) {
+      return;
+    }
 
     setState(() => _loest = true);
 
@@ -317,12 +372,13 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
       }
 
       final aufnahme = await controller.takePicture();
-      final angenommen = await _uebernehmen(File(aufnahme.path));
-
       if (!mounted) return;
-      // In beiden Faellen zurueck zum Foto-Schritt: dort steht entweder das
-      // gepruefte Bild oder die Problemkarte mit dem konkreten Tipp.
-      Navigator.of(context).pop(angenommen);
+
+      // Noch nichts uebernehmen – erst zeigt die Vorschau das Bild.
+      setState(() {
+        _vorschau = File(aufnahme.path);
+        _loest = false;
+      });
     } catch (e) {
       debugPrint('Aufnahme fehlgeschlagen: $e');
       if (!mounted) return;
@@ -332,6 +388,44 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
         await _controller?.startImageStream(_frameVerarbeiten);
       }
     }
+  }
+
+  /// „Nochmal": Aufnahme wegwerfen und zurueck in den Sucher.
+  Future<void> _vorschauVerwerfen() async {
+    final datei = _vorschau;
+    setState(() => _vorschau = null);
+
+    // Die Datei liegt im Cache-Verzeichnis der Kamera. Wegraeumen, sonst
+    // sammelt jeder verworfene Versuch ein Vollbild-JPEG an.
+    try {
+      await datei?.delete();
+    } catch (e) {
+      debugPrint('Verworfene Aufnahme nicht loeschbar: $e');
+    }
+
+    // Der Bildstrom wurde vor dem Ausloesen gestoppt – ohne ihn steht die
+    // Live-Hilfe still und der Ausloeser bliebe dauerhaft blass.
+    final controller = _controller;
+    if (widget.typ.mitLiveHilfe &&
+        controller != null &&
+        controller.value.isInitialized &&
+        !controller.value.isStreamingImages) {
+      await controller.startImageStream(_frameVerarbeiten);
+    }
+  }
+
+  /// „Passt": jetzt erst durch den Qualitaetscheck und in den Index.
+  Future<void> _vorschauBestaetigen() async {
+    final datei = _vorschau;
+    if (datei == null) return;
+
+    setState(() => _loest = true);
+    final angenommen = await _uebernehmen(datei);
+
+    if (!mounted) return;
+    // In beiden Faellen zurueck zum Foto-Schritt: dort steht entweder das
+    // gepruefte Bild oder die Problemkarte mit dem konkreten Tipp.
+    Navigator.of(context).pop(angenommen);
   }
 
   Future<void> _ausGalerie() async {
@@ -428,7 +522,125 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
               ),
             ),
           ],
+          if (_vorschau case final datei?)
+            _Vorschaupruefung(
+              datei: datei,
+              laeuft: _loest,
+              onUebernehmen: _vorschauBestaetigen,
+              onWiederholen: _vorschauVerwerfen,
+            ),
           if (_loest) const _PruefUeberlagerung(),
+        ],
+      ),
+    );
+  }
+}
+
+/// Das eben aufgenommene Bild mit „Passt" und „Nochmal".
+///
+/// Vollflaechig und nicht als Dialog: Beurteilt werden soll das Foto, nicht
+/// eine Frage darueber. Aus drei Metern Abstand ist das ausserdem der einzige
+/// Moment, in dem ueberhaupt etwas zu erkennen ist.
+class _Vorschaupruefung extends StatelessWidget {
+  const _Vorschaupruefung({
+    required this.datei,
+    required this.laeuft,
+    required this.onUebernehmen,
+    required this.onWiederholen,
+  });
+
+  final File datei;
+  final bool laeuft;
+  final VoidCallback onUebernehmen;
+  final VoidCallback onWiederholen;
+
+  @override
+  Widget build(BuildContext context) {
+    final farben = context.farben;
+
+    return ColoredBox(
+      color: Colors.black,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.file(
+            datei,
+            fit: BoxFit.contain,
+            // Der Pfad wechselt bei jeder Aufnahme, der Key haelt Flutter
+            // trotzdem davon ab, ein zwischengespeichertes Bild zu zeigen.
+            key: ValueKey(datei.path),
+          ),
+          const DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.black54, Colors.transparent, Colors.black87],
+                stops: [0, 0.4, 1],
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Column(
+              children: [
+                const SizedBox(height: AppTheme.gapM),
+                const Text(
+                  S.vorschauTitel,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: AppTheme.gapXs),
+                Text(
+                  S.vorschauHinweis,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white.withValues(alpha: 0.75)),
+                ),
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.gapL,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: laeuft ? null : onWiederholen,
+                          icon: const Icon(Icons.refresh),
+                          label: const Text(S.vorschauWiederholen),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            side: const BorderSide(color: Colors.white54),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: AppTheme.gapS + 2,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: AppTheme.gapS),
+                      Expanded(
+                        child: FilledButton.icon(
+                          onPressed: laeuft ? null : onUebernehmen,
+                          icon: const Icon(Icons.check),
+                          label: const Text(S.vorschauUebernehmen),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: farben.akzent,
+                            foregroundColor: farben.aufAkzent,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: AppTheme.gapS + 2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppTheme.gapM),
+              ],
+            ),
+          ),
         ],
       ),
     );

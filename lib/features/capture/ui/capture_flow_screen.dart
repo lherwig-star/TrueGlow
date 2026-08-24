@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -12,6 +14,7 @@ import '../../modules/logic/module_controller.dart';
 import '../../modules/models/analyse_modul.dart';
 import '../logic/aufnahme_flow.dart';
 import '../logic/capture_controller.dart';
+import '../models/aufnahme_typ.dart';
 import 'schritte/figur_formular.dart';
 import 'schritte/foto_schritt_ansicht.dart';
 import 'schritte/licht_checkliste.dart';
@@ -92,6 +95,19 @@ class _CaptureFlowScreenState extends ConsumerState<CaptureFlowScreen> {
         ),
         children: [
           _Fortschritt(aktuell: index, gesamt: schritte.length),
+          if (schritte.whereType<FotoSchritt>().isNotEmpty) ...[
+            const SizedBox(height: AppTheme.gapS),
+            _FotoLeiste(
+              fotoSchritte: schritte.whereType<FotoSchritt>().toList(),
+              aufnahmen: aufnahmen,
+              aktueller: schritt is FotoSchritt ? schritt.typ : null,
+              onSpringe: (typ) => setState(
+                () => _index = schritte.indexWhere(
+                  (s) => s is FotoSchritt && s.typ == typ,
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: AppTheme.gapM),
           switch (schritt) {
             LichtCheckSchritt() => const LichtCheckliste(),
@@ -118,6 +134,96 @@ class _CaptureFlowScreenState extends ConsumerState<CaptureFlowScreen> {
       FigurFormularSchritt() => module.eingaben.figur.istVollstaendig,
       StilFragebogenSchritt() => module.eingaben.stil.istVollstaendig,
     };
+  }
+}
+
+/// Miniaturen aller Fotos des Flows – gemacht wie ausstehend.
+///
+/// Der Balken darueber zaehlt Schritte, diese Leiste zeigt Inhalt: was
+/// tatsaechlich schon im Kasten ist. Bei bis zu zehn Aufnahmen verliert man
+/// sonst den Ueberblick, und ein misslungenes Foto faellt erst am Ende auf.
+///
+/// Ein Antippen springt zu dem Schritt. Neu aufgenommen wird dort mit dem
+/// vorhandenen „Neu aufnehmen" – ein zweiter Weg zur selben Sache waere eine
+/// Fehlerquelle mehr.
+class _FotoLeiste extends StatelessWidget {
+  const _FotoLeiste({
+    required this.fotoSchritte,
+    required this.aufnahmen,
+    required this.aktueller,
+    required this.onSpringe,
+  });
+
+  final List<FotoSchritt> fotoSchritte;
+  final CaptureState aufnahmen;
+  final AufnahmeTyp? aktueller;
+  final void Function(AufnahmeTyp) onSpringe;
+
+  static const double _kante = 46;
+
+  @override
+  Widget build(BuildContext context) {
+    final farben = context.farben;
+
+    return SizedBox(
+      height: _kante,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: fotoSchritte.length,
+        separatorBuilder: (_, _) => const SizedBox(width: AppTheme.gapXs),
+        itemBuilder: (context, i) {
+          final typ = fotoSchritte[i].typ;
+          final foto = aufnahmen.foto(typ);
+          final istAktuell = typ == aktueller;
+
+          return Semantics(
+            button: true,
+            selected: istAktuell,
+            label: '${typ.label}, '
+                '${foto != null ? 'aufgenommen' : 'noch offen'}',
+            child: GestureDetector(
+              onTap: () => onSpringe(typ),
+              child: Container(
+                width: _kante,
+                height: _kante,
+                decoration: BoxDecoration(
+                  color: farben.flaeche,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: istAktuell
+                        ? farben.akzent
+                        : foto != null
+                            ? farben.erfolg.withValues(alpha: 0.6)
+                            : farben.rand,
+                    width: istAktuell ? 2 : 1,
+                  ),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: foto != null
+                    ? Image.file(
+                        File(foto.pfad),
+                        fit: BoxFit.cover,
+                        // Die Miniatur braucht keine 1024 Pixel Kantenlaenge –
+                        // zehn Vollbilder im Speicher waeren auf schwachen
+                        // Geraeten der schnellste Weg in den Absturz.
+                        cacheWidth: 140,
+                        key: ValueKey('${foto.pfad}-${foto.groesseInBytes}'),
+                      )
+                    : Center(
+                        child: Text(
+                          '${i + 1}',
+                          style: TextStyle(
+                            color: farben.textSekundaer,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 

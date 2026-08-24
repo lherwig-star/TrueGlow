@@ -657,6 +657,87 @@ dart run tool/diagnose_stichprobe.dart tool/stichprobe/analyse_*.json
 | `habits` pro Kapitel | immer 4 | 6 × 4, **1 × 3** | Der Prompt verlangt „4 bis 7 pro Kapitel" (`analyse_prompt.ts`). Einmal kamen nur 3. Kein Fehlerfall — die App zeigt einfach eine kürzere Liste —, aber der Beleg, dass Mengenangaben im Prompt Wünsche sind und keine Garantien. Nichts darf davon abhängen, dass genau *n* Einträge ankommen. |
 | `plan.taeglicheHabits` | leer | leer (3 von 3) | **Totes Feld.** Siehe unten. |
 
+### Vorschau vor dem Qualitätscheck, nicht danach
+
+Nach dem Auslösen zeigt die Kamera das Bild mit „Passt" und „Nochmal". Erst
+„Passt" schickt es durch den Check und in den Aufnahmen-Index.
+
+**Die Reihenfolge ist der Punkt.** Naheliegend wäre gewesen, erst zu prüfen und
+die Vorschau nur für bestandene Fotos zu zeigen. Genau das wäre falsch: Der
+Check misst Helligkeit, Gesichtsgröße und Gesichtszahl — nicht, ob die Augen
+zu sind, ob verwackelt wurde oder ob der Ausschnitt taugt. Das sieht ein Mensch
+in einer halben Sekunde und keine Prüfung zuverlässig. Die Vorschau ist das
+menschliche Urteil, der Check das maschinelle; das menschliche kommt zuerst.
+
+Bei Ganzkörperfotos aus drei Metern Abstand ist es ohnehin der einzige Moment,
+in dem sich das Ergebnis überhaupt beurteilen lässt.
+
+Verworfene Aufnahmen werden gelöscht. Ohne das sammelt jeder Versuch ein
+Vollbild-JPEG im Cache an — bei einem Auto-Auslöser, der auch mal danebentrifft,
+summiert sich das schnell.
+
+Der Galerie-Import bekommt **keine** Vorschau: Dort hat man das Bild im
+Auswahldialog bereits gesehen.
+
+### Kein Schärfe-Check
+
+Naheliegende Ergänzung zu den Live-Hinweisen, bewusst nicht gebaut.
+
+Die App hat **nie** auf Schärfe geprüft — die sechs Problemtexte sind kein
+Gesicht, mehrere Gesichter, zu klein, zu dunkel, ungültige Datei,
+fehlgeschlagen. Ein Unschärfemaß (etwa Laplace-Varianz) wäre neu zu bauen, und
+es ist heikler als es klingt: Der Schwellwert hängt an Motiv, Auflösung und
+Rauschen. Zu streng lehnt er brauchbare Fotos ab, zu lax fängt er nichts.
+Falsche Ablehnungen sind hier der teurere Fehler — sie blockieren jemanden vor
+einer Analyse, die er bezahlen will.
+
+**Verwackelte Fotos fängt stattdessen die Vorschau ab:** Der Nutzer sieht das
+Bild und tippt „Nochmal". Ein Mensch erkennt Unschärfe sofort und ohne
+Schwellwert-Diskussion.
+
+Nachrüstbar, falls sich Unschärfe im Testbetrieb als reales Problem zeigt —
+dann mit Messwerten aus echten Fotos statt mit geratenen Grenzen. Der Ort wäre
+`ImageQualityService.pruefeUndVerarbeite`, direkt neben der Helligkeitsprüfung.
+
+### Live-Hinweise nur für vorhandene Prüfungen
+
+Der Sucher meldete bisher nur die Position (kein Gesicht, zu weit weg, zu nah,
+nicht mittig). Dazu kommt jetzt **„Mehr Licht nötig"** — die einzige weitere
+Ablehnung des finalen Checks, die sich vorher sehen lässt.
+
+Beide messen dasselbe: mittlere Luminanz auf 0–255. Der Check rechnet sie aus
+dem dekodierten JPEG, die Vorschau aus der Y-Ebene des Kamerabildes — das *ist*
+der Luminanzkanal, die Werte sind direkt vergleichbar. Auf iOS (BGRA) wird sie
+aus den Farbkanälen gewichtet.
+
+Zwei Feinheiten:
+
+1. **Der Live-Schwellwert liegt zehn Punkte über dem Ablehnungswert.** Wer
+   knapp über der Grenze fotografiert, kommt durch, steht aber am Rand. Der
+   Hinweis kommt früher, damit man Licht nachlegen kann, statt ein Foto zu
+   machen, das anschließend verworfen wird.
+2. **Dunkelheit geht vor „kein Gesicht".** Bei zu wenig Licht findet ML Kit
+   oft gar nichts; „niemand im Bild" wäre dann irreführend, das Licht ist die
+   Ursache.
+
+Gemessen wird nur jedes 16. Pixel. Ein Mittelwert braucht keine
+Vollständigkeit, und vier Frames pro Sekunde in voller Auflösung wären auf
+schwachen Geräten spürbar.
+
+### Miniaturen-Leiste im Aufnahme-Flow
+
+Über dem Inhalt liegen jetzt zwei Anzeigen, und das ist Absicht: Der dünne
+Balken zählt **Schritte** (auch Lichtcheck und Formulare), die Miniaturen
+zeigen **Inhalt** — was tatsächlich schon im Kasten ist. Bei bis zu zehn
+Aufnahmen fällt ein misslungenes Foto sonst erst am Ende auf.
+
+Ein Antippen springt zu dem Schritt; neu aufgenommen wird dort mit dem
+vorhandenen „Neu aufnehmen". Ein zweiter Weg zur selben Sache wäre eine
+Fehlerquelle mehr.
+
+Die Miniaturen laden mit `cacheWidth: 140`. Zehn Vollbilder à 1024 px im
+Speicher wären auf schwachen Geräten der schnellste Weg in den Absturz.
+
 ### Ganzkörper-Silhouette statt Kasten
 
 Der Umriss für die Ganzkörperfotos war ein Oval plus abgerundetes Rechteck.

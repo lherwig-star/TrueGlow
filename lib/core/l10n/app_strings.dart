@@ -61,6 +61,7 @@ class S {
   static const kameraZuNah = 'Etwas weiter weg';
   static const kameraNichtMittig = 'Mittig positionieren';
   static const kameraPerfekt = 'Perfekt – jetzt auslösen';
+  static const kameraZuDunkel = 'Mehr Licht nötig';
   static const kameraKeineBerechtigungTitel = 'Kamerazugriff nötig';
   static const kameraKeineBerechtigungText =
       'TrueGlow braucht Zugriff auf die Kamera, um die Live-Vorschau mit '
@@ -86,6 +87,13 @@ class S {
   static const moduleErweiternText =
       'Diese Bereiche fehlen deiner Analyse noch. Deine bisherigen Fotos '
       'bleiben erhalten – es kommen nur die neuen Aufnahmen dazu.';
+
+  // --- Vorschau nach der Aufnahme ---
+  static const vorschauTitel = 'Passt das so?';
+  static const vorschauUebernehmen = 'Passt';
+  static const vorschauWiederholen = 'Nochmal';
+  static const vorschauHinweis =
+      'Erst wenn du bestätigst, wird das Foto gespeichert.';
 
   // --- Kontingent ---
   // Der Hinweis erscheint vor der Aufnahme, damit niemand erst fotografiert

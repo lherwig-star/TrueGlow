@@ -5,9 +5,12 @@ import 'package:trueglow/core/l10n/app_strings.dart';
 import 'package:trueglow/core/theme/app_theme.dart';
 import 'package:trueglow/features/capture/logic/aufnahme_flow.dart';
 import 'package:trueglow/features/capture/logic/capture_controller.dart';
+import 'package:trueglow/features/capture/logic/image_quality_service.dart';
+import 'package:trueglow/features/capture/logic/live_face_guide.dart';
 import 'package:trueglow/features/capture/models/aufnahme_typ.dart';
 import 'package:trueglow/features/capture/models/captured_photo.dart';
 import 'package:trueglow/features/capture/models/photo_check_result.dart';
+import 'package:trueglow/features/capture/ui/capture_flow_screen.dart';
 import 'package:trueglow/features/capture/ui/schritte/foto_schritt_ansicht.dart';
 import 'package:trueglow/features/capture/ui/widgets/silhouette_overlay.dart';
 import 'package:trueglow/features/modules/models/analyse_modul.dart';
@@ -238,6 +241,130 @@ void main() {
 
     expect(find.text(PhotoProblem.zuKlein.titel), findsOneWidget);
     expect(find.text(PhotoProblem.zuKlein.tipp), findsOneWidget);
+  });
+
+  testWidgets('die Foto-Leiste zeigt jede Aufnahme und springt hin',
+      (tester) async {
+    // Bei bis zu zehn Aufnahmen ist die Leiste der einzige Ort, an dem
+    // sichtbar wird, was schon im Kasten ist – und der schnellste Weg zu
+    // einem misslungenen Foto zurueck.
+    handyGroesse(tester);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: testOverrides(),
+        child: MaterialApp(
+          theme: AppTheme.dark,
+          home: const CaptureFlowScreen(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Nur die Basis: Lichtcheck plus vier Fotos.
+    final fotos = AnalyseModul.basis.aufnahmen.length;
+    expect(find.text('Schritt 1 von ${fotos + 1}'), findsOneWidget);
+
+    // Je ein Platzhalter mit laufender Nummer, noch kein Foto vorhanden.
+    for (var i = 1; i <= fotos; i++) {
+      expect(find.text('$i'), findsOneWidget);
+    }
+
+    // Antippen des dritten Feldes fuehrt zum dritten Foto-Schritt – das ist
+    // nach dem Lichtcheck der vierte Schritt insgesamt.
+    await tester.tap(find.text('3'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Schritt 4 von ${fotos + 1}'), findsOneWidget);
+    expect(
+      find.text(AnalyseModul.basis.aufnahmen[2].label),
+      findsWidgets,
+    );
+  });
+
+  group('Live-Hinweis Helligkeit', () {
+    const guide = LiveFaceGuide();
+    const bild = Size(1000, 1000);
+    // Ein mittig sitzendes Gesicht mit rund 36 % Flaechenanteil – waere ohne
+    // Lichtproblem „perfekt".
+    final gutesGesicht = [
+      Rect.fromCenter(center: const Offset(500, 500), width: 600, height: 600),
+    ];
+
+    test('ohne Helligkeitsangabe bleibt alles wie bisher', () {
+      // Auf iOS oder bei unlesbarem Puffer kommt kein Wert – dann darf die
+      // Bewertung nicht plötzlich anders ausfallen.
+      expect(
+        guide.bewerte(gesichter: gutesGesicht, bildGroesse: bild),
+        LiveHinweis.perfekt,
+      );
+    });
+
+    test('zu dunkel schlaegt selbst bei perfekter Haltung durch', () {
+      expect(
+        guide.bewerte(
+          gesichter: gutesGesicht,
+          bildGroesse: bild,
+          helligkeit: 20,
+        ),
+        LiveHinweis.zuDunkel,
+      );
+    });
+
+    test('zu dunkel geht vor „kein Gesicht"', () {
+      // Bei Dunkelheit findet ML Kit oft gar nichts. „Niemand im Bild" waere
+      // dann irrefuehrend – das Licht ist die Ursache.
+      expect(
+        guide.bewerte(gesichter: const [], bildGroesse: bild, helligkeit: 20),
+        LiveHinweis.zuDunkel,
+      );
+    });
+
+    test('warnt frueher als der finale Check ablehnt', () {
+      // Der Sinn des Hinweises: nachbessern koennen, statt ein Foto zu
+      // machen, das der Check anschliessend verwirft.
+      expect(
+        LiveFaceGuide.minHelligkeit,
+        greaterThan(ImageQualityService.minHelligkeit),
+      );
+
+      // Genau im Puffer dazwischen: Der Check wuerde es durchlassen, die
+      // Vorschau mahnt trotzdem.
+      const knapp = ImageQualityService.minHelligkeit + 1;
+      expect(
+        guide.bewerte(
+          gesichter: gutesGesicht,
+          bildGroesse: bild,
+          helligkeit: knapp,
+        ),
+        LiveHinweis.zuDunkel,
+      );
+    });
+
+    test('genug Licht laesst die Haltungshinweise durch', () {
+      expect(
+        guide.bewerte(
+          gesichter: gutesGesicht,
+          bildGroesse: bild,
+          helligkeit: 200,
+        ),
+        LiveHinweis.perfekt,
+      );
+      expect(
+        guide.bewerte(
+          gesichter: const [],
+          bildGroesse: bild,
+          helligkeit: 200,
+        ),
+        LiveHinweis.keinGesicht,
+      );
+    });
+
+    test('kein Hinweis ohne Text, und nur „perfekt" gibt frei', () {
+      for (final hinweis in LiveHinweis.values) {
+        expect(hinweis.text, isNotEmpty, reason: '${hinweis.name} ohne Text');
+      }
+      expect(LiveHinweis.zuDunkel.bereit, isFalse);
+    });
   });
 
   group('Silhouetten', () {
