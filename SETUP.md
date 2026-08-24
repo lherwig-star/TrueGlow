@@ -454,6 +454,63 @@ Java (siehe Abschnitt 0).
 
 ---
 
+## 10 · Rechtstexte eintragen (Phase 2.1)
+
+Die App bringt die Struktur schon mit — es fehlen nur die Texte. Eingetragen
+wird an **genau einer Stelle**:
+`lib/features/legal/logic/rechtstexte.dart`.
+
+☐ **10.1 Texte erzeugen und veröffentlichen**
+
+Datenschutzerklärung, Nutzungsbedingungen und Impressum aus deinem Generator
+holen und unter drei öffentlichen Adressen ablegen (eigene Domain, GitHub
+Pages, Notion — Hauptsache ohne Login erreichbar).
+
+> **Play verlangt zwingend eine öffentliche URL zur Datenschutzerklärung.**
+> Sie wird im Store-Eintrag hinterlegt und von der Prüfung aufgerufen. Ein
+> Text, der nur in der App liegt, reicht nicht.
+
+Was inhaltlich hineingehört, steht in `store/data-safety.md` — dieselbe Liste,
+aus der auch das Data-Safety-Formular gefüllt wird.
+
+☐ **10.2 Adressen im Code eintragen**
+
+In `rechtstexte.dart` die auskommentierten Zeilen ausfüllen:
+
+```dart
+Rechtsdokument.datenschutz: Rechtsquelle(
+  url: 'https://deine-domain.de/datenschutz',
+),
+```
+
+☐ **10.3 Optional: Texte zusätzlich in die App legen**
+
+Für den Offline-Fall die Markdown-Fassungen unter `assets/rechtstexte/`
+ablegen, in `pubspec.yaml` unter `assets:` eintragen und in `rechtstexte.dart`
+zusätzlich als `asset:` referenzieren. Die App öffnet dann bevorzugt die
+Webseite und fällt auf den mitgelieferten Text zurück, wenn kein Netz da ist.
+
+☐ **10.4 Textversion erhöhen**
+
+```dart
+static const String version = '1';
+```
+
+Das `-entwurf` muss weg — daran erkennt die App, dass die Texte verbindlich
+sind. Die Versionsnummer wird bei jeder Einwilligung mitgespeichert; erhöhst
+du sie später, holt die App die Einwilligung erneut ein.
+
+☐ **10.5 Prüfen**
+
+```bash
+dart run tool/rechtstexte_pruefen.dart
+```
+
+Das Skript endet mit Fehlercode, solange etwas fehlt. Es gehört vor jeden
+Release-Build.
+
+---
+
 ## Offen, sobald es soweit ist
 
 Diese Punkte gehören zu späteren Phasen und stehen hier nur als Merkposten:

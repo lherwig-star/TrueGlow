@@ -249,6 +249,7 @@ class S {
   static const einstellungenErscheinungsbild = 'Erscheinungsbild';
   static const einstellungenDatenLoeschen = 'Alle Daten löschen';
   static const einstellungenImpressum = 'Impressum';
+  static const einstellungenRechtliches = 'Rechtliches';
   static const einstellungenDatenschutz = 'Datenschutzerklärung';
 
   // --- Disclaimer ---

@@ -310,8 +310,8 @@ App ohne Bewertungen, ohne Installationen und ohne Käufe.
 
 ### 2.1 Rechtstexte
 
-- [ ] Datenschutzerklärung, AGB, Impressum erstellen (Anwalt oder spezialisierter Generator) und als öffentliche URLs hosten — **M**
-- [ ] In den Einstellungen verlinken (ersetzt „Rechtstext folgt.") und im Onboarding — **S**
+- [ ] Datenschutzerklärung, AGB, Impressum erstellen (Anwalt oder spezialisierter Generator) und als öffentliche URLs hosten — **M** — *Anleitung in `SETUP.md`, Abschnitt 10 (nur von dir ausführbar)*
+- [x] In den Einstellungen verlinken (ersetzt „Rechtstext folgt.") und im Onboarding — **S** — *Screen „Rechtliches"; Quellen zentral in `rechtstexte.dart`, `tool/rechtstexte_pruefen.dart` blockiert den Release, solange etwas fehlt*
 - [ ] Inhalte, die zwingend hineingehören: Gesichtsfotos und ihr Zweck, Übermittlung an Google (Gemini) mit Drittlandbezug, Speicherdauer, Löschweg, Crash-Reporting/Analytics aus Phase 4, Kontaktadresse — **S**
 
 ### 2.2 Einwilligung nachschärfen

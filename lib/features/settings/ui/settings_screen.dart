@@ -58,20 +58,10 @@ class SettingsScreen extends ConsumerWidget {
         const SizedBox(height: AppTheme.gapS),
         SectionCard(
           padding: const EdgeInsets.symmetric(vertical: AppTheme.gapXs),
-          child: Column(
-            children: [
-              _Eintrag(
-                icon: Icons.description_outlined,
-                label: S.einstellungenImpressum,
-                onTap: () => _platzhalter(context),
-              ),
-              const Divider(indent: AppTheme.gapM, endIndent: AppTheme.gapM),
-              _Eintrag(
-                icon: Icons.privacy_tip_outlined,
-                label: S.einstellungenDatenschutz,
-                onTap: () => _platzhalter(context),
-              ),
-            ],
+          child: _Eintrag(
+            icon: Icons.gavel_outlined,
+            label: S.einstellungenRechtliches,
+            onTap: () => context.push(Routes.rechtliches),
           ),
         ),
         const SizedBox(height: AppTheme.gapS),
@@ -84,12 +74,6 @@ class SettingsScreen extends ConsumerWidget {
           child: MutedText(S.disclaimerMedizin),
         ),
       ],
-    );
-  }
-
-  void _platzhalter(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Rechtstext folgt.')),
     );
   }
 

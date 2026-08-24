@@ -7,6 +7,7 @@ import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/section_card.dart';
+import '../../legal/ui/rechtstexte_zeile.dart';
 import '../logic/onboarding_controller.dart';
 import '../models/onboarding_profile.dart';
 
@@ -385,7 +386,11 @@ class _DatenschutzSeite extends StatelessWidget {
           icon: Icons.lock_outline,
           child: MutedText(S.disclaimerFotos),
         ),
-        const SizedBox(height: AppTheme.gapM),
+        const SizedBox(height: AppTheme.gapS),
+        // Dieselben Dokumente wie in den Einstellungen – eine Quelle, ein
+        // Weg. Wer zustimmt, soll vorher nachlesen koennen.
+        const RechtstexteZeile(),
+        const SizedBox(height: AppTheme.gapS),
         InkWell(
           onTap: () => ctrl.setZustimmung(!profil.zugestimmt),
           borderRadius: BorderRadius.circular(AppTheme.radiusButton),

@@ -15,6 +15,10 @@ void main() {
   });
 
   testWidgets('Onboarding fuehrt nach Zustimmung zum Dashboard', (tester) async {
+    // Die Einwilligungsseite traegt inzwischen Disclaimer, Verweise auf die
+    // Rechtstexte und die Haekchen – im Standardfenster faellt das Ende
+    // heraus.
+    handyGroesse(tester, hoehe: 1400);
     await tester.pumpWidget(ProviderScope(overrides: testOverrides(), child: const TrueGlowApp()));
     await tester.pumpAndSettle();
 

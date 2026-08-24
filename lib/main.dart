@@ -16,9 +16,20 @@ import 'core/theme/theme_controller.dart';
 import 'features/analysis/logic/analysis_service.dart';
 import 'features/auth/logic/auth_repository.dart';
 import 'features/auth/logic/firebase_auth_repository.dart';
+import 'features/legal/logic/rechtstexte.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Meldet im Debug-Build, wenn noch Rechtstexte fehlen – als Assertion, nicht
+  // als Absturz. Den harten Riegel vor dem Release zieht
+  // tool/rechtstexte_pruefen.dart.
+  assert(() {
+    if (!Rechtstexte.vollstaendig) {
+      debugPrint('⚠️  ${Rechtstexte.fehlerbericht}');
+    }
+    return true;
+  }());
 
   // Der Demo-/Screenshot-Modus laeuft komplett ohne Backend: keine Fotos im
   // Netz, keine Konten, keine Kosten. Deshalb wird Firebase dort gar nicht

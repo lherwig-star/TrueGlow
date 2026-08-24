@@ -5,6 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../../features/analysis/ui/analysis_loading_screen.dart';
 import '../../features/auth/logic/auth_repository.dart';
 import '../../features/auth/ui/login_screen.dart';
+import '../../features/legal/logic/rechtstexte.dart';
+import '../../features/legal/ui/legal_screen.dart';
+import '../../features/legal/ui/rechtsdokument_screen.dart';
 import '../../features/capture/models/aufnahme_typ.dart';
 import '../../features/capture/ui/camera_screen.dart';
 import '../../features/capture/ui/capture_flow_screen.dart';
@@ -67,6 +70,13 @@ class Routes {
   static const plan = '/plan';
   static const history = '/history';
   static const settings = '/settings';
+
+  /// Uebersicht der Rechtstexte.
+  static const rechtliches = '/rechtliches';
+
+  /// Ein einzelner Rechtstext in der App (Rueckfallebene ohne Netz).
+  static String rechtstextFuer(Rechtsdokument dokument) =>
+      '$rechtliches/${dokument.schluessel}';
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -152,6 +162,20 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.plan, builder: (context, state) => const PlanScreen()),
       GoRoute(path: Routes.history, builder: (context, state) => const HistoryScreen()),
       GoRoute(path: Routes.settings, builder: (context, state) => const SettingsScreen()),
+      GoRoute(
+        path: Routes.rechtliches,
+        builder: (context, state) => const LegalScreen(),
+        routes: [
+          GoRoute(
+            path: ':dokument',
+            builder: (context, state) => RechtsdokumentScreen(
+              dokument:
+                  Rechtsdokument.ausName(state.pathParameters['dokument']) ??
+                      Rechtsdokument.datenschutz,
+            ),
+          ),
+        ],
+      ),
     ],
     errorBuilder: (context, state) => Scaffold(
       body: Center(child: Text('Route nicht gefunden: ${state.uri}')),

@@ -9,6 +9,9 @@ import 'package:trueglow/features/analysis/logic/analysis_controller.dart';
 import 'package:trueglow/features/analysis/logic/mock_analysis_service.dart';
 import 'package:trueglow/features/auth/logic/auth_repository.dart';
 import 'package:trueglow/features/checkin/logic/checkin_service.dart';
+import 'package:trueglow/features/onboarding/logic/onboarding_controller.dart';
+import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
+import 'package:trueglow/main.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 /// Richtet Hive fuer einen Test in einem temporaeren Verzeichnis ein und
@@ -67,3 +70,32 @@ List<Override> dienstOverrides() => [
 
 /// Speicher plus Dienste – der Standardsatz fuer Widget-Tests.
 List<Override> testOverrides() => [...speicherOverrides(), ...dienstOverrides()];
+
+/// Startet die App mit abgeschlossenem Onboarding und angemeldetem Konto –
+/// der Zustand, in dem die eigentlichen Screens erreichbar sind.
+Future<ProviderContainer> appMitDashboard(
+  WidgetTester tester, {
+  List<Override> zusatz = const [],
+}) async {
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [...testOverrides(), ...zusatz],
+      child: const TrueGlowApp(),
+    ),
+  );
+  await tester.pumpAndSettle();
+
+  final container = ProviderScope.containerOf(
+    tester.element(find.byType(TrueGlowApp)),
+  );
+
+  final onboarding = container.read(onboardingControllerProvider.notifier);
+  onboarding.setAlter(Altersbereich.a25bis34);
+  onboarding.setBudget(Budget.mittel);
+  onboarding.setZeit(Zeitbudget.mittel);
+  onboarding.toggleFokus(Fokusbereich.haut);
+  onboarding.setZustimmung(true);
+  onboarding.abschliessen();
+
+  return container;
+}
