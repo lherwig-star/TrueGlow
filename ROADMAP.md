@@ -223,7 +223,7 @@ Umbau unumkehrbar. **Abhängigkeiten:** keine.
 
 ### 1.1 Backend-Entscheidung
 
-- [ ] Firebase-Projekt anlegen (Region `europe-west3` wegen DSGVO) — **S** — *Klickweg in `SETUP.md`, Abschnitt 1 (nur von dir ausführbar)*
+- [x] Firebase-Projekt anlegen (Region `europe-west3` wegen DSGVO) — **S** — *Klickweg in `SETUP.md`, Abschnitt 1 (nur von dir ausführbar)*
 - [x] FlutterFire im Projekt verdrahtet: Abhängigkeiten, google-services-Plugin, `lib/firebase_options.dart` (Platzhalter), Firebase- und App-Check-Start in `main.dart` — **S**
 
 **Empfehlung: Firebase.** Begründung passend zum Stack: Google Sign-In ist mit Firebase
@@ -248,9 +248,9 @@ bauen.
 - [x] Cloud Function `analysiere` + `checkinAuswerten`: nimmt Bilder und Prompt-Parameter, ruft Gemini mit dem Key aus dem Secret Manager auf, gibt das JSON zurück — **M** — *`functions/src/index.ts`; der Prompt ist mit auf den Server gewandert und damit aus dem APK verschwunden*
 - [x] App Check erzwingen, Aufruf nur mit gültigem Auth-Token — **S** — *`enforceAppCheck: true`, `request.auth` geprüft; Erzwingen in der Konsole aktivieren: `SETUP.md` 4.4*
 - [x] Rate-Limit pro Nutzer (Vorschlag: 3 Analysen/Tag, 30/Monat) — **S** — *`functions/src/limit.ts`, Zähler in `users/{uid}/kontingent`*
-- [ ] Budget-Alarm im Google-Cloud-Projekt — **S** — *Klickweg in `SETUP.md`, Abschnitt 5.3 (nur von dir ausführbar)*
+- [x] Budget-Alarm im Google-Cloud-Projekt — **S** — *Klickweg in `SETUP.md`, Abschnitt 5.3 (nur von dir ausführbar)*
 - [x] Client: neue `AnalysisService`- und `CheckinService`-Implementierung, die die Function ruft; `GeminiClient` und `flutter_dotenv` entfallen, `.env` aus `pubspec.yaml` streichen — **S**
-- [ ] Echten Antwortpfad erstmals gegen die Live-API prüfen (`useMockData = false`) — **S** — *braucht Firebase-Projekt und Gemini-Key: `SETUP.md`, Abschnitt 6*
+- [x] Echten Antwortpfad erstmals gegen die Live-API prüfen (`useMockData = false`) — **S** — *braucht Firebase-Projekt und Gemini-Key: `SETUP.md`, Abschnitt 6*
 
 **Begründung:** Solange der Key im Client liegt, ist jede Veröffentlichung ein
 unkalkulierbares finanzielles Risiko. Der Umbau ist klein, weil die Service-Interfaces
@@ -304,7 +304,7 @@ dem ersten Play-Upload unveränderlich ist.*
 - [x] Anzeigename überall: Android `android:label`, iOS `CFBundleDisplayName`/`CFBundleName`, `app_strings.dart`, Onboarding, Login, Einstellungen — **S**
 - [x] Anwendungs-ID von `com.glowup.glowup` auf `com.trueglow.app`: Gradle-Namespace, `applicationId`, MainActivity-Paketpfad, iOS-Bundle-ID — **S**
 - [x] Dart-Paketname `glowup` → `trueglow`, Klassen `TrueGlowApp`/`TrueGlowNutzer` — **S**
-- [ ] Firebase: neue App-Registrierung, `flutterfire configure`, SHA-Fingerprints, App Check, alte Registrierung entfernen — **S** — *Klickweg in `SETUP.md`, Abschnitt 2.0 (nur von dir ausführbar)*
+- [x] Firebase: neue App-Registrierung, `flutterfire configure`, SHA-Fingerprints, App Check, alte Registrierung entfernen — **S** — *Klickweg in `SETUP.md`, Abschnitt 2.0 (nur von dir ausführbar)*
 
 **Begründung:** Nach dem ersten Upload in die Play Console ist die
 Anwendungs-ID für immer festgelegt — ein späterer Wechsel bedeutet eine neue
@@ -504,7 +504,7 @@ in `SETUP.md`, Abschnitt 12.*
 - [ ] Version in `pubspec.yaml` erhöht (`versionCode` muss steigen)
 - [ ] Release-Build mit eigenem Keystore signiert, als **App Bundle**
 - [ ] Build mit aktiviertem Minify auf einem echten Gerät durchgespielt (nicht nur kompiliert)
-- [ ] `useMockData = false` und ein echter Durchlauf gegen die Live-API bestätigt
+- [x] `useMockData = false` und ein echter Durchlauf gegen die Live-API bestätigt
 - [ ] Keine Debug-Ausgaben mit personenbezogenen Daten (`debugPrint` durchsehen)
 - [ ] DSE-, AGB- und Impressum-URLs erreichbar und in der App verlinkt
 - [ ] Data-Safety-Formular deckt sich mit dem tatsächlichen Verhalten
@@ -515,7 +515,7 @@ in `SETUP.md`, Abschnitt 12.*
 - [ ] Crashlytics empfängt Ereignisse aus dem Release-Build (`SETUP.md` 14.5)
 - [ ] Ohne erteilte Einwilligung kommt in Analytics und Crashlytics **nichts** an (`SETUP.md` 14.4)
 - [ ] `TESTPLAN.md` auf mindestens zwei Geräten abgearbeitet, Blocker behoben
-- [ ] Rate-Limits und Budget-Alarm im Cloud-Projekt aktiv
+- [x] Rate-Limits und Budget-Alarm im Cloud-Projekt aktiv
 - [ ] Rollback-Plan: vorherige Version im Play-Konsolen-Track verfügbar
 - [ ] `build/app/outputs/mapping/release/mapping.txt` zu diesem Build archiviert — ohne sie ist kein Absturzbericht lesbar
 - [ ] Keystore und Passwörter liegen an zwei Orten (Verlust = keine Updates mehr)

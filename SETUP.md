@@ -337,14 +337,30 @@ eingetragen (Gerät SM A525F)
    Dreipunkt-Menü → **Debug-Tokens verwalten** → **Debug-Token hinzufügen**
 4. UUID einfügen, Name z. B. `Laptop Debug`, **Speichern**
 
-☐ **4.4 Erzwingen einschalten — erst zum Schluss**
+☑ **4.4 Erzwingen einschalten — erst zum Schluss** — erledigt am 24.08.2026,
+Kontroll-Durchlauf danach erfolgreich
 
 1. Firebase-Konsole → **App Check** → Reiter **APIs**
-2. **Cloud Functions** → **Erzwingen**
-3. Ebenso für **Cloud Firestore**
+2. **Cloud Firestore** → **Erzwingen**
+3. *(Cloud Functions steht dort nicht — siehe Kasten)*
 
 > Erst einschalten, wenn ein echter Durchlauf mit Debug-Token funktioniert hat
 > (Abschnitt 6). Vorher sperrst du dich selbst aus.
+
+> ## Cloud Functions taucht in der APIs-Liste nicht auf
+>
+> Hier stand früher, man solle auch **Cloud Functions** auf „Erzwingen"
+> stellen. Diese Zeile gibt es in der Liste nicht: Functions der 2. Generation
+> laufen auf Cloud Run und werden nicht über den App-Check-Reiter erzwungen.
+>
+> Das ist kein fehlender Schutz. Beide Endpunkte tragen
+> **`enforceAppCheck: true`** in `functions/src/index.ts` — die Erzwingung
+> steckt also im Code und war von der ersten Zeile an aktiv. Der Live-Durchlauf
+> hat das bestätigt (`"app":"VALID"` im Log, Abschnitt 6.2).
+>
+> **Google Identity for iOS** bleibt bewusst *nicht* erzwungen, bis die
+> iOS-App existiert (Abschnitt 7). Vorher gäbe es nichts, was ein gültiges
+> Token liefern könnte.
 
 ---
 
@@ -949,12 +965,37 @@ flutter install --release
    unter R8, der wahrscheinlichste Ausfall
 4. Ein Foto aus der Galerie importieren
 5. Analyse starten und Report öffnen — prüft Cloud Function und Firestore
+   ⚠️ **Nicht mit einem seitlich installierten APK.** Siehe Kasten unten.
 6. Habit abhaken, App schließen, neu öffnen: Haken noch da? — prüft Hive
 7. Check-in-Erinnerung: Gerät neu starten, Benachrichtigung kommt trotzdem —
    prüft `RECEIVE_BOOT_COMPLETED` und den Receiver unter R8
 8. Einstellungen → Rechtliches → ein Dokument öffnen — prüft `url_launcher`
 9. Einstellungen → Daten löschen, Konto behalten
 10. Neu anmelden, Einstellungen → Konto endgültig löschen
+
+> ## ⚠️ App Check im Release: Schritt 5 geht nur über einen Play-Track
+>
+> Im Release-Build läuft App Check über **Play Integrity**
+> (`lib/core/firebase/firebase_start.dart`). Play Integrity erkennt nur
+> Installationen, die **über Google Play** kamen. Ein per `flutter install
+> --release` oder `adb install` aufgespieltes APK bekommt deshalb kein
+> gültiges App-Check-Token — und die Cloud Function lehnt den Aufruf ab.
+>
+> Das gilt **unabhängig von Abschnitt 4.4**: Die Functions tragen
+> `enforceAppCheck: true` fest im Code (`functions/src/index.ts`), die
+> Konsolen-Einstellung ist nur eine zweite Schicht davor.
+>
+> Der Debug-Provider aus 4.3 hilft hier nicht — der läuft nur unter
+> `kDebugMode`, und ein Release-Build ist genau das nicht.
+>
+> **Konsequenz für den Testplan:** Die Punkte 1, 2, 4 und 6–10 lassen sich mit
+> dem seitlich installierten APK prüfen. **Punkt 5 (Analyse) und alles, was
+> Firestore schreibt, gehören in einen echten Play-Track** — geschlossener
+> oder interner Test, siehe ROADMAP 2.8. Plane das mit ein, statt am Gerät zu
+> suchen, warum die Analyse „im Release plötzlich kaputt" ist.
+>
+> Der ML-Kit-Test unter R8 (Punkt 3) ist davon nicht betroffen und bleibt der
+> wichtigste Grund, das APK trotzdem lokal zu testen.
 
 ☐ Bei einem Absturz den Stacktrace lesbar machen:
 
