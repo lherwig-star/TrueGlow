@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/firebase/firebase_start.dart';
+import '../../../core/netz/wiederholung.dart';
 import '../../analysis/logic/analysis_service.dart';
 import '../../analysis/logic/functions_client.dart';
 import '../../analysis/models/analysis_result.dart';
@@ -19,6 +20,8 @@ import 'checkin_anfrage.dart';
 abstract interface class CheckinService {
   /// [erstfoto] und [fortschrittsfoto] gehen nur beim Wirkungs-Check mit.
   ///
+  /// [abbruch] stoppt Warten und Wiederholen, wenn der Nutzer aufgibt.
+  ///
   /// Wirft bei Problemen eine [AnalysisException].
   Future<CheckinAuswertung> auswerten({
     required Checkin checkin,
@@ -26,6 +29,7 @@ abstract interface class CheckinService {
     required List<Checkin> historie,
     File? erstfoto,
     File? fortschrittsfoto,
+    Abbruch? abbruch,
   });
 }
 
@@ -47,6 +51,7 @@ class FunctionsCheckinService implements CheckinService {
     required List<Checkin> historie,
     File? erstfoto,
     File? fortschrittsfoto,
+    Abbruch? abbruch,
   }) async {
     // Der Vergleich braucht beide Bilder; fehlt eines, laeuft der Check-in
     // ohne Fotos weiter statt zu scheitern.
@@ -67,6 +72,7 @@ class FunctionsCheckinService implements CheckinService {
         historie: historie,
         bilder: bilder,
       ),
+      abbruch: abbruch,
     );
 
     final roh = antwort['auswertung'];
@@ -100,8 +106,10 @@ class MockCheckinService implements CheckinService {
     required List<Checkin> historie,
     File? erstfoto,
     File? fortschrittsfoto,
+    Abbruch? abbruch,
   }) async {
     await Future<void>.delayed(AnalysisConfig.mockDauer);
+    if (abbruch?.istAusgeloest ?? false) throw const AbbruchException();
 
     final anpassungen = <HabitAnpassung>[];
 

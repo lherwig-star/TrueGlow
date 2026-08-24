@@ -307,9 +307,41 @@ class _KontoKarte extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final nutzer = ref.watch(nutzerProvider).valueOrNull;
+    final stand = ref.watch(nutzerProvider);
     final farben = context.farben;
 
+    // Drei Zustaende statt einem: Waehrend der Anmeldezustand noch geladen
+    // wird, waere „Nicht angemeldet" schlicht falsch.
+    if (stand.isLoading) {
+      return const SectionCard(
+        title: 'Konto',
+        icon: Icons.person_outline,
+        child: Row(
+          children: [
+            SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+            SizedBox(width: AppTheme.gapS),
+            MutedText('Wird geladen …'),
+          ],
+        ),
+      );
+    }
+
+    if (stand.hasError) {
+      return const SectionCard(
+        title: 'Konto',
+        icon: Icons.error_outline,
+        child: MutedText(
+          'Der Anmeldezustand lässt sich gerade nicht abfragen. '
+          'Deine Daten auf dem Gerät sind davon nicht betroffen.',
+        ),
+      );
+    }
+
+    final nutzer = stand.valueOrNull;
     if (nutzer == null) {
       return const SectionCard(
         title: 'Konto',

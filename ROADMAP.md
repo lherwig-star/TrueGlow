@@ -419,7 +419,7 @@ Minuten ausgehebelt — und jeder unberechtigte Aufruf kostet dich echtes Geld.
 
 ### 4.2 Zustände systematisch
 
-- [ ] Alle 12 Screens auf Lade-, Fehler- und Leerzustand durchgehen — **M**
+- [x] Alle Screens auf Lade-, Fehler- und Leerzustand durchgehen — **M** — *Ergebnis in `ZUSTAENDE.md`, Screen für Screen. Ergänzt wurden: Abbrechen in beiden Wartezuständen, der Hinweis auf eine unterbrochene Analyse und ein echter Ladezustand der Konto-Karte*
 
 ### 4.3 Crash-Reporting & Analytics
 

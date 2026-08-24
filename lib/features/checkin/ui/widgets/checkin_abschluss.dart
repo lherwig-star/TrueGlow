@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/l10n/app_strings.dart';
+import '../../../../core/netz/wiederholung.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -49,13 +50,33 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
   bool _laeuft = true;
   bool _speichert = false;
 
+  /// Abbruchwunsch der laufenden Auswertung.
+  Abbruch? _abbruch;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _auswerten());
   }
 
+  /// Bricht die Auswertung ab und schliesst den Check-in ohne Anpassung ab.
+  ///
+  /// Der Check-in ist damit nicht verloren: Die Antworten stehen, nur die
+  /// KI-Nachjustierung entfaellt. Genau dafuer war der Weg „ohne Auswertung
+  /// abschliessen" schon immer da – er wird hier nur erreichbar, waehrend
+  /// noch gewartet wird.
+  void _abbrechen() {
+    _abbruch?.ausloesen();
+    if (!mounted) return;
+    setState(() {
+      _laeuft = false;
+      _fehler = null;
+      _auswertung = CheckinAuswertung.leer;
+    });
+  }
+
   Future<void> _auswerten() async {
+    final abbruch = _abbruch = Abbruch();
     setState(() {
       _laeuft = true;
       _fehler = null;
@@ -81,6 +102,7 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
                 historie: ref.read(checkinControllerProvider).historie,
                 erstfoto: erstfoto == null ? null : File(erstfoto.pfad),
                 fortschrittsfoto: neu == null ? null : File(neu),
+                abbruch: abbruch,
               );
 
       if (!mounted) return;
@@ -88,6 +110,9 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
         _auswertung = auswertung;
         _laeuft = false;
       });
+    } on AbbruchException {
+      // Der Abbruch hat den Zustand schon gesetzt.
+      return;
     } on AnalysisException catch (e) {
       debugPrint('Check-in-Auswertung fehlgeschlagen: $e');
       if (!mounted) return;
@@ -144,7 +169,7 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
 
   @override
   Widget build(BuildContext context) {
-    if (_laeuft) return const _Laden();
+    if (_laeuft) return _Laden(onAbbrechen: _abbrechen);
     if (_fehler case final fehler?) {
       return _Fehler(
         fehler: fehler,
@@ -287,24 +312,34 @@ class _AnpassungZeile extends StatelessWidget {
 }
 
 class _Laden extends StatelessWidget {
-  const _Laden();
+  const _Laden({required this.onAbbrechen});
+
+  final VoidCallback onAbbrechen;
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: AppTheme.gapXl),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppTheme.gapXl),
       child: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             width: 40,
             height: 40,
             child: CircularProgressIndicator(strokeWidth: 3),
           ),
-          SizedBox(height: AppTheme.gapM),
-          Text(
+          const SizedBox(height: AppTheme.gapM),
+          const Text(
             S.checkinAuswertungLaeuft,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: AppTheme.gapS),
+          // Bei schlechter Verbindung laeuft der Wiederholungszyklus bis zu
+          // drei Versuche durch. Ohne Ausweg bliebe nur, die App zu
+          // schliessen – und der Check-in waere ganz weg.
+          TextButton(
+            onPressed: onAbbrechen,
+            child: const Text('Ohne Auswertung fortfahren'),
           ),
         ],
       ),
