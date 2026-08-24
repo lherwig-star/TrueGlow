@@ -1,0 +1,62 @@
+rules_version = '2';
+
+// Zugriffsregeln fuer GlowUp.
+//
+// Grundsatz: Jedes Konto sieht ausschliesslich seinen eigenen Teilbaum unter
+// users/{uid}. Es gibt keine gemeinsamen Daten, keine oeffentlichen Listen und
+// keine Abfrage ueber Kontogrenzen hinweg.
+//
+// Nicht aufgefuehrte Pfade sind gesperrt: Firestore-Regeln vererben sich nicht
+// in Unterkollektionen, ohne Treffer gilt "verboten". Eine neue Unterkollektion
+// muss also hier ausdruecklich freigeschaltet werden.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function eigen(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // Fotos gehen nie in die Cloud. Analyse-Dokumente speichern nur den
+    // lokalen Dateinamen; ein Feld mit Bilddaten waere ein Fehler und wird
+    // hier hart abgelehnt, damit er nicht unbemerkt bleibt.
+    function ohneBilddaten() {
+      return !('bilddaten' in request.resource.data)
+          && !('bilder' in request.resource.data);
+    }
+
+    match /users/{uid} {
+      allow read: if eigen(uid);
+      allow write: if eigen(uid) && ohneBilddaten();
+
+      // profil, richtung, streak, migration – Einzeldokumente des Kontos.
+      match /daten/{dokument} {
+        allow read: if eigen(uid);
+        allow write: if eigen(uid) && ohneBilddaten();
+      }
+
+      match /analysen/{analyseId} {
+        allow read: if eigen(uid);
+        allow write: if eigen(uid) && ohneBilddaten();
+      }
+
+      match /checkins/{checkinId} {
+        allow read: if eigen(uid);
+        allow write: if eigen(uid) && ohneBilddaten();
+      }
+
+      // Ein Dokument je Tag (yyyy-mm-tt) mit den abgehakten Aufgaben.
+      match /fortschritt/{tag} {
+        allow read: if eigen(uid);
+        allow write: if eigen(uid) && ohneBilddaten();
+      }
+
+      // Kontingentzaehler: lesbar, damit die App den Stand anzeigen koennte,
+      // aber ausschliesslich von der Cloud Function beschreibbar. Der
+      // Admin-SDK-Zugriff der Function umgeht diese Regeln.
+      match /kontingent/{art} {
+        allow read: if eigen(uid);
+        allow write: if false;
+      }
+    }
+  }
+}

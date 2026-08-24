@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/firebase/einrichtung_hinweis.dart';
@@ -15,14 +14,6 @@ import 'features/analysis/logic/analysis_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Fehlt die .env, laeuft die App im Mock-Modus trotzdem – der Key wird erst
-  // beim echten API-Call gebraucht.
-  try {
-    await dotenv.load();
-  } catch (e) {
-    debugPrint('.env nicht geladen: $e');
-  }
 
   // Der Demo-/Screenshot-Modus laeuft komplett ohne Backend: keine Fotos im
   // Netz, keine Konten, keine Kosten. Deshalb wird Firebase dort gar nicht

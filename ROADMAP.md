@@ -239,11 +239,12 @@ bauen.
 
 ### 1.2 Gemini hinter einen Proxy legen 🔴
 
-- [ ] Cloud Function `analysiere` + `checkinAuswerten`: nimmt Bilder und Prompt-Parameter, ruft Gemini mit dem Key aus dem Secret Manager auf, gibt das JSON zurück — **M**
-- [ ] App Check erzwingen, Aufruf nur mit gültigem Auth-Token — **S**
-- [ ] Rate-Limit pro Nutzer (Vorschlag: 3 Analysen/Tag, 30/Monat) und Budget-Alarm im Google-Cloud-Projekt — **S**
-- [ ] Client: neue `AnalysisService`- und `CheckinService`-Implementierung, die die Function ruft; `GeminiClient` und `flutter_dotenv` entfallen, `.env` aus `pubspec.yaml` streichen — **S**
-- [ ] Echten Antwortpfad erstmals gegen die Live-API prüfen (`useMockData = false`) — **S**
+- [x] Cloud Function `analysiere` + `checkinAuswerten`: nimmt Bilder und Prompt-Parameter, ruft Gemini mit dem Key aus dem Secret Manager auf, gibt das JSON zurück — **M** — *`functions/src/index.ts`; der Prompt ist mit auf den Server gewandert und damit aus dem APK verschwunden*
+- [x] App Check erzwingen, Aufruf nur mit gültigem Auth-Token — **S** — *`enforceAppCheck: true`, `request.auth` geprüft; Erzwingen in der Konsole aktivieren: `SETUP.md` 4.4*
+- [x] Rate-Limit pro Nutzer (Vorschlag: 3 Analysen/Tag, 30/Monat) — **S** — *`functions/src/limit.ts`, Zähler in `users/{uid}/kontingent`*
+- [ ] Budget-Alarm im Google-Cloud-Projekt — **S** — *Klickweg in `SETUP.md`, Abschnitt 5.3 (nur von dir ausführbar)*
+- [x] Client: neue `AnalysisService`- und `CheckinService`-Implementierung, die die Function ruft; `GeminiClient` und `flutter_dotenv` entfallen, `.env` aus `pubspec.yaml` streichen — **S**
+- [ ] Echten Antwortpfad erstmals gegen die Live-API prüfen (`useMockData = false`) — **S** — *braucht Firebase-Projekt und Gemini-Key: `SETUP.md`, Abschnitt 6*
 
 **Begründung:** Solange der Key im Client liegt, ist jede Veröffentlichung ein
 unkalkulierbares finanzielles Risiko. Der Umbau ist klein, weil die Service-Interfaces

@@ -1,0 +1,5 @@
+{
+  "//": "Einfeld-Sortierungen (analysen nach erstelltAm, checkins nach id) deckt Firestore automatisch ab. Zusammengesetzte Indizes braucht das Datenmodell aus Phase 1.3 nicht.",
+  "indexes": [],
+  "fieldOverrides": []
+}

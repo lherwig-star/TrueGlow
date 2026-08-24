@@ -14,7 +14,7 @@ import '../../modules/models/analyse_modul.dart';
 import '../../onboarding/logic/onboarding_controller.dart';
 import '../models/analysis_result.dart';
 import 'analysis_service.dart';
-import 'gemini_analysis_service.dart';
+import 'functions_analysis_service.dart';
 import 'mock_analysis_service.dart';
 
 /// Zustand des Analyse-Screens.
@@ -149,7 +149,7 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
 /// Waehlt Mock oder echten Anbieter – gesteuert ueber [AnalysisConfig].
 final analysisServiceProvider = Provider<AnalysisService>((ref) {
   if (AnalysisConfig.useMockData) return const MockAnalysisService();
-  return GeminiAnalysisService();
+  return FunctionsAnalysisService();
 });
 
 final analysisControllerProvider =

@@ -164,7 +164,7 @@ void main() {
     handyGroesse(tester);
     await tester.pumpWidget(
       ProviderScope(
-        overrides: speicherOverrides(),
+        overrides: testOverrides(),
         child: MaterialApp(
           // Die Widgets lesen ihre Farben aus der AppColors-Extension, die
           // nur an den App-Themes haengt.
@@ -189,7 +189,7 @@ void main() {
     handyGroesse(tester);
     await tester.pumpWidget(
       ProviderScope(
-        overrides: speicherOverrides(),
+        overrides: testOverrides(),
         child: MaterialApp(
           theme: AppTheme.dark,
           home: const Scaffold(

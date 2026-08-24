@@ -8,14 +8,14 @@ import 'hilfen.dart';
 
 void main() {
   testWidgets('Start zeigt das Onboarding', (tester) async {
-    await tester.pumpWidget(ProviderScope(overrides: speicherOverrides(), child: const GlowUpApp()));
+    await tester.pumpWidget(ProviderScope(overrides: testOverrides(), child: const GlowUpApp()));
     await tester.pumpAndSettle();
 
     expect(find.text(S.onbWillkommenTitel), findsOneWidget);
   });
 
   testWidgets('Onboarding fuehrt nach Zustimmung zum Dashboard', (tester) async {
-    await tester.pumpWidget(ProviderScope(overrides: speicherOverrides(), child: const GlowUpApp()));
+    await tester.pumpWidget(ProviderScope(overrides: testOverrides(), child: const GlowUpApp()));
     await tester.pumpAndSettle();
 
     // Seite 1: Willkommen

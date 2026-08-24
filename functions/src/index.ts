@@ -1,0 +1,208 @@
+import { initializeApp } from 'firebase-admin/app';
+import { defineSecret } from 'firebase-functions/params';
+import { onCall, type CallableRequest } from 'firebase-functions/v2/https';
+
+import * as analysePrompt from './analyse_prompt';
+import * as checkinPrompt from './checkin_prompt';
+import { fehler } from './fehler';
+import { frage } from './gemini';
+import { extrahiere } from './json_extractor';
+import { leseAnalyse, leseCheckin } from './eingang';
+import { freigeben, reservieren, type Kontingentart } from './limit';
+
+/**
+ * Der Gemini-Proxy.
+ *
+ * Warum es diese Functions gibt: Solange der Gemini-Schluessel im Client
+ * liegt, ist er aus jedem APK auslesbar und jeder Fremdverbrauch geht auf
+ * unsere Rechnung. Hier laeuft er nie an einem Ort, den ein Nutzer erreichen
+ * kann – er kommt aus dem Secret Manager direkt in den Prozess.
+ *
+ * Drei Sperren liegen vor dem Modell:
+ *   1. Firebase-Auth-Token (`request.auth`) – kein Konto, kein Aufruf.
+ *   2. App Check (`enforceAppCheck`) – nur echte Installationen der App.
+ *   3. Kontingent pro Konto – gedeckelter Schaden, falls 1 und 2 fallen.
+ *
+ * Bilder laufen ausschliesslich durch den Arbeitsspeicher: Sie werden nicht
+ * gespeichert, nicht weitergereicht und tauchen in keiner Log-Zeile auf.
+ */
+
+initializeApp();
+
+const geminiKey = defineSecret('GEMINI_API_KEY');
+
+/**
+ * Gemeinsame Einstellungen beider Endpunkte.
+ *
+ * `maxInstances` ist ein zweiter Kostendeckel neben dem Kontingent: Selbst
+ * wenn viele Konten gleichzeitig rufen, laeuft die Rechnung nicht davon.
+ */
+const OPTIONEN = {
+  region: 'europe-west3',
+  secrets: [geminiKey],
+  enforceAppCheck: true,
+  memory: '1GiB' as const,
+  // Muss ueber dem Gemini-Zeitlimit von 60 s liegen – zwei Versuche plus
+  // Aufschlag.
+  timeoutSeconds: 180,
+  maxInstances: 10,
+};
+
+/** Erstellt den Report aus den Aufnahmen. */
+export const analysiere = onCall(OPTIONEN, async (request) => {
+  const uid = pruefeAnmeldung(request);
+  const eingang = leseAnalyse(request.data);
+
+  const system = analysePrompt.systemPrompt(eingang.prompt);
+  const nutzer = analysePrompt.nutzerText(eingang.bildTypen);
+
+  const ergebnis = await mitKontingent(uid, 'analyse', () =>
+    frageMitNachfassen({
+      system,
+      nutzer,
+      bilder: eingang.bilder,
+      nachfassen: analysePrompt.JSON_NACHFASSEN,
+      brauchbar: istAnalyseBrauchbar,
+    }),
+  );
+
+  return { ergebnis };
+});
+
+/** Wertet einen Check-in aus und liefert die Planaenderungen. */
+export const checkinAuswerten = onCall(OPTIONEN, async (request) => {
+  const uid = pruefeAnmeldung(request);
+  const eingang = leseCheckin(request.data);
+
+  const system = checkinPrompt.systemPrompt(eingang.prompt);
+  const nutzer = checkinPrompt.nutzerText(
+    eingang.prompt.typ,
+    eingang.prompt.mitFotos,
+  );
+
+  const auswertung = await mitKontingent(uid, 'checkin', () =>
+    frageMitNachfassen({
+      system,
+      nutzer,
+      bilder: eingang.bilder,
+      nachfassen: checkinPrompt.JSON_NACHFASSEN,
+      brauchbar: istAuswertungBrauchbar,
+    }),
+  );
+
+  return { auswertung };
+});
+
+// --- Bausteine ---------------------------------------------------------
+
+function pruefeAnmeldung(request: CallableRequest): string {
+  const uid = request.auth?.uid;
+  if (!uid) {
+    // Callable-Funktionen pruefen App Check selbst; die Anmeldung nicht.
+    throw fehler('apiFehler', 'Aufruf ohne Anmeldung');
+  }
+  return uid;
+}
+
+/**
+ * Bucht das Kontingent, fuehrt den Aufruf aus und gibt die Buchung zurueck,
+ * wenn nachweislich kein Modellaufruf zustande kam.
+ */
+async function mitKontingent<T>(
+  uid: string,
+  art: Kontingentart,
+  aufruf: () => Promise<T>,
+): Promise<T> {
+  await reservieren(uid, art);
+
+  try {
+    return await aufruf();
+  } catch (e) {
+    if (ohneVerbrauch(e)) {
+      await freigeben(uid, art);
+    }
+    throw e;
+  }
+}
+
+/**
+ * Ob bei diesem Fehler sicher keine Tokens verbraucht wurden.
+ *
+ * Nur dann darf das Kontingent zurueck. Eine Zeitueberschreitung gehoert
+ * ausdruecklich nicht dazu: Dort hat das Modell gerechnet, die Antwort kam
+ * nur zu spaet.
+ */
+function ohneVerbrauch(e: unknown): boolean {
+  const details = (e as { details?: { fehler?: string } })?.details;
+  return details?.fehler === 'keinApiKey' || details?.fehler === 'apiFehler';
+}
+
+/**
+ * Ein Aufruf, bei unlesbarer Antwort genau ein zweiter mit ausdruecklichem
+ * Hinweis auf valides JSON.
+ *
+ * Genau zwei Versuche, nicht mehr: Jede weitere Schleife vervielfacht die
+ * Kosten unbemerkt – das ist der Punkt, an dem in der Roadmap "Versuche hart
+ * begrenzen" steht.
+ */
+async function frageMitNachfassen(options: {
+  system: string;
+  nutzer: string;
+  bilder: string[];
+  nachfassen: string;
+  brauchbar: (json: Record<string, unknown>) => boolean;
+}): Promise<Record<string, unknown>> {
+  const { system, nutzer, bilder, nachfassen, brauchbar } = options;
+  const apiKey = geminiKey.value().trim();
+  if (apiKey.length === 0) {
+    throw fehler('keinApiKey', 'GEMINI_API_KEY ist im Secret Manager leer');
+  }
+
+  try {
+    const erste = await frage({
+      apiKey,
+      systemPrompt: system,
+      nutzerText: nutzer,
+      bilder,
+    });
+    const gelesen = extrahiere(erste);
+    if (gelesen && brauchbar(gelesen)) return gelesen;
+
+    console.info('Erste Antwort nicht lesbar, zweiter Versuch.');
+
+    const zweite = await frage({
+      apiKey,
+      systemPrompt: system,
+      nutzerText: `${nutzer}\n\n${nachfassen}`,
+      bilder,
+    });
+    const zweitesErgebnis = extrahiere(zweite);
+    if (zweitesErgebnis && brauchbar(zweitesErgebnis)) return zweitesErgebnis;
+
+    throw fehler('ungueltigeAntwort', 'Auch der zweite Versuch war unlesbar');
+  } finally {
+    // Die Bilder haben ihren Zweck erfuellt. Das Leeren ist vor allem eine
+    // Zusicherung an den Leser: Ab hier existiert kein Bezug mehr auf die
+    // Bilddaten, sie koennen sofort eingesammelt werden.
+    bilder.length = 0;
+  }
+}
+
+/** Grobpruefung: Hat die Antwort ueberhaupt Kapitel? */
+function istAnalyseBrauchbar(json: Record<string, unknown>): boolean {
+  return Array.isArray(json.kapitel) && json.kapitel.length > 0;
+}
+
+/**
+ * Grobpruefung des Check-ins – Gegenstueck zu `CheckinAuswertung.istLeer`.
+ * Eine Antwort ohne jeden Inhalt ist so unbrauchbar wie gar keine.
+ */
+function istAuswertungBrauchbar(json: Record<string, unknown>): boolean {
+  const anpassungen = Array.isArray(json.anpassungen)
+    ? json.anpassungen.length
+    : 0;
+  const text = (wert: unknown) =>
+    typeof wert === 'string' && wert.trim().length > 0;
+
+  return anpassungen > 0 || text(json.zusammenfassung) || text(json.fazit);
+}

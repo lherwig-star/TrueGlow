@@ -37,7 +37,7 @@ void main() {
   testWidgets('Analyse landet im Dashboard, im Plan und im Verlauf',
       (tester) async {
     handyGroesse(tester, hoehe: 2400);
-    final overrides = speicherOverrides();
+    final overrides = testOverrides();
 
     await tester.pumpWidget(ProviderScope(overrides: overrides, child: const GlowUpApp()));
     await tester.pumpAndSettle();
@@ -117,7 +117,7 @@ void main() {
   testWidgets('Ohne Fotos meldet die Analyse einen verstaendlichen Fehler',
       (tester) async {
     handyGroesse(tester, hoehe: 1400);
-    final overrides = speicherOverrides();
+    final overrides = testOverrides();
 
     await tester.pumpWidget(ProviderScope(overrides: overrides, child: const GlowUpApp()));
     await tester.pumpAndSettle();

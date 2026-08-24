@@ -12,19 +12,27 @@ import '../models/analysis_result.dart';
 class AnalysisConfig {
   AnalysisConfig._();
 
-  /// Schalter fuer den Mock-Modus. Auf `true` wird kein API-Call gemacht –
-  /// die komplette App laesst sich damit ohne Key und ohne Kosten testen.
-  static const bool useMockData = true;
+  /// Schalter fuer den Demo-/Screenshot-Modus. Auf `true` verlaesst kein Foto
+  /// das Geraet, es gibt keine Konten und keine Kosten – die App zeigt eine
+  /// hinterlegte Beispiel-Analyse.
+  ///
+  /// Standard ist `false`, damit im Release nie versehentlich der Mock laeuft.
+  /// Einschalten ausdruecklich beim Build:
+  /// `flutter run --dart-define=GLOWUP_MOCK=true`.
+  static const bool useMockData = bool.fromEnvironment('GLOWUP_MOCK');
 
-  /// Das verwendete Vision-Modell. Ein anderes Gemini-Modell laesst sich
-  /// allein hier eintragen.
+  /// Das verwendete Vision-Modell – nur noch zur Anzeige in den
+  /// Einstellungen. Massgeblich ist `MODELL` in `functions/src/gemini.ts`:
+  /// Das Modell wird seit dem Umbau ausschliesslich serverseitig gewaehlt.
   static const String modell = 'gemini-2.5-flash';
 
-  /// Name des Schluessels in der .env-Datei.
-  static const String apiKeyName = 'GEMINI_API_KEY';
-
-  /// Maximale Wartezeit pro API-Call.
-  static const Duration zeitlimit = Duration(seconds: 60);
+  /// Maximale Wartezeit auf die Cloud Function.
+  ///
+  /// Die Function raeumt sich selbst 180 s ein (zwei Gemini-Versuche à 60 s
+  /// plus Aufschlag). Der Client wartet etwas kuerzer, damit er den Abbruch
+  /// als Zeitueberschreitung anzeigt statt in einer offenen Verbindung zu
+  /// haengen.
+  static const Duration zeitlimit = Duration(seconds: 150);
 
   /// Wartezeit im Mock-Modus, damit der Ladezustand realistisch wirkt.
   static const Duration mockDauer = Duration(seconds: 2);
@@ -53,9 +61,9 @@ enum AnalysisFehler {
     'Die Analyse kam unvollständig zurück. Ein erneuter Versuch hilft meistens.',
   ),
   keinApiKey(
-    'Kein API-Schlüssel hinterlegt',
-    'Trag deinen Schlüssel in die .env-Datei ein oder aktiviere den Mock-Modus '
-        'in AnalysisConfig.',
+    'Analyse-Dienst nicht eingerichtet',
+    'Der Dienst ist gerade nicht einsatzbereit. Wir kümmern uns darum – '
+        'versuch es später noch einmal.',
   ),
   fotosFehlen(
     'Fotos fehlen',

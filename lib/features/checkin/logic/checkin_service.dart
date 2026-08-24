@@ -1,16 +1,15 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/firebase/firebase_start.dart';
 import '../../analysis/logic/analysis_service.dart';
-import '../../analysis/logic/gemini_client.dart';
-import '../../analysis/logic/json_extractor.dart';
+import '../../analysis/logic/functions_client.dart';
 import '../../analysis/models/analysis_result.dart';
 import '../../modules/models/analyse_modul.dart';
 import '../models/checkin.dart';
 import '../models/checkin_auswertung.dart';
-import 'checkin_prompt.dart';
+import 'checkin_anfrage.dart';
 
 /// Wertet einen Check-in aus und liefert die Planaenderungen.
 ///
@@ -30,12 +29,16 @@ abstract interface class CheckinService {
   });
 }
 
-/// Auswertung ueber die Gemini-API.
-class GeminiCheckinService implements CheckinService {
-  GeminiCheckinService({GeminiClient? client})
-      : _gemini = client ?? GeminiClient();
+/// Auswertung ueber die eigene Cloud Function.
+///
+/// Wie bei der Analyse liegen Schluessel, Prompt, Kontingent und der zweite
+/// Versuch bei unlesbarem JSON auf dem Server. Uebrig bleibt hier: Bilder
+/// einsammeln, fragen, Antwort lesen.
+class FunctionsCheckinService implements CheckinService {
+  FunctionsCheckinService({FunctionsClient? client})
+      : _client = client ?? FunctionsClient();
 
-  final GeminiClient _gemini;
+  final FunctionsClient _client;
 
   @override
   Future<CheckinAuswertung> auswerten({
@@ -56,43 +59,29 @@ class GeminiCheckinService implements CheckinService {
         ? [await base64Bild(erstfoto), await base64Bild(fortschrittsfoto)]
         : const <String>[];
 
-    final systemPrompt = CheckinPrompt.system(
-      checkin: checkin,
-      analyse: analyse,
-      historie: historie,
-      mitFotos: beide,
-    );
-    final nutzerText = CheckinPrompt.nutzer(checkin, mitFotos: beide);
-
-    final antwort = await _gemini.frage(
-      systemPrompt: systemPrompt,
-      nutzerText: nutzerText,
-      bilder: bilder,
+    final antwort = await _client.rufe(
+      FirebaseKonfig.functionCheckin,
+      CheckinAnfrage.bauen(
+        checkin: checkin,
+        analyse: analyse,
+        historie: historie,
+        bilder: bilder,
+      ),
     );
 
-    final auswertung = _lies(antwort);
-    if (auswertung != null) return auswertung;
+    final roh = antwort['auswertung'];
+    if (roh is! Map) {
+      throw const AnalysisException(AnalysisFehler.ungueltigeAntwort);
+    }
 
-    debugPrint('Check-in: erste Antwort nicht lesbar, versuche es erneut.');
-    final zweite = await _gemini.frage(
-      systemPrompt: systemPrompt,
-      nutzerText: '$nutzerText\n\n${CheckinPrompt.jsonNachfassen}',
-      bilder: bilder,
-    );
-
-    final zweiteAuswertung = _lies(zweite);
-    if (zweiteAuswertung != null) return zweiteAuswertung;
-
-    throw const AnalysisException(AnalysisFehler.ungueltigeAntwort);
-  }
-
-  CheckinAuswertung? _lies(String rohtext) {
-    final json = JsonExtractor.extrahiere(rohtext);
-    if (json == null) return null;
-
-    final auswertung = CheckinAuswertung.fromJson(json);
+    final auswertung =
+        CheckinAuswertung.fromJson(Map<String, dynamic>.from(roh));
     // Eine Antwort ohne jeden Inhalt ist so unbrauchbar wie gar keine.
-    return auswertung.istLeer ? null : auswertung;
+    if (auswertung.istLeer) {
+      throw const AnalysisException(AnalysisFehler.ungueltigeAntwort);
+    }
+
+    return auswertung;
   }
 }
 
@@ -177,5 +166,5 @@ class MockCheckinService implements CheckinService {
 /// Waehlt Mock oder echten Anbieter – gesteuert ueber [AnalysisConfig].
 final checkinServiceProvider = Provider<CheckinService>((ref) {
   if (AnalysisConfig.useMockData) return const MockCheckinService();
-  return GeminiCheckinService();
+  return FunctionsCheckinService();
 });

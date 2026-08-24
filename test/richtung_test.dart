@@ -4,7 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:glowup/core/l10n/app_strings.dart';
 import 'package:glowup/core/router/app_router.dart';
 import 'package:glowup/core/storage/key_value_store.dart';
-import 'package:glowup/features/analysis/logic/analysis_prompt.dart';
+import 'package:glowup/features/analysis/logic/analyse_anfrage.dart';
+import 'package:glowup/features/capture/models/aufnahme_typ.dart';
 import 'package:glowup/features/analysis/models/analysis_result.dart';
 import 'package:glowup/features/direction/logic/direction_controller.dart';
 import 'package:glowup/features/direction/models/richtung.dart';
@@ -20,7 +21,7 @@ import 'hilfen.dart';
 /// Bringt die App an den Punkt nach dem Onboarding und liefert den Container.
 Future<ProviderContainer> _appMitDashboard(WidgetTester tester) async {
   await tester.pumpWidget(
-    ProviderScope(overrides: speicherOverrides(), child: const GlowUpApp()),
+    ProviderScope(overrides: testOverrides(), child: const GlowUpApp()),
   );
   await tester.pumpAndSettle();
 
@@ -123,44 +124,57 @@ void main() {
     });
   });
 
-  group('Prompt', () {
-    String promptMit(Richtung richtung) => AnalysisPrompt.system(
-          profil: const OnboardingProfile(),
+  // Der Prompt selbst wird seit dem Proxy-Umbau serverseitig gebaut
+  // (functions/src/analyse_prompt.ts, geprueft in functions/test/prompt.test.ts).
+  // Hier steht die Client-Haelfte: Was von der Richtung ueberhaupt das Geraet
+  // verlaesst.
+  group('Anfrage an die Function', () {
+    Map<String, dynamic> anfrageMit(Richtung richtung) => AnalyseAnfrage.bauen(
+          bilder: const {AufnahmeTyp.basisFrontal: 'AAAA'},
           module: {AnalyseModul.basis},
+          onboarding: const OnboardingProfile(),
           eingaben: const ModulEingaben(),
           richtung: richtung,
         );
 
-    test('ohne Richtung bleibt der Prompt neutral', () {
-      final prompt = promptMit(Richtung.leer);
+    test('ohne Richtung geht nichts Zusaetzliches mit', () {
+      final richtung = anfrageMit(Richtung.leer)['richtung'] as Map;
 
-      expect(prompt, isNot(contains('Persönliche Ziele')));
-      expect(prompt, isNot(contains('markanter wirken möchtest')));
+      expect(richtung['ziele'], isEmpty);
+      expect(richtung['freitext'], isEmpty);
     });
 
-    test('Chips und Freitext landen als eigener Abschnitt im Prompt', () {
-      final prompt = promptMit(
+    test('Chips und Freitext landen in der Nutzlast', () {
+      final richtung = anfrageMit(
         const Richtung(
           ziele: {Richtungsziel.markanter, Richtungsziel.gepflegter},
           freitext: 'Weniger Bart, mehr Kante.',
         ),
-      );
+      )['richtung'] as Map;
 
-      expect(prompt, contains('Persönliche Ziele des Nutzers'));
-      expect(prompt, contains('Markanter'));
-      expect(prompt, contains('Gepflegter'));
-      expect(prompt, contains('Weniger Bart, mehr Kante.'));
-      // Der Freitext ist als Zitat eingerahmt, nicht als Anweisung.
-      expect(prompt, contains('"""'));
-      expect(prompt, contains('keine Anweisung'));
+      // Stabile Enum-Namen, keine fertigen Prompt-Texte: Die Function setzt
+      // die Beschriftungen selbst ein und ignoriert alles Unbekannte.
+      expect(richtung['ziele'], ['markanter', 'gepflegter']);
+      expect(richtung['freitext'], 'Weniger Bart, mehr Kante.');
     });
 
-    test('mit Richtung kommen die Zusatzregeln dazu', () {
-      final prompt = promptMit(const Richtung(ziele: {Richtungsziel.reifer}));
+    test('Ziele gehen in Deklarationsreihenfolge raus', () {
+      final richtung = anfrageMit(
+        const Richtung(
+          ziele: {Richtungsziel.sportlicher, Richtungsziel.maskuliner},
+        ),
+      )['richtung'] as Map;
 
-      expect(prompt, contains('sämtlichen Kapiteln'));
-      expect(prompt, contains('wäge beides'));
-      expect(prompt, contains('gesundheitlich bedenkliche Ziele'));
+      expect(richtung['ziele'], ['maskuliner', 'sportlicher']);
+    });
+
+    test('die Nutzlast enthaelt weder Pfade noch den Zustimmungsstatus', () {
+      final anfrage = anfrageMit(Richtung.leer);
+
+      expect(anfrage['bilder'], [
+        {'typ': 'basisFrontal', 'daten': 'AAAA'},
+      ]);
+      expect((anfrage['profil'] as Map).keys, ['alter', 'budget', 'zeit', 'fokus']);
     });
   });
 

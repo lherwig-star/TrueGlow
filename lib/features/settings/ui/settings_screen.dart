@@ -174,9 +174,12 @@ class _ModusKarte extends StatelessWidget {
       child: MutedText(
         mock
             ? 'Es werden keine Fotos versendet. Die App zeigt eine hinterlegte '
-                'Beispiel-Analyse. Umschalten über useMockData in AnalysisConfig.'
-            : 'Analysen laufen über ${AnalysisConfig.modell}. Deine Fotos '
-                'werden für die Analyse an den Dienst gesendet.',
+                'Beispiel-Analyse. Umschalten beim Build über '
+                '--dart-define=GLOWUP_MOCK.'
+            : 'Analysen laufen über den GlowUp-Dienst '
+                '(${AnalysisConfig.modell}). Deine Fotos werden für die '
+                'Auswertung übertragen und dort weder gespeichert noch '
+                'protokolliert.',
       ),
     );
   }

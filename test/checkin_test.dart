@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,7 +11,7 @@ import 'package:glowup/features/analysis/models/analysis_result.dart';
 import 'package:glowup/features/capture/logic/image_quality_service.dart';
 import 'package:glowup/features/checkin/logic/checkin_controller.dart';
 import 'package:glowup/features/checkin/logic/checkin_flow.dart';
-import 'package:glowup/features/checkin/logic/checkin_prompt.dart';
+import 'package:glowup/features/checkin/logic/checkin_anfrage.dart';
 import 'package:glowup/features/checkin/logic/checkin_service.dart';
 import 'package:glowup/features/checkin/logic/checkin_zeitplan.dart';
 import 'package:glowup/features/checkin/logic/plan_anpassung.dart';
@@ -511,41 +513,75 @@ void main() {
     });
   });
 
-  group('Prompt', () {
-    test('enthaelt Plan, Antworten und die Leitplanken', () {
+  // Der Prompt entsteht seit dem Proxy-Umbau in der Cloud Function
+  // (functions/src/checkin_prompt.ts, geprueft in functions/test/prompt.test.ts).
+  // Hier bleibt die Frage, was der Client ueberhaupt hochlaedt.
+  group('Anfrage an die Function', () {
+    test('enthaelt Plan, Antworten und Gruende', () {
       final checkin = _checkin()
           .mitBewertung('Bart ölen', HabitBewertung.passtNicht)
           .mitGrund('Bart ölen', PasstNichtGrund.vergessen);
 
-      final prompt = CheckinPrompt.system(
+      final anfrage = CheckinAnfrage.bauen(
         checkin: checkin,
         analyse: _analyse(),
         historie: const [],
       );
 
-      expect(prompt, contains('Haare stylen'));
-      expect(prompt, contains('Passt nicht'));
-      expect(prompt, contains('Vergesse ich'));
-      expect(prompt, contains('bestehende Alltagsroutine'));
-      expect(prompt, contains('minimal-invasiv'));
-      expect(prompt, contains('WORTGLEICH'));
+      expect(anfrage['plan'], [
+        {
+          'modul': 'basis',
+          'habits': ['Haare stylen', 'Bart ölen'],
+        },
+      ]);
+      expect((anfrage['checkin'] as Map)['typ'], 'alltag');
+      expect((anfrage['checkin'] as Map)['habits'], [
+        {
+          'habit': 'Bart ölen',
+          'bewertung': 'passtNicht',
+          'grund': 'vergessen',
+          'notiz': '',
+        },
+      ]);
     });
 
-    test('frueher Bemaengeltes steht in der Historie', () {
+    test('frueher Bemaengeltes geht als Historie mit', () {
       final alt = _checkin()
           .mitBewertung('Bart ölen', HabitBewertung.passtNicht)
           .mitGrund('Bart ölen', PasstNichtGrund.teuer)
           .copyWith(erledigtAm: DateTime(2026, 8, 8));
 
-      final prompt = CheckinPrompt.system(
+      final anfrage = CheckinAnfrage.bauen(
         checkin: _checkin(typ: CheckinTyp.zwischen, id: 1),
         analyse: _analyse(),
         historie: [alt],
       );
 
-      expect(prompt, contains('Frühere Check-ins'));
-      expect(prompt, contains('08.08.2026'));
-      expect(prompt, contains('Zu teuer'));
+      expect(anfrage['historie'], [
+        {
+          'datum': DateTime(2026, 8, 8).toIso8601String(),
+          'typ': 'alltag',
+          'probleme': [
+            {'habit': 'Bart ölen', 'grund': 'teuer'},
+          ],
+        },
+      ]);
+    });
+
+    test('der Pfad des Fortschrittsfotos bleibt auf dem Geraet', () {
+      final checkin = _checkin(typ: CheckinTyp.wirkung)
+          .copyWith(fortschrittsfoto: '/daten/glowup_fotos/fortschritt0.jpg');
+
+      final anfrage = CheckinAnfrage.bauen(
+        checkin: checkin,
+        analyse: _analyse(),
+        historie: const [],
+        bilder: const ['AAAA', 'BBBB'],
+      );
+
+      // Das Bild geht als base64 mit, sein Speicherort nicht.
+      expect(jsonEncode(anfrage), isNot(contains('glowup_fotos')));
+      expect(anfrage['bilder'], ['AAAA', 'BBBB']);
     });
   });
 
@@ -555,7 +591,7 @@ void main() {
       handyGroesse(tester, hoehe: 3200);
 
       await tester.pumpWidget(
-        ProviderScope(overrides: speicherOverrides(), child: const GlowUpApp()),
+        ProviderScope(overrides: testOverrides(), child: const GlowUpApp()),
       );
       await tester.pumpAndSettle();
 
@@ -645,7 +681,7 @@ void main() {
       handyGroesse(tester, hoehe: 2600);
 
       await tester.pumpWidget(
-        ProviderScope(overrides: speicherOverrides(), child: const GlowUpApp()),
+        ProviderScope(overrides: testOverrides(), child: const GlowUpApp()),
       );
       await tester.pumpAndSettle();
 

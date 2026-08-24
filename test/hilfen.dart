@@ -5,6 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glowup/core/storage/hive_service.dart';
 import 'package:glowup/core/storage/key_value_store.dart';
+import 'package:glowup/features/analysis/logic/analysis_controller.dart';
+import 'package:glowup/features/analysis/logic/mock_analysis_service.dart';
+import 'package:glowup/features/checkin/logic/checkin_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 /// Richtet Hive fuer einen Test in einem temporaeren Verzeichnis ein und
@@ -44,3 +47,17 @@ List<Override> speicherOverrides() => [
       for (final name in HiveService.alleBoxen)
         storeProvider(name).overrideWithValue(MemoryStore()),
     ];
+
+/// Analyse und Check-in als Attrappe.
+///
+/// Seit dem Proxy-Umbau steht `AnalysisConfig.useMockData` standardmaessig auf
+/// `false`; ohne diese Overrides wuerde ein Widget-Test versuchen, eine Cloud
+/// Function zu rufen. Der Override macht ausserdem sichtbar, womit der Test
+/// tatsaechlich laeuft – ein global richtig stehender Schalter waere Zufall.
+List<Override> dienstOverrides() => [
+      analysisServiceProvider.overrideWithValue(const MockAnalysisService()),
+      checkinServiceProvider.overrideWithValue(const MockCheckinService()),
+    ];
+
+/// Speicher plus Dienste – der Standardsatz fuer Widget-Tests.
+List<Override> testOverrides() => [...speicherOverrides(), ...dienstOverrides()];
