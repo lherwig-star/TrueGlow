@@ -28,5 +28,25 @@
     "firestore": { "port": 8080 },
     "ui": { "enabled": true },
     "singleProjectMode": true
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "trueglow-b2c1c",
+          "appId": "1:732767304100:android:6ebbf8d8b1d52711b7e931",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "trueglow-b2c1c",
+          "configurations": {
+            "android": "1:732767304100:android:6ebbf8d8b1d52711b7e931",
+            "ios": "1:732767304100:ios:ea3e3e17f2595ecdb7e931"
+          }
+        }
+      }
+    }
   }
 }

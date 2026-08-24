@@ -84,7 +84,8 @@ Fehlt Java: Temurin 17 von <https://adoptium.net> installieren.
    in der Datenschutzerklärung stehen
 5. **Projekt erstellen**
 
-☐ **1.2 Abrechnungskonto verknüpfen (Blaze-Tarif)**
+☑ **1.2 Abrechnungskonto verknüpfen (Blaze-Tarif)** — aktiv für
+`trueglow-b2c1c` (geprüft am 24.08.2026)
 
 Cloud Functions der 2. Generation laufen **nicht** im kostenlosen Spark-Tarif.
 
@@ -129,7 +130,9 @@ wurde sie jetzt umgestellt, solange es noch nichts kostet. Ein Firebase-Projekt
 kann problemlos mehrere Apps enthalten; du registrierst also die neue dazu und
 räumst die alte weg.
 
-☐ **2.0.1 Neue Android-App registrieren**
+☑ **2.0.1 Neue Android-App registrieren** — erledigt über die CLI
+(`firebase apps:create android`), App-ID
+`1:732767304100:android:6ebbf8d8b1d52711b7e931`
 
 1. Firebase-Konsole → Zahnrad → **Projekteinstellungen** → Reiter **Allgemein**
 2. Karte **Deine Apps** → **App hinzufügen** → Android
@@ -137,11 +140,12 @@ räumst die alte weg.
 4. **App registrieren** — die angebotene `google-services.json` kannst du
    überspringen, `flutterfire configure` holt sie gleich selbst
 
-☐ **2.0.2 Neue iOS-App registrieren** (auch wenn iOS erst später kommt)
+☑ **2.0.2 Neue iOS-App registrieren** (auch wenn iOS erst später kommt) —
+erledigt, App-ID `1:732767304100:ios:ea3e3e17f2595ecdb7e931`
 
 Gleicher Weg, Bundle-ID **`com.trueglow.app`**.
 
-☐ **2.0.3 `flutterfire configure` erneut ausführen**
+☑ **2.0.3 `flutterfire configure` erneut ausführen**
 
 ```bash
 flutterfire configure --project=DEINE-PROJEKT-ID --platforms=android,ios --out=lib/firebase_options.dart
@@ -151,7 +155,7 @@ Wähle in der Auswahlliste die **neuen** Apps. Danach liegen frische
 `android/app/google-services.json` und `ios/Runner/GoogleService-Info.plist`
 im Projekt und `lib/firebase_options.dart` zeigt auf die neue App-ID.
 
-☐ **2.0.4 SHA-Fingerprints neu eintragen**
+☑ **2.0.4 SHA-Fingerprints neu eintragen** — erledigt, siehe Abschnitt 3
 
 Fingerprints hängen an der **App-Registrierung**, nicht am Projekt — die alten
 gelten für die neue App nicht. Abschnitt 3 noch einmal durchlaufen, danach
@@ -163,7 +167,9 @@ Auch App Check hängt an der App-Registrierung: Play Integrity für die neue
 Android-App aktivieren und ein **neues** Debug-Token eintragen (Abschnitt 4).
 Das alte Debug-Token gilt nicht weiter.
 
-☐ **2.0.6 Alte App-Registrierung entfernen**
+☑ **2.0.6 Alte App-Registrierung entfernen** — entfällt: im Projekt
+`trueglow-b2c1c` war nie eine App mit der alten ID registriert, es gab also
+nichts zu entfernen.
 
 1. **Projekteinstellungen → Allgemein → Deine Apps** → alte App
    `com.glowup.glowup`
@@ -176,7 +182,19 @@ Das alte Debug-Token gilt nicht weiter.
 
 ---
 
-☐ **2.1 `flutterfire configure` ausführen**
+☑ **2.1 `flutterfire configure` ausführen** — mit Projekt `trueglow-b2c1c`
+gelaufen; `lib/firebase_options.dart` und `android/app/google-services.json`
+enthalten jetzt die echten Werte.
+
+> **Windows-Hinweis:** `flutterfire configure` legt
+> `ios/Runner/GoogleService-Info.plist` nur auf einem Mac an, weil es die Datei
+> dort gleich ins Xcode-Target hängt. Sie wurde hier ersatzweise mit
+> `firebase apps:sdkconfig IOS <App-ID> --out ios/Runner/GoogleService-Info.plist`
+> geholt; das Einhängen ins Xcode-Target bleibt Schritt 7.5.
+
+> `flutterfire configure` schreibt `firebase.json` einzeilig zurück und ergänzt
+> darin einen `flutter`-Block. Der Inhalt bleibt gleich — die Datei wurde nur
+> wieder lesbar formatiert.
 
 ```bash
 flutterfire configure --project=DEINE-PROJEKT-ID --platforms=android,ios --out=lib/firebase_options.dart
@@ -205,7 +223,8 @@ Der Befehl
 > du gegen echtes Firebase baust; solange `lib/firebase_options.dart` noch den
 > Platzhalter enthält, zeigt die App ohnehin den Einrichtungshinweis.
 
-☐ **2.2 Kontrolle**
+☑ **2.2 Kontrolle** — `flutter pub get` und `flutter analyze` laufen sauber
+(„No issues found!").
 
 ```bash
 ls android/app/google-services.json ios/Runner/GoogleService-Info.plist
@@ -221,7 +240,7 @@ Google Sign-In auf Android funktioniert **nur**, wenn der Fingerprint des
 signierenden Keystores in Firebase hinterlegt ist. Für die Entwicklung ist das
 der Debug-Keystore.
 
-☐ **3.1 Debug-Fingerprint auslesen**
+☑ **3.1 Debug-Fingerprint auslesen**
 
 ```bash
 keytool -list -v -alias androiddebugkey -keystore "$USERPROFILE/.android/debug.keystore" -storepass android -keypass android
@@ -235,14 +254,32 @@ keytool -list -v -alias androiddebugkey -keystore "$env:USERPROFILE\.android\deb
 
 Aus der Ausgabe die Zeilen `SHA1:` und `SHA256:` kopieren.
 
-☐ **3.2 In Firebase eintragen**
+☑ **3.2 In Firebase eintragen** — beide Debug-Fingerprints sind eingetragen.
+Statt der Klickstrecke ging es über die CLI:
+
+```bash
+firebase apps:android:sha:create <ANDROID-APP-ID> <SHA-HASH> --project trueglow-b2c1c
+firebase apps:android:sha:list   <ANDROID-APP-ID>            --project trueglow-b2c1c
+```
+
+Der Klickweg tut dasselbe:
 
 1. Firebase-Konsole → Zahnrad → **Projekteinstellungen** → Reiter **Allgemein**
 2. Karte **Deine Apps** → die Android-App `com.trueglow.app`
 3. **Fingerabdruck hinzufügen** → SHA-1 einfügen → Speichern
 4. Dasselbe noch einmal mit SHA-256
 
-☐ **3.3 `google-services.json` neu herunterladen**
+> **Windows-Eigenheit:** `apps:android:sha:create` und einige andere
+> `firebase`-Befehle enden auf diesem Rechner mit
+> `Assertion failed: !(handle->flags & UV_HANDLE_CLOSING)` und Exit-Code 9,
+> **obwohl der Befehl durchgelaufen ist** (das `√` davor zeigt es). Das ist ein
+> Absturz beim Beenden des CLI-Prozesses, kein Fehler der Aktion. Ergebnis
+> immer mit dem passenden `:list`-Befehl nachprüfen statt dem Exit-Code zu
+> glauben.
+
+☑ **3.3 `google-services.json` neu herunterladen** — die Fingerprints wurden
+**vor** `flutterfire configure` eingetragen, die erzeugte Datei enthält sie
+also bereits (zwei `oauth_client`-Einträge). Ein erneuter Download entfällt.
 
 Nach dem Eintragen eines Fingerprints ändert sich die Datei.
 
@@ -263,7 +300,7 @@ SHA-1 der **Play App Signing**-Schlüssel aus der Play Console
 App Check sorgt dafür, dass die Cloud Functions nur von echten Installationen
 deiner App gerufen werden können — nicht per `curl` mit einem geklauten Token.
 
-☐ **4.1 Android registrieren (Play Integrity)**
+☑ **4.1 Android registrieren (Play Integrity)** — aktiv für `com.trueglow.app`
 
 1. Firebase-Konsole → **Build → App Check** → Reiter **Apps**
 2. Android-App aufklappen → **Play Integrity** → **Speichern**
@@ -273,12 +310,29 @@ deiner App gerufen werden können — nicht per `curl` mit einem geklauten Token
 
 ☐ **4.2 iOS registrieren (App Attest)** — erst wenn iOS gebaut wird, siehe Abschnitt 7
 
-☐ **4.3 Debug-Token für die Entwicklung eintragen**
+☑ **4.3 Debug-Token für die Entwicklung eintragen** — Token `Samsung A52`
+eingetragen (Gerät SM A525F)
 
 1. App im Debug-Modus einmal starten: `flutter run`
 2. In der Konsolenausgabe nach einer Zeile suchen, die so aussieht:
    `Enter this debug secret into the allow list in the Firebase Console ...`
    gefolgt von einer UUID
+
+> ## Wenn die Zeile in der `flutter run`-Ausgabe fehlt
+>
+> Der Debug-Provider gibt das Token erst aus, wenn zum **ersten Mal ein
+> App-Check-Token angefordert** wird — nicht schon beim `activate()`. Steht die
+> App nur im Onboarding, ist noch nichts passiert und die Zeile fehlt.
+>
+> Sie steht aber im Geräteprotokoll. Direkt auslesen:
+>
+> ```powershell
+> & "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" logcat -d | Select-String "DebugAppCheckProvider"
+> ```
+>
+> Das Token gilt **pro Installation**: Nach `flutter run --uninstall-first`
+> oder einer Neuinstallation ist es ein anderes und muss neu eingetragen
+> werden.
 3. Firebase-Konsole → **App Check** → Reiter **Apps** → Android-App →
    Dreipunkt-Menü → **Debug-Tokens verwalten** → **Debug-Token hinzufügen**
 4. UUID einfügen, Name z. B. `Laptop Debug`, **Speichern**
@@ -296,7 +350,7 @@ deiner App gerufen werden können — nicht per `curl` mit einem geklauten Token
 
 ## 5 · Gemini-Key, Cloud Functions, Budget
 
-☐ **5.1 Gemini-API-Key erzeugen**
+☑ **5.1 Gemini-API-Key erzeugen**
 
 1. <https://aistudio.google.com/apikey> öffnen
 2. **API-Schlüssel erstellen** → *im bestehenden Firebase-Projekt* (dann läuft
@@ -307,7 +361,28 @@ deiner App gerufen werden können — nicht per `curl` mit einem geklauten Token
 > Der Schlüssel gehört **nicht** in `.env`, nicht in den Code und nicht in
 > `firebase.json`. Die App bekommt ihn nie zu sehen.
 
-☐ **5.2 Key als Secret hinterlegen**
+> ## Schlüsselformat: `AQ.` statt `AIza`
+>
+> Google hat das Format der Gemini-Schlüssel umgestellt. Neu im AI Studio
+> erzeugte Schlüssel („Auth keys") beginnen mit **`AQ.Ab`** und sind länger als
+> die alten. Das frühere Format („Standard keys", `AIza…`, 39 Zeichen) wird
+> **ab September 2026 nicht mehr angenommen**.
+>
+> Ein Schlüssel, der mit `AQ.` anfängt, ist also **richtig** — nicht abgeschnitten
+> und nicht der falsche Wert. Der hier verwendete Schlüssel hat dieses Format.
+>
+> **Deshalb wird das Format nirgends geprüft.** `functions/src/index.ts` testet
+> den Wert aus dem Secret Manager nur auf *nicht leer* — und das soll so
+> bleiben. Eine Prüfung auf `AIza…` würde heute jeden neuen Schlüssel ablehnen.
+> Falls du irgendwo eine Formatprüfung ergänzen willst: nicht am Präfix
+> festmachen.
+>
+> Die Zeichenketten `AIzaSy…` in `lib/firebase_options.dart` sind etwas
+> anderes — das sind Firebase-Client-Schlüssel, die weiterhin dieses Format
+> haben. Sie haben mit dem Gemini-Schlüssel nichts zu tun.
+
+☑ **5.2 Key als Secret hinterlegen** — liegt als
+`projects/732767304100/secrets/GEMINI_API_KEY/versions/1` im Secret Manager
 
 ```bash
 firebase functions:secrets:set GEMINI_API_KEY --project DEINE-PROJEKT-ID
@@ -320,7 +395,49 @@ ihn im Google Secret Manager an. Prüfen:
 firebase functions:secrets:access GEMINI_API_KEY --project DEINE-PROJEKT-ID
 ```
 
-☐ **5.3 Budget-Alarm einrichten — nicht überspringen**
+> ## ⚠️ Windows: die versteckte Eingabe nimmt keinen eingefügten Text an
+>
+> Im klassischen `Windows PowerShell`-Fenster (conhost) kommt bei der versteckten
+> Abfrage `Enter a value for GEMINI_API_KEY:` **nichts** an — weder über
+> Strg+V noch über Rechtsklick noch über *Alt+Leertaste → Bearbeiten →
+> Einfügen*. Der Befehl bricht dann ab mit:
+>
+> ```
+> HTTP Error: 400, Secret Payload cannot be empty
+> ```
+>
+> Der Ausweg ist `--data-file`, das die Abfrage ganz überspringt. Diese eine
+> Zeile nimmt den Schlüssel aus der Zwischenablage, legt ihn ab und räumt die
+> Zwischendatei sofort wieder weg:
+>
+> ```powershell
+> Get-Clipboard | Set-Content -NoNewline "$env:TEMP\gk.txt" -Encoding ascii; firebase functions:secrets:set GEMINI_API_KEY --data-file="$env:TEMP\gk.txt" --project trueglow-b2c1c; Remove-Item "$env:TEMP\gk.txt"
+> ```
+>
+> Reihenfolge beachten: **erst** diese Zeile ins Fenster einfügen, **dann** im
+> AI Studio den Schlüssel kopieren, **dann** Enter. Sonst überschreibt das
+> Kopieren der Befehlszeile den Schlüssel in der Zwischenablage.
+>
+> `-NoNewline` ist nicht optional — ein angehängter Zeilenumbruch landet sonst
+> mit im Secret und der Schlüssel wird von Google abgelehnt.
+
+> **Prüfen, ohne den Schlüssel anzuzeigen:** `secrets:access` schreibt den
+> Klartext in die Konsole. Wer nur wissen will, *ob* etwas Plausibles
+> drinsteht, fängt die Ausgabe in einer Variablen auf:
+>
+> ```powershell
+> $k = (firebase functions:secrets:access GEMINI_API_KEY --project trueglow-b2c1c) -join ''
+> "Laenge: $($k.Trim().Length)"
+> ```
+
+☑ **5.3 Budget-Alarm einrichten — nicht überspringen** — abgedeckt durch das
+von Google automatisch angelegte Budget **„Firebase Project trueglow-b2c1c"**:
+25 € pro Monat, Benachrichtigung bei 50 / 90 / 100 %. Kein zweites Budget
+angelegt. Der unten genannte Betrag von 10 € war ein Vorschlag, keine
+Anforderung — entscheidend ist, dass überhaupt ein Alarm greift.
+
+> Ergänzend läuft der Gemini-Zugriff über ein aufgeladenes
+> AI-Studio-Guthaben (25 €), der Schlüssel steht auf **Preisstufe 1**.
 
 1. <https://console.cloud.google.com/billing> → Rechnungskonto wählen
 2. Links **Budgets und Benachrichtigungen** → **Budget erstellen**
@@ -331,7 +448,11 @@ firebase functions:secrets:access GEMINI_API_KEY --project DEINE-PROJEKT-ID
 6. Schwellen: 50 %, 90 %, 100 % — jeweils **E-Mail an Rechnungsadministratoren**
 7. **Fertig**
 
-☐ **5.4 Nötige APIs freischalten**
+☑ **5.4 Nötige APIs freischalten** — vom ersten Deploy automatisch erledigt.
+Freigeschaltet wurden: `cloudfunctions`, `cloudbuild`, `artifactregistry`,
+`run`, `eventarc`, `pubsub`, `firebaseextensions`; `secretmanager`,
+`storage`, `pubsub` und `firestore` waren bereits an. `gcloud` ist auf diesem
+Rechner **nicht** installiert und wurde auch nicht gebraucht.
 
 Beim ersten Deploy fragt die CLI danach; man kann es auch vorziehen:
 
@@ -342,7 +463,7 @@ gcloud services enable secretmanager.googleapis.com cloudfunctions.googleapis.co
 Ohne `gcloud` geht es auch per Klick über
 <https://console.cloud.google.com/apis/library>.
 
-☐ **5.5 Functions deployen**
+☑ **5.5 Functions deployen** — erledigt
 
 ```bash
 cd functions
@@ -352,10 +473,63 @@ cd ..
 firebase deploy --only functions --project DEINE-PROJEKT-ID
 ```
 
-Erwartete Ausgabe: zwei Funktionen `analysiere` und `checkinAuswerten` in
-`europe-west3`.
+Erwartete Ausgabe: **drei** Funktionen in `europe-west3` — `analysiere`,
+`checkinAuswerten` und `kontoLoeschen`, alle `callable`, Node.js 22, 1 GiB.
+Mit `firebase functions:list` nachprüfbar.
 
-☐ **5.6 Firestore-Regeln und -Indizes deployen**
+> ## Stolperstein 1: `npm install` bricht mit `ERESOLVE` ab
+>
+> `@firebase/rules-unit-testing@^5` verlangt `firebase@^12`, in
+> `functions/package.json` stand aber `firebase@^11.10.0`. Beides sind reine
+> devDependencies für die Rules-Tests (Abschnitt 9) und stecken **nicht** in
+> der ausgelieferten Function. Behoben durch Anheben auf `firebase@^12.0.0`.
+> Nicht mit `--force` oder `--legacy-peer-deps` darüberbügeln — dann brechen
+> die Rules-Tests.
+
+> ## Stolperstein 2: `Cannot determine backend specification. Timeout after 10000`
+>
+> Der erste Deploy scheitert auf diesem Rechner mit:
+>
+> ```
+> Error: User code failed to load. Cannot determine backend specification.
+> Timeout after 10000.
+> ```
+>
+> Das ist **kein** Codefehler. Die CLI startet die gebauten Functions kurz, um
+> herauszufinden, was deployt werden soll, und gibt dem nur 10 Sekunden —
+> unter Windows zu knapp. Gegenprobe, ob wirklich alles in Ordnung ist:
+>
+> ```powershell
+> node -e "require('./functions/lib/index.js'); console.log('MODUL GELADEN OK')"
+> ```
+>
+> Kommt dort `MODUL GELADEN OK`, hilft schlicht mehr Zeit:
+>
+> ```powershell
+> $env:FUNCTIONS_DISCOVERY_TIMEOUT='180'; firebase deploy --only functions --project trueglow-b2c1c
+> ```
+
+> ## Stolperstein 3: Exit-Code 1 trotz erfolgreichem Deploy
+>
+> Nach dem eigentlichen Deploy meldet die CLI:
+>
+> ```
+> Error: Functions successfully deployed but could not set up cleanup policy
+> ```
+>
+> Die Functions **stehen dann bereits** („Successful create operation"). Ohne
+> Aufräumregel sammeln sich nur die Container-Abbilder jedes Deploys in der
+> Artifact Registry an und verursachen langsam Speicherkosten. Einmalig setzen:
+>
+> ```bash
+> firebase functions:artifacts:setpolicy --location europe-west3 --days 3 --force --project trueglow-b2c1c
+> ```
+>
+> Gelöscht werden ausschließlich alte Build-Abbilder — nie Code, Daten oder
+> laufende Functions. Ist gesetzt (3 Tage).
+
+☑ **5.6 Firestore-Regeln und -Indizes deployen** — erledigt, Regeln kompiliert
+und veröffentlicht, Indizes angelegt
 
 ```bash
 firebase deploy --only firestore:rules,firestore:indexes --project DEINE-PROJEKT-ID
@@ -369,7 +543,9 @@ Dieser Schritt steht ausdrücklich in der Roadmap („Echten Antwortpfad erstmal
 gegen die Live-API prüfen") und kann **nur von dir** ausgeführt werden — er
 braucht das Firebase-Projekt, den Key und ein Gerät mit Kamera.
 
-☐ **6.1 App mit echtem Backend starten**
+☑ **6.1 App mit echtem Backend starten** — am 24.08.2026 auf einem Samsung
+SM A525F (Android 13) gelaufen. `flutter run` genügt: `TRUEGLOW_MOCK` ist
+`bool.fromEnvironment` und damit ohne Angabe `false`.
 
 ```bash
 flutter run --dart-define=TRUEGLOW_MOCK=false
@@ -378,11 +554,31 @@ flutter run --dart-define=TRUEGLOW_MOCK=false
 `TRUEGLOW_MOCK` ist standardmäßig `false`; der Schalter existiert, um den
 Demo-/Screenshot-Modus gezielt einzuschalten (`--dart-define=TRUEGLOW_MOCK=true`).
 
-☐ **6.2 Ablauf durchspielen**
+☑ **6.2 Ablauf durchspielen** — durchgelaufen, Report erschienen, keine
+Fehlermeldung.
 
 1. Onboarding → Login („Erst ausprobieren" reicht) → Fotos → Analyse starten
 2. In der Firebase-Konsole → **Functions → Protokolle** mitlesen
 3. Prüfen: **keine** Bildinhalte in den Logs, nur Zähler und Fehlercodes
+
+Bestätigt wurde:
+
+- `{"verifications":{"auth":"VALID","app":"VALID"}}` — App Check **und**
+  Auth-Token wurden serverseitig akzeptiert.
+- Kein Treffer für `data:image`, `base64` oder `bilder` in den Protokollen.
+  Die zwei langen Base64-Ketten im Log sind `source_token`-Felder aus den
+  Deploy-Audit-Einträgen, keine Bilddaten.
+
+> **Bei Erfolg steht fast nichts im Log** — und das ist Absicht, kein Fehler.
+> Die Function protokolliert nur in Ausnahmefällen (`functions/src/fehler.ts`,
+> der zweite Versuch in `index.ts`, die Kontingent- und Löschmeldungen). Ein
+> leeres Protokoll nach einer erfolgreichen Analyse ist das erwartete Bild.
+>
+> Zum Mitlesen von der Kommandozeile:
+>
+> ```bash
+> firebase functions:log --only analysiere --lines 100 --project trueglow-b2c1c
+> ```
 
 ☐ **6.3 Abweichungen notieren**
 
@@ -390,16 +586,52 @@ Unterschiede zwischen Mock- und Realantwort in `DECISIONS.md` festhalten
 (Abschnitt „Mock vs. Live"). Interessant sind vor allem: fehlende Felder,
 abgeschnittene Antworten, Sicherheitsfilter, Antwortdauer.
 
-☐ **6.4 Rate-Limit prüfen**
+☑ **6.4 Rate-Limit prüfen** — bestanden am 24.08.2026
 
 Vier Analysen an einem Tag starten — die vierte muss mit „Kontingent
 erschöpft" abgelehnt werden, **ohne** dass ein Gemini-Aufruf stattfindet
 (im Log sichtbar).
 
+Beobachtet: Analysen um 20:49, 20:59 und 21:03 liefen durch, die vierte um
+21:05 wurde abgelehnt mit
+
+```
+W analysiere: kontingent: Tagesgrenze analyse erreicht (<uid>)
+```
+
+Zwischen `Callable request verification passed` (21:05:02.878) und der
+Ablehnung (21:05:02.937) liegen **59 ms**. Ein Gemini-Aufruf braucht mehrere
+Sekunden — die Sperre greift also nachweislich **vor** dem Modellaufruf, nicht
+erst danach. Das ist der eigentliche Punkt des Tests: Der Zähler schützt vor
+Kosten, nicht nur vor Nutzung.
+
+> **Beiläufige Beobachtung:** Die Kontingent-Warnung enthält die **uid** des
+> Kontos. Für Function-Logs ist das vertretbar und beim Nachstellen von
+> Quota-Problemen nützlich — es ist kein Bildinhalt und kein Analysetext. Nicht
+> zu verwechseln mit der schärferen Regel für Crashlytics (Abschnitt 14.6), wo
+> uid und E-Mail nicht vorkommen dürfen.
+
 ☐ **6.5 Stichprobe: Klingt etwas wie eine Diagnose?**
 
-Aus den Function-Logs (**Firebase-Konsole → Functions → Protokolle**) das
-Antwortobjekt von 3–5 echten Analysen kopieren, je als `.json` speichern und
+> ## ⚠️ Korrektur: Die Antworten stehen **nicht** in den Function-Logs
+>
+> Hier stand früher, man solle das Antwortobjekt aus den Function-Logs
+> kopieren. Das geht nicht — und soll auch nicht gehen: Die Function
+> protokolliert die Antwort bewusst nirgends (siehe 6.2). Die Logs zu
+> erweitern wäre genau der falsche Weg, denn dann läge der Analysetext eines
+> Nutzers im Cloud-Logging.
+>
+> **Richtige Quelle ist Firestore.** Die gespeicherten Reports liegen unter:
+>
+> ```
+> users/{uid}/analysen/{analyseId}
+> ```
+>
+> Firebase-Konsole → **Firestore Database** → zu dieser Sammlung navigieren →
+> Dokument öffnen → über das Dreipunkt-Menü als JSON exportieren, oder die
+> Felder von Hand in eine `.json` übernehmen.
+
+Das Antwortobjekt von 3–5 echten Analysen je als `.json` speichern und
 prüfen:
 
 ```bash

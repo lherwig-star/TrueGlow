@@ -41,19 +41,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'PLATZHALTER-BITTE-FLUTTERFIRE-CONFIGURE-AUSFUEHREN',
-    appId: '1:000000000000:android:0000000000000000000000',
-    messagingSenderId: '000000000000',
-    projectId: platzhalterProjektId,
-    storageBucket: '$platzhalterProjektId.firebasestorage.app',
+    apiKey: 'AIzaSyCUbqiJfz9dM7xzXcpoayAc3CBlITv6vYA',
+    appId: '1:732767304100:android:6ebbf8d8b1d52711b7e931',
+    messagingSenderId: '732767304100',
+    projectId: 'trueglow-b2c1c',
+    storageBucket: 'trueglow-b2c1c.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'PLATZHALTER-BITTE-FLUTTERFIRE-CONFIGURE-AUSFUEHREN',
-    appId: '1:000000000000:ios:0000000000000000000000',
-    messagingSenderId: '000000000000',
-    projectId: platzhalterProjektId,
-    storageBucket: '$platzhalterProjektId.firebasestorage.app',
+    apiKey: 'AIzaSyCe5yvWHXl2ABolQ33uIWqqblg24_YsXKo',
+    appId: '1:732767304100:ios:ea3e3e17f2595ecdb7e931',
+    messagingSenderId: '732767304100',
+    projectId: 'trueglow-b2c1c',
+    storageBucket: 'trueglow-b2c1c.firebasestorage.app',
+    androidClientId: '732767304100-27sdgmvqi47bp8b1vgd13c1anfo7imel.apps.googleusercontent.com',
+    iosClientId: '732767304100-kla0806tj9i6qo4qk10v141neuah3su2.apps.googleusercontent.com',
     iosBundleId: 'com.trueglow.app',
   );
 }
