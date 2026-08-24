@@ -46,6 +46,10 @@ class OnboardingController extends StateNotifier<OnboardingProfile> {
 
   /// Setzt die Antworten zurueck, damit das Onboarding erneut durchlaufen wird.
   void zuruecksetzen() => _setze(const OnboardingProfile());
+
+  /// Liest den Stand neu ein – gebraucht, nachdem der Sync am Controller
+  /// vorbei in den Speicher geschrieben hat.
+  void neuLaden() => state = _lade(_box);
 }
 
 final onboardingControllerProvider =

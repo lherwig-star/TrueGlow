@@ -21,8 +21,9 @@ void hiveImTest() {
     verzeichnis = await Directory.systemTemp.createTemp('glowup_test');
     Hive.init(verzeichnis.path);
     // Alle Boxen aus der Liste – so faellt eine neue Box hier nicht durchs
-    // Raster, wenn sie in HiveService dazukommt.
-    await Future.wait(HiveService.alleBoxen.map(Hive.openBox<dynamic>));
+    // Raster, wenn sie in HiveService dazukommt. Die Sync-Box mit den
+    // Zeitstempeln gehoert dazu.
+    await Future.wait(HiveService.alleBoxenMitSync.map(Hive.openBox<dynamic>));
   });
 
   tearDown(() async {
@@ -45,7 +46,7 @@ void handyGroesse(WidgetTester tester, {double hoehe = 1400}) {
 /// In-Memory-Store. Ohne das haengen Widget-Tests, sobald ein Controller
 /// schreibt – Hives Datei-I/O kommt unter der gefakten Testuhr nie zurueck.
 List<Override> speicherOverrides() => [
-      for (final name in HiveService.alleBoxen)
+      for (final name in HiveService.alleBoxenMitSync)
         storeProvider(name).overrideWithValue(MemoryStore()),
     ];
 

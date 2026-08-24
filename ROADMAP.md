@@ -280,7 +280,7 @@ ehrlich kommunizierbar.
 
 ### 1.6 Sync-Strategie
 
-- [ ] Cloud als Quelle der Wahrheit, Hive als Offline-Cache; Schreibpfade über ein Repository bündeln — **L**
+- [x] Cloud als Quelle der Wahrheit, Hive als Offline-Cache; Schreibpfade über ein Repository bündeln — **L** — *`SyncStore` erweitert den `KeyValueStore`; kein Controller musste angefasst werden. Konfliktregel: letzter Schreiber gewinnt, Zeitstempel pro Dokument; Tagesfortschritt und Check-ins werden vereinigt statt ersetzt.*
 
 **Begründung:** Ohne klare Richtung entstehen Konflikte zwischen Gerät und Server. Der
 bestehende `KeyValueStore` ist ein guter Ansatzpunkt — die Abstraktion existiert schon.

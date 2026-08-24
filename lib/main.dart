@@ -9,6 +9,7 @@ import 'core/firebase/firebase_start.dart';
 import 'core/l10n/app_strings.dart';
 import 'core/router/app_router.dart';
 import 'core/storage/hive_service.dart';
+import 'core/sync/sync_provider.dart';
 import 'core/theme/app_colors.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
@@ -59,11 +60,44 @@ Future<void> main() async {
   );
 }
 
-class GlowUpApp extends ConsumerWidget {
+class GlowUpApp extends ConsumerStatefulWidget {
   const GlowUpApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GlowUpApp> createState() => _GlowUpAppState();
+}
+
+class _GlowUpAppState extends ConsumerState<GlowUpApp> {
+  @override
+  void initState() {
+    super.initState();
+    // Nach dem ersten Frame, damit der Start nicht am Netz haengt: Die App
+    // ist mit dem lokalen Bestand sofort bedienbar, der Cloud-Stand kommt
+    // gleich darauf dazu.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _abgleichen());
+  }
+
+  /// Holt den Cloud-Stand und laedt die Controller neu, wenn sich etwas
+  /// geaendert hat.
+  Future<void> _abgleichen() async {
+    final dienst = ref.read(syncDienstProvider);
+    final cloud = ref.read(cloudSpeicherProvider);
+
+    dienst.cloudSetzen(cloud);
+    if (cloud == null) return;
+
+    final geaendert = await dienst.abgleichen(cloud);
+    if (geaendert && mounted) {
+      zustaendeNeuLaden(ref);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Nach jedem Wechsel des Kontos – Anmeldung, Abmeldung, Verknuepfung –
+    // wird neu abgeglichen.
+    ref.listen(cloudSpeicherProvider, (_, _) => _abgleichen());
+
     return MaterialApp.router(
       title: S.appName,
       debugShowCheckedModeBanner: false,

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,6 +5,7 @@ import '../../../core/cloud/cloud_dokument.dart';
 import '../../../core/cloud/cloud_modell.dart';
 import '../../../core/cloud/cloud_provider.dart';
 import '../../../core/cloud/cloud_speicher.dart';
+import '../../../core/cloud/cloud_uebersetzung.dart';
 import '../../../core/storage/hive_service.dart';
 import '../../../core/storage/key_value_store.dart';
 
@@ -118,94 +117,38 @@ class HiveMigration {
     // (`daten/module` etwa nimmt Auswahl und Eingaben auf), deshalb erst
     // sammeln und dann je Dokument einmal schreiben.
     final felder = <String, Map<String, dynamic>>{};
-    final dokumente = <CloudDokument>[];
+    final reihenfolge = <String>[];
 
     for (final eintrag in boxen.entries) {
       final box = eintrag.key;
       final speicher = eintrag.value;
 
       for (final schluessel in speicher.keys) {
-        if (box == HiveService.boxCheckins &&
-            schluessel == CloudModell.keyHistorie) {
-          dokumente.addAll(
-            _historie(speicher.get(schluessel), jetzt: jetzt),
-          );
-          continue;
+        final dokumente = CloudUebersetzung.dokumenteFuer(
+          box: box,
+          schluessel: schluessel,
+          wert: speicher.get(schluessel),
+          stand: jetzt,
+        );
+
+        for (final dokument in dokumente) {
+          if (!felder.containsKey(dokument.pfad)) {
+            reihenfolge.add(dokument.pfad);
+          }
+          felder.putIfAbsent(dokument.pfad, () => {}).addAll(dokument.daten);
         }
-
-        final ziel = CloudModell.ziel(box, schluessel);
-        if (ziel == null) continue;
-
-        final wert = _cloudWert(speicher.get(schluessel));
-        if (wert == null) continue;
-
-        felder.putIfAbsent(ziel.pfad, () => {})[ziel.feld] = wert;
       }
     }
 
-    for (final eintrag in felder.entries) {
-      dokumente.add(
+    return [
+      for (final pfad in reihenfolge)
         CloudDokument(
-          pfad: eintrag.key,
-          daten: eintrag.value,
+          pfad: pfad,
+          daten: felder[pfad]!,
           aktualisiertAm: jetzt,
         ),
-      );
-    }
-
-    return dokumente;
+    ];
   }
-
-  /// Faechert die Check-in-Historie in je ein Dokument auf.
-  ///
-  /// Lokal liegt sie als eine JSON-Liste; in der Cloud gehoert jeder Check-in
-  /// in ein eigenes Dokument mit seiner laufenden Nummer als ID. Genau das
-  /// macht einen zweiten Lauf harmlos: Dieselbe Nummer trifft dasselbe
-  /// Dokument.
-  List<CloudDokument> _historie(Object? roh, {required DateTime jetzt}) {
-    if (roh is! String || roh.isEmpty) return const [];
-
-    final List<dynamic> liste;
-    try {
-      final gelesen = jsonDecode(roh);
-      if (gelesen is! List) return const [];
-      liste = gelesen;
-    } on FormatException catch (e) {
-      debugPrint('Migration: Historie nicht lesbar ($e)');
-      return const [];
-    }
-
-    final dokumente = <CloudDokument>[];
-    for (final eintrag in liste.whereType<Map>()) {
-      final id = eintrag['id'];
-      if (id == null) continue;
-
-      dokumente.add(
-        CloudDokument(
-          pfad: CloudModell.checkinPfad(id),
-          daten: {'wert': jsonEncode(eintrag)},
-          aktualisiertAm: jetzt,
-        ),
-      );
-    }
-    return dokumente;
-  }
-
-  /// Bringt einen Hive-Wert in eine Form, die Firestore annimmt.
-  ///
-  /// Hive liefert Listen als `List<dynamic>`; Firestore braucht sie
-  /// typisiert. Alles andere (String, int, bool) geht unveraendert durch.
-  static Object? _cloudWert(Object? wert) => switch (wert) {
-        null => null,
-        final List<dynamic> liste => liste.map((e) => '$e').toList(),
-        final String s => s,
-        final int i => i,
-        final bool b => b,
-        final double d => d,
-        // Unbekannte Typen lieber auslassen als die Uebernahme scheitern
-        // lassen – der lokale Bestand bleibt ja erhalten.
-        _ => null,
-      };
 }
 
 /// Baut die Migration fuer das angemeldete Konto.

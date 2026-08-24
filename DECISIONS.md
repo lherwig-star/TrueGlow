@@ -215,6 +215,59 @@ weil der reguläre Weg der Sync ist.
 
 ---
 
+## 13 · Der Sync haengt am `KeyValueStore`, nicht an den Controllern
+
+**Was:** `SyncStore` implementiert `KeyValueStore`, schreibt lokal und zieht
+die Cloud nach. `storeProvider` liefert ihn; kein Controller wurde angefasst.
+
+**Warum:** Die Roadmap sagt „Schreibpfade über Repositories bündeln (am
+bestehenden `KeyValueStore` ansetzen)". Alle zwoelf Controller schreiben seit
+jeher durch diese eine Schnittstelle. Sie zu erweitern bringt Plan,
+Checklisten, Streak, Richtung und Historie in einem Schritt in die Cloud – und
+laesst die 148 bestehenden Tests unberuehrt, weil sie den Store ohnehin durch
+`MemoryStore` ersetzen.
+
+**Preis:** Die Abbildung zwischen flachen Hive-Schluesseln und dem
+Cloud-Datenmodell muss irgendwo stehen; sie steht in `CloudModell` und
+`CloudUebersetzung`. Wer einen neuen Schluessel einfuehrt, muss ihn dort
+eintragen, sonst bleibt er lokal.
+
+---
+
+## 14 · Schreiben wartet nicht auf die Cloud
+
+**Was:** `put` schreibt lokal und feuert den Cloud-Schreibvorgang ohne `await`
+ab. Fehler landen im Log, nicht in der UI.
+
+**Warum:** Firestore nimmt Schreibvorgaenge auch offline entgegen und schickt
+sie nach, sobald wieder Netz da ist – genau das verlangt die Roadmap. Das
+zurueckgegebene Future wird allerdings erst erfuellt, wenn der Server
+bestaetigt hat. Wuerde die UI darauf warten, haengte jeder Haken in der
+Checkliste am Netz. Damit spart der Umbau zugleich ein Paket für die
+Netzerkennung.
+
+**Preis:** Ein dauerhaft fehlschlagender Schreibvorgang faellt nur im Log auf.
+Ein sichtbarer Sync-Status waere ein eigener Punkt – er gehoert zu Phase 4.2
+(„Zustände systematisch"), nicht hierher.
+
+---
+
+## 15 · Keine Grabsteine fuer geloeschte Dokumente
+
+**Was:** Loeschen wirkt lokal und in der Cloud, aber es wird kein Marker
+hinterlassen.
+
+**Warum:** Grabsteine bedeuten ein zweites Datenmodell (was ist geloescht, seit
+wann, wann darf der Marker weg) – deutlich mehr Maschinerie, als „letzter
+Schreiber gewinnt" verspricht.
+
+**Preis:** Wer auf Gerät A eine Analyse loescht, waehrend Gerät B offline ist,
+bekommt sie von Gerät B beim naechsten Abgleich zurueck. Der Fall setzt zwei
+Geraete und eine Loeschung voraus; „Alle Daten löschen" ist davon nicht
+betroffen, weil es beide Seiten in einem Zug raeumt.
+
+---
+
 ## Mock vs. Live
 
 *(Wird nach dem ersten echten Durchlauf gefüllt — siehe `SETUP.md`,
