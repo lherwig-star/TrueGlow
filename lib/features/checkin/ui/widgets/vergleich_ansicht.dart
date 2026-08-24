@@ -110,12 +110,30 @@ class _Seite extends StatelessWidget {
             aspectRatio: 3 / 4,
             child: vorhanden
                 ? Image.file(datei, fit: BoxFit.cover)
+                // Fotos bleiben auf dem Geraet. Nach einem Geraetewechsel ist
+                // die Datei deshalb weg, obwohl der Check-in in der Cloud
+                // steht – das gehoert erklaert, nicht als Fehler gezeigt.
                 : ColoredBox(
                     color: farben.flaecheHoch,
-                    child: Center(
-                      child: Icon(
-                        Icons.image_not_supported_outlined,
-                        color: farben.textSekundaer,
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppTheme.gapS),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.image_not_supported_outlined,
+                            color: farben.textSekundaer,
+                          ),
+                          const SizedBox(height: AppTheme.gapXs),
+                          Text(
+                            S.fotoNichtAufDiesemGeraet,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: farben.textSekundaer,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

@@ -47,5 +47,14 @@ jobs:
 
       - run: npm ci
       - run: npm run lint
+      - run: npm run typecheck
       - run: npm run build
       - run: npm test
+
+      # Die Rules-Tests brauchen den Firestore-Emulator (Java) und laufen
+      # deshalb in einem eigenen Schritt.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - run: npx firebase-tools emulators:exec --only firestore --project glowup-regeltest "npx vitest run --config vitest.rules.config.ts"

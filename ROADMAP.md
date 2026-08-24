@@ -252,9 +252,9 @@ bereits stehen. **Abhängigkeiten:** 1.1.
 
 ### 1.3 Cloud-Datenmodell 🔴
 
-- [ ] Struktur festlegen, Vorschlag: `users/{uid}` mit Unterkollektionen `analysen`, `checkins`, `fortschritt/{yyyy-mm-tt}` und Dokumenten `profil`, `richtung`, `streak` — **M**
-- [ ] Security Rules: jeder Nutzer nur auf `users/{uid}` — **S**
-- [ ] **Entscheidung Fotos:** bleiben lokal oder wandern in Cloud Storage? — *siehe offene Fragen* — **S**
+- [x] Struktur festlegen, Vorschlag: `users/{uid}` mit Unterkollektionen `analysen`, `checkins`, `fortschritt/{yyyy-mm-tt}` und Dokumenten `profil`, `richtung`, `streak` — **M** — *`lib/core/cloud/cloud_modell.dart`, dazu `module`, `checkinPlan`, `verweise` und `migration`*
+- [x] Security Rules: jeder Nutzer nur auf `users/{uid}` — **S** — *`firestore.rules`, Emulator-Test `functions/test/rules.test.ts` (braucht Java, siehe `SETUP.md` 9)*
+- [x] **Entscheidung Fotos:** bleiben lokal — nur Ergebnisse wandern in die Cloud; fehlende Fotos zeigt die UI als Platzhalter statt als Fehler — **S**
 
 **Empfehlung:** Fotos bleiben auf dem Gerät; in die Cloud gehen nur Ergebnisse, Plan,
 Streak und Check-in-Historie. Fotos gehen dann ausschließlich transient durch die Function

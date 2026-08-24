@@ -219,6 +219,11 @@ class S {
   static const checkinVergleichTitel = 'Vorher / Nachher';
   static const checkinVergleichVorher = 'Start';
   static const checkinVergleichNachher = 'Heute';
+
+  /// Fotos bleiben auf dem Geraet – nach einem Geraetewechsel fehlen sie
+  /// deshalb. Das ist ein erklaerter Normalzustand, kein Fehler.
+  static const fotoNichtAufDiesemGeraet =
+      'Foto auf diesem Gerät nicht verfügbar';
   static const checkinAuswertungLaeuft = 'Wir schauen uns deine Antworten an…';
   static const checkinFazitTitel = 'Zwischenfazit';
   static const checkinAenderungenTitel = 'Das passen wir an';
