@@ -2,7 +2,8 @@
 
 **Stand:** 24.08.2026 · **App:** TrueGlow · **Paket:** `com.trueglow.app` · **Version:** 1.0.0+1
 **Umfang bei der Bestandsaufnahme:** 77 Dart-Dateien, ~13.750 Zeilen, 12 Screens, 148 Tests
-**Umfang nach Phase 2:** dazu ein TypeScript-Backend (3 Cloud Functions), 234 Dart- und 42 TS-Tests
+**Umfang nach Phase 4:** dazu ein TypeScript-Backend (3 Cloud Functions), 267 Dart-Tests,
+42 TS-Tests und ein Integrationstest, der auf echter Hardware durchläuft
 
 > Die App hieß bis Phase 2 „GlowUp" und lief unter `com.glowup.glowup`. Die
 > Bestandsaufnahme unten beschreibt diesen Stand; die Umbenennung ist in
