@@ -1,7 +1,8 @@
 # ROADMAP — von TrueGlow (Prototyp) zur Store-Veröffentlichung
 
 **Stand:** 24.08.2026 · **App:** TrueGlow · **Paket:** `com.trueglow.app` · **Version:** 1.0.0+1
-**Umfang:** 77 Dart-Dateien, ~13.750 Zeilen, 12 Screens, 148 Tests (Bestandsaufnahme)
+**Umfang bei der Bestandsaufnahme:** 77 Dart-Dateien, ~13.750 Zeilen, 12 Screens, 148 Tests
+**Umfang nach Phase 2:** dazu ein TypeScript-Backend (3 Cloud Functions), 234 Dart- und 42 TS-Tests
 
 > Die App hieß bis Phase 2 „GlowUp" und lief unter `com.glowup.glowup`. Die
 > Bestandsaufnahme unten beschreibt diesen Stand; die Umbenennung ist in
