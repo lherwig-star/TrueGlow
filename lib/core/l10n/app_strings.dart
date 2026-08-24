@@ -247,7 +247,8 @@ class S {
   static const einstellungenTitel = 'Einstellungen';
   static const einstellungenAngaben = 'Meine Angaben ändern';
   static const einstellungenErscheinungsbild = 'Erscheinungsbild';
-  static const einstellungenDatenLoeschen = 'Alle Daten löschen';
+  static const einstellungenDatenLoeschen = 'Daten löschen, Konto behalten';
+  static const einstellungenKontoLoeschen = 'Konto endgültig löschen';
   static const einstellungenImpressum = 'Impressum';
   static const einstellungenRechtliches = 'Rechtliches';
   static const einstellungenDatenschutz = 'Datenschutzerklärung';

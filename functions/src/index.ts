@@ -8,6 +8,12 @@ import { fehler } from './fehler';
 import { frage } from './gemini';
 import { extrahiere } from './json_extractor';
 import { leseAnalyse, leseCheckin } from './eingang';
+import {
+  authKontoLoeschen,
+  datenLoeschen,
+  leseModus,
+  pruefeFrischeAnmeldung,
+} from './konto';
 import { freigeben, reservieren, type Kontingentart } from './limit';
 
 /**
@@ -91,6 +97,35 @@ export const checkinAuswerten = onCall(OPTIONEN, async (request) => {
   );
 
   return { auswertung };
+});
+
+/**
+ * Löscht die Cloud-Daten des Kontos – wahlweise samt Konto.
+ *
+ * Zwei Modi, weil es zwei verschiedene Wünsche sind: „ich will neu anfangen"
+ * und „ich will weg". Der zweite ist unumkehrbar und verlangt deshalb eine
+ * frische Anmeldung.
+ *
+ * Der Secret-Zugriff wird hier nicht gebraucht; die Option bleibt trotzdem
+ * dieselbe wie bei den anderen Endpunkten, damit Region, App Check und
+ * Instanzgrenze an einer Stelle stehen.
+ */
+export const kontoLoeschen = onCall(OPTIONEN, async (request) => {
+  const uid = pruefeAnmeldung(request);
+  const modus = leseModus(request.data);
+
+  if (modus === 'konto') {
+    pruefeFrischeAnmeldung(request);
+  }
+
+  await datenLoeschen(uid);
+
+  if (modus === 'konto') {
+    await authKontoLoeschen(uid);
+  }
+
+  console.info(`Loeschung abgeschlossen (${modus}).`);
+  return { modus };
 });
 
 // --- Bausteine ---------------------------------------------------------

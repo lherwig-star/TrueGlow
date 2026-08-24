@@ -326,8 +326,8 @@ wann wozu zugestimmt wurde, hält einer Prüfung nicht stand.
 
 ### 2.3 Löschfunktion erweitern
 
-- [ ] Lokales Löschen (existiert) um Cloud-Daten und Konto-Löschung ergänzen — **M**
-- [ ] Web-Löschpfad bereitstellen — Google verlangt das für Apps mit Konten — **S**
+- [x] Lokales Löschen (existiert) um Cloud-Daten und Konto-Löschung ergänzen — **M** — *Cloud Function `kontoLoeschen` räumt `users/{uid}` rekursiv; zwei getrennte Aktionen in den Einstellungen; Kontolöschung verlangt eine frische Anmeldung*
+- [ ] Web-Löschpfad bereitstellen — Google verlangt das für Apps mit Konten — **S** — *Vorlagetext und Klickweg in `SETUP.md`, Abschnitt 11 (nur von dir ausführbar)*
 
 **Abhängigkeiten:** 1.3, 1.4.
 

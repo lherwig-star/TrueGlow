@@ -511,6 +511,80 @@ Release-Build.
 
 ---
 
+## 11 · Web-Löschpfad für Konten (Phase 2.3)
+
+Google verlangt für Apps mit Konten einen Löschweg, der **ohne die App**
+erreichbar ist — jemand, der die App schon deinstalliert hat, muss sein Konto
+trotzdem loswerden können. Eine einfache Webseite genügt; die URL wird in der
+Play Console unter **Richtlinien → App-Inhalte → Datenlöschung** hinterlegt.
+
+☐ **11.1 Seite anlegen**
+
+Irgendwo unter derselben Domain wie die Rechtstexte, z. B.
+`https://deine-domain.de/konto-loeschen`. Vorlage zum Übernehmen:
+
+---
+
+> # Konto und Daten löschen
+>
+> Du kannst dein TrueGlow-Konto jederzeit selbst löschen — entweder in der App
+> oder per E-Mail.
+>
+> ## In der App
+>
+> 1. TrueGlow öffnen
+> 2. **Einstellungen** (Zahnrad unten rechts)
+> 3. **Konto endgültig löschen** antippen und bestätigen
+>
+> Willst du nur neu anfangen, aber dein Konto behalten, wähle stattdessen
+> **Daten löschen, Konto behalten**.
+>
+> ## Ohne die App
+>
+> Schreib eine E-Mail an **loeschung@deine-domain.de** von der Adresse, mit
+> der du dich angemeldet hast. Wir löschen dein Konto innerhalb von 30 Tagen
+> und bestätigen dir das per E-Mail.
+>
+> Hast du dich ohne Konto angemeldet („Erst ausprobieren"), gibt es keine
+> Adresse, über die wir dich zuordnen können — diese Daten hängen
+> ausschließlich an deinem Gerät und verschwinden, sobald du die App
+> deinstallierst.
+>
+> ## Was gelöscht wird
+>
+> - dein Konto (Anmeldung über Google bzw. Apple)
+> - alle Analysen, dein Plan, deine Serie und deine Check-in-Historie
+>
+> ## Was ohnehin nie bei uns lag
+>
+> Deine Fotos. Sie bleiben auf deinem Gerät und gehen nur für die Dauer einer
+> Auswertung an den KI-Dienst, der sie nicht speichert. Beim Deinstallieren
+> der App verschwinden sie mit.
+>
+> ## Aufbewahrung
+>
+> Nach der Löschung bleibt nichts erhalten. Ausgenommen sind Abrechnungs-
+> unterlagen, sofern es Käufe gab — die müssen wir gesetzlich zehn Jahre
+> aufbewahren.
+
+---
+
+☐ **11.2 Adresse einrichten**
+
+Eine E-Mail-Adresse für Löschanfragen anlegen (Weiterleitung genügt) und in
+der Vorlage eintragen.
+
+☐ **11.3 In der Play Console hinterlegen**
+
+**Richtlinien → App-Inhalte → Datenlöschung** → URL eintragen und angeben,
+dass die Löschung auch in der App möglich ist.
+
+☐ **11.4 In der Datenschutzerklärung verlinken**
+
+Der Löschweg gehört auch in die DSE (Abschnitt 10).
+
+---
+
 ## Offen, sobald es soweit ist
 
 Diese Punkte gehören zu späteren Phasen und stehen hier nur als Merkposten:

@@ -75,6 +75,17 @@ abstract interface class AuthRepository {
   /// die Entscheidung, was dann passiert, faellt in der UI.
   Future<TrueGlowNutzer> verknuepfen(AuthAnbieter anbieter);
 
+  /// Bestaetigt die Anmeldung erneut, ohne das Konto zu wechseln.
+  ///
+  /// Gebraucht vor unumkehrbaren Schritten: Die Cloud Function fuer die
+  /// Kontoloeschung verlangt eine frische Anmeldung, damit ein abgegriffenes
+  /// Token kein Konto ausloeschen kann.
+  ///
+  /// Anonyme Konten haben keine Zugangsdaten, mit denen sich das machen
+  /// liesse – dort passiert nichts, und die Function verzichtet dafuer auch
+  /// auf die Pruefung.
+  Future<void> erneutAnmelden();
+
   Future<void> abmelden();
 }
 
@@ -99,6 +110,9 @@ class FakeAuthRepository implements AuthRepository {
 
   /// Wird beim naechsten Aufruf geworfen statt anzumelden.
   AuthFehler? naechsterFehler;
+
+  /// Ob [erneutAnmelden] gelaufen ist – fuer Zusicherungen im Test.
+  bool erneutBestaetigt = false;
 
   @override
   TrueGlowNutzer? get aktuell => _aktuell;
@@ -134,6 +148,12 @@ class FakeAuthRepository implements AuthRepository {
         anzeigename: 'Test',
       ),
     );
+  }
+
+  @override
+  Future<void> erneutAnmelden() async {
+    _pruefeFehler();
+    erneutBestaetigt = true;
   }
 
   @override

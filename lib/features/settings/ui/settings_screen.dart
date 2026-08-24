@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/l10n/app_strings.dart';
-import '../../../core/cloud/cloud_provider.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/storage/hive_service.dart';
 import '../../../core/theme/app_colors.dart';
@@ -11,6 +10,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_controller.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
+import '../../account/logic/konto_dienst.dart';
 import '../../analysis/logic/analysis_controller.dart';
 import '../../analysis/logic/analysis_service.dart';
 import '../../auth/logic/auth_repository.dart';
@@ -53,7 +53,15 @@ class SettingsScreen extends ConsumerWidget {
                 icon: Icons.delete_outline,
                 label: S.einstellungenDatenLoeschen,
                 gefahr: true,
-                onTap: () => _datenLoeschen(context, ref),
+                onTap: () => _loeschen(context, ref, Loeschmodus.nurDaten),
+              ),
+              const Divider(indent: AppTheme.gapM, endIndent: AppTheme.gapM),
+              _Eintrag(
+                icon: Icons.no_accounts_outlined,
+                label: S.einstellungenKontoLoeschen,
+                gefahr: true,
+                onTap: () =>
+                    _loeschen(context, ref, Loeschmodus.kontoKomplett),
               ),
             ],
           ),
@@ -88,16 +96,34 @@ class SettingsScreen extends ConsumerWidget {
     context.go(Routes.onboarding);
   }
 
-  Future<void> _datenLoeschen(BuildContext context, WidgetRef ref) async {
+  /// Loescht Daten – wahlweise samt Konto.
+  ///
+  /// Zwei Wege, ein Ablauf: erst fragen, dann die Cloud raeumen, dann das
+  /// Geraet. Die Reihenfolge ist wichtig – bliebe die Cloud stehen, holte der
+  /// naechste Sync alles zurueck.
+  Future<void> _loeschen(
+    BuildContext context,
+    WidgetRef ref,
+    Loeschmodus modus,
+  ) async {
+    final kontoWeg = modus == Loeschmodus.kontoKomplett;
+
     final bestaetigt = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Alle Daten löschen?'),
-        content: const Text(
-          'Analysen, Plan, Fortschritt und deine Angaben werden unwiderruflich '
-          'entfernt – auf diesem Gerät und in deinem Konto. Auch deine Fotos '
-          'auf dem Gerät werden gelöscht.\n\n'
-          'Dein Konto selbst bleibt bestehen.',
+        title: Text(
+          kontoWeg ? 'Konto endgültig löschen?' : 'Alle Daten löschen?',
+        ),
+        content: Text(
+          kontoWeg
+              ? 'Dein Konto und alle Inhalte werden unwiderruflich gelöscht – '
+                  'auf diesem Gerät und in der Cloud. Auch deine Fotos auf '
+                  'dem Gerät werden entfernt.\n\n'
+                  'Danach kannst du dich mit diesem Konto nicht mehr anmelden.'
+              : 'Analysen, Plan, Fortschritt und deine Angaben werden '
+                  'unwiderruflich entfernt – auf diesem Gerät und in deinem '
+                  'Konto. Auch deine Fotos auf dem Gerät werden gelöscht.\n\n'
+                  'Dein Konto selbst bleibt bestehen.',
         ),
         actions: [
           TextButton(
@@ -109,17 +135,21 @@ class SettingsScreen extends ConsumerWidget {
             style: TextButton.styleFrom(
               foregroundColor: context.farben.warnung,
             ),
-            child: const Text('Löschen'),
+            child: Text(kontoWeg ? 'Konto löschen' : 'Löschen'),
           ),
         ],
       ),
     );
 
-    if (bestaetigt != true) return;
+    if (bestaetigt != true || !context.mounted) return;
 
-    // Zuerst die Cloud: Bliebe sie stehen, holte der naechste Sync alles
-    // wieder zurueck – das Loeschen waere dann nur eine Verzoegerung.
-    await ref.read(cloudSpeicherProvider)?.allesLoeschen();
+    final messenger = ScaffoldMessenger.maybeOf(context);
+
+    // Zuerst die Cloud. Scheitert sie, wird lokal nichts angefasst: Ein
+    // halbes Loeschen waere schlimmer als keins, weil der Nutzer glaubt,
+    // es sei erledigt.
+    if (!await _cloudRaeumen(ref, modus, messenger)) return;
+
     await ref.read(alleDatenLoeschenProvider)();
     await ref.read(imageQualityServiceProvider).fotosLoeschen();
 
@@ -137,8 +167,57 @@ class SettingsScreen extends ConsumerWidget {
     // Die Theme-Auswahl liegt in derselben Box und wurde mitgeloescht.
     ref.read(themeControllerProvider.notifier).neuLaden();
 
+    if (kontoWeg) {
+      await ref.read(authRepositoryProvider).abmelden();
+    }
+
     if (!context.mounted) return;
-    context.go(Routes.onboarding);
+    context.go(kontoWeg ? Routes.login : Routes.onboarding);
+  }
+
+  /// Raeumt den Cloud-Anteil. Gibt zurueck, ob weitergemacht werden darf.
+  ///
+  /// Ohne Backend (Demo-Modus) gibt es nichts zu raeumen – dann geht es
+  /// direkt weiter.
+  Future<bool> _cloudRaeumen(
+    WidgetRef ref,
+    Loeschmodus modus,
+    ScaffoldMessengerState? messenger,
+  ) async {
+    final dienst = ref.read(kontoDienstProvider);
+    if (dienst == null) return true;
+
+    try {
+      await dienst.loeschen(modus);
+      return true;
+    } on KontoException catch (e) {
+      if (e.fehler != KontoFehler.neuAnmelden) {
+        _melden(messenger, e.fehler);
+        return false;
+      }
+    }
+
+    // Genau ein zweiter Versuch nach frischer Anmeldung. Mehr waere eine
+    // Schleife, in der niemand mehr versteht, was gerade passiert.
+    try {
+      await ref.read(authRepositoryProvider).erneutAnmelden();
+      await dienst.loeschen(modus);
+      return true;
+    } on KontoException catch (e) {
+      _melden(messenger, e.fehler);
+      return false;
+    } on AuthException catch (e) {
+      messenger?.showSnackBar(
+        SnackBar(content: Text('${e.fehler.titel}: ${e.fehler.tipp}')),
+      );
+      return false;
+    }
+  }
+
+  static void _melden(ScaffoldMessengerState? messenger, KontoFehler fehler) {
+    messenger?.showSnackBar(
+      SnackBar(content: Text('${fehler.titel}: ${fehler.tipp}')),
+    );
   }
 }
 

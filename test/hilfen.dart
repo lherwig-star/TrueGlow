@@ -8,6 +8,10 @@ import 'package:trueglow/core/storage/key_value_store.dart';
 import 'package:trueglow/features/analysis/logic/analysis_controller.dart';
 import 'package:trueglow/features/analysis/logic/mock_analysis_service.dart';
 import 'package:trueglow/features/auth/logic/auth_repository.dart';
+import 'package:trueglow/features/capture/logic/capture_controller.dart';
+import 'package:trueglow/features/capture/logic/image_quality_service.dart';
+import 'package:trueglow/features/capture/models/aufnahme_typ.dart';
+import 'package:trueglow/features/capture/models/photo_check_result.dart';
 import 'package:trueglow/features/checkin/logic/checkin_service.dart';
 import 'package:trueglow/features/consent/logic/einwilligung_controller.dart';
 import 'package:trueglow/features/consent/models/einwilligung.dart';
@@ -61,27 +65,38 @@ List<Override> speicherOverrides() => [
 /// `false`; ohne diese Overrides wuerde ein Widget-Test versuchen, eine Cloud
 /// Function zu rufen. Der Override macht ausserdem sichtbar, womit der Test
 /// tatsaechlich laeuft – ein global richtig stehender Schalter waere Zufall.
-List<Override> dienstOverrides() => [
+/// [anmeldung] ersetzt die Standard-Attrappe. Wichtig: Denselben Provider
+/// zweimal zu ueberschreiben ist keine gute Idee – wer eine eigene Anmeldung
+/// braucht, reicht sie hier durch, statt einen zweiten Override anzuhaengen.
+List<Override> dienstOverrides({AuthRepository? anmeldung}) => [
       analysisServiceProvider.overrideWithValue(const MockAnalysisService()),
       checkinServiceProvider.overrideWithValue(const MockCheckinService()),
       // Standardmaessig angemeldet: Der Router laesst sonst niemanden am
       // Login-Screen vorbei, und die bestehenden Tests pruefen die Screens
       // dahinter.
-      authRepositoryProvider.overrideWithValue(FakeAuthRepository.angemeldet()),
+      authRepositoryProvider.overrideWithValue(
+        anmeldung ?? FakeAuthRepository.angemeldet(),
+      ),
+      // Die Bildpruefung haengt an ML Kit und am Dateisystem des Geraets –
+      // beides gibt es im Widget-Test nicht. Ohne diesen Override bleibt
+      // etwa `fotosLoeschen()` haengen, weil der Plattformkanal nie antwortet.
+      imageQualityServiceProvider.overrideWithValue(const BildpruefungOhneGeraet()),
     ];
 
 /// Speicher plus Dienste – der Standardsatz fuer Widget-Tests.
-List<Override> testOverrides() => [...speicherOverrides(), ...dienstOverrides()];
+List<Override> testOverrides({AuthRepository? anmeldung}) =>
+    [...speicherOverrides(), ...dienstOverrides(anmeldung: anmeldung)];
 
 /// Startet die App mit abgeschlossenem Onboarding und angemeldetem Konto –
 /// der Zustand, in dem die eigentlichen Screens erreichbar sind.
 Future<ProviderContainer> appMitDashboard(
   WidgetTester tester, {
   List<Override> zusatz = const [],
+  AuthRepository? anmeldung,
 }) async {
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [...testOverrides(), ...zusatz],
+      overrides: [...testOverrides(anmeldung: anmeldung), ...zusatz],
       child: const TrueGlowApp(),
     ),
   );
@@ -122,4 +137,23 @@ void einwilligungErteilen(
     erteilt: fotoKi,
     kanal: Einwilligungskanal.onboarding,
   );
+}
+
+/// Bildpruefung ohne Geraet: tut nichts und kommt sofort zurueck.
+class BildpruefungOhneGeraet implements ImageQualityService {
+  const BildpruefungOhneGeraet();
+
+  @override
+  Future<PhotoCheckResult> pruefeUndVerarbeite({
+    required File datei,
+    required AufnahmeTyp typ,
+    String? namensraum,
+  }) async =>
+      const PhotoCheckFehler(PhotoProblem.fehlgeschlagen);
+
+  @override
+  Future<void> fotosLoeschen() async {}
+
+  @override
+  void dispose() {}
 }

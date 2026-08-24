@@ -78,6 +78,39 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<void> erneutAnmelden() async {
+    final laufend = _auth.currentUser;
+    if (laufend == null || laufend.isAnonymous) return;
+
+    final anbieter = _anbieterVon(laufend);
+    if (anbieter == null) {
+      throw const AuthException(
+        AuthFehler.nichtVerfuegbar,
+        'Kein bekannter Anbieter am Konto',
+      );
+    }
+
+    await _mitFehlerbehandlung(() async {
+      final zugang = await _zugangsdaten(anbieter);
+      final ergebnis = await laufend.reauthenticateWithCredential(zugang);
+      return _erwarte(ergebnis.user ?? _auth.currentUser);
+    });
+  }
+
+  /// Mit welchem Anbieter dieses Konto verknuepft ist.
+  static AuthAnbieter? _anbieterVon(User nutzer) {
+    for (final eintrag in nutzer.providerData) {
+      switch (eintrag.providerId) {
+        case 'google.com':
+          return AuthAnbieter.google;
+        case 'apple.com':
+          return AuthAnbieter.apple;
+      }
+    }
+    return null;
+  }
+
+  @override
   Future<void> abmelden() async {
     // Erst den Anbieter abmelden, sonst bietet Google beim naechsten Versuch
     // wortlos wieder dasselbe Konto an.

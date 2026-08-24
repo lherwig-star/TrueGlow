@@ -14,6 +14,7 @@ import 'core/theme/app_colors.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
 import 'features/analysis/logic/analysis_service.dart';
+import 'features/account/logic/konto_dienst.dart';
 import 'features/auth/logic/auth_repository.dart';
 import 'features/auth/logic/firebase_auth_repository.dart';
 import 'features/legal/logic/rechtstexte.dart';
@@ -65,6 +66,11 @@ Future<void> main() async {
       overrides: [
         authRepositoryProvider.overrideWithValue(anmeldung),
         cloudSpeicherFabrikProvider.overrideWithValue(cloudFabrik),
+        // Ohne Backend gibt es nichts zu loeschen – die lokale Loeschung
+        // laeuft im Demo-Modus trotzdem.
+        kontoDienstProvider.overrideWithValue(
+          cloudFabrik == null ? null : KontoDienst(),
+        ),
       ],
       child: const TrueGlowApp(),
     ),

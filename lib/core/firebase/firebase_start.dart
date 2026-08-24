@@ -21,6 +21,9 @@ class FirebaseKonfig {
 
   /// Name der Check-in-Function.
   static const String functionCheckin = 'checkinAuswerten';
+
+  /// Name der Loesch-Function.
+  static const String functionKontoLoeschen = 'kontoLoeschen';
 }
 
 /// Wie der Start ausgegangen ist.

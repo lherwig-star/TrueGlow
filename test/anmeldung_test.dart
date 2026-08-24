@@ -20,11 +20,7 @@ Future<(ProviderContainer, FakeAuthRepository)> _start(
 
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [
-        ...speicherOverrides(),
-        ...dienstOverrides(),
-        authRepositoryProvider.overrideWithValue(anmeldung),
-      ],
+      overrides: testOverrides(anmeldung: anmeldung),
       child: const TrueGlowApp(),
     ),
   );
