@@ -355,6 +355,33 @@ nicht mehr tut. Es ist im Modell als Vermerk gekennzeichnet.
 
 ---
 
+## 21 · Der Medizin-Disclaimer wird geprüft, nicht nur behauptet
+
+**Was:** `tool/diagnose_pruefung.dart` hält Analyse-Antworten gegen sieben
+Regeln (Diagnosewörter, benannte Krankheitsbilder, Behandlungsempfehlungen,
+Bewertungszahlen, Attraktivitäts- und Gewichtsurteile, Zustandsbehauptungen).
+`test/diagnose_stichprobe_test.dart` fährt sie über alle fünf
+Modul-Beispielantworten, `tool/diagnose_stichprobe.dart` über echte Antworten
+aus der Live-API.
+
+**Warum:** Der Prompt verbietet all das seit jeher — geprüft war es nie. Eine
+Leitplanke, die niemand nachrechnet, ist eine Absichtserklärung.
+
+**Ergebnis der Stichprobe (Mock, 24.08.2026):** Alle fünf Modulantworten und
+die vollständige Antwort über alle Module sind **ohne Befund**. Der Prompt
+wurde daraufhin nicht geändert.
+
+**Noch offen:** dieselbe Stichprobe über 3–5 **echte** Antworten. Sie braucht
+ein Firebase-Projekt und einen Gemini-Key — `SETUP.md`, Abschnitt 6.5.
+
+**Preis:** Die Regeln sind Wortlisten und finden nur, was jemand vorhergesehen
+hat. Sie ersetzen kein Lesen — sie fangen die bekannten Fälle, damit das Lesen
+sich auf den Rest konzentrieren kann. Zwei Regeln waren beim ersten Entwurf
+still wirkungslos, weil `` in einem Regex vor „ü" keine Wortgrenze sieht;
+dafür gibt es jetzt `wortmuster()` und Tests, die genau das prüfen.
+
+---
+
 ## Mock vs. Live
 
 *(Wird nach dem ersten echten Durchlauf gefüllt — siehe `SETUP.md`,

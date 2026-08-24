@@ -388,6 +388,23 @@ Vier Analysen an einem Tag starten — die vierte muss mit „Kontingent
 erschöpft" abgelehnt werden, **ohne** dass ein Gemini-Aufruf stattfindet
 (im Log sichtbar).
 
+☐ **6.5 Stichprobe: Klingt etwas wie eine Diagnose?**
+
+Aus den Function-Logs (**Firebase-Konsole → Functions → Protokolle**) das
+Antwortobjekt von 3–5 echten Analysen kopieren, je als `.json` speichern und
+prüfen:
+
+```bash
+dart run tool/diagnose_stichprobe.dart antwort1.json antwort2.json antwort3.json
+```
+
+Das Skript hält die Antworten gegen dieselben Regeln wie der Testfall über die
+Mock-Antworten: Diagnosewörter, benannte Krankheitsbilder,
+Behandlungsempfehlungen, Bewertungszahlen, Attraktivitäts- und
+Gewichtsurteile. Findet es etwas, gehört der Prompt nachgeschärft
+(`functions/src/analyse_prompt.ts`) und das Ergebnis in `DECISIONS.md`,
+Abschnitt 21.
+
 ---
 
 ## 7 · iOS (kommt fest, Vorbereitung jetzt)

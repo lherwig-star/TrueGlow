@@ -333,8 +333,9 @@ wann wozu zugestimmt wurde, hält einer Prüfung nicht stand.
 
 ### 2.4 Medizin-Disclaimer
 
-- [ ] In der Store-Beschreibung wiederholen (in der App vorhanden) — **S**
-- [ ] Prüfen, ob Formulierungen im Report versehentlich wie eine Diagnose klingen; der Prompt verbietet es bereits, Stichproben mit echten Antworten fahren — **S**
+- [x] In der Store-Beschreibung wiederholen (in der App vorhanden) — **S** — *Entwurf in `store/listing-de.md`, inklusive Liste der Formulierungen, die dort nichts zu suchen haben*
+- [x] Prüfen, ob Formulierungen im Report versehentlich wie eine Diagnose klingen — **S** — *`tool/diagnose_pruefung.dart` plus Testfall über alle Mock-Antworten: ohne Befund (`DECISIONS.md`, 21)*
+- [ ] Dieselbe Stichprobe mit 3–5 echten Antworten fahren — **S** — *`SETUP.md`, Abschnitt 6.5 (braucht Live-API)*
 
 ### 2.5 Play-Konsole vorbereiten
 
