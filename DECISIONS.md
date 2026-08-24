@@ -465,6 +465,29 @@ Upload sagt es dann sofort.
 
 ---
 
+## 25 · Icon und Splash werden generiert, nicht gezeichnet
+
+**Was:** `tool/marke_erzeugen.dart` hält die Geometrie des Motivs und schreibt
+daraus sechs PNG-Fassungen **und** die SVG-Quelle. Die SVG-Datei im Repo ist
+also ein Erzeugnis, keine Vorlage.
+
+**Warum:** Dasselbe Motiv gibt es als Vollbild-Icon, adaptiven Vordergrund,
+Store-Icon und in vier Splash-Varianten über zwei Farbwelten. Von Hand
+gepflegt laufen die auseinander — und zwar unbemerkt, weil niemand acht
+Dateien nebeneinanderlegt. Hier ändert man eine Zahl und bekommt alles neu.
+
+**Motiv:** das Gesichts-Oval aus dem Kamera-Sucher (`Overlaytyp.gesichtsOval`)
+mit angedeuteten Schultern, Sand auf Deep Teal. Wer die App benutzt hat,
+erkennt das Icon wieder — das ist mehr wert als ein hübscheres, fremdes
+Zeichen.
+
+**Preis:** Wer das Icon später von einer Designerin überarbeiten lässt,
+bekommt eine echte SVG-Datei zurück und ersetzt damit den Generator. Bis
+dahin ist die Kopfzeile in der SVG-Datei die Warnung, dass Änderungen darin
+verloren gehen.
+
+---
+
 ## Mock vs. Live
 
 *(Wird nach dem ersten echten Durchlauf gefüllt — siehe `SETUP.md`,

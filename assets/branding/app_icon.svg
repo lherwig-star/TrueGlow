@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ERZEUGT von tool/marke_erzeugen.dart – Änderungen hier gehen beim nächsten
+  Lauf verloren. Die Geometrie steht in dieser Datei ganz oben.
+
+  Motiv: das Gesichts-Oval aus dem Kamera-Sucher, mit angedeuteten Schultern.
+  Farben: Deep Teal #173C3B, Sand #D8C6AA.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024"
+     viewBox="0 0 1024 1024">
+  <defs>
+    <clipPath id="schulterschnitt">
+      <rect x="0" y="0" width="1024" height="916.5" />
+    </clipPath>
+  </defs>
+
+  <rect width="1024" height="1024" fill="#173C3B" />
+
+  <ellipse cx="512.0" cy="440.3"
+           rx="220.2" ry="291.8"
+           fill="none" stroke="#D8C6AA" stroke-width="51.2" />
+
+  <g clip-path="url(#schulterschnitt)">
+    <ellipse cx="512.0" cy="1172.5"
+             rx="435.2" ry="353.3"
+             fill="none" stroke="#D8C6AA" stroke-width="51.2" />
+  </g>
+</svg>

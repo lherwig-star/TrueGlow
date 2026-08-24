@@ -733,6 +733,62 @@ Build derselben Version.
 
 ---
 
+## 13 · Markenauftritt neu erzeugen (Phase 2.7)
+
+Icon und Splash sind fertig im Repo — dieser Abschnitt braucht dich nur, wenn
+du das Motiv oder die Farben änderst.
+
+Die Grafiken werden **generiert**, nicht gezeichnet. Die Geometrie steht an
+genau einer Stelle: `tool/marke_erzeugen.dart`. Von dort fallen sechs
+Fassungen heraus, dazu die SVG-Quelle.
+
+☐ **13.1 Nach einer Änderung neu erzeugen**
+
+```bash
+dart run tool/marke_erzeugen.dart
+dart run flutter_launcher_icons
+dart run flutter_native_splash:create
+```
+
+Der erste Befehl schreibt `assets/branding/`, die beiden anderen verteilen
+das Ergebnis nach `android/app/src/main/res/` und
+`ios/Runner/Assets.xcassets/`.
+
+> `flutter_native_splash:create` überschreibt `values-night/styles.xml` und
+> setzt dort `windowBackground` zurück. Danach prüfen, ob im dunklen
+> `LaunchTheme` weiterhin `@drawable/launch_background` steht — sonst startet
+> die App im Dark Mode auf der hellen Fläche.
+
+☐ **13.2 Was wohin gehört**
+
+| Datei | Verwendung |
+|---|---|
+| `app_icon.png` (1024) | iOS-Icon, klassisches Android-Icon |
+| `app_icon_vordergrund.png` | adaptives Icon (Vorder- und Monochrom-Ebene) |
+| `store_icon_512.png` | **Play-Konsole, Store-Eintrag** |
+| `splash_hell.png` / `splash_dunkel.png` | Splash bis Android 11 und iOS |
+| `splash_android12_*.png` | Splash-API ab Android 12 |
+| `app_icon.svg` | Quelle zum Weiterbearbeiten — **wird mitgeneriert**, Änderungen darin gehen beim nächsten Lauf verloren |
+
+☐ **13.3 Feature-Grafik 1024 × 500**
+
+Die verlangt Play zusätzlich, und sie ist Gestaltungsarbeit, keine Ableitung
+aus dem Icon. Kommt mit dem Store-Eintrag (Phase 5.1).
+
+☐ **13.4 Auf dem Gerät ansehen**
+
+Icons und Splash zeigen sich erst nach einer Neuinstallation — Android
+speichert das Launcher-Icon zwischen.
+
+```bash
+flutter run --uninstall-first
+```
+
+Ansehen: Icon im Launcher (rund, eckig und als Tropfen, je nach Gerät),
+Splash beim Kaltstart in beiden Systemschemata.
+
+---
+
 ## Offen, sobald es soweit ist
 
 Diese Punkte gehören zu späteren Phasen und stehen hier nur als Merkposten:

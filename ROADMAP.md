@@ -358,8 +358,9 @@ wann wozu zugestimmt wurde, hält einer Prüfung nicht stand.
 
 ### 2.7 Markenauftritt 🔴
 
-- [ ] Eigenes App-Icon statt des Flutter-Logos, inklusive adaptivem Icon (Vorder-/Hintergrund) und 512×512 für den Store — **S**
-- [ ] Splash in den App-Farben für beide Schemata — **S**
+- [x] Eigenes App-Icon statt des Flutter-Logos, inklusive adaptivem Icon (Vorder-, Hintergrund- und Monochrom-Ebene) und 512×512 für den Store — **S** — *Motiv ist das Gesichts-Oval aus dem Kamera-Sucher; erzeugt von `tool/marke_erzeugen.dart`, SVG-Quelle inklusive*
+- [x] Splash in den App-Farben für beide Schemata, inklusive Android-12-Splash-API — **S** — *Deep Teal dunkel, Mocha hell; iOS-Launch-Screen gleich mit*
+- [ ] Icon und Splash auf einem Gerät ansehen — **S** — *`SETUP.md`, Abschnitt 13.4*
 
 **Begründung:** Das Standard-Flutter-Icon ist das deutlichste Signal „unfertig" und
 zieht bei der Prüfung Aufmerksamkeit auf sich.
