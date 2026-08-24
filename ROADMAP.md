@@ -217,7 +217,8 @@ Umbau unumkehrbar. **Abhängigkeiten:** keine.
 
 ### 1.1 Backend-Entscheidung
 
-- [ ] Firebase-Projekt anlegen (Region `europe-west3` wegen DSGVO) — **S**
+- [ ] Firebase-Projekt anlegen (Region `europe-west3` wegen DSGVO) — **S** — *Klickweg in `SETUP.md`, Abschnitt 1 (nur von dir ausführbar)*
+- [x] FlutterFire im Projekt verdrahtet: Abhängigkeiten, google-services-Plugin, `lib/firebase_options.dart` (Platzhalter), Firebase- und App-Check-Start in `main.dart` — **S**
 
 **Empfehlung: Firebase.** Begründung passend zum Stack: Google Sign-In ist mit Firebase
 Auth in Flutter der kürzeste Weg; Cloud Functions liefern den Proxy inklusive Secret
