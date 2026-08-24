@@ -203,9 +203,10 @@ keine Möglichkeit, einen Fehlgriff zu isolieren. `.gitignore` ist vorbereitet u
 
 *Nicht in deiner Vorlage, aber Voraussetzung für alles Weitere.*
 
-- [ ] **Git-Repository anlegen**, ersten Commit setzen, `.gitignore` prüfen (`.env` ist bereits ausgeschlossen) — **S**
-- [ ] Privates Remote-Repo (GitHub/GitLab) für Backup außerhalb des Rechners — **S**
-- [ ] 🟢 CI-Workflow: `flutter analyze` + `flutter test` bei jedem Push — **S**
+- [x] **Git-Repository anlegen**, ersten Commit setzen, `.gitignore` prüfen (`.env` ist bereits ausgeschlossen) — **S**
+- [ ] Privates Remote-Repo (GitHub/GitLab) für Backup außerhalb des Rechners — **S** — *Klickweg in `SETUP.md`, Abschnitt 8 (nur von dir ausführbar)*
+- [x] 🟢 CI-Workflow: `flutter analyze` + `flutter test` bei jedem Push — **S** — *`.github/workflows/ci.yml`*
+- [x] `SETUP.md` für alle manuellen Schritte, `DECISIONS.md` für Entscheidungen außerhalb der Roadmap — **S**
 
 **Begründung:** Die nächsten Phasen ändern Kernpfade der App. Ohne Historie ist jeder
 Umbau unumkehrbar. **Abhängigkeiten:** keine.
