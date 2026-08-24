@@ -657,6 +657,66 @@ dart run tool/diagnose_stichprobe.dart tool/stichprobe/analyse_*.json
 | `habits` pro Kapitel | immer 4 | 6 × 4, **1 × 3** | Der Prompt verlangt „4 bis 7 pro Kapitel" (`analyse_prompt.ts`). Einmal kamen nur 3. Kein Fehlerfall — die App zeigt einfach eine kürzere Liste —, aber der Beleg, dass Mengenangaben im Prompt Wünsche sind und keine Garantien. Nichts darf davon abhängen, dass genau *n* Einträge ankommen. |
 | `plan.taeglicheHabits` | leer | leer (3 von 3) | **Totes Feld.** Siehe unten. |
 
+### Auto-Auslöser für die Ganzkörperfotos
+
+Ohne ihn ist das Ganzkörperfoto allein nicht zu machen: Man stellt das Handy
+ab, tritt drei Meter zurück — und kommt an den Auslöser nicht mehr heran.
+
+**Warum ML Kit Pose Detection und nicht die Gesichtserkennung:** Aus drei
+Metern ist ein Gesicht wenige Pixel groß und wird unzuverlässig gefunden.
+Entscheidend ist ohnehin etwas anderes — ob *Kopf und Füße* im Bild sind. Genau
+das liefert die Posenerkennung, und nichts anderes tut es.
+
+`google_mlkit_pose_detection: ^0.16.1` teilt sich `google_mlkit_commons ^0.13.0`
+mit der schon eingebundenen Gesichtserkennung. Hätten die beiden verschiedene
+Fassungen gebraucht, wäre das ein Grund gewesen, es anders zu lösen.
+
+**Die Ablauflogik liegt außerhalb der Kamera** (`auto_ausloeser.dart`,
+`live_koerper_guide.dart`) und bekommt die Uhrzeit von außen hereingereicht.
+Das ist keine Stilfrage: Ein Auto-Auslöser, der zur falschen Zeit schießt,
+fällt am Gerät erst auf, wenn man drei Meter entfernt steht und nichts sieht.
+So läuft der gesamte Ablauf in gewöhnlichen Tests, in denen die Zeit gesetzt
+wird.
+
+Vier Entscheidungen, die im Code nicht selbsterklärend sind:
+
+1. **Nachsicht von 700 ms bei Haltungsverlust.** Die Posenerkennung flackert;
+   ein einzelner Frame ohne sicheren Knöchel genügt. Ohne diese Toleranz
+   bricht der Countdown ständig ab und kommt nie durch. Wer ruhig steht, soll
+   nicht dafür bestraft werden, dass das Modell kurz zweifelt.
+2. **Landmarks unter 50 % Güte zählen nicht.** ML Kit rät die Lage verdeckter
+   Punkte, und ein geratener Knöchel ließe den Auslöser zu früh anspringen.
+3. **Beide Knöchel müssen sicher sein.** Steht nur einer im Bild, ist die
+   Person angeschnitten oder verdreht — in beiden Fällen taugt das Foto nicht.
+4. **Vollständigkeit wird vor Größe geprüft.** Wer angeschnitten ist, soll
+   „Ganz ins Bild — Kopf und Füße" lesen und nicht „Ein paar Schritte zurück".
+   Das eine sagt, was zu tun ist, das andere lässt raten.
+
+Der manuelle Auslöser bleibt jederzeit bedienbar — auch während des
+Countdowns.
+
+**Zum Ton:** Der Countdown ist aus drei Metern kaum abzulesen, deshalb ein
+Signalton je Sekunde und ein höherer, längerer im Moment der Aufnahme. Dafür
+kam `audioplayers` dazu.
+
+Er läuft über den **Benachrichtigungs-Kanal**, nicht über Medien. Damit gilt
+für ihn dieselbe Regel wie für eine Nachricht: Im Lautlos-Modus schweigt er,
+ohne dass die App den Klingelzustand abfragen muss. Eine eigene Abfrage
+bräuchte ein weiteres Plugin und wäre auf jedem Hersteller-Android anders
+falsch. `mixWithOthers` ist gesetzt — drei kurze Töne rechtfertigen es nicht,
+laufende Musik abzuwürgen.
+
+Die Töne sind **generiert**, nicht aufgenommen: `tool/toene_erzeugen.dart`
+schreibt zwei WAVs. Wie beim Markenauftritt stehen die Werte damit im Code und
+nicht in einer Binärdatei, die niemand mehr ändern kann. Die Ein- und
+Ausblendung über je fünf Millisekunden ist nicht Kosmetik — ein hart
+abgeschnittener Sinus knackt hörbar, und dreimal hintereinander klingt das nach
+kaputtem Lautsprecher.
+
+**„Animationen reduzieren" wird respektiert:** Der Puls der Ziffer entfällt,
+die Ziffer selbst bleibt vollständig. Die Bewegung ist Zierde, die Zahl ist die
+Information.
+
 ### Vorschau vor dem Qualitätscheck, nicht danach
 
 Nach dem Auslösen zeigt die Kamera das Bild mit „Passt" und „Nochmal". Erst
@@ -875,9 +935,13 @@ Server den Zähler nicht zurücksetzt, sondern den Schlüssel vergleicht.
 **Bekannte Ungenauigkeit:** Der Client bildet den Tagesschlüssel aus der
 lokalen Gerätezeit, der Server rechnet in `Europe/Berlin`. Auf einem Gerät in
 einer anderen Zeitzone kann der Hinweis um Mitternacht herum um einen Tag
-danebenliegen. Bewusst in Kauf genommen — die Alternative wäre das
-`timezone`-Paket samt Zeitzonendatenbank im Bundle, viel Gewicht für einen
-Hinweis, über den ohnehin der Server entscheidet.
+danebenliegen.
+
+Das `timezone`-Paket ist zwar ohnehin eingebunden — für die
+Check-in-Erinnerungen —, benutzt dort aber ausschließlich `tz.UTC`, und
+`initializeTimeZones()` wird nirgends aufgerufen. Die Zeitzonendatenbank ist
+also nicht geladen. Für `Europe/Berlin` müsste sie beim Start in den Speicher:
+viel Aufwand für einen Hinweis, über den ohnehin der Server entscheidet.
 
 ---
 

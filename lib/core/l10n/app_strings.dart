@@ -62,6 +62,18 @@ class S {
   static const kameraNichtMittig = 'Mittig positionieren';
   static const kameraPerfekt = 'Perfekt – jetzt auslösen';
   static const kameraZuDunkel = 'Mehr Licht nötig';
+
+  // --- Ganzkörper-Sucher und Auto-Auslöser ---
+  static const koerperNiemand = 'Stell dich ins Bild';
+  static const koerperNichtGanz = 'Ganz ins Bild – Kopf und Füße';
+  static const koerperZuWeitWeg = 'Ein paar Schritte näher';
+  static const koerperZuNah = 'Ein paar Schritte zurück';
+  static const koerperNichtMittig = 'Mittig hinstellen';
+  static const koerperBereit = 'Steht – nicht bewegen';
+  static const koerperAutoHinweis =
+      'Stell dein Handy auf, tritt zurück und stell dich in den Umriss. '
+      'Sobald du ganz im Bild stehst, zählt die App herunter und löst selbst '
+      'aus. Du kannst auch jederzeit von Hand auslösen.';
   static const kameraKeineBerechtigungTitel = 'Kamerazugriff nötig';
   static const kameraKeineBerechtigungText =
       'TrueGlow braucht Zugriff auf die Kamera, um die Live-Vorschau mit '

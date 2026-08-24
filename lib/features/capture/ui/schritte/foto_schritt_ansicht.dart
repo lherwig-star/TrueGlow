@@ -71,6 +71,14 @@ class FotoSchrittAnsicht extends ConsumerWidget {
           icon: Icons.tips_and_updates_outlined,
           child: MutedText(typ.hinweisFuer(module)),
         ),
+        if (typ.autoAusloeser) ...[
+          const SizedBox(height: AppTheme.gapS),
+          const SectionCard(
+            title: 'Die App löst selbst aus',
+            icon: Icons.timer_outlined,
+            child: MutedText(S.koerperAutoHinweis),
+          ),
+        ],
       ],
     );
   }

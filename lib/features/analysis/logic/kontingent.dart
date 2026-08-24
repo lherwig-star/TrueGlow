@@ -69,9 +69,14 @@ class KontingentStand {
   ///
   /// Der Server rechnet in `Europe/Berlin`. Auf einem Geraet in einer anderen
   /// Zeitzone kann der Hinweis deshalb um Mitternacht herum um einen Tag
-  /// danebenliegen. Das ist bewusst in Kauf genommen: Die Alternative waere
-  /// das `timezone`-Paket samt Zeitzonendatenbank im Bundle – viel Gewicht
-  /// fuer einen Hinweis, ueber den ohnehin der Server entscheidet.
+  /// danebenliegen.
+  ///
+  /// Das `timezone`-Paket ist zwar ohnehin eingebunden (fuer die
+  /// Check-in-Erinnerungen), benutzt dort aber ausschliesslich `tz.UTC` – die
+  /// Zeitzonendatenbank wird nie geladen. Fuer `Europe/Berlin` muesste beim
+  /// Start `initializeTimeZones()` laufen und die komplette Datenbank in den
+  /// Speicher. Das ist viel Aufwand fuer einen Hinweis, ueber den ohnehin der
+  /// Server entscheidet.
   static String _tagesSchluessel(DateTime zeitpunkt) =>
       '${zeitpunkt.year.toString().padLeft(4, '0')}-'
       '${zeitpunkt.month.toString().padLeft(2, '0')}-'

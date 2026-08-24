@@ -166,6 +166,36 @@ void main() {
       expect(AufnahmeTyp.stilOutfitEins.mitLiveHilfe, isFalse);
     });
 
+    test('nur die Ganzkoerperfotos loesen selbst aus', () {
+      // Bei allen anderen haelt man das Geraet in der Hand – ein Automatismus
+      // waere dort nur ein Foto zum falschen Zeitpunkt.
+      final automatisch =
+          AufnahmeTyp.values.where((t) => t.autoAusloeser).toSet();
+
+      expect(
+        automatisch,
+        {
+          AufnahmeTyp.figurGanzkoerperFrontal,
+          AufnahmeTyp.figurGanzkoerperSeitlich,
+        },
+      );
+    });
+
+    test('ein Bildstrom laeuft nur, wo etwas erkannt wird', () {
+      // Outfit-Fotos brauchen weder Gesicht noch Pose. Liefe der Strom dort
+      // trotzdem, kostete er auf schwachen Geraeten Speicher und Waerme fuer
+      // nichts.
+      for (final typ in AufnahmeTyp.values) {
+        expect(
+          typ.mitBildstrom,
+          typ.mitLiveHilfe || typ.autoAusloeser,
+          reason: typ.name,
+        );
+      }
+      expect(AufnahmeTyp.stilOutfitEins.mitBildstrom, isFalse);
+      expect(AufnahmeTyp.figurGanzkoerperFrontal.mitBildstrom, isTrue);
+    });
+
     test('jede Aufnahme gehoert zu genau einem Modul', () {
       for (final modul in AnalyseModul.values) {
         for (final typ in modul.aufnahmen) {

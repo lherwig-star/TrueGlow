@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -13,8 +15,11 @@ import '../../../core/l10n/app_strings.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../checkin/logic/checkin_controller.dart';
+import '../logic/auto_ausloeser.dart';
 import '../logic/capture_controller.dart';
 import '../logic/live_face_guide.dart';
+import '../logic/live_koerper_guide.dart';
+import '../logic/signalton.dart';
 import '../models/aufnahme_typ.dart';
 import 'widgets/silhouette_overlay.dart';
 
@@ -76,7 +81,17 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
     ),
   );
   final LiveFaceGuide _guide = const LiveFaceGuide();
+  final LiveKoerperGuide _koerperGuide = const LiveKoerperGuide();
   final ImagePicker _picker = ImagePicker();
+
+  /// Nur fuer die Ganzkoerperfotos – die Posenerkennung haelt native
+  /// Ressourcen und wird sonst nicht angelegt.
+  late final PoseDetector? _pose = widget.typ.autoAusloeser
+      ? PoseDetector(options: PoseDetectorOptions())
+      : null;
+
+  late final AutoAusloeser? _auto =
+      widget.typ.autoAusloeser ? AutoAusloeser() : null;
 
   CameraController? _controller;
   List<CameraDescription> _kameras = const [];
@@ -88,6 +103,16 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
   _Kamerafehler? _fehler;
   bool _startet = true;
   bool _loest = false;
+
+  /// Haltungs-Rueckmeldung bei den Ganzkoerperfotos.
+  KoerperHinweis _koerperHinweis = KoerperHinweis.niemand;
+
+  /// Stand des Countdowns.
+  AutoZustand _autoZustand = const AutoZustand(AutoPhase.warten);
+
+  /// Die zuletzt vertonte Sekunde – ohne das kaeme bei vier Frames pro
+  /// Sekunde viermal derselbe Ton.
+  int? _letzteVertonteSekunde;
 
   /// Die eben gemachte Aufnahme, solange sie noch nicht bestaetigt ist.
   ///
@@ -115,6 +140,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
     WidgetsBinding.instance.removeObserver(this);
     _controller?.dispose();
     _detector.close();
+    _pose?.close();
     super.dispose();
   }
 
@@ -180,9 +206,9 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
         return;
       }
 
-      // Ganzkoerper- und Outfit-Aufnahmen haben keine Gesichtshilfe – dann
-      // laeuft auch kein Bildstrom und keine Erkennung.
-      if (widget.typ.mitLiveHilfe) {
+      // Outfit-Aufnahmen brauchen weder Gesichts- noch Posenerkennung – dort
+      // laeuft gar kein Bildstrom.
+      if (widget.typ.mitBildstrom) {
         await controller.startImageStream(_frameVerarbeiten);
       }
 
@@ -218,7 +244,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
     if (_erkennungLaeuft ||
         _loest ||
         _vorschau != null ||
-        !widget.typ.mitLiveHilfe) {
+        !widget.typ.mitBildstrom) {
       return;
     }
 
@@ -231,21 +257,107 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
       final eingabe = _alsInputImage(bild);
       if (eingabe == null) return;
 
-      final gesichter = await _detector.processImage(eingabe);
-      if (!mounted) return;
+      final groesse = _aufrechteGroesse(eingabe.metadata!);
+      final helligkeit = _helligkeit(bild);
 
+      if (widget.typ.autoAusloeser) {
+        await _koerperFrame(eingabe, groesse, helligkeit, jetzt);
+      } else {
+        final gesichter = await _detector.processImage(eingabe);
+        if (!mounted) return;
 
-      final hinweis = _guide.bewerte(
-        gesichter: [for (final g in gesichter) g.boundingBox],
-        bildGroesse: _aufrechteGroesse(eingabe.metadata!),
-        helligkeit: _helligkeit(bild),
-      );
-      if (hinweis != _hinweis) setState(() => _hinweis = hinweis);
+        final hinweis = _guide.bewerte(
+          gesichter: [for (final g in gesichter) g.boundingBox],
+          bildGroesse: groesse,
+          helligkeit: helligkeit,
+        );
+        if (hinweis != _hinweis) setState(() => _hinweis = hinweis);
+      }
     } catch (e) {
       debugPrint('Live-Erkennung uebersprungen: $e');
     } finally {
       _erkennungLaeuft = false;
     }
+  }
+
+  /// Ein Frame der Ganzkoerper-Aufnahme: Haltung bewerten, Countdown fuehren,
+  /// gegebenenfalls selbst ausloesen.
+  Future<void> _koerperFrame(
+    InputImage eingabe,
+    Size groesse,
+    int? helligkeit,
+    DateTime jetzt,
+  ) async {
+    final posen = await _pose!.processImage(eingabe);
+    if (!mounted) return;
+
+    final hinweis = _koerperGuide.bewerte(
+      lage: _alsKoerperlage(posen),
+      bildGroesse: groesse,
+      helligkeit: helligkeit,
+    );
+
+    final zustand = _auto!.melde(bereit: hinweis.loestAus, jetzt: jetzt);
+
+    if (hinweis != _koerperHinweis || zustand != _autoZustand) {
+      setState(() {
+        _koerperHinweis = hinweis;
+        _autoZustand = zustand;
+      });
+    }
+
+    switch (zustand.phase) {
+      case AutoPhase.zaehlt:
+        if (zustand.verbleibend != _letzteVertonteSekunde) {
+          _letzteVertonteSekunde = zustand.verbleibend;
+          unawaited(ref.read(signaltonProvider).zaehlen());
+        }
+      case AutoPhase.warten:
+        _letzteVertonteSekunde = null;
+      case AutoPhase.ausgeloest:
+        _letzteVertonteSekunde = null;
+        unawaited(ref.read(signaltonProvider).ausloesen());
+        await _ausloesen();
+    }
+  }
+
+  /// Uebersetzt die ML-Kit-Pose in die Form, mit der [LiveKoerperGuide]
+  /// rechnet – Rechteck plus zwei Flags, sonst nichts.
+  Koerperlage? _alsKoerperlage(List<Pose> posen) {
+    if (posen.isEmpty) return null;
+
+    // Nur sichere Punkte: Bei niedriger Wahrscheinlichkeit raet ML Kit die
+    // Lage, und ein geratener Knoechel liesse den Ausloeser zu frueh
+    // anspringen.
+    const mindestGuete = 0.5;
+    final punkte = posen.first.landmarks.values
+        .where((p) => p.likelihood >= mindestGuete)
+        .toList();
+    if (punkte.isEmpty) return null;
+
+    var links = double.infinity;
+    var rechts = double.negativeInfinity;
+    var oben = double.infinity;
+    var unten = double.negativeInfinity;
+
+    for (final p in punkte) {
+      links = math.min(links, p.x);
+      rechts = math.max(rechts, p.x);
+      oben = math.min(oben, p.y);
+      unten = math.max(unten, p.y);
+    }
+
+    bool sicher(PoseLandmarkType typ) =>
+        (posen.first.landmarks[typ]?.likelihood ?? 0) >= mindestGuete;
+
+    return Koerperlage(
+      umriss: Rect.fromLTRB(links, oben, rechts, unten),
+      kopfSichtbar: sicher(PoseLandmarkType.nose),
+      // Beide Knoechel: Steht nur einer im Bild, ist die Person angeschnitten
+      // oder verdreht – in beiden Faellen taugt das Foto nicht.
+      fuesseSichtbar: sicher(PoseLandmarkType.leftAnkle) &&
+          sicher(PoseLandmarkType.rightAnkle),
+    );
   }
 
   /// Mittlere Helligkeit des Frames (0–255), oder `null`, wenn sie sich nicht
@@ -393,7 +505,15 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
   /// „Nochmal": Aufnahme wegwerfen und zurueck in den Sucher.
   Future<void> _vorschauVerwerfen() async {
     final datei = _vorschau;
-    setState(() => _vorschau = null);
+    setState(() {
+      _vorschau = null;
+      // Ohne Zuruecksetzen bliebe der Ausloeser auf „ausgeloest" stehen und
+      // der zweite Versuch kaeme nie zustande.
+      _auto?.zuruecksetzen();
+      _autoZustand = const AutoZustand(AutoPhase.warten);
+      _koerperHinweis = KoerperHinweis.niemand;
+      _letzteVertonteSekunde = null;
+    });
 
     // Die Datei liegt im Cache-Verzeichnis der Kamera. Wegraeumen, sonst
     // sammelt jeder verworfene Versuch ein Vollbild-JPEG an.
@@ -406,7 +526,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
     // Der Bildstrom wurde vor dem Ausloesen gestoppt – ohne ihn steht die
     // Live-Hilfe still und der Ausloeser bliebe dauerhaft blass.
     final controller = _controller;
-    if (widget.typ.mitLiveHilfe &&
+    if (widget.typ.mitBildstrom &&
         controller != null &&
         controller.value.isInitialized &&
         !controller.value.isStreamingImages) {
@@ -459,9 +579,18 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
   Widget build(BuildContext context) {
     final farben = context.farben;
     final controller = _controller;
-    // Ohne Live-Hilfe gibt es nichts zu treffen – dann ist der Ausloeser
+
+    // Ohne Erkennung gibt es nichts zu treffen – dann ist der Ausloeser
     // dauerhaft hervorgehoben statt dauerhaft blass.
-    final bereit = widget.typ.mitLiveHilfe ? _hinweis.bereit : true;
+    final bereit = switch (widget.typ) {
+      final t when t.autoAusloeser => _koerperHinweis.loestAus,
+      final t when t.mitLiveHilfe => _hinweis.bereit,
+      _ => true,
+    };
+
+    final statustext = widget.typ.autoAusloeser
+        ? _koerperHinweis.text
+        : _hinweis.text;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -504,8 +633,8 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
                     onSchliessen: () => Navigator.of(context).pop(false),
                   ),
                   const Spacer(),
-                  if (widget.typ.mitLiveHilfe)
-                    _Statustext(hinweis: _hinweis)
+                  if (widget.typ.mitBildstrom)
+                    _Statustext(text: statustext, bereit: bereit)
                   else
                     _Anleitung(text: widget.typ.hinweis),
                   const SizedBox(height: AppTheme.gapM),
@@ -522,6 +651,8 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
               ),
             ),
           ],
+          if (_autoZustand.phase == AutoPhase.zaehlt && _vorschau == null)
+            _Countdown(sekunden: _autoZustand.verbleibend),
           if (_vorschau case final datei?)
             _Vorschaupruefung(
               datei: datei,
@@ -532,6 +663,70 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
           if (_loest) const _PruefUeberlagerung(),
         ],
       ),
+    );
+  }
+}
+
+/// Die verbleibenden Sekunden, so gross wie moeglich.
+///
+/// Aus drei Metern Abstand ist eine gewoehnliche Ziffer nicht mehr zu lesen –
+/// deshalb fuellt sie hier die halbe Bildhoehe und liegt auf einem
+/// abgedunkelten Kreis, damit sie sich vom Kamerabild abhebt. Das ist die
+/// einzige Rueckmeldung darueber, wie lange noch stillzuhalten ist.
+class _Countdown extends StatelessWidget {
+  const _Countdown({required this.sekunden});
+
+  final int sekunden;
+
+  @override
+  Widget build(BuildContext context) {
+    final farben = context.farben;
+
+    // „Animationen reduzieren" respektieren: Der Puls ist Zierde, die Ziffer
+    // ist die Information. Ohne Bewegung bleibt sie vollstaendig erhalten.
+    final ohneBewegung = MediaQuery.disableAnimationsOf(context);
+
+    final ziffer = Semantics(
+      liveRegion: true,
+      label: 'Noch $sekunden',
+      child: Container(
+        width: 200,
+        height: 200,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.45),
+          shape: BoxShape.circle,
+          border: Border.all(color: farben.akzent, width: 4),
+        ),
+        child: Text(
+          '$sekunden',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 128,
+            fontWeight: FontWeight.w800,
+            height: 1,
+            shadows: [
+              Shadow(color: Colors.black.withValues(alpha: 0.6), blurRadius: 12),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    return Center(
+      child: ohneBewegung
+          ? ziffer
+          : TweenAnimationBuilder<double>(
+              // Der Schluessel setzt die Animation je Sekunde neu auf, sonst
+              // pulst nur die erste Ziffer.
+              key: ValueKey(sekunden),
+              tween: Tween(begin: 0.7, end: 1),
+              duration: const Duration(milliseconds: 320),
+              curve: Curves.easeOutBack,
+              builder: (context, wert, kind) =>
+                  Transform.scale(scale: wert, child: kind),
+              child: ziffer,
+            ),
     );
   }
 }
@@ -737,20 +932,23 @@ class _Kopfzeile extends StatelessWidget {
 }
 
 /// Statuszeile unter der Silhouette.
+///
+/// Nimmt Text und Bereitschaft statt eines Enums: Portrait und Ganzkoerper
+/// haben verschiedene Hinweislisten, die Darstellung ist dieselbe.
 class _Statustext extends StatelessWidget {
-  const _Statustext({required this.hinweis});
+  const _Statustext({required this.text, required this.bereit});
 
-  final LiveHinweis hinweis;
+  final String text;
+  final bool bereit;
 
   @override
   Widget build(BuildContext context) {
     final farben = context.farben;
-    final bereit = hinweis.bereit;
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
       child: Container(
-        key: ValueKey(hinweis),
+        key: ValueKey(text),
         margin: const EdgeInsets.symmetric(horizontal: AppTheme.gapM),
         padding: const EdgeInsets.symmetric(
           horizontal: AppTheme.gapM,
@@ -773,7 +971,7 @@ class _Statustext extends StatelessWidget {
             const SizedBox(width: AppTheme.gapXs + 2),
             Flexible(
               child: Text(
-                hinweis.text,
+                text,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: bereit ? farben.aufAkzent : Colors.white,

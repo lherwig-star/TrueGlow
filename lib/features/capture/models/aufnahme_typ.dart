@@ -122,6 +122,7 @@ enum AufnahmeTyp {
     overlay: Overlaytyp.ganzkoerperFrontal,
     pruefung: Pruefprofil.ganzkoerper,
     rueckkamera: true,
+    autoAusloeser: true,
   ),
   figurGanzkoerperSeitlich(
     modul: AnalyseModul.figurPassform,
@@ -131,6 +132,7 @@ enum AufnahmeTyp {
     overlay: Overlaytyp.ganzkoerperSeitlich,
     pruefung: Pruefprofil.ganzkoerper,
     rueckkamera: true,
+    autoAusloeser: true,
   ),
 
   // --- Stil & Kleiderschrank ---
@@ -169,6 +171,7 @@ enum AufnahmeTyp {
     required this.pruefung,
     this.rueckkamera = false,
     this.optional = false,
+    this.autoAusloeser = false,
   });
 
   final AnalyseModul modul;
@@ -184,8 +187,23 @@ enum AufnahmeTyp {
   /// Darf uebersprungen werden, ohne den Flow zu blockieren.
   final bool optional;
 
+  /// Ob die App selbst ausloest, sobald jemand vollstaendig im Bild steht.
+  ///
+  /// Nur bei den Ganzkoerperfotos: Dort stellt man das Handy ab und tritt
+  /// mehrere Meter zurueck – der Ausloeser ist von dort nicht erreichbar.
+  /// Bei allen anderen Aufnahmen haelt man das Geraet in der Hand, und ein
+  /// Automatismus waere nur ein Foto zum falschen Zeitpunkt.
+  final bool autoAusloeser;
+
   /// Ob die Live-Erkennung im Sucher sinnvoll ist.
   bool get mitLiveHilfe => pruefung.pruefeGesicht;
+
+  /// Ob ueberhaupt ein Bildstrom laufen muss.
+  ///
+  /// Gesichtserkennung fuer die Portraits, Posenerkennung fuer die
+  /// Ganzkoerperfotos – Outfit-Aufnahmen brauchen keins von beidem und
+  /// bekommen deshalb auch keinen Strom.
+  bool get mitBildstrom => mitLiveHilfe || autoAusloeser;
 
   /// Der Hinweistext, abhaengig von den gewaehlten Modulen.
   ///
