@@ -339,9 +339,10 @@ wann wozu zugestimmt wurde, hält einer Prüfung nicht stand.
 
 ### 2.5 Play-Konsole vorbereiten
 
-- [ ] Data-Safety-Formular: Fotos, Kennungen, App-Aktivität; Verschlüsselung bei Übertragung, Löschmöglichkeit — muss zur tatsächlichen Implementierung passen — **S**
-- [ ] Alterseinstufung (IARC-Fragebogen), Zielgruppe, Kategorie, Kontaktdaten — **S**
-- [ ] Store-Eintrag anlegen, DSE-URL hinterlegen — **S**
+- [x] Data-Safety-Formular: Ausfüllhilfe aus dem tatsächlichen Codeverhalten, jede Angabe mit Fundstelle — **S** — *`store/data-safety.md`*
+- [x] Alterseinstufung (IARC-Fragebogen), Kategorie, Kontaktdaten: Frage für Frage vorbereitet — **S** — *`store/data-safety.md`, zweiter Teil*
+- [ ] **Zielgruppe entscheiden:** Das Onboarding bietet „unter 18" an — mit Zielgruppe unter 18 greift Googles Familien-Richtlinie, und eine Einwilligung Minderjähriger ist ohne Sorgeberechtigte unwirksam — **S** — *Entscheidung liegt bei dir, Begründung in `store/data-safety.md`*
+- [ ] Store-Eintrag anlegen, DSE-URL hinterlegen — **S** — *Texte fertig in `store/listing-de.md`; das Eintragen ist Konsolenarbeit*
 
 ### 2.6 Release-Build 🔴
 
