@@ -511,7 +511,9 @@ in `SETUP.md`, Abschnitt 12.*
 - [ ] Screenshots aktuell (zeigen die Deep-Teal-Oberfläche, nicht das alte Schema)
 - [ ] Konto-Löschweg in der App und im Web erreichbar
 - [ ] Testkonto für die Google-Prüfer hinterlegt, falls Login Pflicht ist
-- [ ] Crashlytics empfängt Ereignisse aus dem Release-Build
+- [ ] Crashlytics empfängt Ereignisse aus dem Release-Build (`SETUP.md` 14.5)
+- [ ] Ohne erteilte Einwilligung kommt in Analytics und Crashlytics **nichts** an (`SETUP.md` 14.4)
+- [ ] `TESTPLAN.md` auf mindestens zwei Geräten abgearbeitet, Blocker behoben
 - [ ] Rate-Limits und Budget-Alarm im Cloud-Projekt aktiv
 - [ ] Rollback-Plan: vorherige Version im Play-Konsolen-Track verfügbar
 - [ ] `build/app/outputs/mapping/release/mapping.txt` zu diesem Build archiviert — ohne sie ist kein Absturzbericht lesbar
