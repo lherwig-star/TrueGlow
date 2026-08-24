@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/analysis/ui/analysis_loading_screen.dart';
+import '../../features/auth/logic/auth_repository.dart';
+import '../../features/auth/ui/login_screen.dart';
 import '../../features/capture/models/aufnahme_typ.dart';
 import '../../features/capture/ui/camera_screen.dart';
 import '../../features/capture/ui/capture_flow_screen.dart';
@@ -23,6 +25,10 @@ import '../../features/settings/ui/settings_screen.dart';
 class Routes {
   Routes._();
   static const onboarding = '/onboarding';
+
+  /// Anmeldung. Liegt zwischen Onboarding und App: Ohne Konto nimmt die
+  /// Cloud Function keine Analyse an.
+  static const login = '/login';
   static const home = '/';
   static const module = '/module';
   static const richtung = '/richtung';
@@ -66,18 +72,35 @@ class Routes {
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: Routes.home,
-    // Solange das Onboarding nicht abgeschlossen ist, landet jeder Aufruf dort.
+    // Zwei Tore vor der App, in dieser Reihenfolge: erst das Onboarding
+    // (Einwilligung), dann die Anmeldung. Beides wird beim naechsten
+    // Navigationsvorgang geprueft – der Login-Screen und die Einstellungen
+    // navigieren nach Erfolg selbst weiter.
     redirect: (context, state) {
-      final done = ref.read(onboardingControllerProvider).abgeschlossen;
-      final imOnboarding = state.matchedLocation == Routes.onboarding;
-      if (!done && !imOnboarding) return Routes.onboarding;
-      if (done && imOnboarding) return Routes.home;
+      final ort = state.matchedLocation;
+
+      final onboardingFertig =
+          ref.read(onboardingControllerProvider).abgeschlossen;
+      if (!onboardingFertig) {
+        return ort == Routes.onboarding ? null : Routes.onboarding;
+      }
+
+      final angemeldet = ref.read(authRepositoryProvider).aktuell != null;
+      if (!angemeldet) {
+        return ort == Routes.login ? null : Routes.login;
+      }
+
+      if (ort == Routes.onboarding || ort == Routes.login) return Routes.home;
       return null;
     },
     routes: [
       GoRoute(
         path: Routes.onboarding,
         builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: Routes.login,
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(path: Routes.home, builder: (context, state) => const HomeScreen()),
       GoRoute(

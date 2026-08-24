@@ -7,6 +7,7 @@ import 'package:glowup/core/storage/hive_service.dart';
 import 'package:glowup/core/storage/key_value_store.dart';
 import 'package:glowup/features/analysis/logic/analysis_controller.dart';
 import 'package:glowup/features/analysis/logic/mock_analysis_service.dart';
+import 'package:glowup/features/auth/logic/auth_repository.dart';
 import 'package:glowup/features/checkin/logic/checkin_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -57,6 +58,10 @@ List<Override> speicherOverrides() => [
 List<Override> dienstOverrides() => [
       analysisServiceProvider.overrideWithValue(const MockAnalysisService()),
       checkinServiceProvider.overrideWithValue(const MockCheckinService()),
+      // Standardmaessig angemeldet: Der Router laesst sonst niemanden am
+      // Login-Screen vorbei, und die bestehenden Tests pruefen die Screens
+      // dahinter.
+      authRepositoryProvider.overrideWithValue(FakeAuthRepository.angemeldet()),
     ];
 
 /// Speicher plus Dienste – der Standardsatz fuer Widget-Tests.

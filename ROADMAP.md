@@ -265,8 +265,8 @@ ehrlich kommunizierbar.
 
 ### 1.4 Login
 
-- [ ] Firebase Auth mit Google Sign-In, dazu anonyme Anmeldung für „erst ausprobieren" — **M**
-- [ ] Login-Screen im bestehenden Design, Abmelden in den Einstellungen — **S**
+- [x] Firebase Auth mit Google Sign-In, dazu anonyme Anmeldung für „erst ausprobieren" — **M** — *`AuthRepository` mit `AuthAnbieter { google, apple, anonym }`; Apple ist bereits implementiert und wartet nur auf die Freischaltung in der Konsole (`SETUP.md` 7)*
+- [x] Login-Screen im bestehenden Design, Abmelden in den Einstellungen — **S** — *Konto-Karte oben in den Einstellungen, Abmelde-Dialog erklärt die Folge*
 
 **Abhängigkeiten:** 1.1.
 

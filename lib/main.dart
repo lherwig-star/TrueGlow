@@ -11,19 +11,29 @@ import 'core/theme/app_colors.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
 import 'features/analysis/logic/analysis_service.dart';
+import 'features/auth/logic/auth_repository.dart';
+import 'features/auth/logic/firebase_auth_repository.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Der Demo-/Screenshot-Modus laeuft komplett ohne Backend: keine Fotos im
   // Netz, keine Konten, keine Kosten. Deshalb wird Firebase dort gar nicht
-  // erst gestartet.
-  if (!AnalysisConfig.useMockData) {
+  // erst gestartet und die Anmeldung bleibt im Arbeitsspeicher – der
+  // Login-Screen und „Erst ausprobieren" funktionieren trotzdem.
+  final AuthRepository anmeldung;
+  if (AnalysisConfig.useMockData) {
+    anmeldung = FakeAuthRepository();
+  } else {
     final firebase = await FirebaseStart.init();
     if (!firebase.bereit) {
       runApp(EinrichtungHinweisApp(ergebnis: firebase));
       return;
     }
+    // Erst warten, bis Firebase eine gespeicherte Sitzung wiederhergestellt
+    // hat – sonst zeigt der Router beim Start kurz den Login-Screen.
+    await FirebaseAuthRepository.sitzungAbwarten();
+    anmeldung = FirebaseAuthRepository();
   }
 
   await HiveService.init();
@@ -31,7 +41,12 @@ Future<void> main() async {
   // Hochformat erzwingen – der Foto-Flow ist auf Portrait ausgelegt.
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  runApp(const ProviderScope(child: GlowUpApp()));
+  runApp(
+    ProviderScope(
+      overrides: [authRepositoryProvider.overrideWithValue(anmeldung)],
+      child: const GlowUpApp(),
+    ),
+  );
 }
 
 class GlowUpApp extends ConsumerWidget {

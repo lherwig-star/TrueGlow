@@ -12,6 +12,7 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../analysis/logic/analysis_controller.dart';
 import '../../analysis/logic/analysis_service.dart';
+import '../../auth/logic/auth_repository.dart';
 import '../../capture/logic/capture_controller.dart';
 import '../../checkin/logic/checkin_benachrichtigung.dart';
 import '../../checkin/logic/checkin_controller.dart';
@@ -30,6 +31,8 @@ class SettingsScreen extends ConsumerWidget {
     return AppPage(
       title: S.einstellungenTitel,
       children: [
+        const _KontoKarte(),
+        const SizedBox(height: AppTheme.gapS),
         SectionCard(
           padding: const EdgeInsets.symmetric(vertical: AppTheme.gapXs),
           child: Column(
@@ -138,6 +141,105 @@ class SettingsScreen extends ConsumerWidget {
 
     if (!context.mounted) return;
     context.go(Routes.onboarding);
+  }
+}
+
+/// Angemeldetes Konto und der Weg hinaus.
+///
+/// Bewusst weit oben auf der Seite: Wer nach „bin ich eigentlich angemeldet?"
+/// sucht, soll nicht scrollen muessen.
+class _KontoKarte extends ConsumerWidget {
+  const _KontoKarte();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final nutzer = ref.watch(nutzerProvider).valueOrNull;
+    final farben = context.farben;
+
+    if (nutzer == null) {
+      return const SectionCard(
+        title: 'Konto',
+        icon: Icons.person_outline,
+        child: MutedText('Nicht angemeldet.'),
+      );
+    }
+
+    return SectionCard(
+      title: 'Konto',
+      icon: nutzer.anonym ? Icons.person_outline : Icons.verified_user_outlined,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            nutzer.beschriftung,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: AppTheme.gapXs),
+          MutedText(
+            nutzer.anonym
+                ? 'Deine Daten hängen an diesem Gerät. Melde dich mit Google '
+                    'an, damit sie einen Gerätewechsel überleben – dein '
+                    'bisheriger Stand wird dabei übernommen.'
+                : 'Plan, Streak und Verlauf gehören zu diesem Konto. Fotos '
+                    'bleiben auf dem Gerät.',
+          ),
+          const SizedBox(height: AppTheme.gapS),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: () => _abmelden(context, ref, anonym: nutzer.anonym),
+              icon: Icon(Icons.logout, size: 18, color: farben.warnung),
+              label: Text(
+                'Abmelden',
+                style: TextStyle(color: farben.warnung),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _abmelden(
+    BuildContext context,
+    WidgetRef ref, {
+    required bool anonym,
+  }) async {
+    final bestaetigt = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Abmelden?'),
+        content: Text(
+          anonym
+              // Ein anonymes Konto laesst sich nach dem Abmelden nicht wieder
+              // aufrufen – das gehoert vorher gesagt, nicht hinterher.
+              ? 'Du bist ohne Konto angemeldet. Nach dem Abmelden kommst du '
+                  'an diesen Stand nicht mehr heran. Die Daten auf diesem '
+                  'Gerät bleiben erhalten.'
+              : 'Deine Daten bleiben in deinem Konto. Nach der nächsten '
+                  'Anmeldung sind sie wieder da.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text(S.abbrechen),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(
+              foregroundColor: context.farben.warnung,
+            ),
+            child: const Text('Abmelden'),
+          ),
+        ],
+      ),
+    );
+
+    if (bestaetigt != true) return;
+
+    await ref.read(authRepositoryProvider).abmelden();
+    if (!context.mounted) return;
+    context.go(Routes.login);
   }
 }
 
