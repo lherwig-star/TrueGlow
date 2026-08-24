@@ -13,6 +13,13 @@ abstract interface class KeyValueStore {
   Future<void> delete(String schluessel);
   Future<void> clear();
   Iterable<Object?> get values;
+
+  /// Alle belegten Schluessel.
+  ///
+  /// Gebraucht wird das von der Migration und vom Sync: Beide muessen den
+  /// Bestand durchgehen, ohne jeden Schluessel einzeln zu kennen.
+  Iterable<String> get keys;
+
   bool get isEmpty;
 }
 
@@ -39,6 +46,9 @@ class HiveStore implements KeyValueStore {
   Iterable<Object?> get values => _box.values;
 
   @override
+  Iterable<String> get keys => _box.keys.map((k) => '$k');
+
+  @override
   bool get isEmpty => _box.isEmpty;
 }
 
@@ -61,6 +71,9 @@ class MemoryStore implements KeyValueStore {
 
   @override
   Iterable<Object?> get values => _daten.values;
+
+  @override
+  Iterable<String> get keys => _daten.keys;
 
   @override
   bool get isEmpty => _daten.isEmpty;

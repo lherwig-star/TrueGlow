@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/l10n/app_strings.dart';
+import '../../../core/cloud/cloud_provider.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/storage/hive_service.dart';
 import '../../../core/theme/app_colors.dart';
@@ -13,6 +14,8 @@ import '../../../core/widgets/section_card.dart';
 import '../../analysis/logic/analysis_controller.dart';
 import '../../analysis/logic/analysis_service.dart';
 import '../../auth/logic/auth_repository.dart';
+import '../../auth/models/glowup_nutzer.dart';
+import '../../migration/ui/migration_dialog.dart';
 import '../../capture/logic/capture_controller.dart';
 import '../../checkin/logic/checkin_benachrichtigung.dart';
 import '../../checkin/logic/checkin_controller.dart';
@@ -103,7 +106,9 @@ class SettingsScreen extends ConsumerWidget {
         title: const Text('Alle Daten löschen?'),
         content: const Text(
           'Analysen, Plan, Fortschritt und deine Angaben werden unwiderruflich '
-          'vom Gerät entfernt.',
+          'entfernt – auf diesem Gerät und in deinem Konto. Auch deine Fotos '
+          'auf dem Gerät werden gelöscht.\n\n'
+          'Dein Konto selbst bleibt bestehen.',
         ),
         actions: [
           TextButton(
@@ -123,6 +128,9 @@ class SettingsScreen extends ConsumerWidget {
 
     if (bestaetigt != true) return;
 
+    // Zuerst die Cloud: Bliebe sie stehen, holte der naechste Sync alles
+    // wieder zurueck – das Loeschen waere dann nur eine Verzoegerung.
+    await ref.read(cloudSpeicherProvider)?.allesLoeschen();
     await ref.read(alleDatenLoeschenProvider)();
     await ref.read(imageQualityServiceProvider).fotosLoeschen();
 
@@ -184,6 +192,16 @@ class _KontoKarte extends ConsumerWidget {
                     'bleiben auf dem Gerät.',
           ),
           const SizedBox(height: AppTheme.gapS),
+          if (nutzer.anonym) ...[
+            // Verknuepfen statt neu anmelden: Die uid bleibt dieselbe,
+            // deshalb bleiben Streak, Plan und Historie da, wo sie sind.
+            FilledButton.icon(
+              onPressed: () => _verknuepfen(context, ref),
+              icon: const Icon(Icons.link, size: 18),
+              label: const Text('Mit Google verknüpfen'),
+            ),
+            const SizedBox(height: AppTheme.gapXs),
+          ],
           Align(
             alignment: Alignment.centerLeft,
             child: TextButton.icon(
@@ -198,6 +216,28 @@ class _KontoKarte extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  /// Macht aus dem anonymen Konto ein Google-Konto, ohne die Daten zu
+  /// verlieren.
+  Future<void> _verknuepfen(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.maybeOf(context);
+
+    try {
+      await ref.read(authRepositoryProvider).verknuepfen(AuthAnbieter.google);
+      if (!context.mounted) return;
+
+      // Falls der lokale Bestand noch nie in die Cloud gewandert ist, ist
+      // jetzt der richtige Moment dafuer.
+      await MigrationDialog.zeigenWennNoetig(context, ref);
+      messenger?.showSnackBar(
+        const SnackBar(content: Text('Konto verknüpft.')),
+      );
+    } on AuthException catch (e) {
+      messenger?.showSnackBar(
+        SnackBar(content: Text('${e.fehler.titel}: ${e.fehler.tipp}')),
+      );
+    }
   }
 
   Future<void> _abmelden(

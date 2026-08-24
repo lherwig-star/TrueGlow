@@ -8,6 +8,7 @@ import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/section_card.dart';
+import '../../migration/ui/migration_dialog.dart';
 import '../logic/auth_repository.dart';
 import '../models/glowup_nutzer.dart';
 
@@ -40,6 +41,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     try {
       await ref.read(authRepositoryProvider).anmelden(anbieter);
       if (!mounted) return;
+
+      // Beim ersten echten Login kommt die Frage nach dem lokalen Bestand –
+      // noch bevor das Dashboard ihn anzeigt.
+      await MigrationDialog.zeigenWennNoetig(context, ref);
+      if (!mounted) return;
+
       context.go(Routes.home);
     } on AuthException catch (e) {
       if (!mounted) return;

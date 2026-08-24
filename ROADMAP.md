@@ -272,8 +272,8 @@ ehrlich kommunizierbar.
 
 ### 1.5 Migration der lokalen Daten
 
-- [ ] Beim ersten Login: vorhandene Hive-Daten hochladen, idempotent (kein Doppelimport), mit Dialog „Deine bisherigen Daten übernehmen?" — **M**
-- [ ] Anonymes Konto beim Google-Login zusammenführen statt verwerfen — **S**
+- [x] Beim ersten Login: vorhandene Hive-Daten hochladen, idempotent (kein Doppelimport), mit Dialog „Deine bisherigen Daten übernehmen?" — **M** — *`HiveMigration`; Idempotenz über Marker `daten/migration` **und** feste Dokument-IDs*
+- [x] Anonymes Konto beim Google-Login zusammenführen statt verwerfen — **S** — *„Mit Google verknüpfen" in den Einstellungen, `AuthRepository.verknuepfen`*
 
 **Begründung:** Bestehende Testnutzer (und du selbst) verlieren sonst Streak und Historie.
 **Abhängigkeiten:** 1.3, 1.4.

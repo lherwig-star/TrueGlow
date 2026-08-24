@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'core/cloud/cloud_provider.dart';
+import 'core/cloud/cloud_speicher.dart';
 import 'core/firebase/einrichtung_hinweis.dart';
 import 'core/firebase/firebase_start.dart';
 import 'core/l10n/app_strings.dart';
@@ -22,6 +24,10 @@ Future<void> main() async {
   // erst gestartet und die Anmeldung bleibt im Arbeitsspeicher – der
   // Login-Screen und „Erst ausprobieren" funktionieren trotzdem.
   final AuthRepository anmeldung;
+  // Im Demo-Modus bleibt die Fabrik leer: Ohne Cloud-Speicher laufen
+  // Migration und Sync ins Leere, statt Firestore zu rufen.
+  CloudSpeicher Function(String uid)? cloudFabrik;
+
   if (AnalysisConfig.useMockData) {
     anmeldung = FakeAuthRepository();
   } else {
@@ -34,6 +40,7 @@ Future<void> main() async {
     // hat – sonst zeigt der Router beim Start kurz den Login-Screen.
     await FirebaseAuthRepository.sitzungAbwarten();
     anmeldung = FirebaseAuthRepository();
+    cloudFabrik = (uid) => FirestoreSpeicher(uid: uid);
   }
 
   await HiveService.init();
@@ -43,7 +50,10 @@ Future<void> main() async {
 
   runApp(
     ProviderScope(
-      overrides: [authRepositoryProvider.overrideWithValue(anmeldung)],
+      overrides: [
+        authRepositoryProvider.overrideWithValue(anmeldung),
+        cloudSpeicherFabrikProvider.overrideWithValue(cloudFabrik),
+      ],
       child: const GlowUpApp(),
     ),
   );

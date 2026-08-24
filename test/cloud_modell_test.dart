@@ -53,11 +53,8 @@ void main() {
       );
     });
 
-    test('lokale Fotobezuege und Geraeteeinstellungen bleiben lokal', () {
-      // Die drei Ausnahmen aus DECISIONS.md: Dateipfade, Geraeteeinstellung
-      // und die abgeleiteten Streak-Werte.
+    test('Geraetezustand und abgeleitete Werte bleiben lokal', () {
       const lokalBleibt = [
-        (HiveService.boxEinstellungen, CloudModell.keyAufnahmen),
         (HiveService.boxEinstellungen, CloudModell.keyErscheinungsbild),
         (HiveService.boxCheckins, CloudModell.keyEntwurf),
         (HiveService.boxFortschritt, CloudModell.keyStreakAktuell),
@@ -71,6 +68,18 @@ void main() {
           reason: '$box/$schluessel',
         );
       }
+    });
+
+    test('der Aufnahmen-Index wandert mit, die Bilder nicht', () {
+      // Er enthaelt Verweise auf lokale Dateien. Auf einem neuen Geraet
+      // fehlen sie – dafuer gibt es den Platzhalter in der UI.
+      expect(
+        CloudModell.ziel(
+          HiveService.boxEinstellungen,
+          CloudModell.keyAufnahmen,
+        ),
+        const CloudZiel(CloudModell.dokAufnahmen, 'wert'),
+      );
     });
 
     test('die Historie gilt als synchronisiert, aber ohne Feldabbildung', () {

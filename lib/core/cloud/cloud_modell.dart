@@ -13,6 +13,7 @@ import '../storage/hive_service.dart';
 ///   daten/module        Modulauswahl und Modul-Eingaben
 ///   daten/checkinPlan   Zeitplan und Markierungen der Check-ins
 ///   daten/verweise      Zeiger auf die aktuelle Analyse
+///   daten/aufnahmen     Verweise auf die lokalen Fotos (keine Bilddaten)
 ///   daten/migration     Marker der einmaligen Hive-Uebernahme
 ///   analysen/{id}       je ein Report
 ///   checkins/{id}       je ein abgeschlossener Check-in
@@ -45,6 +46,7 @@ class CloudModell {
   static const String dokModule = '$sammlungDaten/module';
   static const String dokCheckinPlan = '$sammlungDaten/checkinPlan';
   static const String dokVerweise = '$sammlungDaten/verweise';
+  static const String dokAufnahmen = '$sammlungDaten/aufnahmen';
   static const String dokMigration = '$sammlungDaten/migration';
 
   /// Alle Sammlungen, die der Client selbst schreibt – die Grundlage fuer
@@ -88,16 +90,18 @@ class CloudModell {
 
   /// Wohin ein lokaler Schluessel in der Cloud gehoert.
   ///
-  /// `null` heisst: bleibt bewusst auf dem Geraet. Das betrifft genau drei
-  /// Dinge, und jedes aus einem eigenen Grund:
+  /// `null` heisst: bleibt bewusst auf dem Geraet.
   ///
-  /// - `aufnahmen` und `entwurf` enthalten **Dateipfade lokaler Fotos**. Sie
-  ///   waeren auf einem neuen Geraet wertlos und wuerden nur den Eindruck
-  ///   erwecken, die Bilder seien mitgewandert.
+  /// - `entwurf` ist ein halb ausgefuellter Check-in mit dem Pfad eines eben
+  ///   aufgenommenen Fotos – ein Zwischenstand des Geraets, kein Kontostand.
   /// - `erscheinungsbild` ist eine Geraeteeinstellung, keine Kontoeinstellung.
   /// - `streakAktuell` und `streakLetzterTag` werden aus den Tagesdaten neu
   ///   gerechnet (siehe StreakRepository) – sie zu synchronisieren hiesse,
   ///   zwei Rechenwege fuer dieselbe Zahl zu pflegen.
+  ///
+  /// Der Aufnahmen-Index (`aufnahmen`) wandert dagegen mit: Er enthaelt keine
+  /// Bilddaten, sondern **Verweise** auf lokale Dateien. Auf einem neuen
+  /// Geraet fehlen sie – genau dafuer gibt es den Platzhalter in der UI.
   static CloudZiel? ziel(String box, String schluessel) {
     switch (box) {
       case HiveService.boxEinstellungen:
@@ -107,6 +111,7 @@ class CloudModell {
           keyModule => const CloudZiel(dokModule, 'module'),
           keyModulEingaben => const CloudZiel(dokModule, 'eingaben'),
           keyAktuelleAnalyse => const CloudZiel(dokVerweise, 'analyseId'),
+          keyAufnahmen => const CloudZiel(dokAufnahmen, 'wert'),
           _ => null,
         };
 
@@ -173,6 +178,8 @@ class CloudModell {
         const LokalesZiel(HiveService.boxEinstellungen, keyModulEingaben),
       (dokVerweise, 'analyseId') =>
         const LokalesZiel(HiveService.boxEinstellungen, keyAktuelleAnalyse),
+      (dokAufnahmen, 'wert') =>
+        const LokalesZiel(HiveService.boxEinstellungen, keyAufnahmen),
       (dokStreak, 'rekord') =>
         const LokalesZiel(HiveService.boxFortschritt, keyStreakRekord),
       (dokStreak, 'gefeiert') =>
