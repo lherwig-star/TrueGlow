@@ -7,7 +7,9 @@ import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/section_card.dart';
-import '../../legal/ui/rechtstexte_zeile.dart';
+import '../../consent/logic/einwilligung_controller.dart';
+import '../../consent/models/einwilligung.dart';
+import '../../consent/ui/einwilligungs_auswahl.dart';
 import '../logic/onboarding_controller.dart';
 import '../models/onboarding_profile.dart';
 
@@ -33,7 +35,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   void _weiter() {
     if (_seite == _anzahlSeiten - 1) {
-      ref.read(onboardingControllerProvider.notifier).abschliessen();
+      final ctrl = ref.read(onboardingControllerProvider.notifier);
+      // Der alte Sammel-Haken bleibt als Vermerk stehen: „hat im Onboarding
+      // zugestimmt". Der belastbare Nachweis liegt seit Phase 2.2 im
+      // Einwilligungs-Controller.
+      ctrl.setZustimmung(true);
+      ctrl.abschliessen();
       context.go(Routes.home);
       return;
     }
@@ -49,12 +56,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       );
 
   /// Pro Seite pruefen, ob weitergeblaettert werden darf.
-  bool _darfWeiter(OnboardingProfile p) => switch (_seite) {
+  ///
+  /// Auf der letzten Seite zaehlt nur noch die Pflichteinwilligung; die
+  /// Foto-Einwilligung ist freiwillig und darf niemanden aufhalten.
+  bool _darfWeiter(OnboardingProfile p, {required bool pflichtErteilt}) =>
+      switch (_seite) {
         0 => true,
         1 => p.alter != null && p.budget != null,
         2 => p.zeit != null,
         3 => p.fokus.isNotEmpty,
-        4 => p.zugestimmt,
+        4 => pflichtErteilt,
         _ => false,
       };
 
@@ -62,6 +73,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) {
     final profil = ref.watch(onboardingControllerProvider);
     final ctrl = ref.read(onboardingControllerProvider.notifier);
+    final pflichtErteilt = !ref.watch(pflichtEinwilligungFehltProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -78,7 +90,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   _AlterBudgetSeite(profil: profil, ctrl: ctrl),
                   _ZeitSeite(profil: profil, ctrl: ctrl),
                   _FokusSeite(profil: profil, ctrl: ctrl),
-                  _DatenschutzSeite(profil: profil, ctrl: ctrl),
+                  const _DatenschutzSeite(),
                 ],
               ),
             ),
@@ -107,7 +119,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     ),
                   Expanded(
                     child: FilledButton(
-                      onPressed: _darfWeiter(profil) ? _weiter : null,
+                      onPressed: _darfWeiter(profil, pflichtErteilt: pflichtErteilt)
+                          ? _weiter
+                          : null,
                       child: Text(
                         _seite == _anzahlSeiten - 1 ? 'Los geht es' : S.weiter,
                       ),
@@ -363,57 +377,33 @@ class _FokusSeite extends StatelessWidget {
   }
 }
 
+/// Die Einwilligungsseite des Onboardings.
+///
+/// Seit Phase 2.2 zwei getrennte Haekchen statt eines Sammel-Hakens: Die
+/// Nutzung der App und die Verarbeitung von Gesichtsfotos durch einen
+/// KI-Dienst sind rechtlich zwei Paar Schuhe. Nur das erste ist Pflicht.
 class _DatenschutzSeite extends StatelessWidget {
-  const _DatenschutzSeite({required this.profil, required this.ctrl});
-
-  final OnboardingProfile profil;
-  final OnboardingController ctrl;
+  const _DatenschutzSeite();
 
   @override
   Widget build(BuildContext context) {
     return _Seite(
       titel: S.onbDatenschutzTitel,
       text: 'Bitte lies die folgenden Hinweise, bevor es losgeht.',
-      children: [
-        const SectionCard(
+      children: const [
+        SectionCard(
           title: 'Keine medizinische Beratung',
           icon: Icons.medical_information_outlined,
           child: MutedText(S.disclaimerMedizin),
         ),
-        const SizedBox(height: AppTheme.gapS),
-        const SectionCard(
+        SizedBox(height: AppTheme.gapS),
+        SectionCard(
           title: 'Umgang mit deinen Fotos',
           icon: Icons.lock_outline,
           child: MutedText(S.disclaimerFotos),
         ),
-        const SizedBox(height: AppTheme.gapS),
-        // Dieselben Dokumente wie in den Einstellungen – eine Quelle, ein
-        // Weg. Wer zustimmt, soll vorher nachlesen koennen.
-        const RechtstexteZeile(),
-        const SizedBox(height: AppTheme.gapS),
-        InkWell(
-          onTap: () => ctrl.setZustimmung(!profil.zugestimmt),
-          borderRadius: BorderRadius.circular(AppTheme.radiusButton),
-          child: Padding(
-            padding: const EdgeInsets.all(AppTheme.gapXs),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Checkbox(
-                  value: profil.zugestimmt,
-                  onChanged: (v) => ctrl.setZustimmung(v ?? false),
-                ),
-                const SizedBox(width: AppTheme.gapXs),
-                const Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 12),
-                    child: Text(S.disclaimerZustimmung),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        SizedBox(height: AppTheme.gapM),
+        EinwilligungsAuswahl(kanal: Einwilligungskanal.onboarding),
       ],
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/analysis/logic/analysis_controller.dart';
 import '../../features/capture/logic/capture_controller.dart';
+import '../../features/consent/logic/einwilligung_controller.dart';
 import '../../features/checkin/logic/checkin_controller.dart';
 import '../../features/direction/logic/direction_controller.dart';
 import '../../features/history/logic/analysis_repository.dart';
@@ -38,6 +39,7 @@ void zustaendeNeuLaden(WidgetRef ref) {
   ref.read(directionControllerProvider.notifier).neuLaden();
   ref.read(checkinControllerProvider.notifier).neuLaden();
   ref.read(onboardingControllerProvider.notifier).neuLaden();
+  ref.read(einwilligungControllerProvider.notifier).neuLaden();
   ref.read(analysenProvider.notifier).neuLaden();
   ref.read(planFortschrittProvider.notifier).neuLaden();
   ref.read(themeControllerProvider.notifier).neuLaden();

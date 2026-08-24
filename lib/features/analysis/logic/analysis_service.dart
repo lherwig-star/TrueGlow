@@ -68,6 +68,11 @@ enum AnalysisFehler {
   fotosFehlen(
     'Fotos fehlen',
     'Für diese Auswahl fehlen noch Aufnahmen. Geh zurück und hol sie nach.',
+  ),
+  einwilligungFehlt(
+    'Einwilligung fehlt',
+    'Für eine Analyse brauchen wir deine Einwilligung, deine Fotos an den '
+        'KI-Dienst zu senden. Du kannst sie in den Einstellungen erteilen.',
   );
 
   const AnalysisFehler(this.titel, this.tipp);

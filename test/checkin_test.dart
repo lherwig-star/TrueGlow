@@ -605,6 +605,7 @@ void main() {
       onboarding.setZeit(Zeitbudget.mittel);
       onboarding.setZustimmung(true);
       onboarding.abschliessen();
+      einwilligungErteilen(container);
 
       await container.read(analysenProvider.notifier).speichern(_analyse());
 
@@ -695,6 +696,7 @@ void main() {
       onboarding.setZeit(Zeitbudget.mittel);
       onboarding.setZustimmung(true);
       onboarding.abschliessen();
+      einwilligungErteilen(container);
 
       await container.read(analysenProvider.notifier).speichern(_analyse());
       container

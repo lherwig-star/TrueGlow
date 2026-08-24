@@ -307,6 +307,54 @@ unberührt. Der Ablauf steht in `SETUP.md`, Abschnitt 2.0.
 
 ---
 
+## 18 · Zwei Einwilligungen, nur eine davon Pflicht
+
+**Was:** `nutzung` (Nutzungsbedingungen/DSE) ist Pflicht und blockiert die
+App. `fotoKi` (Verarbeitung von Gesichtsfotos durch Gemini) ist freiwillig und
+blockiert nur neue Analysen.
+
+**Warum:** Eine Einwilligung, ohne die nichts geht, ist keine freiwillige — und
+genau die Freiwilligkeit ist bei biometrienahen Daten der Punkt, an dem eine
+Prüfung ansetzt. Wer die Fotoverarbeitung ablehnt, behält Plan, Checklisten,
+Streak, Check-ins und alle bisherigen Reports.
+
+**Preis:** Zwei Zustände mehr in der UI und ein Gate im `AnalysisController`.
+Der Check-in läuft ohne Einwilligung ohne Bildvergleich weiter, statt zu
+scheitern — die Rückmeldung zum Plan ist das Wesentliche.
+
+---
+
+## 19 · Eine Einwilligung gilt nur für die Textfassung, der sie galt
+
+**Was:** Jeder Nachweis trägt die Version aus `Rechtstexte.version`. Stimmt sie
+nicht mehr mit der aktuellen überein, gilt die Einwilligung als nicht erteilt
+und die App fragt einmalig nach (`/einwilligung`).
+
+**Warum:** Sonst hätte jemand formal etwas anderem zugestimmt als dem, was
+gilt. Dieselbe Mechanik trägt die Migration der alten Sammel-Checkbox: Sie
+hinterlässt gar keinen Nachweis, fällt also durch dieselbe Prüfung.
+
+**Preis:** Jede inhaltliche Textänderung kostet alle Nutzer einen Dialog.
+Deshalb ist die Version bewusst grobkörnig — Tippfehler in den Texten
+rechtfertigen keine neue Nummer.
+
+---
+
+## 20 · Der alte `zugestimmt`-Haken bleibt als Vermerk stehen
+
+**Was:** `OnboardingProfile.zugestimmt` wird weiterhin gesetzt, ist aber kein
+Nachweis mehr.
+
+**Warum:** Er ist das einzige Erkennungsmerkmal für Bestandsnutzer: „hat
+zugestimmt, aber ohne Nachweis" (`ausAlterZustimmungProvider`). Daran hängt
+der freundlichere Text auf dem Nachtrags-Screen — sonst bekämen langjährige
+Nutzer dieselbe Ansprache wie bei einer Textänderung.
+
+**Preis:** Ein Feld, das aussieht, als würde es etwas entscheiden, es aber
+nicht mehr tut. Es ist im Modell als Vermerk gekennzeichnet.
+
+---
+
 ## Mock vs. Live
 
 *(Wird nach dem ersten echten Durchlauf gefüllt — siehe `SETUP.md`,

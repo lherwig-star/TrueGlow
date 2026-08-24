@@ -9,6 +9,8 @@ import 'package:trueglow/features/analysis/logic/analysis_controller.dart';
 import 'package:trueglow/features/analysis/logic/mock_analysis_service.dart';
 import 'package:trueglow/features/auth/logic/auth_repository.dart';
 import 'package:trueglow/features/checkin/logic/checkin_service.dart';
+import 'package:trueglow/features/consent/logic/einwilligung_controller.dart';
+import 'package:trueglow/features/consent/models/einwilligung.dart';
 import 'package:trueglow/features/onboarding/logic/onboarding_controller.dart';
 import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
 import 'package:trueglow/main.dart';
@@ -96,6 +98,28 @@ Future<ProviderContainer> appMitDashboard(
   onboarding.toggleFokus(Fokusbereich.haut);
   onboarding.setZustimmung(true);
   onboarding.abschliessen();
+  einwilligungErteilen(container);
 
   return container;
+}
+
+/// Erteilt beide Einwilligungen – der Zustand nach dem Onboarding.
+///
+/// Ohne sie fuehrt der Router auf den Einwilligungs-Screen und die Analyse
+/// lehnt ab; beides ist gewollt, aber in den meisten Tests nicht das Thema.
+void einwilligungErteilen(
+  ProviderContainer container, {
+  bool fotoKi = true,
+}) {
+  final ctrl = container.read(einwilligungControllerProvider.notifier);
+  ctrl.setzen(
+    Einwilligungsart.nutzung,
+    erteilt: true,
+    kanal: Einwilligungskanal.onboarding,
+  );
+  ctrl.setzen(
+    Einwilligungsart.fotoKi,
+    erteilt: fotoKi,
+    kanal: Einwilligungskanal.onboarding,
+  );
 }

@@ -7,7 +7,7 @@ import '../storage/hive_service.dart';
 ///
 /// ```
 /// users/{uid}
-///   daten/profil        Onboarding-Antworten
+///   daten/profil        Onboarding-Antworten und Einwilligungsnachweis
 ///   daten/richtung      Persoenliche Richtung
 ///   daten/streak        Rekord und gefeierte Abzeichen
 ///   daten/module        Modulauswahl und Modul-Eingaben
@@ -61,6 +61,7 @@ class CloudModell {
   // --- Lokale Schluessel ------------------------------------------------
 
   static const String keyOnboarding = 'onboarding';
+  static const String keyEinwilligungen = 'einwilligungen';
   static const String keyRichtung = 'richtung';
   static const String keyModule = 'analyseModule';
   static const String keyModulEingaben = 'modulEingaben';
@@ -107,6 +108,9 @@ class CloudModell {
       case HiveService.boxEinstellungen:
         return switch (schluessel) {
           keyOnboarding => const CloudZiel(dokProfil, 'wert'),
+          // Der Einwilligungsnachweis gehoert ins Profil-Dokument: Er
+          // beschreibt die Person, nicht einen Durchlauf.
+          keyEinwilligungen => const CloudZiel(dokProfil, 'einwilligungen'),
           keyRichtung => const CloudZiel(dokRichtung, 'wert'),
           keyModule => const CloudZiel(dokModule, 'module'),
           keyModulEingaben => const CloudZiel(dokModule, 'eingaben'),
@@ -170,6 +174,8 @@ class CloudModell {
     return switch ((pfad, feld)) {
       (dokProfil, 'wert') =>
         const LokalesZiel(HiveService.boxEinstellungen, keyOnboarding),
+      (dokProfil, 'einwilligungen') =>
+        const LokalesZiel(HiveService.boxEinstellungen, keyEinwilligungen),
       (dokRichtung, 'wert') =>
         const LokalesZiel(HiveService.boxEinstellungen, keyRichtung),
       (dokModule, 'module') =>

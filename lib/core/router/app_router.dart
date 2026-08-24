@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../features/analysis/ui/analysis_loading_screen.dart';
 import '../../features/auth/logic/auth_repository.dart';
 import '../../features/auth/ui/login_screen.dart';
+import '../../features/consent/logic/einwilligung_controller.dart';
+import '../../features/consent/ui/einwilligung_screen.dart';
 import '../../features/legal/logic/rechtstexte.dart';
 import '../../features/legal/ui/legal_screen.dart';
 import '../../features/legal/ui/rechtsdokument_screen.dart';
@@ -32,6 +34,10 @@ class Routes {
   /// Anmeldung. Liegt zwischen Onboarding und App: Ohne Konto nimmt die
   /// Cloud Function keine Analyse an.
   static const login = '/login';
+
+  /// Nachtrag der Einwilligung – fuer Bestandsnutzer und nach einer neuen
+  /// Fassung der Rechtstexte.
+  static const einwilligung = '/einwilligung';
   static const home = '/';
   static const module = '/module';
   static const richtung = '/richtung';
@@ -100,7 +106,18 @@ final routerProvider = Provider<GoRouter>((ref) {
         return ort == Routes.login ? null : Routes.login;
       }
 
-      if (ort == Routes.onboarding || ort == Routes.login) return Routes.home;
+      // Drittes Tor: Ohne gueltige Pflichteinwilligung geht es nicht weiter.
+      // Die Foto-Einwilligung ist ausdruecklich nicht dabei – sie ist
+      // freiwillig und blockiert nur Analysen, nicht die App.
+      if (ref.read(pflichtEinwilligungFehltProvider)) {
+        return ort == Routes.einwilligung ? null : Routes.einwilligung;
+      }
+
+      if (ort == Routes.onboarding ||
+          ort == Routes.login ||
+          ort == Routes.einwilligung) {
+        return Routes.home;
+      }
       return null;
     },
     routes: [
@@ -111,6 +128,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.login,
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: Routes.einwilligung,
+        builder: (context, state) => const EinwilligungScreen(),
       ),
       GoRoute(path: Routes.home, builder: (context, state) => const HomeScreen()),
       GoRoute(

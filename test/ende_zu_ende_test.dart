@@ -54,6 +54,7 @@ void main() {
     onboarding.toggleFokus(Fokusbereich.haut);
     onboarding.setZustimmung(true);
     onboarding.abschliessen();
+    einwilligungErteilen(container);
 
     // Der Redirect greift beim naechsten Navigationsvorgang – genau so
     // verlaesst auch der letzte Onboarding-Screen die Seite.

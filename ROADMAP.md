@@ -316,9 +316,10 @@ App ohne Bewertungen, ohne Installationen und ohne Käufe.
 
 ### 2.2 Einwilligung nachschärfen
 
-- [ ] Getrennte Häkchen: (a) Nutzungsbedingungen, (b) Verarbeitung von Gesichtsfotos durch den KI-Dienst — **M**
-- [ ] Zeitstempel und Textversion der Einwilligung speichern — **S**
-- [ ] Widerruf in den Einstellungen (inklusive Folge: keine neuen Analysen möglich) — **S**
+- [x] Getrennte Häkchen: (a) Nutzungsbedingungen, (b) Verarbeitung von Gesichtsfotos durch den KI-Dienst — **M** — *`EinwilligungsAuswahl`, überall derselbe Wortlaut; der Drittlandbezug steht ausdrücklich dabei*
+- [x] Zeitstempel und Textversion der Einwilligung speichern — **S** — *dazu der Kanal (Onboarding/Einstellungen/Nachtrag); lokal und im `daten/profil`-Dokument*
+- [x] Widerruf in den Einstellungen (inklusive Folge: keine neuen Analysen möglich) — **S** — *`AnalysisController` prüft vor jedem Start; der Check-in läuft dann ohne Fotos weiter*
+- [x] Bestandsnutzer der alten Sammel-Checkbox werden einmalig durch die neue Einwilligung geführt — **S** — *`/einwilligung`, greift auch bei neuer Textversion*
 
 **Begründung:** Gesichtsfotos sind biometrienah. Eine pauschale Checkbox ohne Nachweis, wem
 wann wozu zugestimmt wurde, hält einer Prüfung nicht stand.

@@ -14,6 +14,9 @@ import '../../../core/widgets/section_card.dart';
 import '../../analysis/logic/analysis_controller.dart';
 import '../../analysis/logic/analysis_service.dart';
 import '../../auth/logic/auth_repository.dart';
+import '../../consent/logic/einwilligung_controller.dart';
+import '../../consent/models/einwilligung.dart';
+import '../../consent/ui/einwilligungs_auswahl.dart';
 import '../../auth/models/trueglow_nutzer.dart';
 import '../../migration/ui/migration_dialog.dart';
 import '../../capture/logic/capture_controller.dart';
@@ -64,6 +67,8 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => context.push(Routes.rechtliches),
           ),
         ),
+        const SizedBox(height: AppTheme.gapS),
+        const _EinwilligungsKarte(),
         const SizedBox(height: AppTheme.gapS),
         const _ErscheinungsbildKarte(),
         const SizedBox(height: AppTheme.gapS),
@@ -128,12 +133,90 @@ class SettingsScreen extends ConsumerWidget {
     ref.read(analysenProvider.notifier).neuLaden();
     ref.read(planFortschrittProvider.notifier).neuLaden();
     ref.read(onboardingControllerProvider.notifier).zuruecksetzen();
+    ref.read(einwilligungControllerProvider.notifier).zuruecksetzen();
     // Die Theme-Auswahl liegt in derselben Box und wurde mitgeloescht.
     ref.read(themeControllerProvider.notifier).neuLaden();
 
     if (!context.mounted) return;
     context.go(Routes.onboarding);
   }
+}
+
+/// Erteilte Einwilligungen mit Nachweis und Widerrufsweg.
+///
+/// Der Widerruf gehoert sichtbar in die Einstellungen und nicht in ein
+/// Untermenue: Eine Einwilligung, die sich nur schwer zuruecknehmen laesst,
+/// ist keine freiwillige.
+class _EinwilligungsKarte extends ConsumerWidget {
+  const _EinwilligungsKarte();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final stand = ref.watch(einwilligungControllerProvider);
+    final fotoErlaubt = ref.watch(einwilligungGiltProvider(Einwilligungsart.fotoKi));
+
+    return SectionCard(
+      title: 'Einwilligungen',
+      icon: Icons.fact_check_outlined,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          MutedText(
+            fotoErlaubt
+                ? 'Analysen sind möglich. Deine Fotos gehen nur für die Dauer '
+                    'der Auswertung an den KI-Dienst.'
+                : 'Ohne Foto-Einwilligung sind keine neuen Analysen möglich. '
+                    'Deine bisherigen Reports, dein Plan und deine Serie '
+                    'bleiben erhalten.',
+          ),
+          const SizedBox(height: AppTheme.gapS),
+          // Das Haekchen ist zugleich der Widerrufsweg: abwaehlen genuegt.
+          const EinwilligungsHaken(
+            art: Einwilligungsart.fotoKi,
+            kanal: Einwilligungskanal.einstellungen,
+          ),
+          const SizedBox(height: AppTheme.gapS),
+          for (final art in Einwilligungsart.values)
+            _Nachweis(eintrag: stand.eintrag(art), art: art),
+        ],
+      ),
+    );
+  }
+}
+
+/// Eine Zeile des Nachweises: was, wann, auf welche Textfassung.
+class _Nachweis extends StatelessWidget {
+  const _Nachweis({required this.eintrag, required this.art});
+
+  final Einwilligung? eintrag;
+  final Einwilligungsart art;
+
+  @override
+  Widget build(BuildContext context) {
+    final e = eintrag;
+    if (e == null) {
+      return MutedText('${art.titel}: noch nicht gefragt');
+    }
+
+    final zeitpunkt = e.zeitpunkt.toLocal();
+    final datum = '${zeitpunkt.day.toString().padLeft(2, '0')}.'
+        '${zeitpunkt.month.toString().padLeft(2, '0')}.${zeitpunkt.year}';
+
+    return MutedText(
+      '${art.titel}: ${e.erteilt ? 'erteilt' : 'widerrufen'} am $datum '
+      '(Textstand $_textversion, ${_kanal(e.kanal)})',
+    );
+  }
+
+  String get _textversion => eintrag!.textversion.isEmpty
+      ? 'unbekannt'
+      : eintrag!.textversion;
+
+  static String _kanal(Einwilligungskanal kanal) => switch (kanal) {
+        Einwilligungskanal.onboarding => 'im Onboarding',
+        Einwilligungskanal.einstellungen => 'in den Einstellungen',
+        Einwilligungskanal.nachtrag => 'nachträglich',
+      };
 }
 
 /// Angemeldetes Konto und der Weg hinaus.

@@ -35,6 +35,7 @@ Future<ProviderContainer> _appMitDashboard(WidgetTester tester) async {
   onboarding.setZeit(Zeitbudget.mittel);
   onboarding.setZustimmung(true);
   onboarding.abschliessen();
+  einwilligungErteilen(container);
 
   container.read(routerProvider).go(Routes.home);
   await tester.pumpAndSettle();

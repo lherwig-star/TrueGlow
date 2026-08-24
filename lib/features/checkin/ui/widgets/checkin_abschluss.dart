@@ -15,6 +15,7 @@ import '../../../capture/logic/capture_controller.dart';
 import '../../../history/logic/analysis_repository.dart';
 import '../../../plan/logic/plan_progress_repository.dart';
 import '../../logic/checkin_benachrichtigung.dart';
+import '../../../consent/logic/einwilligung_controller.dart';
 import '../../logic/checkin_controller.dart';
 import '../../logic/checkin_service.dart';
 import '../../logic/plan_anpassung.dart';
@@ -60,10 +61,17 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
       _fehler = null;
     });
 
-    final erstfoto = ref
-        .read(captureControllerProvider)
-        .foto(CheckinController.fortschrittsTyp);
-    final neu = widget.checkin.fortschrittsfoto;
+    // Ohne Foto-Einwilligung laeuft der Check-in ohne Bilder weiter, statt zu
+    // scheitern: Die Rueckmeldung zum Plan ist das Wesentliche, der
+    // Bildvergleich die Zugabe.
+    final mitFotos = ref.read(analyseErlaubtProvider);
+
+    final erstfoto = mitFotos
+        ? ref
+            .read(captureControllerProvider)
+            .foto(CheckinController.fortschrittsTyp)
+        : null;
+    final neu = mitFotos ? widget.checkin.fortschrittsfoto : null;
 
     try {
       final auswertung =

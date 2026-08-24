@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trueglow/core/l10n/app_strings.dart';
+import 'package:trueglow/core/widgets/section_card.dart';
+import 'package:trueglow/features/consent/models/einwilligung.dart';
 import 'package:trueglow/main.dart';
 
 import 'hilfen.dart';
@@ -45,8 +47,17 @@ void main() {
     await tester.tap(find.text(S.weiter));
     await tester.pumpAndSettle();
 
-    // Seite 5: Datenschutz-Zustimmung
-    await tester.tap(find.byType(Checkbox));
+    // Seite 5: zwei getrennte Einwilligungen. Nur die erste ist Pflicht –
+    // die Foto-Einwilligung bleibt bewusst ungehakt, um genau das zu pruefen.
+    await tester.tap(
+      find.descendant(
+        of: find.ancestor(
+          of: find.text(Einwilligungsart.nutzung.titel),
+          matching: find.byType(SectionCard),
+        ),
+        matching: find.byType(Checkbox),
+      ),
+    );
     await tester.pumpAndSettle();
     await tester.tap(find.text('Los geht es'));
     await tester.pumpAndSettle();

@@ -41,6 +41,7 @@ Future<(ProviderContainer, FakeAuthRepository)> _start(
   onboarding.toggleFokus(Fokusbereich.haut);
   onboarding.setZustimmung(true);
   onboarding.abschliessen();
+  einwilligungErteilen(container);
 
   container.read(routerProvider).go(Routes.home);
   await tester.pumpAndSettle();

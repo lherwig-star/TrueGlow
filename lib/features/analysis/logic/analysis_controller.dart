@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../capture/logic/aufnahme_flow.dart';
+import '../../consent/logic/einwilligung_controller.dart';
 import '../../capture/logic/capture_controller.dart';
 import '../../capture/models/aufnahme_typ.dart';
 import '../../direction/logic/direction_controller.dart';
@@ -58,6 +59,14 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
     Set<AnalyseModul>? module,
   }) async {
     if (state is AnalyseLaeuft) return;
+
+    // Ohne gueltige Foto-Einwilligung verlaesst kein Bild das Geraet. Die
+    // Pruefung steht hier und nicht in der UI: Es ist der einzige Weg, auf
+    // dem eine Analyse startet.
+    if (!_ref.read(analyseErlaubtProvider)) {
+      state = const AnalyseFehlgeschlagen(AnalysisFehler.einwilligungFehlt);
+      return;
+    }
 
     final aufnahmen = _ref.read(captureControllerProvider);
     final modulZustand = _ref.read(moduleControllerProvider);
