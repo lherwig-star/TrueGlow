@@ -271,6 +271,23 @@ void main() {
       expect(AufnahmeTyp.basisWinkel45.overlay, Overlaytyp.winkel45);
     });
 
+    test('die beiden Ganzkoerper-Aufnahmen haben eigene Umrisse', () {
+      // Frueher teilten sie sich einen Overlaytyp – das seitliche Foto zeigte
+      // also eine frontale Figur. Wer sich danach ausrichtet, steht falsch.
+      expect(
+        AufnahmeTyp.figurGanzkoerperFrontal.overlay,
+        Overlaytyp.ganzkoerperFrontal,
+      );
+      expect(
+        AufnahmeTyp.figurGanzkoerperSeitlich.overlay,
+        Overlaytyp.ganzkoerperSeitlich,
+      );
+      expect(
+        AufnahmeTyp.figurGanzkoerperFrontal.overlay,
+        isNot(AufnahmeTyp.figurGanzkoerperSeitlich.overlay),
+      );
+    });
+
     test('die Profil-Hinweise nennen Drehrichtung und Gesichtshaelfte', () {
       expect(
         AufnahmeTyp.basisProfilLinks.hinweis,

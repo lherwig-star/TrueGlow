@@ -657,6 +657,51 @@ dart run tool/diagnose_stichprobe.dart tool/stichprobe/analyse_*.json
 | `habits` pro Kapitel | immer 4 | 6 × 4, **1 × 3** | Der Prompt verlangt „4 bis 7 pro Kapitel" (`analyse_prompt.ts`). Einmal kamen nur 3. Kein Fehlerfall — die App zeigt einfach eine kürzere Liste —, aber der Beleg, dass Mengenangaben im Prompt Wünsche sind und keine Garantien. Nichts darf davon abhängen, dass genau *n* Einträge ankommen. |
 | `plan.taeglicheHabits` | leer | leer (3 von 3) | **Totes Feld.** Siehe unten. |
 
+### Ganzkörper-Silhouette statt Kasten
+
+Der Umriss für die Ganzkörperfotos war ein Oval plus abgerundetes Rechteck.
+Ein Kasten sagt „irgendwo hier rein", eine Silhouette sagt „so weit weg und so
+ausgerichtet" — und genau darum geht es, wenn jemand das Handy aufstellt und
+mehrere Meter zurücktritt.
+
+Frontal und seitlich teilten sich außerdem **denselben** Overlaytyp. Das
+seitliche Foto zeigte also eine frontale Figur; wer sich danach ausrichtete,
+stand falsch. Jetzt gibt es `ganzkoerperFrontal` und `ganzkoerperSeitlich`.
+
+Drei Dinge, die beim Zeichnen nicht offensichtlich waren und in dieser
+Reihenfolge auffielen:
+
+1. **Arme gehören nicht in die Rumpfkontur.** Im ersten Entwurf lief der
+   Umriss von der Schulter am Arm hinunter, um die Hand und innen wieder
+   hinauf. Die Glättung zog Schulter und Arm daraufhin zu einem Ballon
+   zusammen, die Taille verschwand darin, und die Arminnenseiten schwebten als
+   Tropfen im Körper. Arme sind jetzt eigene Konturen.
+2. **Der Abstand zwischen Arm und Brustkorb ist Absicht.** Liegen beide
+   Konturen zu dicht beieinander, kreuzen sie sich an der Schulter und aus der
+   Figur wird ein Knoten.
+3. **Ein Mensch im Profil ist etwa ein Sechstel so tief wie hoch.** Der erste
+   Entwurf war deutlich schmaler und las sich als Strich. Im Profil fehlt
+   bewusst der Arm: Er läge genau über der Rumpfkontur — als einzelne Linie
+   sieht er aus wie ein Strichfehler, als Kontur verdeckt er die Rückenlinie.
+   Und die ist der Grund, warum dieses zweite Foto überhaupt verlangt wird.
+
+**Zur Glättung:** Die Kontur entsteht als quadratische Beziers *durch die
+Mittelpunkte* zwischen den Stützpunkten — die Stützpunkte selbst sind
+Kontrollpunkte. Das rundet Ecken zuverlässig, erreicht aber einzelne Spitzen
+nie. Die Zehenspitze steht deshalb **zweimal** in der Punktliste: Bei zwei
+identischen Punkten fällt der Anker auf den Punkt, und die Spitze kommt
+heraus. Ohne diesen Kniff wird aus dem Fuß ein Haken.
+
+> **Werkzeug für die Sichtprüfung:** Ob eine Kontur wie ein Mensch aussieht,
+> sagt kein Test. Zum Nachsehen rendert man das Overlay in einem Widget-Test
+> über `RepaintBoundary.toImage()` in eine PNG.
+>
+> **`toImage()` muss dabei in `tester.runAsync(...)` stehen.** Sonst hängt der
+> Test rund neun Minuten und endet mit „did not complete": Die Rasterung
+> braucht den echten Event-Loop, und in der Fake-Async-Zone des Widget-Tests
+> wird ihr Future nie fertig. Mit `runAsync` dauert derselbe Lauf eine
+> Sekunde.
+
 ### Hautton ohne eigenes Foto
 
 Die Nahaufnahme des Moduls „Haut & Farbtyp" ist entfallen. Unterton und

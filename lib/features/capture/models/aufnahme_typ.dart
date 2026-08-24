@@ -18,8 +18,11 @@ enum Overlaytyp {
   /// Halb gedrehter Kopf fuer die 45-Grad-Aufnahme.
   winkel45,
 
-  /// Stehende Ganzkoerper-Silhouette.
-  ganzkoerper,
+  /// Stehende Ganzkoerper-Silhouette von vorn.
+  ganzkoerperFrontal,
+
+  /// Dieselbe Figur im Profil, Blickrichtung rechts.
+  ganzkoerperSeitlich,
 
   /// Freies Bild ohne Hilfslinien (Outfit-Fotos).
   keins,
@@ -116,7 +119,7 @@ enum AufnahmeTyp {
     label: 'Ganzkörper frontal',
     hinweis: 'Ganzer Körper im Bild, gerade stehen, Arme locker seitlich. '
         'Eng anliegende Kleidung zeigt die Silhouette am besten.',
-    overlay: Overlaytyp.ganzkoerper,
+    overlay: Overlaytyp.ganzkoerperFrontal,
     pruefung: Pruefprofil.ganzkoerper,
     rueckkamera: true,
   ),
@@ -125,7 +128,7 @@ enum AufnahmeTyp {
     label: 'Ganzkörper seitlich',
     hinweis: 'Dieselbe Haltung um 90 Grad gedreht – so sieht man Haltung und '
         'Proportionen von der Seite.',
-    overlay: Overlaytyp.ganzkoerper,
+    overlay: Overlaytyp.ganzkoerperSeitlich,
     pruefung: Pruefprofil.ganzkoerper,
     rueckkamera: true,
   ),

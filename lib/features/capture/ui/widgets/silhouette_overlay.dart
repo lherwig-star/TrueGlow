@@ -95,8 +95,10 @@ class _SilhouettePainter extends CustomPainter {
       case Overlaytyp.winkel45:
         _zeichneGestrichelt(canvas, _winkelPfad(size, feld), stift);
         _drehpfeil(canvas, feld, stift, nachRechts: true, halb: true);
-      case Overlaytyp.ganzkoerper:
-        _zeichneGestrichelt(canvas, _ganzkoerperPfad(size), stift);
+      case Overlaytyp.ganzkoerperFrontal:
+        _zeichneGestrichelt(canvas, _ganzkoerperFrontalPfad(size), stift);
+      case Overlaytyp.ganzkoerperSeitlich:
+        _zeichneGestrichelt(canvas, _ganzkoerperSeitlichPfad(size), stift);
       case Overlaytyp.keins:
         break;
     }
@@ -323,25 +325,197 @@ class _SilhouettePainter extends CustomPainter {
     );
   }
 
-  /// Rahmen fuer Ganzkoerper-Aufnahmen: Kopf oben, Koerper als hoher Rahmen.
-  Path _ganzkoerperPfad(Size size) {
-    final w = size.width;
-    final h = size.height;
+  /// Halbe Kopfhoehe der Ganzkoerper-Figur, als Anteil der Bildhoehe.
+  ///
+  /// Alles Uebrige haengt daran: Der Kopf sitzt bei [_figurKopfMitte], sein
+  /// unterer Rand trifft den Halsansatz der Umrisse bei 0,15.
+  static const double _figurKopfHalb = 0.052;
+  static const double _figurKopfMitte = 0.098;
 
-    final kopf = Rect.fromCenter(
-      center: Offset(w * 0.5, h * 0.15),
-      width: h * 0.075 * _kopfVerhaeltnis * 2,
-      height: h * 0.075 * 2,
+  /// Stehende Figur von vorn.
+  ///
+  /// Der Umriss war frueher ein abgerundetes Rechteck. Ein Kasten sagt nur
+  /// „irgendwo hier rein", eine Silhouette sagt „so weit weg und so
+  /// ausgerichtet" – und genau darum geht es, wenn jemand das Handy aufstellt
+  /// und mehrere Meter zuruecktritt.
+  ///
+  /// Gezeichnet wird die rechte Haelfte von oben nach unten; die linke
+  /// entsteht durch Spiegeln. Das haelt die Figur zwangslaeufig symmetrisch –
+  /// von Hand gesetzte Gegenpunkte laufen beim Nachjustieren auseinander.
+  Path _ganzkoerperFrontalPfad(Size size) {
+    Offset p(double dx, double dy) =>
+        Offset(size.width * (0.5 + dx), size.height * dy);
+
+    // Rumpf und Bein **ohne** den Arm: Wird der Arm in dieselbe Kontur
+    // eingerechnet, zieht die Glaettung Schulter und Arm zu einem Ballon
+    // zusammen und die Taille verschwindet darin.
+    const rumpf = <(double, double)>[
+      (0.032, 0.150), // Halsansatz
+      (0.130, 0.196), // Schulter oben
+      (0.158, 0.234), // Deltamuskel
+      (0.126, 0.302), // Brustkorb
+      (0.098, 0.382), // Taille
+      (0.130, 0.462), // Huefte
+      (0.120, 0.580), // Oberschenkel
+      (0.092, 0.678), // Knie
+      (0.082, 0.772), // Wade
+      (0.054, 0.888), // Knoechel aussen
+      (0.078, 0.928), // Fuss aussen
+      (0.022, 0.928), // Fuss innen
+      (0.028, 0.888), // Knoechel innen
+      (0.034, 0.678), // Knie innen
+      (0.012, 0.500), // Schrittmitte
+    ];
+
+    // Der Arm als eigene schmale Kontur: aussen hinunter, um die Hand herum,
+    // innen wieder hinauf bis zur Achsel.
+    //
+    // Die Innenseite haelt bewusst Abstand zum Brustkorb (0,126). Liegen die
+    // beiden Konturen zu dicht, kreuzen sie sich an der Schulter und aus der
+    // Figur wird ein Knoten.
+    const arm = <(double, double)>[
+      (0.158, 0.236), // setzt am Deltamuskel an, sonst schwebt der Arm
+      (0.180, 0.320),
+      (0.184, 0.398), // Ellenbogen
+      (0.174, 0.470),
+      (0.162, 0.520), // Hand
+      (0.144, 0.470),
+      (0.150, 0.398),
+      (0.146, 0.320),
+      (0.130, 0.276), // Achsel, dicht am Brustkorb
+    ];
+
+    final pfad = Path()..addOval(_figurKopf(size, versatz: 0));
+
+    pfad.addPath(
+      _glattDurch(
+        [
+          for (final (dx, dy) in rumpf) p(dx, dy),
+          // Rueckweg an der linken Seite hinauf.
+          for (final (dx, dy) in rumpf.reversed) p(-dx, dy),
+        ],
+        geschlossen: true,
+      ),
+      Offset.zero,
     );
 
-    return Path()
-      ..addOval(kopf)
-      ..addRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTRB(w * 0.22, h * 0.24, w * 0.78, h * 0.94),
-          Radius.circular(w * 0.12),
+    for (final seite in [1, -1]) {
+      pfad.addPath(
+        _glattDurch(
+          [for (final (dx, dy) in arm) p(dx * seite, dy)],
+          geschlossen: false,
         ),
+        Offset.zero,
       );
+    }
+
+    return pfad;
+  }
+
+  /// Dieselbe Figur im Profil, Blickrichtung rechts.
+  ///
+  /// Hier zaehlt die Rueckenlinie: Sie ist der Grund, warum ueberhaupt ein
+  /// zweites Ganzkoerperfoto verlangt wird (Haltung und Proportionen von der
+  /// Seite). Deshalb sind Hohlkreuz und Gesaess ausgepraegt gezeichnet und
+  /// nicht zu einer geraden Linie vereinfacht.
+  Path _ganzkoerperSeitlichPfad(Size size) {
+    Offset p(double dx, double dy) =>
+        Offset(size.width * (0.5 + dx), size.height * dy);
+
+    // Ruecken hinunter, um den Fuss herum, Vorderseite wieder hinauf.
+    //
+    // Die Tiefenwerte sind rund anderthalbmal so gross wie beim ersten
+    // Entwurf: Ein Mensch im Profil ist etwa ein Sechstel so tief wie hoch.
+    // Zu schmal gezeichnet liest sich die Figur als Strich, und niemand
+    // erkennt, wonach er sich ausrichten soll.
+    const umriss = <(double, double)>[
+      (-0.048, 0.152), // Nacken
+      (-0.092, 0.200), // Schulter hinten
+      (-0.108, 0.278), // oberer Ruecken
+      (-0.076, 0.372), // Hohlkreuz
+      (-0.132, 0.462), // Gesaess
+      (-0.100, 0.585), // Oberschenkel hinten
+      (-0.072, 0.678), // Kniekehle
+      (-0.084, 0.752), // Wade
+      // Der Fuss braucht vier Punkte. Mit nur Ferse und Spitze rundet die
+      // Glaettung die Sohle zu einem Haken, der nach nichts aussieht.
+      (-0.066, 0.900), // Ferse hinten
+      (-0.056, 0.932), // Ferse unten
+      (0.034, 0.936), // Sohle
+      // Zweimal derselbe Punkt: Die Glaettung legt ihre Ankerpunkte zwischen
+      // je zwei Stuetzpunkte, erreicht eine einzelne Spitze also nie. Bei
+      // einem doppelten Punkt faellt der Anker auf ihn – die Zehen kommen
+      // heraus statt abgerundet zu werden.
+      (0.112, 0.930), // Zehenspitze, zeigt nach vorn
+      (0.112, 0.930),
+      (0.032, 0.886), // Spann
+      (0.036, 0.752), // Schienbein
+      (0.046, 0.676), // Knie vorn
+      (0.066, 0.580), // Oberschenkel vorn
+      (0.078, 0.475), // Huefte vorn
+      (0.090, 0.390), // Bauch
+      (0.086, 0.286), // Brust
+      (0.058, 0.204), // Schulter vorn
+      (0.022, 0.154), // Halsvorderseite
+    ];
+
+    // Kein Arm im Profil: Er laege genau ueber der Rumpfkontur. Als einzelne
+    // Linie gezeichnet schwebt er wie ein Strichfehler in der Figur, als
+    // Kontur verdeckt er die Rueckenlinie – und die ist der Grund, warum
+    // dieses zweite Foto ueberhaupt verlangt wird.
+    return Path()
+      ..addOval(_figurKopf(size, versatz: 0.014))
+      ..addPath(
+        _glattDurch([for (final (dx, dy) in umriss) p(dx, dy)],
+            geschlossen: true),
+        Offset.zero,
+      );
+  }
+
+  /// Kopf der Ganzkoerper-Figur. [versatz] schiebt ihn im Profil leicht nach
+  /// vorn, weil der Hals dort nicht mittig sitzt.
+  Rect _figurKopf(Size size, {required double versatz}) => Rect.fromCenter(
+        center: Offset(
+          size.width * (0.5 + versatz),
+          size.height * _figurKopfMitte,
+        ),
+        width: size.height * _figurKopfHalb * 2 * _kopfVerhaeltnis,
+        height: size.height * _figurKopfHalb * 2,
+      );
+
+  /// Weicher Streckenzug durch die Punkte.
+  ///
+  /// Die Stuetzpunkte werden zu Kontrollpunkten quadratischer Beziers, die
+  /// Ankerpunkte liegen jeweils dazwischen. Mit `lineTo` saehe die Figur aus
+  /// wie ein Polygon – bei einer Koerperkontur faellt jede Ecke sofort auf.
+  Path _glattDurch(List<Offset> punkte, {required bool geschlossen}) {
+    final pfad = Path();
+    if (punkte.length < 2) return pfad;
+
+    Offset mitte(Offset a, Offset b) =>
+        Offset((a.dx + b.dx) / 2, (a.dy + b.dy) / 2);
+
+    if (geschlossen) {
+      // Start auf der Mitte zwischen letztem und erstem Punkt, damit auch die
+      // Naht zwischen Ende und Anfang gerundet ist.
+      final start = mitte(punkte.last, punkte.first);
+      pfad.moveTo(start.dx, start.dy);
+      for (var i = 0; i < punkte.length; i++) {
+        final steuer = punkte[i];
+        final ziel = mitte(steuer, punkte[(i + 1) % punkte.length]);
+        pfad.quadraticBezierTo(steuer.dx, steuer.dy, ziel.dx, ziel.dy);
+      }
+      pfad.close();
+      return pfad;
+    }
+
+    pfad.moveTo(punkte.first.dx, punkte.first.dy);
+    for (var i = 1; i < punkte.length - 1; i++) {
+      final ziel = mitte(punkte[i], punkte[i + 1]);
+      pfad.quadraticBezierTo(punkte[i].dx, punkte[i].dy, ziel.dx, ziel.dy);
+    }
+    pfad.lineTo(punkte.last.dx, punkte.last.dy);
+    return pfad;
   }
 
   /// Zeichnet einen Pfad gestrichelt – Flutter kann das nicht von Haus aus.
