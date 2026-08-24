@@ -41,6 +41,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       // Einwilligungs-Controller.
       ctrl.setZustimmung(true);
       ctrl.abschliessen();
+      // Was nicht angehakt wurde, gilt als gefragt und abgelehnt – sonst
+      // schickt der Router direkt danach auf den Nachtrags-Screen.
+      ref
+          .read(einwilligungControllerProvider.notifier)
+          .offeneAlsGefragtVermerken();
       context.go(Routes.home);
       return;
     }

@@ -78,8 +78,8 @@ vorzusetzen.
 DEINE FOTOS BLEIBEN BEI DIR
 
 Deine Bilder werden auf deinem Gerät gespeichert und nicht in unsere Cloud
-hochgeladen. Für die Auswertung gehen sie einmalig an einen KI-Dienst
-(Google Gemini) und werden dort weder gespeichert noch protokolliert. Diese
+hochgeladen. Für die Auswertung übermitteln wir sie an den KI-Dienst Google
+Gemini; dort werden sie weder gespeichert noch protokolliert. Diese
 Verarbeitung findet auch außerhalb der EU statt – du willigst dafür getrennt
 ein und kannst die Einwilligung jederzeit in den Einstellungen widerrufen.
 Ohne sie funktioniert die App weiter, nur eben ohne neue Analysen.
@@ -87,6 +87,12 @@ Ohne sie funktioniert die App weiter, nur eben ohne neue Analysen.
 In die Cloud gehen ausschließlich dein Plan, deine Serie und deine
 Check-in-Antworten – damit sie einen Gerätewechsel überleben. Dein Konto
 kannst du jederzeit in der App vollständig löschen.
+
+AB 18
+
+TrueGlow verarbeitet Aufnahmen deines Gesichts und richtet sich deshalb
+ausschließlich an Erwachsene. Vor der ersten Analyse bestätigst du, dass du
+mindestens 18 Jahre alt bist.
 
 WICHTIG: KEINE MEDIZINISCHE BERATUNG
 
@@ -100,7 +106,7 @@ Ergebnisse hängen von vielen Dingen ab, die eine App nicht kennt. TrueGlow
 verspricht dir kein bestimmtes Aussehen und keinen bestimmten Zeitraum.
 ```
 
-*(rund 2.400 Zeichen — Platz für Ergänzungen bleibt.)*
+*(rund 2.650 Zeichen — Platz für Ergänzungen bleibt.)*
 
 ---
 
@@ -117,6 +123,7 @@ oder zumindest eine Rückfrage:
 | „medizinisch geprüft" | unbelegte Autorität |
 | „KI-Analyse deiner Schönheit" | Attraktivitätsbewertung |
 | „behandelt Akne" | Krankheitsbild plus Behandlung |
+| „für die ganze Familie" | die App ist ab 18 |
 
 Der Prüfer dafür liegt im Repo: `tool/diagnose_stichprobe.dart` prüft
 Analyse-Antworten gegen dieselben Muster.
@@ -128,6 +135,7 @@ Analyse-Antworten gegen dieselben Muster.
 | Feld | Vorschlag |
 |---|---|
 | Kategorie | Beauty |
+| Zielgruppe | **nur 18+** – keine jüngere Altersgruppe ankreuzen (`store/data-safety.md`) |
 | Tags | Beauty, Lifestyle, Selbstpflege |
 | Kontakt-E-Mail | *einzutragen* |
 | Website | *dieselbe Domain wie die Rechtstexte* |
@@ -141,7 +149,7 @@ Noch zu erstellen (Phase 5.1):
   Dashboard, Modulauswahl, „Deine Richtung", Report, Plan, Check-in
 - Feature-Grafik 1024 × 500
 - App-Icon 512 × 512 — wird aus `assets/branding/app_icon.svg` erzeugt,
-  siehe `SETUP.md`, Abschnitt 12
+  siehe `SETUP.md`, Abschnitt 13
 
 > Die Screenshots müssen den aktuellen Stand zeigen. Für einen Durchlauf ohne
 > Backend und ohne Kosten:

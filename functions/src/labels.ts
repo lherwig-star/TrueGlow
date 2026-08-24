@@ -80,8 +80,11 @@ export const AUFNAHMEN: Record<string, { label: string; modul: Modul }> = {
 
 // --- Onboarding --------------------------------------------------------
 
+/**
+ * Altersbereiche. „unter 18" fehlt hier absichtlich: Die App ist ab 18, und
+ * ein unbekannter Name faellt in `label()` ohnehin heraus.
+ */
 export const ALTER: Record<string, string> = {
-  unter18: 'unter 18',
   a18bis24: '18–24',
   a25bis34: '25–34',
   a35bis44: '35–44',

@@ -6,6 +6,7 @@ import '../../features/analysis/ui/analysis_loading_screen.dart';
 import '../../features/auth/logic/auth_repository.dart';
 import '../../features/auth/ui/login_screen.dart';
 import '../../features/consent/logic/einwilligung_controller.dart';
+import '../../features/consent/ui/alters_hinweis_screen.dart';
 import '../../features/consent/ui/einwilligung_screen.dart';
 import '../../features/legal/logic/rechtstexte.dart';
 import '../../features/legal/ui/legal_screen.dart';
@@ -38,6 +39,14 @@ class Routes {
   /// Nachtrag der Einwilligung – fuer Bestandsnutzer und nach einer neuen
   /// Fassung der Rechtstexte.
   static const einwilligung = '/einwilligung';
+
+  /// Hinweis, dass der Analyse-Bereich Erwachsenen vorbehalten ist.
+  static const altersHinweis = '/ab18';
+
+  /// Der Analyse-Flow, den die Altersbestaetigung schuetzt. Wer eine dieser
+  /// Routen ohne Bestaetigung aufruft, landet auf [altersHinweis].
+  static const analyseFlow = {module, richtung, aufnahme, kamera, analysis};
+
   static const home = '/';
   static const module = '/module';
   static const richtung = '/richtung';
@@ -107,9 +116,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       }
 
       // Drittes Tor: Ohne gueltige Pflichteinwilligung geht es nicht weiter.
-      // Die Foto-Einwilligung ist ausdruecklich nicht dabei – sie ist
-      // freiwillig und blockiert nur Analysen, nicht die App.
-      if (ref.read(pflichtEinwilligungFehltProvider)) {
+      // Dazu kommt der einmalige Nachtrag, wenn nach der Altersbestaetigung
+      // noch nie gefragt wurde. Die freiwilligen Punkte blockieren danach
+      // nichts mehr – sie steuern nur, was moeglich ist.
+      if (ref.read(nachtragNoetigProvider)) {
         return ort == Routes.einwilligung ? null : Routes.einwilligung;
       }
 
@@ -118,6 +128,21 @@ final routerProvider = Provider<GoRouter>((ref) {
           ort == Routes.einwilligung) {
         return Routes.home;
       }
+
+      // Viertes Tor, aber nur vor dem Analyse-Flow: Die App ist ab 18. Ohne
+      // Bestaetigung bleibt genau dieser Bereich zu – mit Erklaerung, nicht
+      // als stumme Wand.
+      if (_imAnalyseFlow(ort) &&
+          !ref.read(volljaehrigBestaetigtProvider)) {
+        return '${Routes.altersHinweis}?ziel=${Uri.encodeComponent(state.uri.toString())}';
+      }
+
+      if (ort == Routes.altersHinweis &&
+          ref.read(volljaehrigBestaetigtProvider) &&
+          state.uri.queryParameters['ziel'] == null) {
+        return Routes.home;
+      }
+
       return null;
     },
     routes: [
@@ -132,6 +157,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.einwilligung,
         builder: (context, state) => const EinwilligungScreen(),
+      ),
+      GoRoute(
+        path: Routes.altersHinweis,
+        builder: (context, state) => AltersHinweisScreen(
+          ziel: state.uri.queryParameters['ziel'],
+        ),
       ),
       GoRoute(path: Routes.home, builder: (context, state) => const HomeScreen()),
       GoRoute(
@@ -203,6 +234,13 @@ final routerProvider = Provider<GoRouter>((ref) {
     ),
   );
 });
+
+/// Ob ein Pfad zum Analyse-Flow gehoert.
+///
+/// Verglichen wird der Anfang des Pfads, weil die Kamera-Route ein Segment
+/// anhaengt (`/kamera/basisFrontal`).
+bool _imAnalyseFlow(String ort) =>
+    Routes.analyseFlow.any((pfad) => ort == pfad || ort.startsWith('$pfad/'));
 
 /// Liest den optionalen Modul-Parameter aus der Route.
 AnalyseModul? _modul(Map<String, String> parameter) {

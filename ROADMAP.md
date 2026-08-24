@@ -342,7 +342,9 @@ wann wozu zugestimmt wurde, hält einer Prüfung nicht stand.
 
 - [x] Data-Safety-Formular: Ausfüllhilfe aus dem tatsächlichen Codeverhalten, jede Angabe mit Fundstelle — **S** — *`store/data-safety.md`*
 - [x] Alterseinstufung (IARC-Fragebogen), Kategorie, Kontaktdaten: Frage für Frage vorbereitet — **S** — *`store/data-safety.md`, zweiter Teil*
-- [ ] **Zielgruppe entscheiden:** Das Onboarding bietet „unter 18" an — mit Zielgruppe unter 18 greift Googles Familien-Richtlinie, und eine Einwilligung Minderjähriger ist ohne Sorgeberechtigte unwirksam — **S** — *Entscheidung liegt bei dir, Begründung in `store/data-safety.md`*
+- [x] **Zielgruppe entschieden: 18+.** „unter 18" aus dem Onboarding entfernt, ausdrückliche Altersbestätigung mit Nachweis, Analyse-Flow ohne sie gesperrt (mit Hinweisscreen statt stummer Wand) — **S** — *`DECISIONS.md`, 26*
+- [x] **Data-Safety entschieden:** Übermittlung an Gemini wird als Weitergabe deklariert — **S** — *`DECISIONS.md`, 28*
+- [x] Bausteine für Datenschutzerklärung, AGB und Impressum als Zuarbeit — **S** — *`store/rechtstexte-bausteine.md`, jeder Abschnitt mit Fundstelle im Code*
 - [ ] Store-Eintrag anlegen, DSE-URL hinterlegen — **S** — *Texte fertig in `store/listing-de.md`; das Eintragen ist Konsolenarbeit*
 
 ### 2.6 Release-Build 🔴

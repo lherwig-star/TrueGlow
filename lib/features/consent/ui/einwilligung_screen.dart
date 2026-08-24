@@ -33,7 +33,17 @@ class EinwilligungScreen extends ConsumerWidget {
       title: 'Kurz bestätigen',
       showBackButton: false,
       bottomBar: FilledButton(
-        onPressed: pflichtFehlt ? null : () => context.go(Routes.home),
+        onPressed: pflichtFehlt
+            ? null
+            : () {
+                // Was offen geblieben ist, gilt als gefragt und abgelehnt –
+                // sonst landet dieselbe Person beim naechsten Start wieder
+                // hier.
+                ref
+                    .read(einwilligungControllerProvider.notifier)
+                    .offeneAlsGefragtVermerken();
+                context.go(Routes.home);
+              },
         child: const Text(S.weiter),
       ),
       children: [

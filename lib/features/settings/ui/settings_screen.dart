@@ -282,7 +282,7 @@ class _Nachweis extends StatelessWidget {
         '${zeitpunkt.month.toString().padLeft(2, '0')}.${zeitpunkt.year}';
 
     return MutedText(
-      '${art.titel}: ${e.erteilt ? 'erteilt' : 'widerrufen'} am $datum '
+      '${art.titel}: ${e.erteilt ? 'erteilt' : 'nicht erteilt'} am $datum '
       '(Textstand $_textversion, ${_kanal(e.kanal)})',
     );
   }

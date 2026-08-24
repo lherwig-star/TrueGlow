@@ -118,18 +118,24 @@ Future<ProviderContainer> appMitDashboard(
   return container;
 }
 
-/// Erteilt beide Einwilligungen – der Zustand nach dem Onboarding.
+/// Erteilt alle Bestaetigungen – der Zustand nach dem Onboarding.
 ///
-/// Ohne sie fuehrt der Router auf den Einwilligungs-Screen und die Analyse
-/// lehnt ab; beides ist gewollt, aber in den meisten Tests nicht das Thema.
+/// Ohne sie fuehrt der Router auf den Nachtrags-Screen und die Analyse lehnt
+/// ab; beides ist gewollt, aber in den meisten Tests nicht das Thema.
 void einwilligungErteilen(
   ProviderContainer container, {
   bool fotoKi = true,
+  bool mindestalter = true,
 }) {
   final ctrl = container.read(einwilligungControllerProvider.notifier);
   ctrl.setzen(
     Einwilligungsart.nutzung,
     erteilt: true,
+    kanal: Einwilligungskanal.onboarding,
+  );
+  ctrl.setzen(
+    Einwilligungsart.mindestalter,
+    erteilt: mindestalter,
     kanal: Einwilligungskanal.onboarding,
   );
   ctrl.setzen(
@@ -157,3 +163,6 @@ class BildpruefungOhneGeraet implements ImageQualityService {
   @override
   void dispose() {}
 }
+
+/// Ein leerer Speicher fuer Controller-Tests ohne Hive.
+KeyValueStore speicherAttrappe() => MemoryStore();

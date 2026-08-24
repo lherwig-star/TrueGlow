@@ -1,6 +1,14 @@
 /// Antworten aus dem Onboarding. Fliessen spaeter in den Analyse-Prompt ein.
+/// Die Altersbereiche, nach denen das Onboarding fragt.
+///
+/// „unter 18" gibt es bewusst nicht mehr: TrueGlow richtet sich ausschliesslich
+/// an Erwachsene. Das Alter wird hier nur erfragt, um Empfehlungen
+/// einzuordnen; die verbindliche Aussage ist die Altersbestaetigung
+/// (`Einwilligungsart.mindestalter`).
+///
+/// Ein gespeicherter Altwert `unter18` faellt beim Lesen heraus und laesst das
+/// Feld leer – das Onboarding fragt dann neu.
 enum Altersbereich {
-  unter18('unter 18'),
   a18bis24('18–24'),
   a25bis34('25–34'),
   a35bis44('35–44'),

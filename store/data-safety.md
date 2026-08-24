@@ -91,34 +91,45 @@ Wer „Erst ausprobieren" wählt, hinterlässt weder Namen noch Adresse.
 | Feld | Angabe |
 |---|---|
 | Erhoben | **Ja** |
-| Geteilt | *siehe Kasten unten* |
+| Geteilt | **Ja** |
 | Pflicht | **Optional** (die Einwilligung ist getrennt und widerrufbar) |
 | Zweck | App-Funktionalität |
 | Kurzlebig verarbeitet | **Ja** |
 
-> **Die Stelle, an der du selbst entscheiden musst.** Play zählt eine
-> Weitergabe an einen **Dienstleister**, der ausschließlich für dich
-> verarbeitet, nicht als „Teilen". Google Gemini wird hier über unsere eigene
-> Cloud Function und mit einem eigenen Schlüssel gerufen, verarbeitet die
-> Bilder nur für diesen Aufruf und speichert sie nicht — das spricht für
-> „Dienstleister", also **geteilt: Nein**.
+> **Entschieden: „geteilt: Ja".** Play zählt eine Weitergabe an einen
+> *Dienstleister*, der ausschließlich weisungsgebunden verarbeitet, formal
+> nicht als „Teilen" — man könnte hier also auch „Nein" eintragen. Wir tragen
+> trotzdem „Ja" ein, aus drei Gründen:
 >
-> Prüf das trotzdem gegen die aktuelle Play-Definition und gegen die
-> Nutzungsbedingungen der Gemini-API, bevor du es so einträgst. Wenn du
-> unsicher bist, ist „geteilt: Ja" die konservative Angabe — sie ist nie ein
-> Verstoß, nur eine strengere Aussage.
+> 1. Die Bilder verlassen tatsächlich unsere Kontrolle und gehen an ein
+>    fremdes Unternehmen, auch wenn es weisungsgebunden verarbeitet.
+> 2. Es sind Gesichtsaufnahmen. Bei biometrienahen Daten ist die strengere
+>    Angabe die richtige.
+> 3. „Ja" ist nie ein Verstoß, „Nein" kann einer werden — wenn sich die
+>    Nutzungsbedingungen der Gemini-API ändern, ohne dass wir es merken.
+>
+> Die Einwilligung in der App benennt den Vorgang mit denselben Worten,
+> inklusive Drittlandbezug (`einwilligungs_auswahl.dart`), und die
+> Datenschutzerklärung muss es ebenso tun
+> (`store/rechtstexte-bausteine.md`, Abschnitt 4).
 
-„Kurzlebig verarbeitet" darfst du ankreuzen, weil die Bilder ausschließlich im
-Arbeitsspeicher der Function existieren und nach dem Aufruf verworfen werden.
-*Woher:* `functions/src/index.ts`, `functions/src/eingang.ts`
-(base64 im Aufruf, kein Upload, kein Storage-Bucket im Projekt).
+**Empfänger für das Formular:** Google LLC, als Anbieter der Gemini-API.
+Verarbeitung auf Servern von Google, auch außerhalb der EU.
+
+„Kurzlebig verarbeitet" bleibt richtig und darf zusätzlich angekreuzt werden:
+Die Bilder existieren ausschließlich im Arbeitsspeicher der Function und
+werden nach dem Aufruf verworfen — sie liegen in keinem Speicher und in
+keinem Log.
+*Woher:* `functions/src/index.ts` (`bilder.length = 0` im `finally`),
+`functions/src/eingang.ts` (base64 im Aufruf, kein Upload, kein
+Storage-Bucket im Projekt).
 
 ### Gesundheit und Fitness → Fitnessdaten
 
 | Feld | Angabe |
 |---|---|
 | Erhoben | **Ja** |
-| Geteilt | wie bei Fotos |
+| Geteilt | **Ja** — geht mit demselben Aufruf an Gemini |
 | Pflicht | **Optional** — nur im Modul „Figur & Passform" |
 | Zweck | App-Funktionalität |
 | Kurzlebig | Nein (Körpermaße liegen im Konto) |
@@ -172,25 +183,35 @@ Plugins mitbringen, steht in `DECISIONS.md`, Abschnitt 23.
 
 ---
 
-## Ein Punkt, den du vor dem Ausfüllen klären musst
+## Zielgruppe: 18+ — entschieden und umgesetzt
 
-**Die App bietet im Onboarding den Altersbereich „unter 18" an.**
-*Woher:* `lib/features/onboarding/models/onboarding_profile.dart`.
+**Die App richtet sich ausschließlich an Erwachsene.** Im Code heißt das:
 
-Das hat drei Folgen, die zusammenhängen:
+- Der Altersbereich „unter 18" ist aus dem Onboarding entfernt; die Auswahl
+  beginnt bei 18–24.
+  *Woher:* `lib/features/onboarding/models/onboarding_profile.dart`.
+- Es gibt eine ausdrückliche Altersbestätigung
+  (`Einwilligungsart.mindestalter`) mit Zeitstempel, Textversion und Kanal —
+  derselbe Nachweis wie bei den Einwilligungen.
+  *Woher:* `lib/features/consent/models/einwilligung.dart`.
+- Ohne Bestätigung bleibt der **Analyse-Flow** zu: Der Router leitet auf einen
+  Hinweisscreen um, der erklärt, warum. Der Rest der App — Plan, Checkliste,
+  Serie, Check-ins — funktioniert weiter.
+  *Woher:* `lib/core/router/app_router.dart` (`Routes.analyseFlow`),
+  `lib/features/consent/ui/alters_hinweis_screen.dart`.
+- Zusätzlich prüft der `AnalysisController` vor jedem Start. Eine Umgehung
+  über eine tiefe Route führt also trotzdem zu keiner Analyse.
+- Bestandsnutzer laufen einmalig durch die Frage, wie schon bei der
+  Einwilligungs-Migration.
 
-1. **Zielgruppe im IARC-Fragebogen.** Wählst du eine Zielgruppe unter 18,
-   greift Googles Richtlinie für Familien mit deutlich strengeren Auflagen —
-   unter anderem bei der Verarbeitung biometrienaher Daten.
-2. **Einwilligung.** Eine datenschutzrechtliche Einwilligung von
-   Minderjährigen ist in Deutschland ohne Zustimmung der Sorgeberechtigten
-   nicht wirksam.
-3. **Gesichtsfotos von Minderjährigen** sind der heikelste denkbare Fall.
+**Fürs Formular:** Zielgruppe **nur Erwachsene (18+)**. Damit greift Googles
+Richtlinie für Familien **nicht**.
 
-**Empfehlung:** Zielgruppe auf **18+** setzen und den Altersbereich „unter 18"
-aus dem Onboarding entfernen oder mit einem klaren Hinweis versehen, dass die
-App ab 18 ist. Das ist eine Produktentscheidung — deshalb steht sie hier als
-Frage und nicht als erledigter Haken.
+> Warum überhaupt: Für eine Analyse verarbeitet die App Aufnahmen des
+> Gesichts. Eine wirksame datenschutzrechtliche Einwilligung dazu können in
+> Deutschland nur Erwachsene selbst erteilen — bei Minderjährigen bräuchte es
+> die Sorgeberechtigten. Gesichtsfotos von Minderjährigen wären der heikelste
+> denkbare Fall.
 
 ---
 
@@ -212,13 +233,19 @@ Empfehlungen; sie ist kein Spiel und kein soziales Netzwerk).
 | Nutzergenerierte Inhalte, die andere sehen | **Nein** | Es gibt keine Freigabe, keine Feeds, keine Profile — jedes Konto sieht nur sich selbst (`firestore.rules`) |
 | Kommunikation zwischen Nutzern | **Nein** | Es gibt keine |
 | Standortweitergabe | **Nein** | — |
-| Personenbezogene Daten werden geteilt | **Nein** | siehe Data-Safety oben |
+| Personenbezogene Daten werden geteilt | **Ja** | Fotos gehen an Google (Gemini), siehe Data-Safety oben |
 | Käufe digitaler Güter | **Nein** — *bis Phase 3* | Danach: **Ja** |
 | Werbung | **Nein** | — |
 
-**Erwartete Einstufung:** USK 0 bzw. PEGI 3 — vorbehaltlich der
-Zielgruppen-Entscheidung oben. Setzt du die Zielgruppe auf 18+, ändert das die
-Einstufung nicht, wohl aber die geltenden Richtlinien.
+**Zielgruppe:** ausschließlich **18 und älter**. Beim Punkt „Zielgruppe und
+Inhalte" nur die Altersgruppe **18+** ankreuzen — keine jüngere. Damit greift
+die Familien-Richtlinie nicht, und die Angabe deckt sich mit der
+Altersbestätigung in der App.
+
+**Erwartete Einstufung:** Die inhaltlichen Antworten oben ergeben USK 0 bzw.
+PEGI 3. Das ist kein Widerspruch zur Zielgruppe 18+: Die Einstufung bewertet
+Inhalte, die Zielgruppe bestimmt, wem die App angeboten wird. Die App ist
+inhaltlich harmlos und trotzdem nichts für Minderjährige.
 
 **Kontakt-E-Mail:** dieselbe wie im Impressum; sie wird öffentlich angezeigt.
 

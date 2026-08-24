@@ -487,8 +487,10 @@ Pages, Notion — Hauptsache ohne Login erreichbar).
 > Sie wird im Store-Eintrag hinterlegt und von der Prüfung aufgerufen. Ein
 > Text, der nur in der App liegt, reicht nicht.
 
-Was inhaltlich hineingehört, steht in `store/data-safety.md` — dieselbe Liste,
-aus der auch das Data-Safety-Formular gefüllt wird.
+**Was inhaltlich hineingehört, steht in `store/rechtstexte-bausteine.md`** —
+Abschnitt für Abschnitt, jeweils mit der Stelle im Code, an der der
+Sachverhalt nachprüfbar ist. Gib die Datei deinem Generator oder deiner
+Anwältin mit; sie beantwortet die Fragen, die dort sonst gestellt werden.
 
 ☐ **10.2 Adressen im Code eintragen**
 

@@ -8,11 +8,11 @@ import '../../legal/ui/rechtstexte_zeile.dart';
 import '../logic/einwilligung_controller.dart';
 import '../models/einwilligung.dart';
 
-/// Die beiden Einwilligungen zum Ankreuzen.
+/// Alle Bestaetigungen zum Ankreuzen.
 ///
 /// Steht im Onboarding, auf dem Nachtrags-Screen und – als einzelne Zeile –
-/// in den Einstellungen. Eine Stelle, ein Wortlaut: Sonst stimmt jemand an
-/// zwei Orten formal Verschiedenem zu.
+/// in den Einstellungen und auf dem Alters-Hinweis. Eine Stelle, ein
+/// Wortlaut: Sonst bestaetigt jemand an zwei Orten formal Verschiedenes.
 class EinwilligungsAuswahl extends ConsumerWidget {
   const EinwilligungsAuswahl({required this.kanal, super.key});
 
@@ -104,6 +104,10 @@ class EinwilligungsHaken extends ConsumerWidget {
   /// biometrienah, und die Uebermittlung an einen US-Anbieter ist der Punkt,
   /// den eine Einwilligung tragen muss.
   static String erklaerung(Einwilligungsart art) => switch (art) {
+        Einwilligungsart.mindestalter =>
+          'TrueGlow verarbeitet Aufnahmen deines Gesichts und richtet sich '
+              'deshalb ausschließlich an Erwachsene. Mit dem Häkchen '
+              'bestätigst du, dass du volljährig bist.',
         Einwilligungsart.nutzung =>
           'Ich habe die Nutzungsbedingungen und die Datenschutzerklärung '
               'gelesen und stimme ihnen zu.',
@@ -120,6 +124,9 @@ class EinwilligungsHaken extends ConsumerWidget {
           'Freiwillig und jederzeit in den Einstellungen widerrufbar. Ohne '
               'diese Einwilligung sind keine neuen Analysen möglich – alles '
               'andere funktioniert weiter, bestehende Reports bleiben.',
+        Einwilligungsart.mindestalter =>
+          'Ohne Bestätigung bleibt der Analyse-Bereich zu. Plan, Checklisten '
+              'und Check-ins kannst du trotzdem nutzen.',
         Einwilligungsart.nutzung => '',
       };
 }

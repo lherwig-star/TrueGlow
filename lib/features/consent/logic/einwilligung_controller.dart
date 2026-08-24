@@ -65,6 +65,31 @@ class EinwilligungController extends StateNotifier<Einwilligungsstand> {
         zeitpunkt: zeitpunkt,
       );
 
+  /// Vermerkt alle noch offenen, freiwilligen Punkte als „nicht erteilt".
+  ///
+  /// Gebraucht beim Verlassen des Nachtrags-Screens: Ohne diesen Vermerk
+  /// bliebe die Frage „wurde schon gefragt?" fuer immer offen, und der Router
+  /// schickte dieselbe Person bei jedem Start wieder dorthin.
+  ///
+  /// „Gefragt und abgelehnt" ist ausserdem der ehrlichere Nachweis als
+  /// „nie gefragt" – die Person hatte die Wahl.
+  void offeneAlsGefragtVermerken({DateTime? zeitpunkt}) {
+    var neu = state;
+    for (final art in Einwilligungsart.values) {
+      if (art.pflicht || neu.wurdeGefragt(art)) continue;
+      neu = neu.mit(
+        Einwilligung(
+          art: art,
+          erteilt: false,
+          zeitpunkt: (zeitpunkt ?? DateTime.now()).toUtc(),
+          textversion: Rechtstexte.version,
+          kanal: Einwilligungskanal.nachtrag,
+        ),
+      );
+    }
+    if (neu != state) _setze(neu);
+  }
+
   void zuruecksetzen() {
     state = Einwilligungsstand.leer;
     _box.delete(CloudModell.keyEinwilligungen);
@@ -101,9 +126,34 @@ final pflichtEinwilligungFehltProvider = Provider<bool>((ref) {
   return !stand.gilt(Einwilligungsart.nutzung, Rechtstexte.version);
 });
 
+/// Ob die Altersbestaetigung vorliegt.
+///
+/// TrueGlow ist ab 18. Fehlt die Bestaetigung, bleibt der Analyse-Flow zu –
+/// der Rest der App nicht.
+final volljaehrigBestaetigtProvider = Provider<bool>((ref) {
+  return ref.watch(einwilligungGiltProvider(Einwilligungsart.mindestalter));
+});
+
 /// Ob Analysen erlaubt sind.
+///
+/// Zwei Bedingungen, beide notwendig: die Altersbestaetigung und die
+/// Einwilligung in die Fotoverarbeitung.
 final analyseErlaubtProvider = Provider<bool>((ref) {
-  return ref.watch(einwilligungGiltProvider(Einwilligungsart.fotoKi));
+  return ref.watch(volljaehrigBestaetigtProvider) &&
+      ref.watch(einwilligungGiltProvider(Einwilligungsart.fotoKi));
+});
+
+/// Ob der Nachtrags-Screen faellig ist.
+///
+/// Zwei Anlaesse: Die Pflichteinwilligung fehlt (nie erteilt oder veraltete
+/// Textfassung), oder nach der Altersbestaetigung wurde noch nie gefragt –
+/// das ist der Fall aller Bestandsnutzer aus der Zeit vor der 18+-Entscheidung.
+/// Ob sie am Ende bestaetigen, ist ihre Sache; gefragt worden sein muessen
+/// sie einmal.
+final nachtragNoetigProvider = Provider<bool>((ref) {
+  if (ref.watch(pflichtEinwilligungFehltProvider)) return true;
+  final stand = ref.watch(einwilligungControllerProvider);
+  return !stand.wurdeGefragt(Einwilligungsart.mindestalter);
 });
 
 /// Ob jemand aus der Zeit der alten Sammel-Checkbox kommt.

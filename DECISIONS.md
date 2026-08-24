@@ -488,6 +488,69 @@ verloren gehen.
 
 ---
 
+## 26 · Zielgruppe 18+, durchgesetzt an einer Stelle
+
+**Was:** Der Altersbereich „unter 18" ist weg, es gibt eine ausdrückliche
+Altersbestätigung (`Einwilligungsart.mindestalter`) mit demselben Nachweis wie
+eine Einwilligung, und ohne sie bleibt der **Analyse-Flow** zu.
+
+**Warum die Bestätigung im Einwilligungs-Modell liegt:** Formal ist sie keine
+Einwilligung, sondern eine Erklärung. Sie braucht aber genau dieselben
+Nachweise — wann, zu welcher Textfassung, an welcher Stelle — und dieselbe
+Migration für Bestandsnutzer. Ein zweiter Mechanismus daneben wäre doppelte
+Maschinerie für dasselbe Problem.
+
+**Warum nur der Analyse-Flow gesperrt wird und nicht die App:** Wer nicht
+bestätigt, verliert nichts von dem, was er schon hat. Plan, Checkliste, Serie
+und Check-ins laufen weiter, bestehende Reports bleiben. Eine App, die nach
+einem nicht gesetzten Haken komplett dichtmacht, erzieht nur dazu, Haken
+blind zu setzen.
+
+**Zwei Sperren, nicht eine:** Der Router leitet auf den Hinweisscreen um, und
+der `AnalysisController` prüft zusätzlich vor jedem Start. Die erste ist die
+Erklärung, die zweite die Zusicherung — eine tiefe Route umgeht sie nicht.
+
+**Preis:** Ein Screen mehr und ein Zustand mehr, den jeder Test kennen muss.
+Dafür gibt es `einwilligungErteilen()` in `test/hilfen.dart`.
+
+---
+
+## 27 · „Gefragt und abgelehnt" wird vermerkt
+
+**Was:** Beim Verlassen von Onboarding und Nachtrags-Screen werden alle
+freiwilligen Punkte, die offen geblieben sind, als `erteilt: false`
+festgehalten.
+
+**Warum:** Ohne diesen Vermerk bliebe „wurde schon gefragt?" für immer offen —
+und der Router schickte dieselbe Person bei jedem Start zurück auf den
+Nachtrags-Screen. Eine Endlosschleife, die erst auffällt, wenn jemand nichts
+ankreuzt.
+
+Nebenbei ist es der ehrlichere Nachweis: Die Person hatte die Wahl und hat
+sich entschieden. „Nie gefragt" behauptet etwas anderes.
+
+**Preis:** In den Einstellungen steht dann „nicht erteilt am …" statt „noch
+nicht gefragt". Das ist die zutreffendere Aussage.
+
+---
+
+## 28 · Fotos gelten als „geteilt", obwohl man es auch anders eintragen könnte
+
+**Was:** Im Data-Safety-Formular wird die Übermittlung an Gemini als
+Datenweitergabe deklariert, nicht als reine Auftragsverarbeitung.
+
+**Warum:** Play zählt Weitergaben an weisungsgebundene Dienstleister formal
+nicht als „Teilen" — „Nein" wäre also vertretbar. Es sind aber
+Gesichtsaufnahmen, sie verlassen tatsächlich unsere Kontrolle, und die
+Nutzungsbedingungen der Gemini-API können sich ändern, ohne dass wir es
+merken. „Ja" ist nie ein Verstoß, „Nein" kann einer werden.
+
+**Preis:** Die strengere Angabe steht im Store sichtbar. Sie deckt sich mit
+dem, was die Einwilligung in der App ohnehin sagt — insofern kostet sie nur
+Ehrlichkeit, keine Glaubwürdigkeit.
+
+---
+
 ## Mock vs. Live
 
 *(Wird nach dem ersten echten Durchlauf gefüllt — siehe `SETUP.md`,

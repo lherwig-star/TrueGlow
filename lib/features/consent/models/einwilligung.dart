@@ -15,6 +15,21 @@ enum Einwilligungsart {
     pflicht: true,
   ),
 
+  /// Bestaetigung, mindestens 18 Jahre alt zu sein.
+  ///
+  /// TrueGlow richtet sich ausschliesslich an Erwachsene. Ohne diese
+  /// Bestaetigung bleibt der Analyse-Flow zu – der Rest der App nicht:
+  /// Eine Sackgasse ohne Erklaerung waere die schlechtere Antwort auf ein
+  /// unbeantwortetes Haekchen.
+  ///
+  /// Formal keine Einwilligung, sondern eine Erklaerung. Sie liegt trotzdem
+  /// hier, weil sie denselben Nachweis braucht: wann, zu welcher Textfassung,
+  /// an welcher Stelle.
+  mindestalter(
+    titel: 'Ich bin mindestens 18 Jahre alt',
+    pflicht: false,
+  ),
+
   /// Verarbeitung von Gesichtsfotos durch den KI-Dienst. Freiwillig und
   /// jederzeit widerrufbar; ohne sie gibt es keine neuen Analysen, die
   /// bestehenden Reports bleiben aber erhalten.
@@ -158,6 +173,15 @@ class Einwilligungsstand {
         for (final eintrag in eintraege.values)
           eintrag.art.name: eintrag.toJson(),
       };
+
+  @override
+  bool operator ==(Object other) =>
+      other is Einwilligungsstand &&
+      other.eintraege.length == eintraege.length &&
+      eintraege.entries.every((e) => other.eintraege[e.key] == e.value);
+
+  @override
+  int get hashCode => Object.hashAllUnordered(eintraege.values);
 
   factory Einwilligungsstand.fromJson(Map<String, dynamic> json) {
     final eintraege = <Einwilligungsart, Einwilligung>{};
