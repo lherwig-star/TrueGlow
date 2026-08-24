@@ -33,6 +33,34 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:node="remove" />
+    <!-- Vorsichtsmassnahme, kein aktueller Fund: Keine Bibliothek im Baum
+         deklariert READ_EXTERNAL_STORAGE (im Gegensatz zu WRITE oben steht
+         hier im Merger-Report keine REJECTED-Quelle). Historisch gewaehrt
+         Android READ automatisch mit, wenn WRITE_EXTERNAL_STORAGE gehalten
+         wird – das greift ohnehin nicht mehr, seit WRITE oben entfernt ist.
+         Der Eintrag bleibt aus Symmetrie zu WRITE stehen, falls eine
+         kuenftige Abhaengigkeit sie doch einschleppt. Der Galerie-Import
+         laeuft ueber den System-Picker und bekommt seine Leseerlaubnis pro
+         Datei mitgeliefert – eine Speicherberechtigung braucht er nicht. -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        tools:node="remove" />
+
+    <!-- Werbe-ID. Firebase Analytics bringt sie ueber
+         play-services-measurement mit; wir wollen sie ausdruecklich nicht.
+         Play fragt im Data-Safety-Formular danach, und "keine Werbe-ID" darf
+         nicht daran scheitern, dass eine Abhaengigkeit sie mitschleppt.
+         Die beiden AdServices-Berechtigungen gehoeren zur selben
+         Attributionsmechanik. -->
+    <uses-permission
+        android:name="com.google.android.gms.permission.AD_ID"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.ACCESS_ADSERVICES_AD_ID"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.ACCESS_ADSERVICES_ATTRIBUTION"
+        tools:node="remove" />
 
     <application
         android:label="TrueGlow"

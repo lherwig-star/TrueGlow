@@ -416,6 +416,10 @@ Vollständige Herkunft, aus den Plugin-Manifesten in `.dart_tool` gelesen:
 | `VIBRATE` | `flutter_local_notifications` | **bleibt** — gehört zur Benachrichtigung und ist keine eigene Abfrage beim Nutzer |
 | `RECORD_AUDIO` | `camera_android_camerax` | **entfernt** — die App nimmt nie Ton oder Video auf. Eine Mikrofon-Berechtigung in einer Foto-App ist der Punkt, an dem Prüfer und Nutzer stutzen |
 | `WRITE_EXTERNAL_STORAGE` (max. API 28) | `camera_android_camerax` | **entfernt** — Fotos landen ausschließlich im app-eigenen Verzeichnis |
+| `READ_EXTERNAL_STORAGE` | **niemand** — im Merger-Report steht dafür keine `REJECTED from [...]`-Quelle, anders als bei `WRITE_EXTERNAL_STORAGE` | **entfernt, aber aktuell wirkungslos** — historisch gewährt Android READ automatisch mit, wenn WRITE_EXTERNAL_STORAGE gehalten wird; das greift seit der WRITE-Entfernung ohnehin nicht mehr. Der Eintrag steht defensiv da, aus Symmetrie zu WRITE, falls eine künftige Abhängigkeit sie doch mitbringt |
+| `com.google.android.gms.permission.AD_ID` | `play-services-measurement-api:23.2.0`, `play-services-measurement-impl:23.2.0`, `play-services-measurement-sdk-api:23.2.0`, `play-services-ads-identifier:18.0.0` (alle transitiv über `firebase_analytics`) | **entfernt** — widerspricht sonst der Data-Safety-Angabe „keine Werbe-ID" (`store/data-safety.md`, Zeile 216) |
+| `android.permission.ACCESS_ADSERVICES_AD_ID` | `play-services-measurement-api:23.2.0`, `play-services-measurement-sdk-api:23.2.0` | **entfernt** — gehört zur selben Attributionsmechanik wie `AD_ID` |
+| `android.permission.ACCESS_ADSERVICES_ATTRIBUTION` | `play-services-measurement-api:23.2.0`, `play-services-measurement-sdk-api:23.2.0` | **entfernt** — dito |
 
 | Funktion | Woher | Entscheidung |
 |---|---|---|
@@ -427,6 +431,22 @@ findet die Antwort sonst nur durch Nachbauen.
 
 **Preis:** Kommt ein Plugin dazu, ist diese Tabelle veraltet. Sie gehört
 deshalb in die Release-Checkliste — dort steht sie.
+
+**Nachtrag (Phase 4.3, 24.08.2026):** Mit Firebase Analytics kamen `AD_ID`
+und die zwei AdServices-Berechtigungen ins Merged Manifest — Fund beim
+Zurückverfolgen, entfernt (siehe oben). **Offen dabei aufgefallen:** Diese
+Tabelle deckt nicht alle Berechtigungen ab, die inzwischen im
+Release-Merger-Report stehen — `ACCESS_NETWORK_STATE` (`connectivity_plus`,
+seit Phase 4.1), `WAKE_LOCK` (`firebase_analytics`), `USE_BIOMETRIC` /
+`USE_FINGERPRINT` (`androidx.biometric`, transitiv über ältere
+Play-Services-Kompatibilität), `com.google.android.c2dm.permission.RECEIVE`
+(`firebase-iid`), `BIND_GET_INSTALL_REFERRER_SERVICE`
+(`play-services-measurement`) und `READ_GSERVICES`
+(`com.google.android.recaptcha`, über App Check) fehlen als Zeilen. Keine
+davon widerspricht der Data-Safety-Erklärung — sie sind hier nur nicht
+dokumentiert. Verdient einen eigenen Durchgang, bevor die
+Einreichungstag-Checkliste („Merged Manifest gegen DECISIONS.md 23 geprüft")
+das nächste Mal abgehakt wird.
 
 **Nachprüfen nach dem nächsten Build:**
 `build/app/outputs/logs/manifest-merger-release-report.txt`, oder in Android
