@@ -153,7 +153,14 @@ export function nutzerText(reihenfolge: string[]): string {
   const liste = reihenfolge
     .map((typ, i) => {
       const eintrag = AUFNAHMEN[typ];
-      return `${i + 1}. ${eintrag.label} (${MODUL_KAPITEL[eintrag.modul]})`;
+      // `leseAnalyse` laesst nur Typen aus AUFNAHMEN durch, hier kann also
+      // regulaer nichts fehlen. Der Rueckfall steht trotzdem: Ein unbekannter
+      // Name darf die Nummerierung nicht verschieben, weil sie die Bilder in
+      // genau dieser Reihenfolge beschriftet. Ein uebersprungener Eintrag
+      // wuerde jedem folgenden Bild die falsche Beschriftung geben.
+      return eintrag
+        ? `${i + 1}. ${eintrag.label} (${MODUL_KAPITEL[eintrag.modul]})`
+        : `${i + 1}. Weiteres Foto`;
     })
     .join('\n');
 
@@ -222,9 +229,13 @@ function kapitelVorgabe(modul: Modul): string {
       );
     case 'hautFarbtyp':
       return (
-        '- "hautFarbtyp" – Haut & Farbtyp. Hautbild-Einschätzung, warmer ' +
-        'oder kalter Unterton, dazu eine konkrete Farbpalette für ' +
-        'Kleidung (Farben benennen).'
+        '- "hautFarbtyp" – Haut & Farbtyp. Es gibt für dieses Kapitel KEINE ' +
+        'eigene Aufnahme: Beurteile Hautbild und Unterton anhand des ' +
+        'Frontalfotos der Basis. Warmer oder kalter Unterton, dazu eine ' +
+        'konkrete Farbpalette für Kleidung (Farben benennen). Wenn das ' +
+        'Frontalfoto für eine Aussage zum Hautbild nicht hergibt (zu wenig ' +
+        'Licht, zu geringe Auflösung), sag das offen und beschränke dich ' +
+        'auf den Unterton und die Farbpalette – rate nicht.'
       );
     case 'zaehneLaecheln':
       return (

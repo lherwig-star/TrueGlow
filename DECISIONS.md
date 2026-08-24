@@ -657,6 +657,54 @@ dart run tool/diagnose_stichprobe.dart tool/stichprobe/analyse_*.json
 | `habits` pro Kapitel | immer 4 | 6 × 4, **1 × 3** | Der Prompt verlangt „4 bis 7 pro Kapitel" (`analyse_prompt.ts`). Einmal kamen nur 3. Kein Fehlerfall — die App zeigt einfach eine kürzere Liste —, aber der Beleg, dass Mengenangaben im Prompt Wünsche sind und keine Garantien. Nichts darf davon abhängen, dass genau *n* Einträge ankommen. |
 | `plan.taeglicheHabits` | leer | leer (3 von 3) | **Totes Feld.** Siehe unten. |
 
+### Hautton ohne eigenes Foto
+
+Die Nahaufnahme des Moduls „Haut & Farbtyp" ist entfallen. Unterton und
+Farbpalette liest das Modell aus dem **Frontalfoto der Basis** mit.
+
+Elf Aufnahmen sind viel verlangt, und die Hautton-Nahaufnahme zeigte
+dasselbe Gesicht im selben Licht wie das Frontalfoto — nur näher. Ein Foto
+weniger senkt die Abbruchquote im Flow und spart Tokens pro Analyse.
+
+Drei Stellen hängen daran:
+
+1. **Der Prompt** (`functions/src/analyse_prompt.ts`) sagt für dieses Kapitel
+   jetzt ausdrücklich, dass es keine eigene Aufnahme gibt und der Unterton aus
+   dem Frontalfoto kommt — mit der Anweisung, bei zu wenig Licht oder
+   Auflösung offen zu sagen, dass das Hautbild nicht beurteilbar ist, statt zu
+   raten. Ohne diesen Zusatz erfindet ein Modell die fehlende Nahaufnahme.
+2. **Der Lichthinweis** wandert nicht komplett mit. Die Licht-Checkliste
+   (`licht_checkliste.dart`) nennt Tageslicht und „kein Filter" bereits
+   wortgleich und läuft ohnehin vor dem ersten Foto. Am Frontalfoto steht
+   deshalb nur die *Verknüpfung* — dass dieses Foto nun auch die Hautanalyse
+   trägt. Denselben Text zweimal zu zeigen liest sich wie eine neue
+   Anforderung und wird überlesen.
+3. **Die Hinweisseite des Moduls bleibt**, dreht aber ihren Zweck um. Sie
+   steht nach den Basis-Fotos (die Flow-Reihenfolge folgt der Deklaration in
+   `AnalyseModul`), Ratschläge zur Aufnahme kämen dort zu spät. Sie erklärt
+   jetzt, dass kein eigenes Foto nötig ist, und bietet den Rückweg an, falls
+   das Frontalfoto zu dunkel geriet. Ohne sie käme ein gewähltes Modul im Flow
+   gar nicht vor — und das sieht aus, als hätte die Auswahl nicht gegriffen.
+
+**Alte Clients brechen hart.** `leseAnalyse` (`functions/src/eingang.ts`)
+lehnt unbekannte Aufnahmetypen mit `fotosFehlen` ab, statt sie zu ignorieren.
+Eine App-Version, die noch `hautNahaufnahme` schickt, bekommt also eine
+Fehlermeldung und keine Analyse. Das ist vertretbar, **solange die App nicht
+veröffentlicht ist** — die Allowlist ist die richtige Sicherheitshaltung. Ab
+dem ersten Store-Release wäre derselbe Schritt ein Breaking Change und
+bräuchte eine Übergangsfrist, in der der alte Name noch angenommen und
+verworfen wird.
+
+### Der 45°-Winkel bleibt
+
+Beim Ausdünnen der Aufnahmen naheliegend mitzustreichen — bewusst nicht
+getan. Frontal und Profil zeigen Kieferlinie und Wangenknochen jeweils nur in
+der Projektion, in der sie am wenigsten aussagen: frontal verschwindet die
+Tiefe, im Profil die Breite. Der halbgedrehte Kopf ist die einzige Ansicht,
+in der beides zugleich sichtbar ist — und Kieferlinie und Wangenknochen sind
+genau das, worauf das Basis-Kapitel seine Frisur- und Bartempfehlungen
+stützt. Die Nahaufnahme war redundant, dieser Winkel ist es nicht.
+
 ### Kontingent-Hinweis vor der Aufnahme
 
 Aufgefallen beim Rate-Limit-Test (`SETUP.md` 6.4): Wer das Tageskontingent
@@ -667,6 +715,11 @@ war es nicht.
 Der Hinweis steht jetzt auf der Modul-Auswahl, also vor der Kamera
 (`lib/features/modules/ui/module_selection_screen.dart`). Bei erschöpftem
 Kontingent ist zusätzlich die Weiter-Schaltfläche gesperrt.
+
+Am Gerät bestätigt (24.08.2026, SM A525F, kurz vor Mitternacht mit
+aufgebrauchtem Tageskontingent): Die Karte „Heute keine Analyse mehr frei"
+stand auf „Analyse zusammenstellen", der Weiter-Knopf war ausgegraut. Die
+Sperre greift also vor dem Fotoweg, nicht danach.
 
 **Warum das ohne neue Cloud Function geht:** Die Security Rules erlauben dem
 Client das *Lesen* von `users/{uid}/kontingent/{art}` und verbieten jedes

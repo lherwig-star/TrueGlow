@@ -421,7 +421,7 @@ Minuten ausgehebelt — und jeder unberechtigte Aufruf kostet dich echtes Geld.
 ### 4.2 Zustände systematisch
 
 - [x] Alle Screens auf Lade-, Fehler- und Leerzustand durchgehen — **M** — *Ergebnis in `ZUSTAENDE.md`, Screen für Screen. Ergänzt wurden: Abbrechen in beiden Wartezuständen, der Hinweis auf eine unterbrochene Analyse und ein echter Ladezustand der Konto-Karte*
-- [x] Erschöpftes Kontingent **vor** der Aufnahme melden statt danach — **S** — *aufgefallen beim Rate-Limit-Test (`SETUP.md` 6.4): Wer sein Tageskontingent aufgebraucht hat, merkte es erst nach elf Fotos und der Wartezeit. Der Stand steht jetzt auf der Modul-Auswahl; Begründung und die Grenzen der Genauigkeit in `DECISIONS.md`*
+- [x] Erschöpftes Kontingent **vor** der Aufnahme melden statt danach — **S** — *aufgefallen beim Rate-Limit-Test (`SETUP.md` 6.4): Wer sein Tageskontingent aufgebraucht hat, merkte es erst nach elf Fotos und der Wartezeit. Der Stand steht jetzt auf der Modul-Auswahl; Begründung und die Grenzen der Genauigkeit in `DECISIONS.md`. **Am Gerät bestätigt** (24.08.2026, SM A525F): Karte „Heute keine Analyse mehr frei" sichtbar, Weiter-Knopf ausgegraut*
 
 ### 4.3 Crash-Reporting & Analytics
 

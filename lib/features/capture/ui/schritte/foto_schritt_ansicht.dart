@@ -9,6 +9,7 @@ import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/section_card.dart';
+import '../../../modules/logic/module_controller.dart';
 import '../../logic/capture_controller.dart';
 import '../../models/aufnahme_typ.dart';
 import '../../models/captured_photo.dart';
@@ -26,6 +27,7 @@ class FotoSchrittAnsicht extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final zustand = ref.watch(captureControllerProvider);
     final foto = zustand.foto(typ);
+    final module = ref.watch(moduleControllerProvider).module;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,7 +69,7 @@ class FotoSchrittAnsicht extends ConsumerWidget {
         SectionCard(
           title: 'So klappt das Foto',
           icon: Icons.tips_and_updates_outlined,
-          child: MutedText(typ.hinweis),
+          child: MutedText(typ.hinweisFuer(module)),
         ),
       ],
     );

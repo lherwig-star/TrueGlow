@@ -72,18 +72,43 @@ void main() {
       expect(flow.last, isA<FigurFormularSchritt>());
     });
 
-    test('Haut bekommt eine Hinweisseite vor der Aufnahme', () {
+    test('Haut bringt keine eigene Aufnahme mehr mit', () {
+      // Die Hautton-Nahaufnahme ist entfallen; ausgewertet wird das
+      // Frontalfoto der Basis (DECISIONS.md, "Hautton ohne eigenes Foto").
       final flow = baueAufnahmeFlow(
         {AnalyseModul.basis, AnalyseModul.hautFarbtyp},
       );
 
-      final hinweisIndex = flow.indexWhere((s) => s is ModulHinweisSchritt);
-      final fotoIndex = flow.indexWhere(
-        (s) => s is FotoSchritt && s.typ == AufnahmeTyp.hautNahaufnahme,
+      final fotos = flow.whereType<FotoSchritt>().map((s) => s.typ).toSet();
+      expect(fotos, equals(AnalyseModul.basis.aufnahmen.toSet()));
+    });
+
+    test('Haut behaelt seine Hinweisseite, sonst fehlt das Modul im Flow', () {
+      // Ohne diese Seite waere ein gewaehltes Modul im Aufnahme-Flow gar nicht
+      // sichtbar – und der Nutzer wuerde sich fragen, ob die Auswahl griff.
+      final flow = baueAufnahmeFlow(
+        {AnalyseModul.basis, AnalyseModul.hautFarbtyp},
       );
 
-      expect(hinweisIndex, greaterThan(-1));
-      expect(hinweisIndex, lessThan(fotoIndex));
+      expect(
+        flow.whereType<ModulHinweisSchritt>().map((s) => s.modul),
+        contains(AnalyseModul.hautFarbtyp),
+      );
+    });
+
+    test('Haut allein ergibt einen Flow ohne Fotos und ohne Lichtcheck', () {
+      // Der Weg ueber "Analyse erweitern": Die Basis-Fotos liegen vor, fuer
+      // Haut kommt nichts Neues dazu. Der Flow darf trotzdem nicht leer sein,
+      // sonst zeigt der Screen seine Ausweichseite statt weiterzufuehren.
+      final flow = baueAufnahmeFlow(
+        AnalyseModul.values.toSet(),
+        nur: AnalyseModul.hautFarbtyp,
+      );
+
+      expect(flow, isNotEmpty);
+      expect(flow.whereType<FotoSchritt>(), isEmpty);
+      // Kein Foto, also auch keine Lichtcheckliste.
+      expect(flow.whereType<LichtCheckSchritt>(), isEmpty);
     });
 
     test('Stil endet mit dem Fragebogen', () {
@@ -124,7 +149,7 @@ void main() {
   group('Pruefprofile', () {
     test('Portraits verlangen ein Gesicht, Ganzkoerper und Outfit nicht', () {
       expect(AufnahmeTyp.basisFrontal.pruefung.gesichtPflicht, isTrue);
-      expect(AufnahmeTyp.hautNahaufnahme.pruefung.gesichtPflicht, isTrue);
+      expect(AufnahmeTyp.zaehneLaecheln.pruefung.gesichtPflicht, isTrue);
       expect(
         AufnahmeTyp.figurGanzkoerperFrontal.pruefung.gesichtPflicht,
         isFalse,
@@ -255,6 +280,39 @@ void main() {
         AufnahmeTyp.basisProfilRechts.hinweis,
         allOf(contains('nach links'), contains('rechte Gesichtshälfte')),
       );
+    });
+  });
+
+  group('Hinweis am Frontalfoto', () {
+    test('mit Haut-Modul kommt der Lichthinweis dazu', () {
+      // Der Zusatz ist das, was vom gestrichenen Hautton-Screen uebrig blieb.
+      // Ohne ihn faellt die Anforderung an das Licht ersatzlos weg.
+      final text = AufnahmeTyp.basisFrontal.hinweisFuer(
+        {AnalyseModul.basis, AnalyseModul.hautFarbtyp},
+      );
+
+      expect(text, startsWith(AufnahmeTyp.basisFrontal.hinweis));
+      expect(text, contains(AufnahmeTyp.hautLichtZusatz));
+    });
+
+    test('ohne Haut-Modul bleibt der Hinweis unveraendert', () {
+      // Wer das Modul nicht gebucht hat, soll keine Anforderung lesen, die
+      // fuer seine Analyse nichts aendert.
+      expect(
+        AufnahmeTyp.basisFrontal.hinweisFuer({AnalyseModul.basis}),
+        AufnahmeTyp.basisFrontal.hinweis,
+      );
+    });
+
+    test('andere Aufnahmen bleiben vom Haut-Modul unberuehrt', () {
+      for (final typ in AufnahmeTyp.values) {
+        if (typ == AufnahmeTyp.basisFrontal) continue;
+        expect(
+          typ.hinweisFuer({AnalyseModul.basis, AnalyseModul.hautFarbtyp}),
+          typ.hinweis,
+          reason: '${typ.name} darf den Hautton-Zusatz nicht tragen',
+        );
+      }
     });
   });
 }

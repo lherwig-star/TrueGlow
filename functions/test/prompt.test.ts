@@ -88,10 +88,35 @@ describe('Analyse-Prompt', () => {
   });
 
   it('nennt die Bilder in der Reihenfolge, in der sie angehaengt werden', () => {
-    const text = analyse.nutzerText(['basisFrontal', 'hautNahaufnahme']);
+    const text = analyse.nutzerText(['basisFrontal', 'zaehneLaecheln']);
 
     expect(text).toContain('1. Frontalfoto (Gesicht, Haare & Bart)');
-    expect(text).toContain('2. Nahaufnahme (Haut & Farbtyp)');
+    expect(text).toContain('2. Lächeln (Zähne & Lächeln)');
+  });
+
+  it('ein unbekannter Typ verschiebt die Nummerierung nicht', () => {
+    // `leseAnalyse` laesst so etwas gar nicht erst durch. Wenn die Absicherung
+    // hier aber je greift, muss sie die Position halten: Die Liste beschriftet
+    // die Bilder in genau dieser Reihenfolge, ein ausgelassener Eintrag gaebe
+    // jedem folgenden Bild die falsche Beschriftung.
+    const text = analyse.nutzerText([
+      'basisFrontal',
+      'hautNahaufnahme',
+      'zaehneLaecheln',
+    ]);
+
+    expect(text).toContain('1. Frontalfoto (Gesicht, Haare & Bart)');
+    expect(text).toContain('2. Weiteres Foto');
+    expect(text).toContain('3. Lächeln (Zähne & Lächeln)');
+  });
+
+  it('das Haut-Kapitel verweist auf das Frontalfoto', () => {
+    const prompt = analyse.systemPrompt(
+      analyseDaten(undefined, ['basis', 'hautFarbtyp']),
+    );
+
+    expect(prompt).toContain('KEINE');
+    expect(prompt).toContain('Frontalfotos der Basis');
   });
 });
 

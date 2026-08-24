@@ -71,7 +71,9 @@ List<FlowSchritt> baueAufnahmeFlow(
   for (final modul in AnalyseModul.values) {
     if (!gewaehlt.contains(modul)) continue;
 
-    // Haut braucht eine Vorbereitung, die ueber den Sucher-Hinweis hinausgeht.
+    // Haut bringt keine eigene Aufnahme mit. Die Seite erklaert deshalb, dass
+    // das Frontalfoto mitgelesen wird – ohne sie waere unklar, warum ein
+    // gewaehltes Modul im Flow gar nicht vorkommt.
     if (modul == AnalyseModul.hautFarbtyp) {
       schritte.add(ModulHinweisSchritt(modul));
     }

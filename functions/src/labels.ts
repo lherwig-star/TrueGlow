@@ -63,7 +63,8 @@ export const AUFNAHMEN: Record<string, { label: string; modul: Modul }> = {
   basisProfilLinks: { label: 'Profil links', modul: 'basis' },
   basisProfilRechts: { label: 'Profil rechts', modul: 'basis' },
   basisWinkel45: { label: '45°-Winkel', modul: 'basis' },
-  hautNahaufnahme: { label: 'Nahaufnahme', modul: 'hautFarbtyp' },
+  // hautFarbtyp bringt keine eigene Aufnahme mehr mit – die Hautton-Analyse
+  // liest das Frontalfoto der Basis. Siehe DECISIONS.md.
   zaehneLaecheln: { label: 'Lächeln', modul: 'zaehneLaecheln' },
   figurGanzkoerperFrontal: {
     label: 'Ganzkörper frontal',

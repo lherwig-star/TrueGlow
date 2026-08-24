@@ -14,25 +14,26 @@ class ModulHinweis extends StatelessWidget {
   final AnalyseModul modul;
 
   /// Was fuer dieses Modul besonders zaehlt.
+  ///
+  /// Seit dem Wegfall der Hautton-Nahaufnahme steht diese Seite **hinter** den
+  /// Basis-Fotos – die Reihenfolge folgt der Deklaration in [AnalyseModul].
+  /// Ratschlaege zur Aufnahme waeren hier also zu spaet. Deshalb erklaert sie
+  /// jetzt, warum kein Foto kommt, und zeigt den Rueckweg, falls das
+  /// Frontalfoto nichts taugt.
   List<(IconData, String, String)> get _punkte => switch (modul) {
         AnalyseModul.hautFarbtyp => const [
             (
+              Icons.photo_camera_back_outlined,
+              'Kein eigenes Foto nötig',
+              'Unterton und Farbpalette lesen wir aus deinem Frontalfoto der '
+                  'Basis mit. Eine zusätzliche Nahaufnahme brauchst du nicht.',
+            ),
+            (
               Icons.wb_twilight,
-              'Indirektes Tageslicht',
-              'Stell dich seitlich ans Fenster. Direkte Sonne und warmes '
-                  'Kunstlicht verfälschen den Unterton.',
-            ),
-            (
-              Icons.no_photography_outlined,
-              'Kein Filter, keine Beauty-Funktion',
-              'Auch die automatische Hautglättung deines Handys ausschalten – '
-                  'sonst ist genau das weg, was wir einschätzen sollen.',
-            ),
-            (
-              Icons.straighten,
-              'Auf Armlänge',
-              'Frontkamera etwa eine Armlänge vor dem Gesicht, Kopf füllt den '
-                  'Rahmen.',
+              'Licht zählt hier doppelt',
+              'War dein Frontalfoto zu dunkel oder farbstichig, geh einen '
+                  'Schritt zurück und nimm es bei indirektem Tageslicht neu '
+                  'auf – warmes Kunstlicht verfälscht den Unterton.',
             ),
           ],
         _ => const [],

@@ -97,14 +97,8 @@ enum AufnahmeTyp {
   ),
 
   // --- Haut & Farbtyp ---
-  hautNahaufnahme(
-    modul: AnalyseModul.hautFarbtyp,
-    label: 'Nahaufnahme',
-    hinweis: 'Halte die Kamera auf Armlänge vor dein Gesicht. Indirektes '
-        'Tageslicht, kein Filter, keine Kamera-Beauty-Funktion.',
-    overlay: Overlaytyp.gesichtsOval,
-    pruefung: Pruefprofil.gesichtNah,
-  ),
+  // Kein eigenes Foto mehr: Die Hautton-Einschaetzung liest das Frontalfoto
+  // der Basis mit. Siehe DECISIONS.md, "Hautton ohne eigenes Foto".
 
   // --- Zaehne & Laecheln ---
   zaehneLaecheln(
@@ -189,6 +183,29 @@ enum AufnahmeTyp {
 
   /// Ob die Live-Erkennung im Sucher sinnvoll ist.
   bool get mitLiveHilfe => pruefung.pruefeGesicht;
+
+  /// Der Hinweistext, abhaengig von den gewaehlten Modulen.
+  ///
+  /// Nur ein Fall weicht ab: Das Frontalfoto traegt seit dem Wegfall der
+  /// Hautton-Nahaufnahme deren Lichtbedingungen mit – aber nur, wenn „Haut &
+  /// Farbtyp" ueberhaupt gewaehlt ist. Wer das Modul nicht gebucht hat, soll
+  /// nicht mit Anforderungen belastet werden, die fuer seine Analyse nichts
+  /// aendern.
+  String hinweisFuer(Set<AnalyseModul> module) =>
+      this == AufnahmeTyp.basisFrontal &&
+              module.contains(AnalyseModul.hautFarbtyp)
+          ? '$hinweis\n\n$hautLichtZusatz'
+          : hinweis;
+
+  /// Warum das Frontalfoto mit gewaehltem Haut-Modul mehr Gewicht hat.
+  ///
+  /// Bewusst **keine** Wiederholung der Lichtregeln: Die stehen wortgleich in
+  /// der Licht-Checkliste (`licht_checkliste.dart`), die ohnehin vor dem
+  /// ersten Foto laeuft. Doppelter Text liest sich wie eine neue Anforderung
+  /// und wird dann ueberlesen. Hier zaehlt nur die Verknuepfung.
+  static const String hautLichtZusatz =
+      'Dieses Foto wertet auch die Hautanalyse aus. Das Tageslicht aus der '
+      'Checkliste zählt hier deshalb doppelt.';
 }
 
 /// Die Aufnahmen eines Moduls in Flow-Reihenfolge.
@@ -200,7 +217,9 @@ extension AnalyseModulAufnahmen on AnalyseModul {
   String get benoetigt => switch (this) {
         AnalyseModul.basis =>
           'Frontal, beide Seitenprofile und 45°-Winkel.',
-        AnalyseModul.hautFarbtyp => '1 Nahaufnahme bei Tageslicht.',
+        AnalyseModul.hautFarbtyp =>
+          'Keine eigene Aufnahme – nutzt das Frontalfoto der Basis. Mach es '
+              'bei indirektem Tageslicht.',
         AnalyseModul.zaehneLaecheln => '1 Foto lächelnd.',
         AnalyseModul.figurPassform =>
           '2 Ganzkörperfotos (frontal + seitlich) sowie Körpergröße und '
