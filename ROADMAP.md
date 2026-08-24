@@ -500,7 +500,7 @@ großzügig für echte Nutzung und deckelt den Schaden.
 in `SETUP.md`, Abschnitt 12.*
 
 - [ ] `dart run tool/rechtstexte_pruefen.dart` läuft ohne Fehler
-- [ ] Merged Manifest gegen `DECISIONS.md` 23 geprüft — kam mit einem neuen Plugin eine Berechtigung dazu?
+- [x] Merged Manifest gegen `DECISIONS.md` 23 geprüft — kam mit einem neuen Plugin eine Berechtigung dazu? — *24.08.2026: ja, Firebase Analytics brachte `AD_ID` + zwei AdServices-Berechtigungen mit, widersprach der Data-Safety-Angabe „keine Werbe-ID"; entfernt und in `DECISIONS.md`, 23 nachgetragen. Dabei aufgefallen: die Tabelle deckt noch nicht alle seit Phase 1/4.3 dazugekommenen Berechtigungen ab (siehe Nachtrag dort) — verdient vor der nächsten Einreichung einen eigenen vollständigen Durchgang*
 - [ ] Version in `pubspec.yaml` erhöht (`versionCode` muss steigen)
 - [ ] Release-Build mit eigenem Keystore signiert, als **App Bundle**
 - [ ] Build mit aktiviertem Minify auf einem echten Gerät durchgespielt (nicht nur kompiliert)
