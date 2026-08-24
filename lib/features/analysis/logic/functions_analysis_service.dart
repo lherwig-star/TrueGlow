@@ -6,6 +6,7 @@ import '../../modules/models/analyse_modul.dart';
 import '../../modules/models/modul_eingaben.dart';
 import '../../onboarding/models/onboarding_profile.dart';
 import '../../../core/firebase/firebase_start.dart';
+import '../../../core/netz/wiederholung.dart';
 import '../models/analysis_result.dart';
 import 'analyse_anfrage.dart';
 import 'analysis_service.dart';
@@ -30,6 +31,7 @@ class FunctionsAnalysisService implements AnalysisService {
     required OnboardingProfile onboarding,
     required ModulEingaben eingaben,
     Richtung richtung = Richtung.leer,
+    Abbruch? abbruch,
   }) async {
     if (fotos.isEmpty) {
       throw const AnalysisException(AnalysisFehler.fotosFehlen);
@@ -55,6 +57,7 @@ class FunctionsAnalysisService implements AnalysisService {
         eingaben: eingaben,
         richtung: richtung,
       ),
+      abbruch: abbruch,
     );
 
     final roh = antwort['ergebnis'];

@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/cloud/cloud_modell.dart';
+import '../../../core/netz/wiederholung.dart';
+import '../../../core/storage/hive_service.dart';
 import '../../capture/logic/aufnahme_flow.dart';
 import '../../consent/logic/einwilligung_controller.dart';
 import '../../capture/logic/capture_controller.dart';
@@ -41,12 +44,33 @@ class AnalyseFehlgeschlagen extends AnalyseZustand {
   final AnalysisFehler fehler;
 }
 
+/// Der Nutzer hat abgebrochen. Kein Fehler, deshalb ein eigener Zustand –
+/// die UI soll hier nichts erklaeren muessen.
+class AnalyseAbgebrochen extends AnalyseZustand {
+  const AnalyseAbgebrochen();
+}
+
 /// Verbindet Aufnahmen, Modulauswahl, Onboarding-Antworten und Vision-Service
 /// und legt das Ergebnis lokal ab.
 class AnalysisController extends StateNotifier<AnalyseZustand> {
   AnalysisController(this._ref) : super(const AnalyseBereit());
 
   final Ref _ref;
+
+  /// Der Abbruchwunsch des laufenden Durchlaufs.
+  Abbruch? _abbruch;
+
+  /// Bricht den laufenden Durchlauf ab.
+  ///
+  /// Was endet, ist das Warten und Wiederholen – eine schon abgeschickte
+  /// Anfrage laesst sich nicht zurueckholen. Fuer den Nutzer ist der
+  /// Unterschied unsichtbar; fuer die Rechnung nicht, deshalb steht er hier
+  /// und nicht auf dem Knopf.
+  void abbrechen() {
+    _abbruch?.ausloesen();
+    _laufmarke(null);
+    if (state is AnalyseLaeuft) state = const AnalyseAbgebrochen();
+  }
 
   /// Mit [nurModul] wird ausschliesslich dieses Kapitel erzeugt und in die
   /// bestehende Analyse eingehaengt – der Weg ueber "Analyse erweitern".
@@ -99,6 +123,9 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
     }
 
     state = const AnalyseLaeuft();
+    final abbruch = _abbruch = Abbruch();
+    // Marke fuer den Fall, dass die App mitten im Lauf beendet wird.
+    _laufmarke(DateTime.now());
 
     try {
       final antwort = await _ref.read(analysisServiceProvider).analysiere(
@@ -107,6 +134,7 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
             onboarding: _ref.read(onboardingControllerProvider),
             eingaben: modulZustand.eingaben,
             richtung: richtung,
+            abbruch: abbruch,
           );
 
       final ergebnis = nurModul == null
@@ -114,16 +142,39 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
           : _einhaengen(antwort, nurModul, richtung);
 
       await _ref.read(analysenProvider.notifier).speichern(ergebnis);
+      _laufmarke(null);
       if (!mounted) return;
       state = AnalyseFertig(ergebnis);
+    } on AbbruchException {
+      _laufmarke(null);
+      if (!mounted) return;
+      state = const AnalyseAbgebrochen();
     } on AnalysisException catch (e) {
       debugPrint('Analyse fehlgeschlagen: $e');
+      _laufmarke(null);
       if (!mounted) return;
       state = AnalyseFehlgeschlagen(e.fehler);
     } catch (e, s) {
       debugPrint('Analyse unerwartet fehlgeschlagen: $e\n$s');
+      _laufmarke(null);
       if (!mounted) return;
       state = const AnalyseFehlgeschlagen(AnalysisFehler.apiFehler);
+    }
+  }
+
+  /// Haelt fest, dass gerade eine Analyse laeuft – oder raeumt die Marke weg.
+  ///
+  /// Der Zustand des Controllers lebt nur im Arbeitsspeicher. Wird die App
+  /// mitten im Lauf beendet, waere ohne diese Marke nicht mehr feststellbar,
+  /// dass ueberhaupt etwas offen war: Der Nutzer saehe beim naechsten Start
+  /// ein unveraendertes Dashboard und wuesste nicht, ob seine Analyse noch
+  /// kommt.
+  void _laufmarke(DateTime? seit) {
+    final box = _ref.read(storeProvider(HiveService.boxEinstellungen));
+    if (seit == null) {
+      box.delete(CloudModell.keyAnalyseLaeuftSeit);
+    } else {
+      box.put(CloudModell.keyAnalyseLaeuftSeit, seit.toIso8601String());
     }
   }
 
@@ -152,7 +203,10 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
     );
   }
 
-  void zuruecksetzen() => state = const AnalyseBereit();
+  void zuruecksetzen() {
+    _laufmarke(null);
+    state = const AnalyseBereit();
+  }
 }
 
 /// Waehlt Mock oder echten Anbieter – gesteuert ueber [AnalysisConfig].

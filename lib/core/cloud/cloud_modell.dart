@@ -69,6 +69,10 @@ class CloudModell {
   static const String keyAufnahmen = 'aufnahmen';
   static const String keyErscheinungsbild = 'erscheinungsbild';
 
+  /// Marke einer laufenden Analyse. Bleibt bewusst lokal: Sie beschreibt
+  /// diesen Programmlauf auf diesem Geraet, nicht das Konto.
+  static const String keyAnalyseLaeuftSeit = 'analyseLaeuftSeit';
+
   static const String keyStreakRekord = 'streakRekord';
   static const String keyAbzeichen = 'abzeichenGefeiert';
   static const String keyStreakAktuell = 'streakAktuell';
@@ -96,6 +100,7 @@ class CloudModell {
   /// - `entwurf` ist ein halb ausgefuellter Check-in mit dem Pfad eines eben
   ///   aufgenommenen Fotos – ein Zwischenstand des Geraets, kein Kontostand.
   /// - `erscheinungsbild` ist eine Geraeteeinstellung, keine Kontoeinstellung.
+  /// - `analyseLaeuftSeit` gilt nur fuer genau diesen Programmlauf.
   /// - `streakAktuell` und `streakLetzterTag` werden aus den Tagesdaten neu
   ///   gerechnet (siehe StreakRepository) – sie zu synchronisieren hiesse,
   ///   zwei Rechenwege fuer dieselbe Zahl zu pflegen.

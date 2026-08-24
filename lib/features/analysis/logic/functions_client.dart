@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../core/firebase/firebase_start.dart';
+import '../../../core/netz/wiederholung.dart';
 import 'analysis_service.dart';
 
 /// Der Transport zu den eigenen Cloud Functions.
@@ -30,10 +32,11 @@ class FunctionsClient {
   /// [rufeRoh].
   Future<Map<String, dynamic>> rufe(
     String name,
-    Map<String, dynamic> daten,
-  ) async {
+    Map<String, dynamic> daten, {
+    Abbruch? abbruch,
+  }) async {
     try {
-      return await rufeRoh(name, daten);
+      return await rufeRoh(name, daten, abbruch: abbruch);
     } on FunctionsFehler catch (e) {
       throw AnalysisException(_fehler(e), '${e.code}: ${e.nachricht}');
     }
@@ -44,6 +47,32 @@ class FunctionsClient {
   /// Der Aufrufer bekommt Code und den Fall aus `details.fehler` und
   /// entscheidet selbst, was das fuer seine UI bedeutet.
   Future<Map<String, dynamic>> rufeRoh(
+    String name,
+    Map<String, dynamic> daten, {
+    Duration? zeitlimit,
+    Abbruch? abbruch,
+  }) {
+    return mitWiederholung(
+      () => _einAufruf(name, daten, zeitlimit: zeitlimit),
+      wiederholbar: darfWiederholtWerden,
+      abbruch: abbruch,
+    );
+  }
+
+  /// Ob ein gescheiterter Aufruf wiederholt werden darf.
+  ///
+  /// Nur dann, wenn er den Server nachweislich nicht erreicht hat. Alles
+  /// andere koennte bereits Kontingent gebucht und Tokens verbraucht haben —
+  /// eine Wiederholung waere dann eine zweite Rechnung fuer dasselbe
+  /// Ergebnis. Insbesondere `deadline-exceeded` gehoert nicht dazu: Dort hat
+  /// das Modell gerechnet, nur die Antwort kam zu spaet.
+  @visibleForTesting
+  static bool darfWiederholtWerden(Object fehler) {
+    if (fehler is! FunctionsFehler) return false;
+    return fehler.code == 'unavailable' || fehler.fall == 'keinInternet';
+  }
+
+  Future<Map<String, dynamic>> _einAufruf(
     String name,
     Map<String, dynamic> daten, {
     Duration? zeitlimit,

@@ -11,6 +11,7 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../analysis/logic/analysis_controller.dart';
 import '../../analysis/models/analysis_result.dart';
+import '../../analysis/ui/unterbrochen_karte.dart';
 import '../../capture/logic/capture_controller.dart';
 import '../../checkin/logic/checkin_benachrichtigung.dart';
 import '../../checkin/logic/checkin_controller.dart';
@@ -122,9 +123,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           onPressed: () => context.push(Routes.settings),
         ),
       ],
-      children: analyse == null
-          ? _ohneAnalyse(context, ref)
-          : _mitAnalyse(context, ref, analyse),
+      children: [
+        // Steht ganz oben und nur, wenn es etwas zu sagen gibt: Ein
+        // Programmlauf, der mitten in der Analyse endete, hinterlaesst sonst
+        // gar keine Spur.
+        const UnterbrochenKarte(),
+        ...analyse == null
+            ? _ohneAnalyse(context, ref)
+            : _mitAnalyse(context, ref, analyse),
+      ],
     );
   }
 

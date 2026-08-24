@@ -62,6 +62,16 @@ class _AnalysisLoadingScreenState extends ConsumerState<AnalysisLoadingScreen> {
     super.dispose();
   }
 
+  /// Bricht ab und geht zurueck.
+  ///
+  /// Ohne diesen Ausweg haengt die Analyse am Netz: Bei schlechter Verbindung
+  /// laeuft der Wiederholungszyklus bis zu drei Versuche durch, und der
+  /// einzige Weg heraus waere, die App zu schliessen.
+  void _abbrechen() {
+    ref.read(analysisControllerProvider.notifier).abbrechen();
+    if (context.canPop()) context.pop();
+  }
+
   void _erneutVersuchen() {
     setState(() => _index = 0);
     ref.read(analysisControllerProvider.notifier).starten(
@@ -72,10 +82,12 @@ class _AnalysisLoadingScreenState extends ConsumerState<AnalysisLoadingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Bei Erfolg direkt zum Ergebnis wechseln.
+    // Bei Erfolg direkt zum Ergebnis wechseln, beim Abbruch zurueck.
     ref.listen<AnalyseZustand>(analysisControllerProvider, (_, neu) {
       if (neu is AnalyseFertig) {
         context.pushReplacement('${Routes.result}/${neu.ergebnis.id}');
+      } else if (neu is AnalyseAbgebrochen && context.canPop()) {
+        context.pop();
       }
     });
 
@@ -91,7 +103,11 @@ class _AnalysisLoadingScreenState extends ConsumerState<AnalysisLoadingScreen> {
                 onErneut: _erneutVersuchen,
                 onZurueck: () => context.pop(),
               ),
-            _ => _Laden(text: _statusTexte[_index], index: _index),
+            _ => _Laden(
+                text: _statusTexte[_index],
+                index: _index,
+                onAbbrechen: _abbrechen,
+              ),
           },
         ),
       ),
@@ -100,40 +116,51 @@ class _AnalysisLoadingScreenState extends ConsumerState<AnalysisLoadingScreen> {
 }
 
 class _Laden extends StatelessWidget {
-  const _Laden({required this.text, required this.index});
+  const _Laden({
+    required this.text,
+    required this.index,
+    required this.onAbbrechen,
+  });
 
   final String text;
   final int index;
+  final VoidCallback onAbbrechen;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const SizedBox(
-          width: 56,
-          height: 56,
-          child: CircularProgressIndicator(strokeWidth: 3),
-        ),
-        const SizedBox(height: AppTheme.gapL),
-        AnimatedSwitcher(
-          duration: const Duration(milliseconds: 400),
-          child: Text(
-            text,
-            key: ValueKey(index),
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+    // Scrollbar, damit der Inhalt auf kleinen Geraeten und bei grosser
+    // Systemschrift nicht ueberlaeuft.
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(
+            width: 56,
+            height: 56,
+            child: CircularProgressIndicator(strokeWidth: 3),
           ),
-        ),
-        const SizedBox(height: AppTheme.gapS),
-        Text(
-          S.analyseHinweis,
-          textAlign: TextAlign.center,
-          style: TextStyle(color: context.farben.textSekundaer, fontSize: 14),
-        ),
-        const SizedBox(height: AppTheme.gapXl),
-        const _SkeletonBlock(),
-      ],
+          const SizedBox(height: AppTheme.gapL),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 400),
+            child: Text(
+              text,
+              key: ValueKey(index),
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            ),
+          ),
+          const SizedBox(height: AppTheme.gapS),
+          Text(
+            S.analyseHinweis,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: context.farben.textSekundaer, fontSize: 14),
+          ),
+          const SizedBox(height: AppTheme.gapXl),
+          const _SkeletonBlock(),
+          const SizedBox(height: AppTheme.gapS),
+          TextButton(onPressed: onAbbrechen, child: const Text(S.abbrechen)),
+        ],
+      ),
     );
   }
 }

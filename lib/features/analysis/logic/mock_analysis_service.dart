@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import '../../../core/netz/wiederholung.dart';
 import '../../capture/models/aufnahme_typ.dart';
 import '../../direction/models/richtung.dart';
 import '../../modules/models/analyse_modul.dart';
@@ -25,8 +26,10 @@ class MockAnalysisService implements AnalysisService {
     // beruecksichtigen; sie wird aber wie im Echtbetrieb ans Ergebnis
     // geheftet, damit der Report sie anzeigen kann.
     Richtung richtung = Richtung.leer,
+    Abbruch? abbruch,
   }) async {
     await Future<void>.delayed(AnalysisConfig.mockDauer);
+    if (abbruch?.istAusgeloest ?? false) throw const AbbruchException();
 
     final json = JsonExtractor.extrahiere(antwortFuer(module));
     if (json == null) {

@@ -413,9 +413,9 @@ Minuten ausgehebelt — und jeder unberechtigte Aufruf kostet dich echtes Geld.
 
 ### 4.1 Netz und Offline
 
-- [ ] Retry mit exponentiellem Backoff für KI-Aufrufe (3 Versuche), abbrechbar — **M**
-- [ ] Globaler Offline-Hinweis; Checklisten und Plan bleiben offline nutzbar (sind sie heute schon) — **S**
-- [ ] Angefangene Analyse nach App-Neustart sauber fortsetzen oder verwerfen — **M**
+- [x] Retry mit exponentiellem Backoff für die Function-Aufrufe (3 Versuche, 1 s und 2 s Pause), abbrechbar — **M** — *wiederholt wird nur, was den Server nachweislich nicht erreicht hat; alles andere könnte schon Kontingent und Tokens gekostet haben*
+- [x] Globaler Offline-Hinweis; Checklisten, Plan und Streak bleiben offline nutzbar — **S** — *Band über allen Screens, das ausdrücklich sagt, was weiter funktioniert*
+- [x] Angefangene Analyse nach App-Neustart sauber verwerfen statt hängen zu lassen — **M** — *Laufmarke im lokalen Speicher, einmaliger Hinweis auf dem Dashboard; fortsetzen geht nicht, eine abgeschickte Anfrage ist weg*
 
 ### 4.2 Zustände systematisch
 

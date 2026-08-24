@@ -7,6 +7,7 @@ import 'core/cloud/cloud_speicher.dart';
 import 'core/firebase/einrichtung_hinweis.dart';
 import 'core/firebase/firebase_start.dart';
 import 'core/l10n/app_strings.dart';
+import 'core/netz/netz_zustand.dart';
 import 'core/router/app_router.dart';
 import 'core/storage/hive_service.dart';
 import 'core/sync/sync_provider.dart';
@@ -131,7 +132,9 @@ class _TrueGlowAppState extends ConsumerState<TrueGlowApp> {
             theme.extension<AppColors>()!,
             theme.brightness,
           ),
-          child: child ?? const SizedBox.shrink(),
+          // Das Offline-Band liegt ueber allen Screens – ein Hinweis, den man
+          // je nach Route neu bauen muesste, fehlt irgendwann auf einer.
+          child: OfflineBand(child: child ?? const SizedBox.shrink()),
         );
       },
     );

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import '../../../core/netz/wiederholung.dart';
 import '../../capture/models/aufnahme_typ.dart';
 import '../../direction/models/richtung.dart';
 import '../../modules/models/analyse_modul.dart';
@@ -102,6 +103,8 @@ abstract interface class AnalysisService {
   /// [richtung] sind die persoenlichen Ziele des Nutzers; sie sind optional
   /// und leer, wenn der Schritt uebersprungen wurde.
   ///
+  /// [abbruch] stoppt Warten und Wiederholen, wenn der Nutzer aufgibt.
+  ///
   /// Wirft bei Problemen eine [AnalysisException].
   Future<AnalysisResult> analysiere({
     required Map<AufnahmeTyp, File> fotos,
@@ -109,5 +112,6 @@ abstract interface class AnalysisService {
     required OnboardingProfile onboarding,
     required ModulEingaben eingaben,
     Richtung richtung = Richtung.leer,
+    Abbruch? abbruch,
   });
 }
