@@ -657,6 +657,51 @@ dart run tool/diagnose_stichprobe.dart tool/stichprobe/analyse_*.json
 | `habits` pro Kapitel | immer 4 | 6 × 4, **1 × 3** | Der Prompt verlangt „4 bis 7 pro Kapitel" (`analyse_prompt.ts`). Einmal kamen nur 3. Kein Fehlerfall — die App zeigt einfach eine kürzere Liste —, aber der Beleg, dass Mengenangaben im Prompt Wünsche sind und keine Garantien. Nichts darf davon abhängen, dass genau *n* Einträge ankommen. |
 | `plan.taeglicheHabits` | leer | leer (3 von 3) | **Totes Feld.** Siehe unten. |
 
+### Kontingent-Hinweis vor der Aufnahme
+
+Aufgefallen beim Rate-Limit-Test (`SETUP.md` 6.4): Wer das Tageskontingent
+aufgebraucht hat, merkt es erst **nach** dem kompletten Fotoweg. Elf Aufnahmen,
+Wartezeit, dann „Kontingent erschöpft". Die Sperre ist richtig — der Zeitpunkt
+war es nicht.
+
+Der Hinweis steht jetzt auf der Modul-Auswahl, also vor der Kamera
+(`lib/features/modules/ui/module_selection_screen.dart`). Bei erschöpftem
+Kontingent ist zusätzlich die Weiter-Schaltfläche gesperrt.
+
+**Warum das ohne neue Cloud Function geht:** Die Security Rules erlauben dem
+Client das *Lesen* von `users/{uid}/kontingent/{art}` und verbieten jedes
+Schreiben — der Kommentar in `firestore.rules` nennt genau diesen Zweck. Der
+Stand war also von Anfang an vorgesehen, er wurde nur nie angezeigt.
+
+Drei Entscheidungen dabei, die zusammengehören:
+
+1. **Der Server bleibt maßgeblich.** `KontingentStand` ist ein Hinweis. Die
+   Sperre sitzt weiterhin in `functions/src/limit.ts` und wird vor jedem
+   Gemini-Aufruf ausgewertet. Ein Client, der lügt, gewinnt nichts.
+2. **Unbekannt ist nicht erschöpft.** Ohne Anmeldung, im Demo-Modus, offline
+   oder bei einem Lesefehler liefert der Provider `null` — dann erscheint kein
+   Hinweis und nichts wird gesperrt. Der umgekehrte Fehler wäre der teurere:
+   jemanden aussperren, der noch Kontingent hat.
+3. **Die Grenzen stehen doppelt** (`proTag = 3`, `proMonat = 30`), einmal hier
+   und einmal in `limit.ts`. Das Zählerdokument enthält die Grenze nicht, und
+   eine eigene Function für zwei Zahlen wäre teurer als dieser Absatz. Laufen
+   sie auseinander, stimmt der *Hinweis* nicht mehr — die *Sperre* schon.
+
+Die Normalisierung auf „heute" spiegelt `stand()` serverseitig: Ein Zähler,
+dessen Tages- bzw. Monatsschlüssel nicht mehr der aktuelle ist, zählt als 0.
+Ohne diese Regel würde die App nach drei Analysen dauerhaft sperren, weil der
+Server den Zähler nicht zurücksetzt, sondern den Schlüssel vergleicht.
+`test/kontingent_test.dart` hält genau das fest.
+
+**Bekannte Ungenauigkeit:** Der Client bildet den Tagesschlüssel aus der
+lokalen Gerätezeit, der Server rechnet in `Europe/Berlin`. Auf einem Gerät in
+einer anderen Zeitzone kann der Hinweis um Mitternacht herum um einen Tag
+danebenliegen. Bewusst in Kauf genommen — die Alternative wäre das
+`timezone`-Paket samt Zeitzonendatenbank im Bundle, viel Gewicht für einen
+Hinweis, über den ohnehin der Server entscheidet.
+
+---
+
 ### Das tote Feld `plan.taeglicheHabits`
 
 Aufgefallen beim Vergleich, und es ist keine Mock-Live-Abweichung, sondern

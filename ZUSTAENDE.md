@@ -30,7 +30,7 @@ Punkt.
 | Screen | Laden | Fehler | Leer |
 |---|---|---|---|
 | **Dashboard**<br>`home_screen.dart` | entfällt — liest lokal und synchron | **neu:** Karte „Analyse unterbrochen", wenn ein Lauf beim letzten Mal abbrach | „Noch keine Analyse" mit Einstieg |
-| **Modulauswahl**<br>`module_selection_screen.dart` | entfällt | entfällt — Auswahl kann nicht scheitern | entfällt — die Basis ist immer gesetzt |
+| **Modulauswahl**<br>`module_selection_screen.dart` | kein Spinner — der Kontingentstand kommt nach und schiebt sich still ein, statt die Seite zu blockieren | Auswahl selbst kann nicht scheitern. **Neu:** Ist das Kontingent erschöpft, erklärt eine Karte den Grund (Tages- oder Monatsgrenze) und die Weiter-Schaltfläche ist gesperrt — der Hinweis steht **vor** der Kamera, nicht nach elf Fotos. Lässt sich der Stand nicht lesen (offline, Demo, nicht angemeldet), erscheint nichts und nichts sperrt | entfällt — die Basis ist immer gesetzt |
 | **Deine Richtung**<br>`direction_screen.dart` | entfällt | entfällt | Hinweistext bei leerer Auswahl; Überspringen ist erlaubt |
 | **Aufnahme-Flow**<br>`capture_flow_screen.dart` | Spinner während der Bildprüfung | Sechs benannte Foto-Probleme mit konkretem Tipp | Schrittanzeige zeigt, was noch fehlt |
 | **Kamera**<br>`camera_screen.dart` | Spinner bis die Vorschau steht | Eigener Hinweisschirm: Berechtigung verweigert (mit Link in die Systemeinstellungen) oder Kamera nicht verfügbar — Galerie bleibt als Ausweg | entfällt |

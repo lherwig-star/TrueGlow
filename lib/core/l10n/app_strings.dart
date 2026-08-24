@@ -87,6 +87,23 @@ class S {
       'Diese Bereiche fehlen deiner Analyse noch. Deine bisherigen Fotos '
       'bleiben erhalten – es kommen nur die neuen Aufnahmen dazu.';
 
+  // --- Kontingent ---
+  // Der Hinweis erscheint vor der Aufnahme, damit niemand erst fotografiert
+  // und dann abgewiesen wird.
+  static const kontingentTagesgrenze = 'Heute keine Analyse mehr frei';
+  static const kontingentTagesgrenzeText =
+      'Drei Analysen pro Tag – das Kontingent ist aufgebraucht. Ab morgen '
+      'früh geht es weiter. Dein Plan, deine Checkliste und der Check-in '
+      'bleiben in der Zwischenzeit nutzbar.';
+  static const kontingentMonatsgrenze = 'Diesen Monat keine Analyse mehr frei';
+  static const kontingentMonatsgrenzeText =
+      'Dreißig Analysen pro Monat – das Kontingent ist aufgebraucht. Zum '
+      'Monatswechsel füllt es sich wieder auf.';
+
+  /// z. B. „Noch 2 von 3 Analysen heute".
+  static String kontingentUebrig(int uebrig, int gesamt) =>
+      'Noch $uebrig von $gesamt ${uebrig == 1 ? 'Analyse' : 'Analysen'} heute';
+
   // --- Deine Richtung ---
   static const richtungTitel = 'Deine Richtung';
   static const richtungEyebrow = 'Optional';

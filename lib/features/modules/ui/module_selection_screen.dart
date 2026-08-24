@@ -8,6 +8,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
+import '../../analysis/logic/kontingent.dart';
 import '../logic/module_controller.dart';
 import '../models/analyse_modul.dart';
 import 'widgets/modul_karte.dart';
@@ -25,13 +26,19 @@ class ModuleSelectionScreen extends ConsumerWidget {
     final farben = context.farben;
     final anzahl = zustand.anzahlZusatzModule;
 
+    // Der Kontingentstand ist ein Hinweis, keine Sperre – massgeblich bleibt
+    // die Cloud Function. `null` heisst „unbekannt" (Demo, offline, nicht
+    // angemeldet) und darf niemanden aufhalten.
+    final kontingent = ref.watch(kontingentProvider).valueOrNull;
+    final gesperrt = kontingent?.erschoepft ?? false;
+
     return AppPage(
       title: S.moduleTitel,
       bottomFade: true,
       bottomBar: FilledButton(
         // Naechster Schritt ist "Deine Richtung"; von dort geht es – mit oder
         // ohne Eingabe – weiter in die Aufnahme.
-        onPressed: () => context.push(Routes.richtung),
+        onPressed: gesperrt ? null : () => context.push(Routes.richtung),
         style: FilledButton.styleFrom(shape: const StadiumBorder()),
         child: Text(
           anzahl == 0
@@ -60,6 +67,28 @@ class ModuleSelectionScreen extends ConsumerWidget {
         ),
         const SizedBox(height: AppTheme.gapS),
         const MutedText(S.moduleEinleitung),
+        if (kontingent != null) ...[
+          const SizedBox(height: AppTheme.gapM),
+          if (kontingent.erschoepft)
+            SectionCard(
+              icon: Icons.hourglass_empty,
+              title: kontingent.monatsgrenzeErreicht
+                  ? S.kontingentMonatsgrenze
+                  : S.kontingentTagesgrenze,
+              child: MutedText(
+                kontingent.monatsgrenzeErreicht
+                    ? S.kontingentMonatsgrenzeText
+                    : S.kontingentTagesgrenzeText,
+              ),
+            )
+          else
+            MutedText(
+              S.kontingentUebrig(
+                kontingent.tagUebrig,
+                KontingentStand.proTag,
+              ),
+            ),
+        ],
         const SizedBox(height: AppTheme.gapM),
         ModulKarte(
           modul: AnalyseModul.basis,
