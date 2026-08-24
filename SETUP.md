@@ -342,11 +342,15 @@ Capabilities **Sign in with Apple** und **App Attest** aktivieren
 > auch „Sign in with Apple" anbieten. Der Code ist darauf vorbereitet — es
 > kommt nur ein weiterer Eintrag in `AuthAnbieter` dazu, kein Umbau.
 
-☐ **7.4 Xcode-Projekt**: Signing-Team setzen, Capability
+☐ **7.4 Mindest-iOS-Version**: Firebase verlangt iOS 15 oder neuer. In
+`ios/Podfile` `platform :ios, '15.0'` setzen (die Datei entsteht beim ersten
+`flutter build ios`) und im Xcode-Target dasselbe eintragen.
+
+☐ **7.5 Xcode-Projekt**: Signing-Team setzen, Capability
 **Sign in with Apple** hinzufügen, `GoogleService-Info.plist` ins Runner-Target
 ziehen
 
-☐ **7.5 URL-Schema für Google Sign-In**: den Wert `REVERSED_CLIENT_ID` aus
+☐ **7.6 URL-Schema für Google Sign-In**: den Wert `REVERSED_CLIENT_ID` aus
 `GoogleService-Info.plist` in `ios/Runner/Info.plist` unter `CFBundleURLTypes`
 eintragen (macht `flutterfire configure` nicht automatisch)
 

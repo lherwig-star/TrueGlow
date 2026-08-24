@@ -30,9 +30,12 @@ mit erkennbar ungültigen Werten im Repo.
 sowie die 148 Tests wären bis zum ersten Konsolen-Klick rot. Der Platzhalter
 hält den Baum grün und wird beim `flutterfire configure` überschrieben.
 
-**Preis:** Wer die Datei nicht ersetzt, bekommt zur Laufzeit einen klaren
-Fehler („Firebase ist nicht konfiguriert …") statt eines stillen Fehlschlags.
-Der Platzhalter prüft sich selbst über `FirebaseOptionsPlatzhalter.istEcht`.
+**Preis:** Wer die Datei nicht ersetzt, sieht statt der App einen Hinweis mit
+dem nötigen Befehl (`EinrichtungHinweisApp`) statt eines stillen Fehlschlags.
+Erkannt wird der Platzhalter an seiner Projekt-ID
+(`DefaultFirebaseOptions.platzhalterProjektId`, geprüft in `FirebaseStart`) –
+nach `flutterfire configure` stimmt sie nicht mehr überein und die App startet
+normal.
 
 ---
 

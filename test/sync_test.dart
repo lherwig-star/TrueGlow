@@ -164,7 +164,6 @@ void main() {
 
     test('ein lokaler Wert ohne Zeitstempel verliert gegen die Cloud',
         () async {
-      final aufbau = _aufbau();
       final store = SyncStore(
         box: HiveService.boxEinstellungen,
         lokal: MemoryStore()..put(CloudModell.keyRichtung, 'ungestempelt'),
