@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:glowup/features/analysis/logic/json_extractor.dart';
-import 'package:glowup/features/analysis/logic/mock_analysis_service.dart';
-import 'package:glowup/features/analysis/models/analysis_result.dart';
-import 'package:glowup/features/modules/models/analyse_modul.dart';
-import 'package:glowup/features/streak/logic/streak_repository.dart';
-import 'package:glowup/features/streak/models/abzeichen.dart';
+import 'package:trueglow/features/analysis/logic/json_extractor.dart';
+import 'package:trueglow/features/analysis/logic/mock_analysis_service.dart';
+import 'package:trueglow/features/analysis/models/analysis_result.dart';
+import 'package:trueglow/features/modules/models/analyse_modul.dart';
+import 'package:trueglow/features/streak/logic/streak_repository.dart';
+import 'package:trueglow/features/streak/models/abzeichen.dart';
 
 AnalysisResult _analyse(Set<AnalyseModul> module) => AnalysisResult.vonApi(
       JsonExtractor.extrahiere(MockAnalysisService.antwortFuer(module))!,

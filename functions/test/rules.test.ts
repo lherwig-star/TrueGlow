@@ -30,7 +30,7 @@ let umgebung: RulesTestEnvironment;
 
 beforeAll(async () => {
   umgebung = await initializeTestEnvironment({
-    projectId: 'glowup-regeltest',
+    projectId: 'trueglow-regeltest',
     // Host und Port kommen aus FIRESTORE_EMULATOR_HOST, das
     // `firebase emulators:exec` setzt.
     firestore: { rules: REGELN },

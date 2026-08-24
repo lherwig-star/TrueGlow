@@ -19,7 +19,7 @@ class EinrichtungHinweisApp extends StatelessWidget {
         ergebnis.stand == FirebaseStartStand.nichtKonfiguriert;
 
     return MaterialApp(
-      title: 'GlowUp – Einrichtung',
+      title: 'TrueGlow – Einrichtung',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
@@ -49,7 +49,7 @@ class EinrichtungHinweisApp extends StatelessWidget {
                             '--out=lib/firebase_options.dart\n\n'
                             'Für einen Durchlauf ohne Backend (Demo- und '
                             'Screenshot-Modus) startest du die App mit\n'
-                            '--dart-define=GLOWUP_MOCK=true.'
+                            '--dart-define=TRUEGLOW_MOCK=true.'
                         : 'Die Konfiguration ist vorhanden, der Start ist '
                             'trotzdem fehlgeschlagen. Häufigste Ursache: '
                             'android/app/google-services.json fehlt oder '

@@ -20,12 +20,12 @@ class DefaultFirebaseOptions {
   /// [FirebaseStart]: So bleibt die Erkennung auch dann korrekt, wenn die
   /// FlutterFire CLI diese Datei ueberschreibt – dann stimmt die ID nicht
   /// mehr ueberein und die App gilt als konfiguriert.
-  static const String platzhalterProjektId = 'glowup-platzhalter';
+  static const String platzhalterProjektId = 'trueglow-platzhalter';
 
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
       throw UnsupportedError(
-        'GlowUp ist eine reine Mobil-App – Web ist nicht konfiguriert.',
+        'TrueGlow ist eine reine Mobil-App – Web ist nicht konfiguriert.',
       );
     }
     switch (defaultTargetPlatform) {
@@ -54,6 +54,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '000000000000',
     projectId: platzhalterProjektId,
     storageBucket: '$platzhalterProjektId.firebasestorage.app',
-    iosBundleId: 'com.glowup.glowup',
+    iosBundleId: 'com.trueglow.app',
   );
 }

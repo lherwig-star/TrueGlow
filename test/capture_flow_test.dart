@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:glowup/core/l10n/app_strings.dart';
-import 'package:glowup/core/theme/app_theme.dart';
-import 'package:glowup/features/capture/logic/aufnahme_flow.dart';
-import 'package:glowup/features/capture/logic/capture_controller.dart';
-import 'package:glowup/features/capture/models/aufnahme_typ.dart';
-import 'package:glowup/features/capture/models/captured_photo.dart';
-import 'package:glowup/features/capture/models/photo_check_result.dart';
-import 'package:glowup/features/capture/ui/schritte/foto_schritt_ansicht.dart';
-import 'package:glowup/features/capture/ui/widgets/silhouette_overlay.dart';
-import 'package:glowup/features/modules/models/analyse_modul.dart';
+import 'package:trueglow/core/l10n/app_strings.dart';
+import 'package:trueglow/core/theme/app_theme.dart';
+import 'package:trueglow/features/capture/logic/aufnahme_flow.dart';
+import 'package:trueglow/features/capture/logic/capture_controller.dart';
+import 'package:trueglow/features/capture/models/aufnahme_typ.dart';
+import 'package:trueglow/features/capture/models/captured_photo.dart';
+import 'package:trueglow/features/capture/models/photo_check_result.dart';
+import 'package:trueglow/features/capture/ui/schritte/foto_schritt_ansicht.dart';
+import 'package:trueglow/features/capture/ui/widgets/silhouette_overlay.dart';
+import 'package:trueglow/features/modules/models/analyse_modul.dart';
 
 import 'hilfen.dart';
 

@@ -1,4 +1,4 @@
-# GlowUp
+# TrueGlow
 
 Self-Improvement-App für Android (Flutter). Der Nutzer fotografiert sein Gesicht
 (frontal + Seitenprofil), eine Vision-KI analysiert die Fotos und erstellt einen

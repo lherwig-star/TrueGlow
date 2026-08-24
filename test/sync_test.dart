@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:glowup/core/cloud/cloud_dokument.dart';
-import 'package:glowup/core/cloud/cloud_modell.dart';
-import 'package:glowup/core/cloud/cloud_speicher.dart';
-import 'package:glowup/core/storage/hive_service.dart';
-import 'package:glowup/core/storage/key_value_store.dart';
-import 'package:glowup/core/sync/sync_dienst.dart';
-import 'package:glowup/core/sync/sync_store.dart';
+import 'package:trueglow/core/cloud/cloud_dokument.dart';
+import 'package:trueglow/core/cloud/cloud_modell.dart';
+import 'package:trueglow/core/cloud/cloud_speicher.dart';
+import 'package:trueglow/core/storage/hive_service.dart';
+import 'package:trueglow/core/storage/key_value_store.dart';
+import 'package:trueglow/core/sync/sync_dienst.dart';
+import 'package:trueglow/core/sync/sync_store.dart';
 
 /// Ein Satz Sync-Stores auf gemeinsamen Zeitstempeln – so wie in der App.
 ({Map<String, SyncStore> stores, KeyValueStore zeitstempel}) _aufbau() {

@@ -10,7 +10,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../migration/ui/migration_dialog.dart';
 import '../logic/auth_repository.dart';
-import '../models/glowup_nutzer.dart';
+import '../models/trueglow_nutzer.dart';
 
 /// Anmeldung – im Design der uebrigen Screens: Karten, Akzentfarbe, beide
 /// Farbschemata.

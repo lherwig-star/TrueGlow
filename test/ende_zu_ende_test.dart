@@ -1,20 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:glowup/core/l10n/app_strings.dart';
-import 'package:glowup/core/router/app_router.dart';
-import 'package:glowup/features/analysis/logic/analysis_controller.dart';
-import 'package:glowup/features/analysis/logic/analysis_service.dart';
-import 'package:glowup/features/capture/logic/capture_controller.dart';
-import 'package:glowup/features/capture/models/aufnahme_typ.dart';
-import 'package:glowup/features/capture/models/captured_photo.dart';
-import 'package:glowup/features/history/logic/analysis_repository.dart';
-import 'package:glowup/features/modules/models/analyse_modul.dart';
-import 'package:glowup/features/onboarding/logic/onboarding_controller.dart';
-import 'package:glowup/features/onboarding/models/onboarding_profile.dart';
-import 'package:glowup/features/plan/logic/plan_progress_repository.dart';
-import 'package:glowup/features/streak/logic/streak_repository.dart';
-import 'package:glowup/features/streak/models/abzeichen.dart';
-import 'package:glowup/main.dart';
+import 'package:trueglow/core/l10n/app_strings.dart';
+import 'package:trueglow/core/router/app_router.dart';
+import 'package:trueglow/features/analysis/logic/analysis_controller.dart';
+import 'package:trueglow/features/analysis/logic/analysis_service.dart';
+import 'package:trueglow/features/capture/logic/capture_controller.dart';
+import 'package:trueglow/features/capture/models/aufnahme_typ.dart';
+import 'package:trueglow/features/capture/models/captured_photo.dart';
+import 'package:trueglow/features/history/logic/analysis_repository.dart';
+import 'package:trueglow/features/modules/models/analyse_modul.dart';
+import 'package:trueglow/features/onboarding/logic/onboarding_controller.dart';
+import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
+import 'package:trueglow/features/plan/logic/plan_progress_repository.dart';
+import 'package:trueglow/features/streak/logic/streak_repository.dart';
+import 'package:trueglow/features/streak/models/abzeichen.dart';
+import 'package:trueglow/main.dart';
 
 import 'hilfen.dart';
 
@@ -39,11 +39,11 @@ void main() {
     handyGroesse(tester, hoehe: 2400);
     final overrides = testOverrides();
 
-    await tester.pumpWidget(ProviderScope(overrides: overrides, child: const GlowUpApp()));
+    await tester.pumpWidget(ProviderScope(overrides: overrides, child: const TrueGlowApp()));
     await tester.pumpAndSettle();
 
     final container = ProviderScope.containerOf(
-      tester.element(find.byType(GlowUpApp)),
+      tester.element(find.byType(TrueGlowApp)),
     );
 
     // Onboarding ueberspringen und direkt auf dem Dashboard starten.
@@ -119,11 +119,11 @@ void main() {
     handyGroesse(tester, hoehe: 1400);
     final overrides = testOverrides();
 
-    await tester.pumpWidget(ProviderScope(overrides: overrides, child: const GlowUpApp()));
+    await tester.pumpWidget(ProviderScope(overrides: overrides, child: const TrueGlowApp()));
     await tester.pumpAndSettle();
 
     final container = ProviderScope.containerOf(
-      tester.element(find.byType(GlowUpApp)),
+      tester.element(find.byType(TrueGlowApp)),
     );
 
     await container.read(analysisControllerProvider.notifier).starten();

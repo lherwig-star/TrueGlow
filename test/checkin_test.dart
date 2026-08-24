@@ -3,28 +3,28 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:glowup/core/l10n/app_strings.dart';
-import 'package:glowup/core/router/app_router.dart';
-import 'package:glowup/core/storage/key_value_store.dart';
-import 'package:glowup/features/analysis/logic/analysis_service.dart';
-import 'package:glowup/features/analysis/models/analysis_result.dart';
-import 'package:glowup/features/capture/logic/image_quality_service.dart';
-import 'package:glowup/features/checkin/logic/checkin_controller.dart';
-import 'package:glowup/features/checkin/logic/checkin_flow.dart';
-import 'package:glowup/features/checkin/logic/checkin_anfrage.dart';
-import 'package:glowup/features/checkin/logic/checkin_service.dart';
-import 'package:glowup/features/checkin/logic/checkin_zeitplan.dart';
-import 'package:glowup/features/checkin/logic/plan_anpassung.dart';
-import 'package:glowup/features/checkin/logic/wirkungsfragen.dart';
-import 'package:glowup/features/checkin/models/checkin.dart';
-import 'package:glowup/features/checkin/models/checkin_auswertung.dart';
-import 'package:glowup/features/history/logic/analysis_repository.dart';
-import 'package:glowup/features/modules/models/analyse_modul.dart';
-import 'package:glowup/features/onboarding/logic/onboarding_controller.dart';
-import 'package:glowup/features/onboarding/models/onboarding_profile.dart';
-import 'package:glowup/features/plan/logic/plan_progress_repository.dart';
-import 'package:glowup/features/streak/logic/streak_repository.dart';
-import 'package:glowup/main.dart';
+import 'package:trueglow/core/l10n/app_strings.dart';
+import 'package:trueglow/core/router/app_router.dart';
+import 'package:trueglow/core/storage/key_value_store.dart';
+import 'package:trueglow/features/analysis/logic/analysis_service.dart';
+import 'package:trueglow/features/analysis/models/analysis_result.dart';
+import 'package:trueglow/features/capture/logic/image_quality_service.dart';
+import 'package:trueglow/features/checkin/logic/checkin_controller.dart';
+import 'package:trueglow/features/checkin/logic/checkin_flow.dart';
+import 'package:trueglow/features/checkin/logic/checkin_anfrage.dart';
+import 'package:trueglow/features/checkin/logic/checkin_service.dart';
+import 'package:trueglow/features/checkin/logic/checkin_zeitplan.dart';
+import 'package:trueglow/features/checkin/logic/plan_anpassung.dart';
+import 'package:trueglow/features/checkin/logic/wirkungsfragen.dart';
+import 'package:trueglow/features/checkin/models/checkin.dart';
+import 'package:trueglow/features/checkin/models/checkin_auswertung.dart';
+import 'package:trueglow/features/history/logic/analysis_repository.dart';
+import 'package:trueglow/features/modules/models/analyse_modul.dart';
+import 'package:trueglow/features/onboarding/logic/onboarding_controller.dart';
+import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
+import 'package:trueglow/features/plan/logic/plan_progress_repository.dart';
+import 'package:trueglow/features/streak/logic/streak_repository.dart';
+import 'package:trueglow/main.dart';
 
 import 'hilfen.dart';
 
@@ -591,12 +591,12 @@ void main() {
       handyGroesse(tester, hoehe: 3200);
 
       await tester.pumpWidget(
-        ProviderScope(overrides: testOverrides(), child: const GlowUpApp()),
+        ProviderScope(overrides: testOverrides(), child: const TrueGlowApp()),
       );
       await tester.pumpAndSettle();
 
       final container = ProviderScope.containerOf(
-        tester.element(find.byType(GlowUpApp)),
+        tester.element(find.byType(TrueGlowApp)),
       );
 
       final onboarding = container.read(onboardingControllerProvider.notifier);
@@ -681,12 +681,12 @@ void main() {
       handyGroesse(tester, hoehe: 2600);
 
       await tester.pumpWidget(
-        ProviderScope(overrides: testOverrides(), child: const GlowUpApp()),
+        ProviderScope(overrides: testOverrides(), child: const TrueGlowApp()),
       );
       await tester.pumpAndSettle();
 
       final container = ProviderScope.containerOf(
-        tester.element(find.byType(GlowUpApp)),
+        tester.element(find.byType(TrueGlowApp)),
       );
 
       final onboarding = container.read(onboardingControllerProvider.notifier);

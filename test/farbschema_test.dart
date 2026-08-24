@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:glowup/core/theme/app_colors.dart';
+import 'package:trueglow/core/theme/app_colors.dart';
 
 /// Kontrastverhaeltnis nach WCAG 2.1 zwischen zwei deckenden Farben.
 double _kontrast(Color a, Color b) {

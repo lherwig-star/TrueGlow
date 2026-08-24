@@ -33,8 +33,8 @@ enum AuthAnbieter {
 
 /// Das angemeldete Konto, so weit die App es braucht.
 @immutable
-class GlowUpNutzer {
-  const GlowUpNutzer({
+class TrueGlowNutzer {
+  const TrueGlowNutzer({
     required this.uid,
     required this.anonym,
     this.email,
@@ -59,7 +59,7 @@ class GlowUpNutzer {
 
   @override
   bool operator ==(Object other) =>
-      other is GlowUpNutzer &&
+      other is TrueGlowNutzer &&
       other.uid == uid &&
       other.anonym == anonym &&
       other.email == email &&
@@ -69,5 +69,5 @@ class GlowUpNutzer {
   int get hashCode => Object.hash(uid, anonym, email, anzeigename);
 
   @override
-  String toString() => 'GlowUpNutzer($uid, anonym: $anonym)';
+  String toString() => 'TrueGlowNutzer($uid, anonym: $anonym)';
 }

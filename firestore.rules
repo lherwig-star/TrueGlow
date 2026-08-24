@@ -1,6 +1,6 @@
 rules_version = '2';
 
-// Zugriffsregeln fuer GlowUp.
+// Zugriffsregeln fuer TrueGlow.
 //
 // Grundsatz: Jedes Konto sieht ausschliesslich seinen eigenen Teilbaum unter
 // users/{uid}. Es gibt keine gemeinsamen Daten, keine oeffentlichen Listen und

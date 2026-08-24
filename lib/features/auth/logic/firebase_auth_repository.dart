@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../models/glowup_nutzer.dart';
+import '../models/trueglow_nutzer.dart';
 import 'auth_repository.dart';
 
 /// Die Anmeldung ueber Firebase Auth.
@@ -27,14 +27,14 @@ class FirebaseAuthRepository implements AuthRepository {
   Future<void>? _googleBereit;
 
   @override
-  GlowUpNutzer? get aktuell => _uebersetze(_auth.currentUser);
+  TrueGlowNutzer? get aktuell => _uebersetze(_auth.currentUser);
 
   @override
-  Stream<GlowUpNutzer?> get zustand =>
+  Stream<TrueGlowNutzer?> get zustand =>
       _auth.userChanges().map(_uebersetze);
 
   @override
-  Future<GlowUpNutzer> anmelden(AuthAnbieter anbieter) async {
+  Future<TrueGlowNutzer> anmelden(AuthAnbieter anbieter) async {
     return _mitFehlerbehandlung(() async {
       if (anbieter == AuthAnbieter.anonym) {
         final ergebnis = await _auth.signInAnonymously();
@@ -48,7 +48,7 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<GlowUpNutzer> verknuepfen(AuthAnbieter anbieter) async {
+  Future<TrueGlowNutzer> verknuepfen(AuthAnbieter anbieter) async {
     final laufend = _auth.currentUser;
     if (laufend == null || anbieter == AuthAnbieter.anonym) {
       return anmelden(anbieter);
@@ -127,8 +127,8 @@ class FirebaseAuthRepository implements AuthRepository {
     }
   }
 
-  Future<GlowUpNutzer> _mitFehlerbehandlung(
-    Future<GlowUpNutzer> Function() aufruf,
+  Future<TrueGlowNutzer> _mitFehlerbehandlung(
+    Future<TrueGlowNutzer> Function() aufruf,
   ) async {
     try {
       return await aufruf();
@@ -161,7 +161,7 @@ class FirebaseAuthRepository implements AuthRepository {
     }
   }
 
-  GlowUpNutzer _erwarte(User? nutzer) {
+  TrueGlowNutzer _erwarte(User? nutzer) {
     final uebersetzt = _uebersetze(nutzer);
     if (uebersetzt == null) {
       throw const AuthException(AuthFehler.unbekannt, 'Kein Konto zurueck');
@@ -169,9 +169,9 @@ class FirebaseAuthRepository implements AuthRepository {
     return uebersetzt;
   }
 
-  static GlowUpNutzer? _uebersetze(User? nutzer) {
+  static TrueGlowNutzer? _uebersetze(User? nutzer) {
     if (nutzer == null) return null;
-    return GlowUpNutzer(
+    return TrueGlowNutzer(
       uid: nutzer.uid,
       anonym: nutzer.isAnonymous,
       email: nutzer.email,

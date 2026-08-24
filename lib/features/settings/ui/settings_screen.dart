@@ -14,7 +14,7 @@ import '../../../core/widgets/section_card.dart';
 import '../../analysis/logic/analysis_controller.dart';
 import '../../analysis/logic/analysis_service.dart';
 import '../../auth/logic/auth_repository.dart';
-import '../../auth/models/glowup_nutzer.dart';
+import '../../auth/models/trueglow_nutzer.dart';
 import '../../migration/ui/migration_dialog.dart';
 import '../../capture/logic/capture_controller.dart';
 import '../../checkin/logic/checkin_benachrichtigung.dart';
@@ -317,8 +317,8 @@ class _ModusKarte extends StatelessWidget {
         mock
             ? 'Es werden keine Fotos versendet. Die App zeigt eine hinterlegte '
                 'Beispiel-Analyse. Umschalten beim Build über '
-                '--dart-define=GLOWUP_MOCK.'
-            : 'Analysen laufen über den GlowUp-Dienst '
+                '--dart-define=TRUEGLOW_MOCK.'
+            : 'Analysen laufen über den TrueGlow-Dienst '
                 '(${AnalysisConfig.modell}). Deine Fotos werden für die '
                 'Auswertung übertragen und dort weder gespeichert noch '
                 'protokolliert.',
@@ -394,7 +394,7 @@ class _ErscheinungsbildKarte extends ConsumerWidget {
           const SizedBox(height: AppTheme.gapS),
           MutedText(
             aktuell == Erscheinungsbild.system
-                ? 'GlowUp folgt der Systemeinstellung deines Handys.'
+                ? 'TrueGlow folgt der Systemeinstellung deines Handys.'
                 : 'Feste Auswahl – unabhängig von der Systemeinstellung.',
           ),
         ],

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:glowup/core/router/app_router.dart';
-import 'package:glowup/features/auth/logic/auth_repository.dart';
-import 'package:glowup/features/auth/models/glowup_nutzer.dart';
-import 'package:glowup/features/onboarding/logic/onboarding_controller.dart';
-import 'package:glowup/features/onboarding/models/onboarding_profile.dart';
-import 'package:glowup/main.dart';
+import 'package:trueglow/core/router/app_router.dart';
+import 'package:trueglow/features/auth/logic/auth_repository.dart';
+import 'package:trueglow/features/auth/models/trueglow_nutzer.dart';
+import 'package:trueglow/features/onboarding/logic/onboarding_controller.dart';
+import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
+import 'package:trueglow/main.dart';
 
 import 'hilfen.dart';
 
@@ -14,7 +14,7 @@ import 'hilfen.dart';
 /// Onboarding – der Zustand, in dem der Login-Screen greift.
 Future<(ProviderContainer, FakeAuthRepository)> _start(
   WidgetTester tester, {
-  GlowUpNutzer? nutzer,
+  TrueGlowNutzer? nutzer,
 }) async {
   final anmeldung = FakeAuthRepository(nutzer: nutzer);
 
@@ -25,13 +25,13 @@ Future<(ProviderContainer, FakeAuthRepository)> _start(
         ...dienstOverrides(),
         authRepositoryProvider.overrideWithValue(anmeldung),
       ],
-      child: const GlowUpApp(),
+      child: const TrueGlowApp(),
     ),
   );
   await tester.pumpAndSettle();
 
   final container = ProviderScope.containerOf(
-    tester.element(find.byType(GlowUpApp)),
+    tester.element(find.byType(TrueGlowApp)),
   );
 
   final onboarding = container.read(onboardingControllerProvider.notifier);
@@ -90,7 +90,7 @@ void main() {
     handyGroesse(tester, hoehe: 1400);
     await _start(
       tester,
-      nutzer: const GlowUpNutzer(uid: 'u1', anonym: true),
+      nutzer: const TrueGlowNutzer(uid: 'u1', anonym: true),
     );
 
     expect(find.text('Erst ausprobieren'), findsNothing);
@@ -101,7 +101,7 @@ void main() {
     handyGroesse(tester, hoehe: 2400);
     final (container, anmeldung) = await _start(
       tester,
-      nutzer: const GlowUpNutzer(
+      nutzer: const TrueGlowNutzer(
         uid: 'u1',
         anonym: false,
         email: 'jemand@example.com',
@@ -152,14 +152,14 @@ void main() {
     });
 
     test('beschriftet das Konto verstaendlich', () {
-      const anonym = GlowUpNutzer(uid: 'a', anonym: true);
-      const mitName = GlowUpNutzer(
+      const anonym = TrueGlowNutzer(uid: 'a', anonym: true);
+      const mitName = TrueGlowNutzer(
         uid: 'b',
         anonym: false,
         anzeigename: 'Jemand',
         email: 'jemand@example.com',
       );
-      const nurMail = GlowUpNutzer(
+      const nurMail = TrueGlowNutzer(
         uid: 'c',
         anonym: false,
         email: 'jemand@example.com',

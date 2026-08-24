@@ -1,7 +1,11 @@
-# ROADMAP — von GlowUp (Prototyp) zur Store-Veröffentlichung
+# ROADMAP — von TrueGlow (Prototyp) zur Store-Veröffentlichung
 
-**Stand:** 24.08.2026 · **App:** GlowUp · **Paket:** `com.glowup.glowup` · **Version:** 1.0.0+1
-**Umfang:** 77 Dart-Dateien, ~13.750 Zeilen, 12 Screens, 148 Tests
+**Stand:** 24.08.2026 · **App:** TrueGlow · **Paket:** `com.trueglow.app` · **Version:** 1.0.0+1
+**Umfang:** 77 Dart-Dateien, ~13.750 Zeilen, 12 Screens, 148 Tests (Bestandsaufnahme)
+
+> Die App hieß bis Phase 2 „GlowUp" und lief unter `com.glowup.glowup`. Die
+> Bestandsaufnahme unten beschreibt diesen Stand; die Umbenennung ist in
+> Abschnitt 2.0 festgehalten.
 
 ---
 
@@ -289,6 +293,20 @@ bestehende `KeyValueStore` ist ein guter Ansatzpunkt — die Abstraktion existie
 ---
 
 ## Phase 2 — Store-Pflichten 🔴 BLOCKER
+
+### 2.0 Umbenennung auf „TrueGlow" 🔴
+
+*Nicht in der ursprünglichen Vorlage — nachgezogen, weil die Anwendungs-ID nach
+dem ersten Play-Upload unveränderlich ist.*
+
+- [x] Anzeigename überall: Android `android:label`, iOS `CFBundleDisplayName`/`CFBundleName`, `app_strings.dart`, Onboarding, Login, Einstellungen — **S**
+- [x] Anwendungs-ID von `com.glowup.glowup` auf `com.trueglow.app`: Gradle-Namespace, `applicationId`, MainActivity-Paketpfad, iOS-Bundle-ID — **S**
+- [x] Dart-Paketname `glowup` → `trueglow`, Klassen `TrueGlowApp`/`TrueGlowNutzer` — **S**
+- [ ] Firebase: neue App-Registrierung, `flutterfire configure`, SHA-Fingerprints, App Check, alte Registrierung entfernen — **S** — *Klickweg in `SETUP.md`, Abschnitt 2.0 (nur von dir ausführbar)*
+
+**Begründung:** Nach dem ersten Upload in die Play Console ist die
+Anwendungs-ID für immer festgelegt — ein späterer Wechsel bedeutet eine neue
+App ohne Bewertungen, ohne Installationen und ohne Käufe.
 
 ### 2.1 Rechtstexte
 

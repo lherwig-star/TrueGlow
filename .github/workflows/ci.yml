@@ -57,4 +57,4 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - run: npx firebase-tools emulators:exec --only firestore --project glowup-regeltest "npx vitest run --config vitest.rules.config.ts"
+      - run: npx firebase-tools emulators:exec --only firestore --project trueglow-regeltest "npx vitest run --config vitest.rules.config.ts"

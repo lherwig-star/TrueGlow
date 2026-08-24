@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.glowup.glowup"
+    namespace = "com.trueglow.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.glowup.glowup"
+        applicationId = "com.trueglow.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         // ML Kit Face Detection und die Kamera-Pipeline setzen API 26 voraus.

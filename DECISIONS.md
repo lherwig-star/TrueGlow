@@ -92,8 +92,8 @@ gerufen wird.
 ## 5 · `useMockData` wird zur Compile-Zeit gesetzt
 
 **Was:** Aus `static const bool useMockData = true` wird
-`bool.fromEnvironment('GLOWUP_MOCK')` — Standard **false**, einschaltbar per
-`--dart-define=GLOWUP_MOCK=true`.
+`bool.fromEnvironment('TRUEGLOW_MOCK')` — Standard **false**, einschaltbar per
+`--dart-define=TRUEGLOW_MOCK=true`.
 
 **Warum:** Die Roadmap will den Mock als Demo-/Screenshot-Modus behalten, im
 Release aber `false`. Eine `const`-Umgebungsvariable erfüllt beides und kann
@@ -268,6 +268,42 @@ Schreiber gewinnt" verspricht.
 bekommt sie von Gerät B beim naechsten Abgleich zurueck. Der Fall setzt zwei
 Geraete und eine Loeschung voraus; „Alle Daten löschen" ist davon nicht
 betroffen, weil es beide Seiten in einem Zug raeumt.
+
+---
+
+## 16 · Was beim Umbenennen bewusst „glowup" geblieben ist
+
+**Was:** Der Fotoordner auf dem Gerät heißt weiterhin
+`<AppDocs>/glowup_fotos` (`image_quality_service.dart`).
+
+**Warum:** Der Ordnername steht in jedem gespeicherten Foto-Pfad — in der
+Aufnahmen-Liste, in den Check-in-Einträgen und seit Phase 1.5 auch in den
+Cloud-Dokumenten. Ein Umbenennen hieße, alle bestehenden Pfade zu migrieren
+und dabei genau die Fotos zu riskieren, die nirgends sonst existieren. Der
+Ordner ist für niemanden sichtbar außer einem Dateimanager mit Root-Rechten.
+
+**Preis:** Eine Inkonsistenz im Code, die einen Kommentar braucht. Sie steht
+an genau einer Stelle.
+
+**Umbenannt wurde dagegen alles, was der Compiler prüft:** Dart-Paketname
+(`glowup` → `trueglow`), `TrueGlowApp`, `TrueGlowNutzer`, der Build-Schalter
+`TRUEGLOW_MOCK`, der Kotlin-Paketpfad und beide Bundle-IDs. Ein Tippfehler
+dabei ist kein stiller Fehler, sondern ein roter Analyzer.
+
+---
+
+## 17 · Die Anwendungs-ID wurde vor dem ersten Upload gewechselt
+
+**Was:** `com.glowup.glowup` → `com.trueglow.app`.
+
+**Warum:** Nach dem ersten Upload in die Play Console ist die Anwendungs-ID
+unveränderlich. Ein späterer Wechsel bedeutet eine neue App ohne Bewertungen,
+ohne Installationen, ohne Käufe. Jetzt kostet er einen Nachmittag.
+
+**Preis:** Die Firebase-App-Registrierung muss neu angelegt werden — App
+Check, SHA-Fingerprints und `google-services.json` hängen daran. Firestore,
+Auth-Konten, Secrets und die Functions hängen dagegen am Projekt und bleiben
+unberührt. Der Ablauf steht in `SETUP.md`, Abschnitt 2.0.
 
 ---
 

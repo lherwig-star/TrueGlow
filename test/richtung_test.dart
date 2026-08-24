@@ -1,32 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:glowup/core/l10n/app_strings.dart';
-import 'package:glowup/core/router/app_router.dart';
-import 'package:glowup/core/storage/key_value_store.dart';
-import 'package:glowup/features/analysis/logic/analyse_anfrage.dart';
-import 'package:glowup/features/capture/models/aufnahme_typ.dart';
-import 'package:glowup/features/analysis/models/analysis_result.dart';
-import 'package:glowup/features/direction/logic/direction_controller.dart';
-import 'package:glowup/features/direction/models/richtung.dart';
-import 'package:glowup/features/history/logic/analysis_repository.dart';
-import 'package:glowup/features/modules/models/analyse_modul.dart';
-import 'package:glowup/features/modules/models/modul_eingaben.dart';
-import 'package:glowup/features/onboarding/logic/onboarding_controller.dart';
-import 'package:glowup/features/onboarding/models/onboarding_profile.dart';
-import 'package:glowup/main.dart';
+import 'package:trueglow/core/l10n/app_strings.dart';
+import 'package:trueglow/core/router/app_router.dart';
+import 'package:trueglow/core/storage/key_value_store.dart';
+import 'package:trueglow/features/analysis/logic/analyse_anfrage.dart';
+import 'package:trueglow/features/capture/models/aufnahme_typ.dart';
+import 'package:trueglow/features/analysis/models/analysis_result.dart';
+import 'package:trueglow/features/direction/logic/direction_controller.dart';
+import 'package:trueglow/features/direction/models/richtung.dart';
+import 'package:trueglow/features/history/logic/analysis_repository.dart';
+import 'package:trueglow/features/modules/models/analyse_modul.dart';
+import 'package:trueglow/features/modules/models/modul_eingaben.dart';
+import 'package:trueglow/features/onboarding/logic/onboarding_controller.dart';
+import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
+import 'package:trueglow/main.dart';
 
 import 'hilfen.dart';
 
 /// Bringt die App an den Punkt nach dem Onboarding und liefert den Container.
 Future<ProviderContainer> _appMitDashboard(WidgetTester tester) async {
   await tester.pumpWidget(
-    ProviderScope(overrides: testOverrides(), child: const GlowUpApp()),
+    ProviderScope(overrides: testOverrides(), child: const TrueGlowApp()),
   );
   await tester.pumpAndSettle();
 
   final container = ProviderScope.containerOf(
-    tester.element(find.byType(GlowUpApp)),
+    tester.element(find.byType(TrueGlowApp)),
   );
 
   final onboarding = container.read(onboardingControllerProvider.notifier);

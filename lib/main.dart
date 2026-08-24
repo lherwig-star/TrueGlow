@@ -55,19 +55,19 @@ Future<void> main() async {
         authRepositoryProvider.overrideWithValue(anmeldung),
         cloudSpeicherFabrikProvider.overrideWithValue(cloudFabrik),
       ],
-      child: const GlowUpApp(),
+      child: const TrueGlowApp(),
     ),
   );
 }
 
-class GlowUpApp extends ConsumerStatefulWidget {
-  const GlowUpApp({super.key});
+class TrueGlowApp extends ConsumerStatefulWidget {
+  const TrueGlowApp({super.key});
 
   @override
-  ConsumerState<GlowUpApp> createState() => _GlowUpAppState();
+  ConsumerState<TrueGlowApp> createState() => _TrueGlowAppState();
 }
 
-class _GlowUpAppState extends ConsumerState<GlowUpApp> {
+class _TrueGlowAppState extends ConsumerState<TrueGlowApp> {
   @override
   void initState() {
     super.initState();

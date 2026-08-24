@@ -1,15 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glowup/core/storage/hive_service.dart';
-import 'package:glowup/core/storage/key_value_store.dart';
-import 'package:glowup/features/analysis/models/analysis_result.dart';
-import 'package:glowup/features/history/logic/analysis_repository.dart';
-import 'package:glowup/features/modules/models/analyse_modul.dart';
-import 'package:glowup/features/onboarding/logic/onboarding_controller.dart';
-import 'package:glowup/features/onboarding/models/onboarding_profile.dart';
-import 'package:glowup/features/plan/logic/plan_progress_repository.dart';
-import 'package:glowup/features/streak/logic/streak_repository.dart';
-import 'package:glowup/features/streak/models/abzeichen.dart';
+import 'package:trueglow/core/storage/hive_service.dart';
+import 'package:trueglow/core/storage/key_value_store.dart';
+import 'package:trueglow/features/analysis/models/analysis_result.dart';
+import 'package:trueglow/features/history/logic/analysis_repository.dart';
+import 'package:trueglow/features/modules/models/analyse_modul.dart';
+import 'package:trueglow/features/onboarding/logic/onboarding_controller.dart';
+import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
+import 'package:trueglow/features/plan/logic/plan_progress_repository.dart';
+import 'package:trueglow/features/streak/logic/streak_repository.dart';
+import 'package:trueglow/features/streak/models/abzeichen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'hilfen.dart';

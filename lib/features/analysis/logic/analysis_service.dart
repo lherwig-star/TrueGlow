@@ -18,13 +18,13 @@ class AnalysisConfig {
   ///
   /// Standard ist `false`, damit im Release nie versehentlich der Mock laeuft.
   /// Einschalten ausdruecklich beim Build:
-  /// `flutter run --dart-define=GLOWUP_MOCK=true`.
-  static const bool useMockData = bool.fromEnvironment('GLOWUP_MOCK');
+  /// `flutter run --dart-define=TRUEGLOW_MOCK=true`.
+  static const bool useMockData = bool.fromEnvironment('TRUEGLOW_MOCK');
 
   /// Das verwendete Vision-Modell – nur noch zur Anzeige in den
   /// Einstellungen. Massgeblich ist `MODELL` in `functions/src/gemini.ts`:
   /// Das Modell wird seit dem Umbau ausschliesslich serverseitig gewaehlt.
-  static const String modell = 'gemini-2.5-flash';
+  static const String modell = 'gemini-3.5-flash-lite';
 
   /// Maximale Wartezeit auf die Cloud Function.
   ///

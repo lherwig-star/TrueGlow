@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:glowup/core/cloud/cloud_dokument.dart';
-import 'package:glowup/core/cloud/cloud_modell.dart';
-import 'package:glowup/core/cloud/cloud_speicher.dart';
-import 'package:glowup/core/storage/hive_service.dart';
+import 'package:trueglow/core/cloud/cloud_dokument.dart';
+import 'package:trueglow/core/cloud/cloud_modell.dart';
+import 'package:trueglow/core/cloud/cloud_speicher.dart';
+import 'package:trueglow/core/storage/hive_service.dart';
 
 void main() {
   group('CloudModell', () {

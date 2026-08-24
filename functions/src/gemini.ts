@@ -1,7 +1,7 @@
 import { fehler } from './fehler';
 
 /** Das verwendete Vision-Modell – Gegenstueck zu `AnalysisConfig.modell`. */
-export const MODELL = 'gemini-2.5-flash';
+export const MODELL = 'gemini-3.5-flash-lite';
 
 const BASIS_URL = 'https://generativelanguage.googleapis.com/v1beta';
 
@@ -44,8 +44,10 @@ export async function frage(options: {
         ],
       },
     ],
+    // Bewusst nur das Antwortformat: Die Sampling-Parameter (temperature,
+    // topP, topK) sind bei den aktuellen Modellen abgekuendigt und werden
+    // ignoriert oder abgelehnt. Die Steuerung liegt vollstaendig im Prompt.
     generationConfig: {
-      temperature: 0.7,
       responseMimeType: 'application/json',
     },
   });

@@ -3,12 +3,12 @@ import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glowup/core/storage/hive_service.dart';
-import 'package:glowup/core/storage/key_value_store.dart';
-import 'package:glowup/features/analysis/logic/analysis_controller.dart';
-import 'package:glowup/features/analysis/logic/mock_analysis_service.dart';
-import 'package:glowup/features/auth/logic/auth_repository.dart';
-import 'package:glowup/features/checkin/logic/checkin_service.dart';
+import 'package:trueglow/core/storage/hive_service.dart';
+import 'package:trueglow/core/storage/key_value_store.dart';
+import 'package:trueglow/features/analysis/logic/analysis_controller.dart';
+import 'package:trueglow/features/analysis/logic/mock_analysis_service.dart';
+import 'package:trueglow/features/auth/logic/auth_repository.dart';
+import 'package:trueglow/features/checkin/logic/checkin_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 /// Richtet Hive fuer einen Test in einem temporaeren Verzeichnis ein und
@@ -18,7 +18,7 @@ void hiveImTest() {
   late Directory verzeichnis;
 
   setUp(() async {
-    verzeichnis = await Directory.systemTemp.createTemp('glowup_test');
+    verzeichnis = await Directory.systemTemp.createTemp('trueglow_test');
     Hive.init(verzeichnis.path);
     // Alle Boxen aus der Liste – so faellt eine neue Box hier nicht durchs
     // Raster, wenn sie in HiveService dazukommt. Die Sync-Box mit den

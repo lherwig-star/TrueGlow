@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:glowup/core/l10n/app_strings.dart';
-import 'package:glowup/main.dart';
+import 'package:trueglow/core/l10n/app_strings.dart';
+import 'package:trueglow/main.dart';
 
 import 'hilfen.dart';
 
 void main() {
   testWidgets('Start zeigt das Onboarding', (tester) async {
-    await tester.pumpWidget(ProviderScope(overrides: testOverrides(), child: const GlowUpApp()));
+    await tester.pumpWidget(ProviderScope(overrides: testOverrides(), child: const TrueGlowApp()));
     await tester.pumpAndSettle();
 
     expect(find.text(S.onbWillkommenTitel), findsOneWidget);
   });
 
   testWidgets('Onboarding fuehrt nach Zustimmung zum Dashboard', (tester) async {
-    await tester.pumpWidget(ProviderScope(overrides: testOverrides(), child: const GlowUpApp()));
+    await tester.pumpWidget(ProviderScope(overrides: testOverrides(), child: const TrueGlowApp()));
     await tester.pumpAndSettle();
 
     // Seite 1: Willkommen

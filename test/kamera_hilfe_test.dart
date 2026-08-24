@@ -2,11 +2,11 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:glowup/core/storage/key_value_store.dart';
-import 'package:glowup/core/theme/app_colors.dart';
-import 'package:glowup/core/theme/app_theme.dart';
-import 'package:glowup/core/theme/theme_controller.dart';
-import 'package:glowup/features/capture/logic/live_face_guide.dart';
+import 'package:trueglow/core/storage/key_value_store.dart';
+import 'package:trueglow/core/theme/app_colors.dart';
+import 'package:trueglow/core/theme/app_theme.dart';
+import 'package:trueglow/core/theme/theme_controller.dart';
+import 'package:trueglow/features/capture/logic/live_face_guide.dart';
 
 /// Bildgroesse eines aufgerichteten Vorschau-Frames im Hochformat.
 const _bild = Size(720, 1280);

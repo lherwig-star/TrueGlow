@@ -1,7 +1,7 @@
 {
-  "name": "glowup-functions",
+  "name": "trueglow-functions",
   "version": "1.0.0",
-  "description": "Gemini-Proxy und Kontingentzaehler fuer GlowUp",
+  "description": "Gemini-Proxy und Kontingentzaehler fuer TrueGlow",
   "private": true,
   "main": "lib/index.js",
   "engines": {

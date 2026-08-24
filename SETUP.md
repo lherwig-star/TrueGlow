@@ -11,12 +11,23 @@ Arbeitspaket mitgepflegt.
 - Alle CLI-Befehle laufen im Projektordner (`C:\Users\idont\Desktop\Face Analyse`),
   sofern nichts anderes dabeisteht
 
+> ## ⚠️ Wenn du die Firebase-Konsole schon eingerichtet hast: hier anfangen
+>
+> Die App heißt seit Phase 2 **TrueGlow**, und die Anwendungs-ID hat sich von
+> `com.glowup.glowup` auf **`com.trueglow.app`** geändert. Eine bereits
+> registrierte App mit der alten ID passt nicht mehr — **Abschnitt 2.0 ist
+> dann der erste Punkt, den du nachziehst.** Erst danach stimmen
+> `google-services.json`, App Check und Google Sign-In wieder.
+>
+> Wenn du noch gar nichts eingerichtet hast: Abschnitt 2.0 überspringen und
+> normal bei Abschnitt 0 beginnen — dort steht überall schon die neue ID.
+
 **Feste Projektwerte**
 
 | Wert | Inhalt |
 |---|---|
-| Android-Paketname | `com.glowup.glowup` |
-| iOS-Bundle-ID | `com.glowup.glowup` |
+| Android-Paketname | `com.trueglow.app` |
+| iOS-Bundle-ID | `com.trueglow.app` |
 | Firebase-Region (Functions, Firestore) | `europe-west3` (Frankfurt) |
 | Gemini-Modell | `gemini-2.5-flash` |
 | Secret-Name des Gemini-Keys | `GEMINI_API_KEY` |
@@ -68,7 +79,7 @@ Fehlt Java: Temurin 17 von <https://adoptium.net> installieren.
 
 1. <https://console.firebase.google.com> öffnen
 2. **Projekt hinzufügen**
-3. Name: `glowup` (die Projekt-ID darunter merken, z. B. `glowup-1a2b3`)
+3. Name: `trueglow` (die Projekt-ID darunter merken, z. B. `trueglow-1a2b3`)
 4. Google Analytics: **aus** — wird erst in Phase 4 gebraucht und muss vorher
    in der Datenschutzerklärung stehen
 5. **Projekt erstellen**
@@ -110,6 +121,60 @@ Der Budget-Alarm dazu steht in Schritt 5.3 — **bitte nicht überspringen.**
 ---
 
 ## 2 · Apps registrieren und FlutterFire verbinden
+
+### 2.0 Nur falls du schon mit `com.glowup.glowup` begonnen hast
+
+Die Anwendungs-ID ist nach dem ersten Play-Upload **unveränderlich** — deshalb
+wurde sie jetzt umgestellt, solange es noch nichts kostet. Ein Firebase-Projekt
+kann problemlos mehrere Apps enthalten; du registrierst also die neue dazu und
+räumst die alte weg.
+
+☐ **2.0.1 Neue Android-App registrieren**
+
+1. Firebase-Konsole → Zahnrad → **Projekteinstellungen** → Reiter **Allgemein**
+2. Karte **Deine Apps** → **App hinzufügen** → Android
+3. Paketname: **`com.trueglow.app`**, Spitzname: `TrueGlow Android`
+4. **App registrieren** — die angebotene `google-services.json` kannst du
+   überspringen, `flutterfire configure` holt sie gleich selbst
+
+☐ **2.0.2 Neue iOS-App registrieren** (auch wenn iOS erst später kommt)
+
+Gleicher Weg, Bundle-ID **`com.trueglow.app`**.
+
+☐ **2.0.3 `flutterfire configure` erneut ausführen**
+
+```bash
+flutterfire configure --project=DEINE-PROJEKT-ID --platforms=android,ios --out=lib/firebase_options.dart
+```
+
+Wähle in der Auswahlliste die **neuen** Apps. Danach liegen frische
+`android/app/google-services.json` und `ios/Runner/GoogleService-Info.plist`
+im Projekt und `lib/firebase_options.dart` zeigt auf die neue App-ID.
+
+☐ **2.0.4 SHA-Fingerprints neu eintragen**
+
+Fingerprints hängen an der **App-Registrierung**, nicht am Projekt — die alten
+gelten für die neue App nicht. Abschnitt 3 noch einmal durchlaufen, danach
+`google-services.json` erneut herunterladen.
+
+☐ **2.0.5 App Check neu einrichten**
+
+Auch App Check hängt an der App-Registrierung: Play Integrity für die neue
+Android-App aktivieren und ein **neues** Debug-Token eintragen (Abschnitt 4).
+Das alte Debug-Token gilt nicht weiter.
+
+☐ **2.0.6 Alte App-Registrierung entfernen**
+
+1. **Projekteinstellungen → Allgemein → Deine Apps** → alte App
+   `com.glowup.glowup`
+2. **App entfernen** → bestätigen
+
+> Firestore-Daten, Auth-Konten, Secrets und die Cloud Functions hängen am
+> **Projekt**, nicht an der App-Registrierung. Sie bleiben also unberührt.
+> Nur wenn du dich vorher schon mit einem Testkonto angemeldet hast, meldet
+> dich die App nach dem Wechsel einmal neu an.
+
+---
 
 ☐ **2.1 `flutterfire configure` ausführen**
 
@@ -165,7 +230,7 @@ Aus der Ausgabe die Zeilen `SHA1:` und `SHA256:` kopieren.
 ☐ **3.2 In Firebase eintragen**
 
 1. Firebase-Konsole → Zahnrad → **Projekteinstellungen** → Reiter **Allgemein**
-2. Karte **Deine Apps** → die Android-App `com.glowup.glowup`
+2. Karte **Deine Apps** → die Android-App `com.trueglow.app`
 3. **Fingerabdruck hinzufügen** → SHA-1 einfügen → Speichern
 4. Dasselbe noch einmal mit SHA-256
 
@@ -251,7 +316,7 @@ firebase functions:secrets:access GEMINI_API_KEY --project DEINE-PROJEKT-ID
 
 1. <https://console.cloud.google.com/billing> → Rechnungskonto wählen
 2. Links **Budgets und Benachrichtigungen** → **Budget erstellen**
-3. Name: `GlowUp Monatsbudget`
+3. Name: `TrueGlow Monatsbudget`
 4. Bereich: **Projekt** → das Firebase-Projekt auswählen
 5. Betrag: z. B. **10 €** pro Monat (bei 3 Analysen/Tag pro Konto liegt der
    reale Verbrauch weit darunter — der Alarm ist gegen Missbrauch und Fehler)
@@ -299,11 +364,11 @@ braucht das Firebase-Projekt, den Key und ein Gerät mit Kamera.
 ☐ **6.1 App mit echtem Backend starten**
 
 ```bash
-flutter run --dart-define=GLOWUP_MOCK=false
+flutter run --dart-define=TRUEGLOW_MOCK=false
 ```
 
-`GLOWUP_MOCK` ist standardmäßig `false`; der Schalter existiert, um den
-Demo-/Screenshot-Modus gezielt einzuschalten (`--dart-define=GLOWUP_MOCK=true`).
+`TRUEGLOW_MOCK` ist standardmäßig `false`; der Schalter existiert, um den
+Demo-/Screenshot-Modus gezielt einzuschalten (`--dart-define=TRUEGLOW_MOCK=true`).
 
 ☐ **6.2 Ablauf durchspielen**
 
@@ -329,7 +394,7 @@ erschöpft" abgelehnt werden, **ohne** dass ein Gemini-Aufruf stattfindet
 
 ☐ **7.1 Apple-Developer-Programm** (99 $/Jahr) — <https://developer.apple.com/programs/>
 
-☐ **7.2 Bundle-ID `com.glowup.glowup`** im Apple-Developer-Portal registrieren,
+☐ **7.2 Bundle-ID `com.trueglow.app`** im Apple-Developer-Portal registrieren,
 Capabilities **Sign in with Apple** und **App Attest** aktivieren
 
 ☐ **7.3 Sign in with Apple in Firebase aktivieren**
@@ -360,11 +425,11 @@ eintragen (macht `flutterfire configure` nicht automatisch)
 
 ☐ **8.1 Privates Remote-Repo anlegen**
 
-GitHub → **New repository** → Name `glowup` → **Private** → *ohne* README
+GitHub → **New repository** → Name `trueglow` → **Private** → *ohne* README
 anlegen. Danach:
 
 ```bash
-git remote add origin https://github.com/DEIN-KONTO/glowup.git
+git remote add origin https://github.com/DEIN-KONTO/trueglow.git
 git push -u origin main
 ```
 

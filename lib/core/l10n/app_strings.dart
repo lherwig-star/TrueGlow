@@ -6,7 +6,7 @@ class S {
   S._();
 
   // --- Allgemein ---
-  static const appName = 'GlowUp';
+  static const appName = 'TrueGlow';
   static const weiter = 'Weiter';
   static const zurueck = 'Zurück';
   static const abbrechen = 'Abbrechen';
@@ -16,7 +16,7 @@ class S {
   static const zurStartseite = 'Zur Startseite';
 
   // --- Onboarding ---
-  static const onbWillkommenTitel = 'Willkommen bei GlowUp';
+  static const onbWillkommenTitel = 'Willkommen bei TrueGlow';
   static const onbWillkommenText =
       'Wir erstellen dir einen persönlichen Plan für Haut, Haare, Bart und Style. '
       'Keine Bewertungen, keine Punktzahlen – nur konkrete Schritte.';
@@ -31,7 +31,7 @@ class S {
   static const onbDatenschutzTitel = 'Datenschutz & Hinweise';
 
   // --- Home ---
-  static const homeTitel = 'GlowUp';
+  static const homeTitel = 'TrueGlow';
   static const homeLeerTitel = 'Noch keine Analyse';
   static const homeLeerText =
       'Mach zwei Fotos und erhalte deinen persönlichen Verbesserungsplan.';
@@ -63,7 +63,7 @@ class S {
   static const kameraPerfekt = 'Perfekt – jetzt auslösen';
   static const kameraKeineBerechtigungTitel = 'Kamerazugriff nötig';
   static const kameraKeineBerechtigungText =
-      'GlowUp braucht Zugriff auf die Kamera, um die Live-Vorschau mit '
+      'TrueGlow braucht Zugriff auf die Kamera, um die Live-Vorschau mit '
       'Positionierungshilfe zu zeigen. Du kannst den Zugriff in den '
       'App-Einstellungen erlauben – oder stattdessen ein Foto aus der Galerie '
       'wählen.';
@@ -253,7 +253,7 @@ class S {
 
   // --- Disclaimer ---
   static const disclaimerMedizin =
-      'GlowUp ersetzt keine medizinische Beratung. Bei Hautproblemen wende dich an eine '
+      'TrueGlow ersetzt keine medizinische Beratung. Bei Hautproblemen wende dich an eine '
       'dermatologische Praxis.';
   static const disclaimerFotos =
       'Deine Fotos werden ausschließlich zur Analyse an den KI-Dienst gesendet und dort '

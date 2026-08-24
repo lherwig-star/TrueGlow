@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../models/glowup_nutzer.dart';
+import '../models/trueglow_nutzer.dart';
 
 /// Fehlerfaelle der Anmeldung – nach demselben Muster wie AnalysisFehler:
 /// jeder Fall mit Titel und konkretem Tipp, damit die UI nichts erfinden muss.
@@ -17,7 +17,7 @@ enum AuthFehler {
   ),
   kontoBereitsVergeben(
     'Konto schon in Benutzung',
-    'Dieses Google-Konto gehört bereits zu einem GlowUp-Zugang. Wir haben '
+    'Dieses Google-Konto gehört bereits zu einem TrueGlow-Zugang. Wir haben '
         'dich damit angemeldet.',
   ),
   nichtVerfuegbar(
@@ -58,13 +58,13 @@ abstract interface class AuthRepository {
   /// Beim Start wartet `main()` auf den ersten Zustand, bevor die App
   /// gezeichnet wird – deshalb ist dieser Wert ab dem ersten Frame belastbar
   /// und der Router kann ihn direkt abfragen.
-  GlowUpNutzer? get aktuell;
+  TrueGlowNutzer? get aktuell;
 
   /// Aenderungen des Anmeldezustands.
-  Stream<GlowUpNutzer?> get zustand;
+  Stream<TrueGlowNutzer?> get zustand;
 
   /// Meldet mit dem gewaehlten Anbieter an.
-  Future<GlowUpNutzer> anmelden(AuthAnbieter anbieter);
+  Future<TrueGlowNutzer> anmelden(AuthAnbieter anbieter);
 
   /// Verknuepft das laufende (anonyme) Konto mit einem echten Anbieter.
   ///
@@ -73,26 +73,26 @@ abstract interface class AuthRepository {
   /// Anbieterkonto bereits zu einem anderen Zugang, wird stattdessen dorthin
   /// angemeldet und [AuthFehler.kontoBereitsVergeben] als Hinweis geworfen –
   /// die Entscheidung, was dann passiert, faellt in der UI.
-  Future<GlowUpNutzer> verknuepfen(AuthAnbieter anbieter);
+  Future<TrueGlowNutzer> verknuepfen(AuthAnbieter anbieter);
 
   Future<void> abmelden();
 }
 
 /// Attrappe fuer Tests: kein Netz, kein Firebase, aber dieselbe Semantik.
 class FakeAuthRepository implements AuthRepository {
-  FakeAuthRepository({GlowUpNutzer? nutzer}) : _aktuell = nutzer {
+  FakeAuthRepository({TrueGlowNutzer? nutzer}) : _aktuell = nutzer {
     _melden();
   }
 
   /// Standardkonto der Widget-Tests: anonym angemeldet, wie nach
   /// „Erst ausprobieren".
   factory FakeAuthRepository.angemeldet() => FakeAuthRepository(
-        nutzer: const GlowUpNutzer(uid: 'test-uid', anonym: true),
+        nutzer: const TrueGlowNutzer(uid: 'test-uid', anonym: true),
       );
 
-  GlowUpNutzer? _aktuell;
-  final StreamController<GlowUpNutzer?> _strom =
-      StreamController<GlowUpNutzer?>.broadcast();
+  TrueGlowNutzer? _aktuell;
+  final StreamController<TrueGlowNutzer?> _strom =
+      StreamController<TrueGlowNutzer?>.broadcast();
 
   /// Womit zuletzt angemeldet wurde – fuer Zusicherungen im Test.
   AuthAnbieter? zuletztGenutzt;
@@ -101,17 +101,17 @@ class FakeAuthRepository implements AuthRepository {
   AuthFehler? naechsterFehler;
 
   @override
-  GlowUpNutzer? get aktuell => _aktuell;
+  TrueGlowNutzer? get aktuell => _aktuell;
 
   @override
-  Stream<GlowUpNutzer?> get zustand => _strom.stream;
+  Stream<TrueGlowNutzer?> get zustand => _strom.stream;
 
   @override
-  Future<GlowUpNutzer> anmelden(AuthAnbieter anbieter) async {
+  Future<TrueGlowNutzer> anmelden(AuthAnbieter anbieter) async {
     _pruefeFehler();
     zuletztGenutzt = anbieter;
     return _setze(
-      GlowUpNutzer(
+      TrueGlowNutzer(
         uid: anbieter == AuthAnbieter.anonym ? 'anonym-uid' : 'konto-uid',
         anonym: anbieter == AuthAnbieter.anonym,
         email: anbieter == AuthAnbieter.anonym ? null : 'test@example.com',
@@ -121,12 +121,12 @@ class FakeAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<GlowUpNutzer> verknuepfen(AuthAnbieter anbieter) async {
+  Future<TrueGlowNutzer> verknuepfen(AuthAnbieter anbieter) async {
     _pruefeFehler();
     zuletztGenutzt = anbieter;
     final vorher = _aktuell;
     return _setze(
-      GlowUpNutzer(
+      TrueGlowNutzer(
         // Beim Verknuepfen bleibt die uid erhalten – genau darum geht es.
         uid: vorher?.uid ?? 'konto-uid',
         anonym: false,
@@ -150,7 +150,7 @@ class FakeAuthRepository implements AuthRepository {
     }
   }
 
-  GlowUpNutzer _setze(GlowUpNutzer nutzer) {
+  TrueGlowNutzer _setze(TrueGlowNutzer nutzer) {
     _aktuell = nutzer;
     _melden();
     return nutzer;
@@ -174,7 +174,7 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 });
 
 /// Das angemeldete Konto als Zustand, fuer die UI.
-final nutzerProvider = StreamProvider<GlowUpNutzer?>((ref) {
+final nutzerProvider = StreamProvider<TrueGlowNutzer?>((ref) {
   final repo = ref.watch(authRepositoryProvider);
   // Der Strom meldet erst bei der naechsten Aenderung – der aktuelle Stand
   // steht deshalb voran.

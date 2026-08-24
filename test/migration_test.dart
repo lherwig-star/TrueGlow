@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:glowup/core/cloud/cloud_modell.dart';
-import 'package:glowup/core/cloud/cloud_speicher.dart';
-import 'package:glowup/core/storage/hive_service.dart';
-import 'package:glowup/core/storage/key_value_store.dart';
-import 'package:glowup/features/migration/logic/hive_migration.dart';
+import 'package:trueglow/core/cloud/cloud_modell.dart';
+import 'package:trueglow/core/cloud/cloud_speicher.dart';
+import 'package:trueglow/core/storage/hive_service.dart';
+import 'package:trueglow/core/storage/key_value_store.dart';
+import 'package:trueglow/features/migration/logic/hive_migration.dart';
 
 /// Vier leere Boxen, wie sie die App beim Start oeffnet.
 Map<String, KeyValueStore> _boxen() => {
