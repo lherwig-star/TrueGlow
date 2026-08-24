@@ -446,6 +446,19 @@ ist der wahrscheinlichste Ort für Abstürze auf schwächeren Telefonen.
 
 - [x] `integration_test` für den Hauptpfad (Onboarding → Foto → Analyse → Plan → Check-in) auf echter Hardware — **M** — *`integration_test/hauptpfad_test.dart`, **auf einem Samsung SM A525F (Android 13) durchgelaufen**. Läuft gegen den Mock-Modus, also ohne Backend und ohne Kosten.*
 
+### 4.6 Aufnahme-Flow überarbeitet
+
+Sieben Punkte aus der Kamera-Überarbeitung. Begründungen jeweils in
+`DECISIONS.md`.
+
+- [x] Eingebettete Live-Kamera mit Overlay und ML-Kit-Erkennung — **entfiel, war bereits gebaut** — *`camera_screen.dart` war von Anfang an eine In-App-Vollbildvorschau, keine separate Kamera-App. Die freigewordene Zeit ging in den Auto-Auslöser*
+- [x] Körper-Silhouette statt Kasten, frontal und seitlich getrennt — **M** — *das seitliche Foto zeigte bis dahin eine frontale Figur, weil sich beide Aufnahmen einen Overlaytyp teilten*
+- [x] Auto-Auslöser per Pose Detection mit Countdown und Signalton — **L** — *Ablauflogik außerhalb der Kamera und ohne Timer, damit sie testbar bleibt; am Gerät steht man drei Meter entfernt und sieht nichts*
+- [x] Live-Hinweis „Mehr Licht nötig" — **S** — *bewusst nur für vorhandene Prüfungen; ein Schärfe-Check wurde begründet nicht gebaut*
+- [x] Vorschau mit „Passt" / „Nochmal" nach jeder Aufnahme — **M** — *vor dem Qualitätscheck: Verwackelt und Augen zu sieht ein Mensch, keine Prüfung*
+- [x] Miniaturen-Leiste der Fotos mit Sprung zum Schritt — **S**
+- [x] Hautton-Nahaufnahme gestrichen, Frontalfoto wird mitgelesen — **M** — *elf Aufnahmen sind zehn; der Prompt weiß davon und rät nicht*
+
 ---
 
 ## Phase 5 — Launch
