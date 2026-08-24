@@ -1,0 +1,129 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../../core/l10n/app_strings.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/utils/datum.dart';
+import '../../../../core/widgets/section_card.dart';
+import '../../../capture/logic/capture_controller.dart';
+import '../../../history/logic/analysis_repository.dart';
+import '../../logic/checkin_controller.dart';
+import '../../models/checkin.dart';
+
+/// Erstfoto und Fortschrittsfoto nebeneinander, jeweils mit Datum.
+///
+/// Bewusst ohne Schieberegler oder Ueberblendung: Zwei Bilder nebeneinander
+/// zeigen den Unterschied ehrlicher als eine Animation, die Bewegung
+/// suggeriert, wo keine ist.
+class VergleichAnsicht extends ConsumerWidget {
+  const VergleichAnsicht({super.key, required this.checkin});
+
+  final Checkin checkin;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final erstfoto = ref
+        .watch(captureControllerProvider)
+        .foto(CheckinController.fortschrittsTyp);
+    final analyse = ref.watch(aktuelleAnalyseProvider);
+    final neu = checkin.fortschrittsfoto;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          S.checkinVergleichTitel,
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+        ),
+        const SizedBox(height: AppTheme.gapS),
+        const MutedText(
+          'Gleicher Ausschnitt, gleiches Licht – so lässt sich vergleichen, '
+          'was sich wirklich verändert hat.',
+        ),
+        const SizedBox(height: AppTheme.gapM),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: _Seite(
+                titel: S.checkinVergleichVorher,
+                datum: analyse?.erstelltAm,
+                pfad: erstfoto?.pfad,
+              ),
+            ),
+            const SizedBox(width: AppTheme.gapS),
+            Expanded(
+              child: _Seite(
+                titel: S.checkinVergleichNachher,
+                datum: DateTime.now(),
+                pfad: neu,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppTheme.gapM),
+        SectionCard(
+          title: 'Nur für dich',
+          icon: Icons.lock_outline,
+          child: const MutedText(
+            'Auch das Fortschrittsfoto bleibt auf deinem Gerät und geht nur '
+            'für die Auswertung an den Analyse-Dienst.',
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Seite extends StatelessWidget {
+  const _Seite({required this.titel, required this.datum, required this.pfad});
+
+  final String titel;
+  final DateTime? datum;
+  final String? pfad;
+
+  @override
+  Widget build(BuildContext context) {
+    final farben = context.farben;
+    final datei = pfad == null ? null : File(pfad!);
+    final vorhanden = datei != null && datei.existsSync();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          titel.toUpperCase(),
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.1,
+            color: farben.akzent,
+          ),
+        ),
+        const SizedBox(height: AppTheme.gapXs),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+          child: AspectRatio(
+            aspectRatio: 3 / 4,
+            child: vorhanden
+                ? Image.file(datei, fit: BoxFit.cover)
+                : ColoredBox(
+                    color: farben.flaecheHoch,
+                    child: Center(
+                      child: Icon(
+                        Icons.image_not_supported_outlined,
+                        color: farben.textSekundaer,
+                      ),
+                    ),
+                  ),
+          ),
+        ),
+        const SizedBox(height: AppTheme.gapXs),
+        MutedText(datum == null ? 'ohne Datum' : Datum.nurTag(datum!)),
+      ],
+    );
+  }
+}
