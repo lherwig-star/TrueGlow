@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Deep Teal aus dem dunklen App-Schema. Damit startet die App im
-         Dark Mode nicht auf Schwarz und blendet dann um. -->
-    <color name="splashHintergrund">#173C3B</color>
-</resources>

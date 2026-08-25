@@ -166,19 +166,29 @@ flutter_launcher_icons:
   remove_alpha_ios: true
 
 flutter_native_splash:
-  # Helles Schema: Mocha-Grund, Motiv im dunklen Akzent.
-  color: "#F7F2E9"
-  image: assets/branding/splash_hell.png
-  # Dunkles Schema: Deep Teal, Motiv in Sand.
+  # Immer Deep Teal – auch dann, wenn das Handy im hellen Schema steht.
+  #
+  # Der native Splash kann nur dem System folgen; die App richtet sich aber
+  # nach ihrer eigenen Einstellung, und die steht standardmaessig auf dunkel
+  # (`ThemeController.standard`). Ein Splash, der dem System folgt, hiesse auf
+  # jedem hell gestellten Handy: Mocha-Grund, dann ein Sprung nach Deep Teal,
+  # bei jedem Kaltstart. Deshalb hier eine Farbe fuer beide Schemata.
+  #
+  # Wer in den Einstellungen auf "Hell" umstellt, sieht den Sprung dafuer
+  # andersherum – das ist die kleinere Gruppe und eine bewusste Wahl. Die
+  # saubere Loesung waere, die Theme-Wahl fuer die Android-Seite lesbar
+  # abzulegen; das ist Nativ-Code fuer eine halbe Sekunde Bildschirm.
+  color: "#173C3B"
+  image: assets/branding/splash_dunkel.png
   color_dark: "#173C3B"
   image_dark: assets/branding/splash_dunkel.png
 
   # Ab Android 12 zeichnet das System den Splash selbst und zeigt nur die
   # inneren zwei Drittel der Grafik – dafuer gibt es eigene Dateien.
   android_12:
-    color: "#F7F2E9"
-    image: assets/branding/splash_android12_hell.png
-    icon_background_color: "#F7F2E9"
+    color: "#173C3B"
+    image: assets/branding/splash_android12_dunkel.png
+    icon_background_color: "#173C3B"
     color_dark: "#173C3B"
     image_dark: assets/branding/splash_android12_dunkel.png
     icon_background_color_dark: "#173C3B"

@@ -767,6 +767,27 @@ braucht die Entscheidung, nicht ihre Herkunft.
 
 ---
 
+## 34 · Der native Splash bleibt Deep Teal, auch auf einem hellen Handy
+
+Ein nativer Splash kann nur dem Systemschema folgen — er läuft, bevor
+Dart-Code existiert, und weiß deshalb nichts von der Einstellung in der App.
+Die App richtet sich aber nach ihrer eigenen Wahl, und die steht im Standard
+auf dunkel (`ThemeController.standard`).
+
+Auf einem hell gestellten Handy hieß das: Mocha-Grund mit braunem Zeichen,
+dann der Sprung nach Deep Teal — bei jedem Kaltstart, für jeden, der nichts
+umgestellt hat. Also für den Normalfall.
+
+Der Splash trägt jetzt in beiden Schemata Deep Teal: in `pubspec.yaml`,
+in `values-v31/styles.xml` und als `@color/splashHintergrund`, das kein
+Gegenstück unter `values-night/` mehr hat. Wer in den Einstellungen auf „Hell"
+umstellt, sieht den Sprung dafür andersherum. Das ist die kleinere Gruppe, und
+es ist ihre bewusste Entscheidung gewesen.
+
+Die saubere Lösung wäre, die Theme-Wahl zusätzlich dorthin zu schreiben, wo
+die Android-Seite sie vor dem ersten Frame lesen kann. Das ist nativer Code in
+zwei Sprachen für eine halbe Sekunde Bildschirm — nicht jetzt.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

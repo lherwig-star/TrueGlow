@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ic_launcher_background">#173C3B</color>
-    <!-- Mocha aus dem hellen App-Schema. Die Farbe muss auch hier stehen und
-         nicht nur unter values-night: Ein Resource, den es nur mit Qualifier
-         gibt, laesst die App in jeder anderen Konfiguration abstuerzen –
-         lintVital bricht den Release-Build deshalb ab. -->
-    <color name="splashHintergrund">#F7F2E9</color>
+    <!-- Deep Teal, und zwar in jedem Schema – kein Gegenstueck unter
+         values-night/. Der native Splash kann nur dem System folgen, die App
+         richtet sich aber nach ihrer eigenen Einstellung, und die steht
+         standardmaessig auf dunkel. Faellt diese Farbe mit dem System um,
+         startet jedes hell gestellte Handy auf Mocha und springt dann nach
+         Deep Teal. Begruendung ausfuehrlich in pubspec.yaml. -->
+    <color name="splashHintergrund">#173C3B</color>
 </resources>
