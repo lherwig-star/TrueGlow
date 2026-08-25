@@ -1,26 +1,68 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trueglow/core/widgets/section_card.dart';
 import 'package:trueglow/features/consent/models/einwilligung.dart';
-import 'package:trueglow/main.dart';
+import 'package:trueglow/features/auth/logic/auth_repository.dart';
+import 'package:trueglow/features/start/ui/splash_screen.dart';
 
 import 'hilfen.dart';
 
+/// Der Weg beim allerersten Start: Startanimation, Anmeldung, Onboarding,
+/// Dashboard – in genau dieser Reihenfolge.
 void main() {
-  testWidgets('Start zeigt das Onboarding', (tester) async {
-    await tester.pumpWidget(ProviderScope(overrides: testOverrides(), child: const TrueGlowApp()));
+  testWidgets('der erste Bildschirm ist die Startanimation', (tester) async {
+    await tester.pumpWidget(
+      appUnterTest(anmeldung: FakeAuthRepository()),
+    );
+    await tester.pump();
+
+    expect(find.byType(SplashScreen), findsOneWidget);
+    expect(find.text(texte.appName), findsOneWidget);
+
+    // Sie geht von selbst weiter – ohne Knopf, wie ein Startbildschirm es
+    // soll.
+    await tester.pump(SplashScreen.dauer);
     await tester.pumpAndSettle();
 
-    expect(find.text(texte.onbWillkommenTitel), findsOneWidget);
+    expect(find.byType(SplashScreen), findsNothing);
   });
 
-  testWidgets('Onboarding fuehrt nach Zustimmung zum Dashboard', (tester) async {
+  testWidgets('nach der Startanimation kommt die Anmeldung', (tester) async {
+    // Und nicht das Onboarding: Die Erklärseiten gehören zu einem Konto,
+    // nicht zu einem Gerät.
+    handyGroesse(tester, hoehe: 1400);
+    await appStarten(tester, overrides: testOverrides(anmeldung: FakeAuthRepository()));
+
+    expect(find.text(texte.loginGast), findsOneWidget);
+    expect(find.text(texte.onbWillkommenTitel), findsNothing);
+  });
+
+  testWidgets('der Sprachumschalter steht schon auf der Anmeldung',
+      (tester) async {
+    // Der erste Text, den jemand liest, ist der auf diesem Bildschirm. Wer
+    // die App auf Deutsch bekommt und Englisch erwartet, soll es hier
+    // umstellen können – und nicht erst in den Einstellungen, die er ohne
+    // Konto gar nicht erreicht.
+    handyGroesse(tester, hoehe: 1400);
+    await appStarten(tester, overrides: testOverrides(anmeldung: FakeAuthRepository()));
+
+    await tester.tap(find.text('EN'));
+    await tester.pumpAndSettle();
+
+    expect(find.text(englischeTexte.loginGast), findsOneWidget);
+    expect(find.text(texte.loginGast), findsNothing);
+  });
+
+  testWidgets('Anmeldung, Onboarding und Zustimmung fuehren zum Dashboard',
+      (tester) async {
     // Die Einwilligungsseite traegt inzwischen Disclaimer, Verweise auf die
     // Rechtstexte und die Haekchen – im Standardfenster faellt das Ende
     // heraus.
     handyGroesse(tester, hoehe: 1400);
-    await tester.pumpWidget(ProviderScope(overrides: testOverrides(), child: const TrueGlowApp()));
+    await appStarten(tester, overrides: testOverrides(anmeldung: FakeAuthRepository()));
+
+    // Anmeldung: „Erst mal umschauen" legt ein anonymes Konto an.
+    await tester.tap(find.text(texte.loginGast));
     await tester.pumpAndSettle();
 
     // Seite 1: Willkommen
@@ -58,7 +100,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Los geht es'));
+    await tester.tap(find.text(texte.lichtStarten));
     await tester.pumpAndSettle();
 
     expect(find.text(texte.homeLeerTitel), findsOneWidget);

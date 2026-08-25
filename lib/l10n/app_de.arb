@@ -848,5 +848,13 @@
         "type": "String"
       }
     }
+  },
+  "loginWillkommen": "Dein persönlicher Plan für Haut, Haare, Bart und Style. Melde dich an – oder schau dich erst einmal um.",
+  "@loginWillkommen": {
+    "description": "Willkommenssatz auf dem Anmelde-Bildschirm."
+  },
+  "loginRechtliches": "Bevor du loslegst:",
+  "@loginRechtliches": {
+    "description": "Ueberschrift ueber den Verweisen auf die Rechtstexte."
   }
 }

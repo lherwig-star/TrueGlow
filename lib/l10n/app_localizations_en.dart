@@ -1854,4 +1854,11 @@ class LEn extends L {
   String mockVarianteAnderer(String habit) {
     return '$habit — every other day';
   }
+
+  @override
+  String get loginWillkommen =>
+      'Your personal plan for skin, hair, beard and style. Sign in — or just have a look around first.';
+
+  @override
+  String get loginRechtliches => 'Before you start:';
 }

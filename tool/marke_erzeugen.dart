@@ -18,6 +18,7 @@
 import 'dart:io';
 
 import 'package:image/image.dart';
+import 'package:trueglow/core/theme/marke.dart';
 
 // --- Farben (Spiegel von lib/core/theme/app_colors.dart) -------------------
 
@@ -35,25 +36,23 @@ const _sand = 0xFFD8C6AA;
 const _mochaAkzent = 0xFF6B4F3A;
 
 // --- Geometrie, normiert auf 0..1 ------------------------------------------
+//
+// Sie steht in `lib/core/theme/marke.dart`, weil die Startanimation dasselbe
+// Motiv zur Laufzeit zeichnet. Zwei Kopien derselben Zahlen wären zwei
+// Zeichen, die auseinanderlaufen – ähnlich genug, dass es niemandem auffällt.
 
-/// Das Gesichts-Oval.
-const _ovalX = 0.500;
-const _ovalY = 0.430;
-const _ovalRx = 0.215;
-const _ovalRy = 0.285;
+const _ovalX = Marke.ovalX;
+const _ovalY = Marke.ovalY;
+const _ovalRx = Marke.ovalRx;
+const _ovalRy = Marke.ovalRy;
 
-/// Die angedeuteten Schultern: ein weiter Bogen, von dem nur die Oberkante
-/// im Bild liegt.
-const _schulterX = 0.500;
-const _schulterY = 1.145;
-const _schulterRx = 0.425;
-const _schulterRy = 0.345;
+const _schulterX = Marke.schulterX;
+const _schulterY = Marke.schulterY;
+const _schulterRx = Marke.schulterRx;
+const _schulterRy = Marke.schulterRy;
 
-/// Strichstärke beider Ringe.
-const _strich = 0.050;
-
-/// Unterhalb dieser Höhe wird der Schulterbogen abgeschnitten.
-const _schulterUnterkante = 0.895;
+const _strich = Marke.strich;
+const _schulterUnterkante = Marke.schulterUnterkante;
 
 void main(List<String> argumente) {
   final ziel = Directory('assets/branding')..createSync(recursive: true);

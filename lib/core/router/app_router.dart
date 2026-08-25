@@ -22,6 +22,7 @@ import '../../features/history/ui/history_screen.dart';
 import '../../features/home/ui/home_screen.dart';
 import '../../features/onboarding/logic/onboarding_controller.dart';
 import '../../features/onboarding/ui/onboarding_screen.dart';
+import '../../features/start/ui/splash_screen.dart';
 import '../../features/plan/ui/plan_screen.dart';
 import '../../features/result/ui/result_screen.dart';
 import '../../features/settings/ui/settings_screen.dart';
@@ -31,6 +32,12 @@ import '../../core/l10n/texte.dart';
 /// erst zur Laufzeit zeigen.
 class Routes {
   Routes._();
+
+  /// Die Startanimation. Erster Bildschirm nach dem Programmstart und der
+  /// einzige, den keine Weiche schuetzt – er entscheidet nichts, er zeigt nur
+  /// das Zeichen und schickt danach auf [home] weiter.
+  static const start = '/start';
+
   static const onboarding = '/onboarding';
 
   /// Anmeldung. Liegt zwischen Onboarding und App: Ohne Konto nimmt die
@@ -97,23 +104,32 @@ class Routes {
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: Routes.home,
-    // Zwei Tore vor der App, in dieser Reihenfolge: erst das Onboarding
-    // (Einwilligung), dann die Anmeldung. Beides wird beim naechsten
-    // Navigationsvorgang geprueft – der Login-Screen und die Einstellungen
-    // navigieren nach Erfolg selbst weiter.
+    initialLocation: Routes.start,
+    // Zwei Tore vor der App, in dieser Reihenfolge: erst die Anmeldung, dann
+    // das Onboarding. Beides wird beim naechsten Navigationsvorgang geprueft –
+    // der Login-Screen und die Einstellungen navigieren nach Erfolg selbst
+    // weiter.
+    //
+    // Die Reihenfolge war frueher umgekehrt. Die Anmeldung nach vorn zu
+    // ziehen heisst: Wer die App zum zweiten Mal oeffnet, sieht sofort sein
+    // Dashboard, und die Erklaerseiten kommen genau einmal – nach der
+    // Anmeldung, wo sie zu einem Konto gehoeren statt zu einem Geraet.
     redirect: (context, state) {
       final ort = state.matchedLocation;
+
+      // Die Startanimation liegt vor allen Weichen. Sie schickt sich selbst
+      // weiter; wuerde eine Weiche hier greifen, waere sie nie zu sehen.
+      if (ort == Routes.start) return null;
+
+      final angemeldet = ref.read(authRepositoryProvider).aktuell != null;
+      if (!angemeldet) {
+        return ort == Routes.login ? null : Routes.login;
+      }
 
       final onboardingFertig =
           ref.read(onboardingControllerProvider).abgeschlossen;
       if (!onboardingFertig) {
         return ort == Routes.onboarding ? null : Routes.onboarding;
-      }
-
-      final angemeldet = ref.read(authRepositoryProvider).aktuell != null;
-      if (!angemeldet) {
-        return ort == Routes.login ? null : Routes.login;
       }
 
       // Drittes Tor: Ohne gueltige Pflichteinwilligung geht es nicht weiter.
@@ -147,6 +163,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
+      GoRoute(
+        path: Routes.start,
+        builder: (context, state) => const SplashScreen(),
+      ),
       GoRoute(
         path: Routes.onboarding,
         builder: (context, state) => const OnboardingScreen(),

@@ -6,28 +6,24 @@ import 'package:trueglow/features/auth/logic/auth_repository.dart';
 import 'package:trueglow/features/auth/models/trueglow_nutzer.dart';
 import 'package:trueglow/features/onboarding/logic/onboarding_controller.dart';
 import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
-import 'package:trueglow/main.dart';
 
 import 'hilfen.dart';
 
 /// Startet die App mit einer bestimmten Anmeldung und abgeschlossenem
 /// Onboarding – der Zustand, in dem der Login-Screen greift.
+///
+/// Das Onboarding wird hier vorweg abgehakt, obwohl es seit dem Umbau erst
+/// nach der Anmeldung kommt: Diese Tests pruefen die Anmeldung, nicht den Weg
+/// dorthin.
 Future<(ProviderContainer, FakeAuthRepository)> _start(
   WidgetTester tester, {
   TrueGlowNutzer? nutzer,
 }) async {
   final anmeldung = FakeAuthRepository(nutzer: nutzer);
 
-  await tester.pumpWidget(
-    ProviderScope(
-      overrides: testOverrides(anmeldung: anmeldung),
-      child: const TrueGlowApp(),
-    ),
-  );
-  await tester.pumpAndSettle();
-
-  final container = ProviderScope.containerOf(
-    tester.element(find.byType(TrueGlowApp)),
+  final container = await appStarten(
+    tester,
+    overrides: testOverrides(anmeldung: anmeldung),
   );
 
   final onboarding = container.read(onboardingControllerProvider.notifier);
@@ -46,8 +42,7 @@ Future<(ProviderContainer, FakeAuthRepository)> _start(
 }
 
 void main() {
-  testWidgets('nach dem Onboarding fuehrt der Weg zur Anmeldung',
-      (tester) async {
+  testWidgets('die Anmeldung ist der erste Bildschirm', (tester) async {
     handyGroesse(tester, hoehe: 1400);
     await _start(tester);
 

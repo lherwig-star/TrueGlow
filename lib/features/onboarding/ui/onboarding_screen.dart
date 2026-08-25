@@ -133,7 +133,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           ? _weiter
                           : null,
                       child: Text(
-                        _seite == _anzahlSeiten - 1 ? 'Los geht es' : texte.weiter,
+                        _seite == _anzahlSeiten - 1
+                            ? texte.lichtStarten
+                            : texte.weiter,
                       ),
                     ),
                   ),

@@ -1864,4 +1864,11 @@ class LDe extends L {
   String mockVarianteAnderer(String habit) {
     return '$habit – jeden zweiten Tag';
   }
+
+  @override
+  String get loginWillkommen =>
+      'Dein persönlicher Plan für Haut, Haare, Bart und Style. Melde dich an – oder schau dich erst einmal um.';
+
+  @override
+  String get loginRechtliches => 'Bevor du loslegst:';
 }

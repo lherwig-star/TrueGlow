@@ -198,7 +198,7 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
   }
 
   String _beschriftung(CheckinSchritt schritt) => switch (schritt) {
-        IntroSchritt() => 'Los geht es',
+        IntroSchritt() => context.texte.lichtStarten,
         _ => context.texte.weiter,
       };
 }

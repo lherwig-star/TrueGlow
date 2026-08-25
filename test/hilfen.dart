@@ -20,6 +20,7 @@ import 'package:trueglow/features/consent/logic/einwilligung_controller.dart';
 import 'package:trueglow/features/consent/models/einwilligung.dart';
 import 'package:trueglow/features/onboarding/logic/onboarding_controller.dart';
 import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
+import 'package:trueglow/features/start/ui/splash_screen.dart';
 import 'package:trueglow/main.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -30,6 +31,22 @@ import 'package:hive_flutter/hive_flutter.dart';
 /// Test nicht mehr erreichen: Er suchte weiter nach dem alten Satz und faende
 /// ihn nicht – als Fehler, der nach einem echten Fehler aussieht.
 final texte = lookupL(const Locale('de'));
+
+/// Dieselben Texte auf Englisch – für die Gegenprobe beim Sprachwechsel.
+final englischeTexte = lookupL(const Locale('en'));
+
+/// Die App unter Test, mit den Standard-Overrides.
+///
+/// Für die wenigen Tests, die selbst pumpen müssen, weil sie den Zustand
+/// zwischen den Frames prüfen – etwa die Startanimation.
+Widget appUnterTest({
+  List<Override> overrides = const [],
+  AuthRepository? anmeldung,
+}) =>
+    ProviderScope(
+      overrides: [...testOverrides(anmeldung: anmeldung), ...overrides],
+      child: const TrueGlowApp(),
+    );
 
 /// Richtet Hive fuer einen Test in einem temporaeren Verzeichnis ein und
 /// raeumt danach wieder auf. In jedem Test aufrufen, der Provider benutzt,
@@ -119,6 +136,25 @@ List<Override> dienstOverrides({AuthRepository? anmeldung}) => [
 List<Override> testOverrides({AuthRepository? anmeldung}) =>
     [...speicherOverrides(), ...dienstOverrides(anmeldung: anmeldung)];
 
+/// Startet die App und laesst die Startanimation ablaufen.
+///
+/// `pumpAndSettle` allein genuegt dafuer nicht: Es pumpt nur, solange Frames
+/// angefordert sind. Die Standzeit des Splash haengt an einem `Future.delayed`
+/// und fordert keine Frames an – ohne den ausdruecklichen Sprung um
+/// [SplashScreen.dauer] stuende jeder Test auf dem Startbildschirm still.
+Future<ProviderContainer> appStarten(
+  WidgetTester tester, {
+  List<Override> overrides = const [],
+}) async {
+  await tester.pumpWidget(
+    ProviderScope(overrides: overrides, child: const TrueGlowApp()),
+  );
+  await tester.pump(SplashScreen.dauer);
+  await tester.pumpAndSettle();
+
+  return ProviderScope.containerOf(tester.element(find.byType(TrueGlowApp)));
+}
+
 /// Startet die App mit abgeschlossenem Onboarding und angemeldetem Konto –
 /// der Zustand, in dem die eigentlichen Screens erreichbar sind.
 Future<ProviderContainer> appMitDashboard(
@@ -126,16 +162,9 @@ Future<ProviderContainer> appMitDashboard(
   List<Override> zusatz = const [],
   AuthRepository? anmeldung,
 }) async {
-  await tester.pumpWidget(
-    ProviderScope(
-      overrides: [...testOverrides(anmeldung: anmeldung), ...zusatz],
-      child: const TrueGlowApp(),
-    ),
-  );
-  await tester.pumpAndSettle();
-
-  final container = ProviderScope.containerOf(
-    tester.element(find.byType(TrueGlowApp)),
+  final container = await appStarten(
+    tester,
+    overrides: [...testOverrides(anmeldung: anmeldung), ...zusatz],
   );
 
   final onboarding = container.read(onboardingControllerProvider.notifier);

@@ -17,6 +17,15 @@
          
          This Theme is only used starting with V2 of Flutter's Android embedding. -->
     <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
-        <item name="android:windowBackground">?android:colorBackground</item>
+        <!-- Bewusst eine Farbe und kein Bild: Dieses Theme steht die ganze
+             Laufzeit hinter der Flutter-Oberflaeche. `?android:colorBackground`
+             ist im hellen Schema Weiss und im dunklen Schwarz – beides blitzt
+             zwischen dem nativen Splash und dem ersten Flutter-Frame kurz auf.
+             `splashHintergrund` traegt dieselbe Farbe wie der Splash und liegt
+             in values/ und values-night/, faellt also mit dem Schema um.
+
+             Achtung: `dart run flutter_native_splash:create` kann diese Datei
+             neu schreiben. Danach hier nachsehen. -->
+        <item name="android:windowBackground">@color/splashHintergrund</item>
     </style>
 </resources>

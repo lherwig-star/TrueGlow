@@ -38,7 +38,7 @@ void main() {
     handyGroesse(tester, hoehe: 2400);
     final overrides = testOverrides();
 
-    await tester.pumpWidget(ProviderScope(overrides: overrides, child: const TrueGlowApp()));
+    await appStarten(tester, overrides: overrides);
     await tester.pumpAndSettle();
 
     final container = ProviderScope.containerOf(
@@ -119,7 +119,7 @@ void main() {
     handyGroesse(tester, hoehe: 1400);
     final overrides = testOverrides();
 
-    await tester.pumpWidget(ProviderScope(overrides: overrides, child: const TrueGlowApp()));
+    await appStarten(tester, overrides: overrides);
     await tester.pumpAndSettle();
 
     final container = ProviderScope.containerOf(

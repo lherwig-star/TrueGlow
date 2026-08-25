@@ -630,7 +630,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Intro -> Ratings.
-      await tester.tap(find.text('Los geht es'));
+      await tester.tap(find.text(texte.lichtStarten));
       await tester.pumpAndSettle();
 
       expect(find.text(texte.checkinHabitsTitel), findsOneWidget);

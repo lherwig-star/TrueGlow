@@ -19,6 +19,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:trueglow/core/l10n/sprache.dart';
+import 'package:trueglow/features/start/ui/splash_screen.dart';
 import 'package:trueglow/core/l10n/texte.dart';
 import 'package:trueglow/features/analysis/logic/analysis_controller.dart';
 import 'package:trueglow/features/analysis/logic/analysis_service.dart';
@@ -54,6 +55,9 @@ void main() {
     );
 
     await app.main();
+    // Die Startanimation steht eine Weile von selbst. `pumpAndSettle` wartet
+    // nicht darauf – sie haengt an einem Timer, nicht an einer Animation.
+    await tester.pump(SplashScreen.dauer);
     await tester.pumpAndSettle();
 
     final container = ProviderScope.containerOf(
@@ -63,9 +67,14 @@ void main() {
     container.read(sprachControllerProvider.notifier).setzen(Sprache.deutsch);
     await tester.pumpAndSettle();
 
+    // --- Anmeldung ------------------------------------------------------
+    // Der erste Bildschirm nach der Startanimation. Im Demo-Modus legt
+    // „Erst mal umschauen" ein Konto im Arbeitsspeicher an.
+    await _tippe(tester, texte.loginGast);
+
     // --- Onboarding ---------------------------------------------------
     // Fuenf Seiten, jede mit einer Pflichtangabe. Die Reihenfolge steht in
-    // onboarding_screen.dart.
+    // onboarding_screen.dart. Seit dem Umbau kommen sie nach der Anmeldung.
     await _tippe(tester, texte.weiter);
     await _tippe(tester, '25–34');
     await _tippe(tester, 'Mittel');
@@ -84,11 +93,8 @@ void main() {
     ]) {
       await _hakeAn(tester, art.titel(texte));
     }
-    await _tippe(tester, 'Los geht es');
+    await _tippe(tester, texte.lichtStarten);
 
-    // --- Anmeldung ------------------------------------------------------
-    // Im Demo-Modus legt „Erst ausprobieren" ein Konto im Arbeitsspeicher an.
-    await _tippe(tester, 'Erst ausprobieren');
     expect(find.text(texte.homeLeerTitel), findsOneWidget);
 
     // --- Fotos ----------------------------------------------------------

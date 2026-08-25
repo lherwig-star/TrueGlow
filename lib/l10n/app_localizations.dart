@@ -3336,6 +3336,18 @@ abstract class L {
   /// In de, this message translates to:
   /// **'{habit} – jeden zweiten Tag'**
   String mockVarianteAnderer(String habit);
+
+  /// Willkommenssatz auf dem Anmelde-Bildschirm.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein persönlicher Plan für Haut, Haare, Bart und Style. Melde dich an – oder schau dich erst einmal um.'**
+  String get loginWillkommen;
+
+  /// Ueberschrift ueber den Verweisen auf die Rechtstexte.
+  ///
+  /// In de, this message translates to:
+  /// **'Bevor du loslegst:'**
+  String get loginRechtliches;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {
