@@ -1954,4 +1954,8 @@ class LDe extends L {
   @override
   String get einordnungMakeup =>
       'Ein neuer Look braucht ein paar Anläufe – nach zwei bis drei Wochen sitzt der Handgriff.';
+
+  @override
+  String get moduleEinleitungOhneBart =>
+      'Gesicht und Haare sind immer dabei. Alles Weitere wählst du selbst – und kannst es auch später noch ergänzen.';
 }

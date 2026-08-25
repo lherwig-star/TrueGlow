@@ -880,5 +880,9 @@
   "modulBenoetigtBasisOhneBart": "Frontal, beide Seitenprofile und 45°-Winkel.",
   "frageMakeupGefuehl": "Wie sicher fühlst du dich mit deinem Look?",
   "frageMakeupErgebnis": "Wie gut funktioniert dein Alltags-Look inzwischen?",
-  "einordnungMakeup": "Ein neuer Look braucht ein paar Anläufe – nach zwei bis drei Wochen sitzt der Handgriff."
+  "einordnungMakeup": "Ein neuer Look braucht ein paar Anläufe – nach zwei bis drei Wochen sitzt der Handgriff.",
+  "moduleEinleitungOhneBart": "Gesicht und Haare sind immer dabei. Alles Weitere wählst du selbst – und kannst es auch später noch ergänzen.",
+  "@moduleEinleitungOhneBart": {
+    "description": "Einleitung der Modulauswahl im weiblichen Modus, wo die Basis keinen Bart-Abschnitt hat."
+  }
 }

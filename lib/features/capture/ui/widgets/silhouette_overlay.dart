@@ -587,16 +587,20 @@ class _SilhouettePainter extends CustomPainter {
       (0.012, 0.505), // Schrittmitte
     ];
 
+    // Der Arm liegt weiter aussen als beim maennlichen Umriss, und die Hand
+    // endet hoeher. Grund ist die breitere Huefte: Liefe die Innenlinie des
+    // Arms auf derselben Bahn wie dort, kreuzte sie auf Huefthoehe durch den
+    // Rumpf, und aus Arm und Huefte wuerde ein Knoten.
     const arm = <(double, double)>[
-      (0.136, 0.236), // setzt am Deltamuskel an
-      (0.158, 0.320),
-      (0.164, 0.398), // Ellenbogen
-      (0.152, 0.470),
-      (0.140, 0.520), // Hand
-      (0.122, 0.470),
-      (0.128, 0.398),
-      (0.124, 0.320),
-      (0.128, 0.278), // Achsel, dicht an der Bueste
+      (0.140, 0.236), // setzt am Deltamuskel an
+      (0.162, 0.320),
+      (0.170, 0.398), // Ellenbogen
+      (0.166, 0.462),
+      (0.158, 0.508), // Hand, oberhalb der breitesten Stelle der Huefte
+      (0.150, 0.462),
+      (0.152, 0.398),
+      (0.146, 0.320),
+      (0.132, 0.278), // Achsel, dicht an der Bueste
     ];
 
     final pfad = Path()..addOval(_figurKopf(feld, versatz: 0));

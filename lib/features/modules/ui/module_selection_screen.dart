@@ -11,6 +11,7 @@ import '../../../core/widgets/section_card.dart';
 import '../../analysis/logic/kontingent.dart';
 import '../logic/module_controller.dart';
 import '../../onboarding/logic/onboarding_controller.dart';
+import '../../onboarding/models/onboarding_profile.dart';
 import '../models/analyse_modul.dart';
 import 'widgets/modul_karte.dart';
 
@@ -24,6 +25,7 @@ class ModuleSelectionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final texte = context.texte;
+    final ausrichtung = ref.watch(ausrichtungProvider);
     final zustand = ref.watch(moduleControllerProvider);
     final farben = context.farben;
     final anzahl = zustand.anzahlZusatzModule;
@@ -68,7 +70,12 @@ class ModuleSelectionScreen extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppTheme.gapS),
-        MutedText(texte.moduleEinleitung),
+        // „Bart" steht in der Einleitung nur, wenn er auch im Report steht.
+        MutedText(
+          ausrichtung == Ausrichtung.weiblich
+              ? texte.moduleEinleitungOhneBart
+              : texte.moduleEinleitung,
+        ),
         if (kontingent != null) ...[
           const SizedBox(height: AppTheme.gapM),
           if (kontingent.erschoepft)
@@ -100,9 +107,7 @@ class ModuleSelectionScreen extends ConsumerWidget {
           onTap: null,
         ),
         const SizedBox(height: AppTheme.gapS),
-        for (final modul
-            in AnalyseModul.waehlbareFuer(ref.watch(ausrichtungProvider)))
-          ...[
+        for (final modul in AnalyseModul.waehlbareFuer(ausrichtung)) ...[
           ModulKarte(
             modul: modul,
             ausgewaehlt: zustand.enthaelt(modul),

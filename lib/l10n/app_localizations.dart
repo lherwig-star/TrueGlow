@@ -3492,6 +3492,12 @@ abstract class L {
   /// In de, this message translates to:
   /// **'Ein neuer Look braucht ein paar Anläufe – nach zwei bis drei Wochen sitzt der Handgriff.'**
   String get einordnungMakeup;
+
+  /// Einleitung der Modulauswahl im weiblichen Modus, wo die Basis keinen Bart-Abschnitt hat.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesicht und Haare sind immer dabei. Alles Weitere wählst du selbst – und kannst es auch später noch ergänzen.'**
+  String get moduleEinleitungOhneBart;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

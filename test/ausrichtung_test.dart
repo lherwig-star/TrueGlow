@@ -201,6 +201,49 @@ void main() {
       });
     }
 
+    test('frontal: Arme und Rumpf berühren sich nicht', () {
+      // Der Fehler, den erst ein Blick aufs Gerät gezeigt hat: Die weibliche
+      // Hüfte ist breiter als die männliche, und der Arm lag auf derselben
+      // Bahn. Auf Hüfthöhe kreuzte er dadurch in den Rumpf – aus Arm und
+      // Hüfte wurde ein Knoten.
+      //
+      // Geprüft wird der Zwischenraum: Von der Mitte nach außen muss der
+      // Rumpf enden, lange bevor der äußerste Punkt der Figur erreicht ist.
+      // Sind Arm und Rumpf verschmolzen, läuft die Messung durch bis zur
+      // Handaußenkante.
+      const flaeche = Size(411, 914);
+
+      for (final weiblich in [false, true]) {
+        final pfad = SilhouetteOverlay.ganzkoerperUmriss(
+          flaeche,
+          seitlich: false,
+          weiblich: weiblich,
+        );
+        final grenzen = pfad.getBounds();
+        final halbeBreite = grenzen.width / 2;
+        final mitte = grenzen.center.dx;
+
+        // Der Bereich, in dem die Arme neben dem Rumpf liegen.
+        for (var anteil = 0.28; anteil <= 0.56; anteil += 0.02) {
+          final y = grenzen.top + grenzen.height * anteil;
+          var x = mitte;
+          while (x < grenzen.right && pfad.contains(Offset(x, y))) {
+            x += 0.25;
+          }
+
+          expect(
+            x - mitte,
+            lessThan(halbeBreite * 0.8),
+            reason: weiblich
+                ? 'weiblich, ${(anteil * 100).round()} % der Höhe: Arm und '
+                    'Rumpf hängen zusammen'
+                : 'männlich, ${(anteil * 100).round()} % der Höhe: Arm und '
+                    'Rumpf hängen zusammen',
+          );
+        }
+      }
+    });
+
     test('frontal: schmalere Taille, breitere Hüfte als beim Mann', () {
       // Der eigentliche Unterschied. Gemessen an der Gesamtbreite auf
       // Taillen- und Hüfthöhe.

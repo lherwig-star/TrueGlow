@@ -1945,4 +1945,8 @@ class LEn extends L {
   @override
   String get einordnungMakeup =>
       'A new look takes a few tries — after two or three weeks it becomes second nature.';
+
+  @override
+  String get moduleEinleitungOhneBart =>
+      'Face and hair are always included. Everything else is up to you — and you can add more later.';
 }
