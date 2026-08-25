@@ -459,6 +459,23 @@ Sieben Punkte aus der Kamera-Überarbeitung. Begründungen jeweils in
 - [x] Miniaturen-Leiste der Fotos mit Sprung zum Schritt — **S**
 - [x] Hautton-Nahaufnahme gestrichen, Frontalfoto wird mitgelesen — **M** — *elf Aufnahmen sind zehn; der Prompt weiß davon und rät nicht*
 
+### 4.7 Startanimation, Login-First, Zweisprachigkeit, Frauen-Modus
+
+Vier Erweiterungen in einem Durchgang. Begründungen in `DECISIONS.md`,
+Abschnitte 31–33.
+
+- [x] Startanimation mit Zeichen und Schriftzug, danach automatische Weiche — **S** — *das Zeichen wird zur Laufzeit gezeichnet; die Geometrie liegt in `core/theme/marke.dart` und wird auch vom Icon-Generator gelesen*
+- [x] Nativer Splash ohne weißen Blitz auf Android und iOS — **S** — *`NormalTheme` stand unter `values-v31/` und `values-night-v31/` noch auf `?android:colorBackground`; iOS war über `LaunchBackground` bereits richtig*
+- [x] Anmeldung als erster interaktiver Screen, Onboarding danach — **M** — *die Erklärseiten gehören zu einem Konto, nicht zu einem Gerät; was die Reihenfolge bei der Einwilligung kostet, steht in `DECISIONS.md` 32*
+- [x] Sprachumschalter DE/EN auf dem Anmelde-Bildschirm und in den Einstellungen — **S**
+- [x] Vollständige Zweisprachigkeit über `gen-l10n` und ARB-Dateien — **XL** — *565 Schlüssel; Enum-Beschriftungen wurden zu Erweiterungen, weil ein Enum-Wert konstant ist und ein übersetzter Text nicht*
+- [x] Analyse-Report in der gewählten Sprache — **M** — *die Leitplanken des Prompts bleiben einsprachig, nur Ausgabevorgabe und Beschriftungen wechseln*
+- [x] Geschlechtsabfrage im ersten Fragenblock, änderbar in den Einstellungen — **S** — *war entgegen der Annahme noch nirgends gebaut*
+- [x] Frauen-Modus: Modul „Make-up & Ausstrahlung", Basis ohne Bart, weibliche Silhouetten, angepasste Prompts — **L**
+- [x] Neutraler Modus für „divers" und „keine Angabe" — **S** — *alles wählbar, geschlechtsneutraler Prompt*
+- [ ] Weibliche Silhouetten mit einer Frau vor der Kamera prüfen — **S** — *die Proportionen sind gemessen, das Verhalten des Auto-Auslösers nicht*
+- [ ] Ein echter Analyse-Durchlauf auf Englisch und einer im Frauen-Modus — **S** — *die Prompts sind getestet, die Antworten von Gemini nicht*
+
 ---
 
 ## Phase 5 — Launch

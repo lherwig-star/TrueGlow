@@ -1187,6 +1187,66 @@ Tun sie das nicht, ist der Upload nicht gelaufen — dann hilft die Datei unter
 
 ---
 
+## 15 · Sprachen (Phase 4.7)
+
+Alle sichtbaren Texte liegen in `lib/l10n/app_de.arb` (Vorlage) und
+`app_en.arb`. Die Klassen darunter erzeugt Flutter selbst — nach jeder
+Änderung an einer ARB-Datei:
+
+```bash
+flutter gen-l10n
+```
+
+`flutter pub get` und jeder Build tun das ohnehin mit; der Aufruf ist nur
+nützlich, wenn die IDE die neue Zeile sofort sehen soll.
+
+☐ **15.1 Eine Zeile ändern**
+
+Den Text in `app_de.arb` ändern **und** in `app_en.arb`. Beide Dateien führen
+dieselben Schlüssel; eine Zeile nur in einer zu ändern fällt nicht auf, weil
+beide vorhanden sind.
+
+☐ **15.2 Eine Zeile hinzufügen**
+
+In `app_de.arb` den Schlüssel eintragen, direkt darunter optional einen
+`@schluessel`-Block mit `description` (das ist der Hinweis für die
+Übersetzung) und `placeholders` (bei Platzhaltern wie `{anzahl}` Pflicht).
+Dann dieselbe Zeile in `app_en.arb` — dort **ohne** den `@`-Block, der gehört
+nur in die Vorlage.
+
+> Vergisst du die englische Zeile, steht sie nach dem nächsten Build in
+> `l10n_fehlend.txt` im Projektwurzelverzeichnis. Die Datei ist im Normalfall
+> `{}` und liegt in `.gitignore`.
+
+☐ **15.3 Eine dritte Sprache**
+
+Drei Schritte, mehr nicht:
+
+1. `lib/l10n/app_<code>.arb` anlegen — dieselben Schlüssel wie `app_de.arb`,
+   ohne die `@`-Blöcke, mit `"@@locale": "<code>"` als erster Zeile.
+2. In `lib/core/l10n/sprache.dart` einen Wert im Enum `Sprache` ergänzen
+   (Code, Eigenname der Sprache, Zweibuchstaben-Kürzel).
+3. Soll auch der Analyse-Report in dieser Sprache erscheinen: in
+   `functions/src/sprache.ts` den Code zu `SPRACHEN` hinzufügen, die
+   Ausgabevorgabe in `AUSGABESPRACHE` ergänzen und in
+   `functions/src/labels.ts` jeden Eintrag um den neuen Zweig erweitern.
+   TypeScript besteht darauf — vergessene Einträge sind Build-Fehler.
+
+Delegates, Auflösung und Umschalter hängen an dieser Liste und brauchen
+nichts.
+
+☐ **15.4 Prüfen, dass beide Sprachen vollständig sind**
+
+```bash
+flutter test test/sprache_test.dart
+```
+
+Prüft unter anderem, dass Deutsch und Englisch nicht versehentlich denselben
+Text tragen — das Kopieren der deutschen Datei nach `app_en.arb` würde jede
+andere Prüfung bestehen.
+
+---
+
 ## Offen, sobald es soweit ist
 
 Diese Punkte gehören zu späteren Phasen und stehen hier nur als Merkposten:

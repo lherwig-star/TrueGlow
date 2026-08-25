@@ -635,6 +635,138 @@ gehört vor die Einreichung — nicht an sie.
 
 ---
 
+## 31 · Zweisprachigkeit: eine Oberfläche, ein Prompt, zwei Sprachen
+
+**Die Oberfläche** liegt seit dem Umbau in `lib/l10n/app_de.arb` und
+`app_en.arb` und wird von `gen-l10n` in die Klasse `L` übersetzt. Deutsch ist
+die Vorlage; dort stehen die Beschreibungen, an denen sich eine Übersetzung
+ausrichten kann. Eine dritte Sprache braucht genau eine weitere Datei
+`app_<code>.arb` plus einen Wert im Enum `Sprache` — sonst nichts.
+
+`l10n.yaml` setzt `untranslated-messages-file`. Eine vergessene englische
+Zeile landet damit beim Bauen in `l10n_fehlend.txt` statt erst am Gerät
+aufzufallen.
+
+**Der Zugriff läuft über den Kontext** (`context.texte`) und nicht über eine
+statische Klasse wie das frühere `S`. Ein Sprachwechsel muss den Baum neu
+bauen; über `Localizations` passiert das von selbst, eine globale Variable
+bliebe stehen, bis der jeweilige Screen zufällig aus einem anderen Grund neu
+baut.
+
+**Enum-Werte tragen keine Texte mehr.** Ein Enum-Wert ist konstant, ein
+übersetzter Text hängt an der gewählten Sprache — beides in einem Feld geht
+nicht. Wo bisher `Budget.mittel('Mittel', …)` stand, steht jetzt eine
+Erweiterung `label(L)` direkt neben der Liste. Der Compiler besteht auf
+Vollständigkeit, und beim Ergänzen eines Werts fällt sofort auf, dass auch
+ein Text dazugehört.
+
+**Der Prompt bleibt auf Deutsch, der Report nicht.** Die Leitplanken — keine
+Scores, keine Diagnosen, kein Attraktivitätsurteil — gibt es nur einmal. Zwei
+Übersetzungen desselben Regelwerks laufen früher oder später auseinander, und
+dann gilt in einer Sprache eine Regel, die in der anderen jemand vergessen
+hat. Was sich mit der Sprache ändert, ist die Ausgabevorgabe („Write every
+word of your answer in ENGLISH") und die Beschriftungen in `labels.ts`. Die
+Vorgabe steht bewusst zweimal im Prompt: bei den Regeln und noch einmal bei
+den Feldvorgaben. Ein Modell, das eine deutschsprachige Anweisung liest,
+fällt sonst gern in deren Sprache zurück.
+
+**Der Rückfall ist Deutsch**, nicht Englisch — aber nur serverseitig. Ein
+alter Client, der das Feld `sprache` noch nicht kennt, bekommt damit genau
+das, was er bisher bekommen hat. Auf dem Gerät ist es umgekehrt: Alles außer
+Deutsch bekommt Englisch, weil es für Französisch keine Übersetzung gibt und
+ein französisches Handy auf Deutsch zu stellen die schlechtere Vermutung
+wäre.
+
+**Was bewusst auf Deutsch geblieben ist:** `debugPrint`-Zeilen und
+Ausnahmetexte — die liest kein Nutzer, sondern `adb logcat`. Und der
+Einrichtungs-Hinweis, der erscheint, wenn Firebase fehlt: Er läuft außerhalb
+der `MaterialApp` und damit ohne Lokalisierung, und er kann ohnehin nur einen
+falsch gebauten Build treffen.
+
+**Ein fertiger Report behält seine Sprache.** Wer die App später umstellt,
+bekommt den alten Bericht unverändert — er liegt als Text auf dem Gerät, und
+ihn nachträglich zu übersetzen hieße, ihn neu erzeugen zu lassen. Der Hinweis
+unter dem Sprachumschalter sagt das.
+
+---
+
+## 32 · Die Anmeldung steht vor dem Onboarding — und was das kostet
+
+Die Reihenfolge war bis hierher: Onboarding (mit den Einwilligungen), dann
+Anmeldung. Jetzt: Startanimation, Anmeldung, Onboarding.
+
+**Warum:** Die Erklärseiten gehören zu einem Konto, nicht zu einem Gerät. Wer
+die App auf einem zweiten Handy installiert, hat sie schon gesehen. Und wer
+sie zum ersten Mal öffnet, will meistens zuerst wissen, ob er sich anmelden
+muss.
+
+**Was es kostet:** Die verbindliche Einwilligung (`Einwilligungsart.nutzung`)
+liegt auf der letzten Onboarding-Seite und kommt damit **nach** der
+Kontoanlage. Wer „Erst mal umschauen" tippt, hat ein anonymes
+Firebase-Konto, bevor er den Nutzungsbedingungen zugestimmt hat.
+
+**Warum das vertretbar ist:** Ohne die Pflichteinwilligung kommt niemand
+weiter — die Weiche im Router hält jeden auf der Onboarding-Seite fest, und
+deren „Weiter" bleibt ohne Häkchen gesperrt. Das Konto ist zu diesem
+Zeitpunkt leer: keine Fotos, keine Analyse, kein Profil. Und die Rechtstexte
+stehen als Verweise direkt auf dem Anmelde-Bildschirm, sind also vor der
+Anmeldung lesbar.
+
+**Was ausdrücklich nicht passiert ist:** Die Einwilligung wurde nicht zu
+Kleingedrucktem gemacht. Sie bleibt ein Häkchen mit Zeitstempel und
+Textfassung (siehe 18 und 19). Ein „Mit der Anmeldung stimmst du zu" wäre der
+bequeme Weg gewesen und hätte den Nachweis wertlos gemacht.
+
+---
+
+## 33 · Der Frauen-Modus: vier Angaben, drei Ausrichtungen
+
+Das Onboarding fragt nach männlich / weiblich / divers / keine Angabe. Die App
+richtet sich danach aus, aber nicht in vier Varianten:
+
+| Angabe | Ausrichtung | Was daraus folgt |
+|---|---|---|
+| männlich | `maennlich` | Bart in der Basis, kein Make-up-Modul, bestehende Silhouette |
+| weiblich | `weiblich` | Make-up-Modul vorn, kein Bart, weibliche Silhouette, Figurtyp im Prompt |
+| divers | `neutral` | alles wählbar, geschlechtsneutraler Prompt, bestehende Silhouette |
+| keine Angabe | `neutral` | dito |
+| *nie gefragt* (`null`) | `maennlich` | unverändertes Verhalten |
+
+**Warum „divers" und „keine Angabe" dasselbe tun:** Es sind verschiedene
+Aussagen — die eine ist eine Identität, die andere ein Nein zur Frage. Für die
+App heißen beide dasselbe: lass mir alles offen. Ein eigener Modus für
+„divers" hätte bedeutet, sich etwas auszudenken, wonach niemand gefragt hat.
+
+**Warum `null` zur männlichen Ausrichtung führt:** Nicht als Aussage über
+irgendjemanden, sondern weil das genau das Verhalten ist, das die App vor
+dieser Frage hatte. Bestandsnutzer sollen von einem Update nichts merken, und
+ein erzwungener Zusatzdialog beim ersten Start wäre die schlechtere Antwort
+auf eine Frage, die sie nie gestellt bekommen haben. Wer will, ändert es in
+den Einstellungen.
+
+**Warum Bart kein eigenes Modul wurde:** Er ist ein Abschnitt der Basis. Ihn
+dort im weiblichen Modus zu streichen war der kleinere Eingriff als ein
+zweites Basismodul mit fast gleichem Inhalt — zwei Kapitel, die getrennt
+gepflegt werden müssten und irgendwann auseinanderlaufen.
+
+**Warum das Gesichts-Oval für alle gleich bleibt:** Gesichtsformen
+unterscheiden sich zwischen Menschen mehr als zwischen Geschlechtern. Ein
+zweites Oval wäre eine Aussage ohne Grundlage. Die Ganzkörper-Umrisse sind
+etwas anderes: Schulter-Taille-Hüfte ist genau das, was das Ganzkörperfoto
+zeigen soll, und danach richtet sich jemand beim Aufstellen aus.
+
+**Beide Ganzkörper-Figuren stehen gleich hoch im Bild.** Das ist keine
+Kosmetik. Der Umriss ist die Anweisung, wie weit man zurücktreten soll, und
+der Auto-Auslöser prüft genau diese Höhe (`LiveKoerperGuide.minHoehe` /
+`maxHoehe`). Stünden die Figuren verschieden hoch, hieße derselbe Umriss je
+nach Modus einen anderen Abstand.
+
+**Was den Server erreicht:** nur die Ausrichtung, nicht die Angabe. Ob jemand
+„divers" oder „keine Angabe" gewählt hat, bleibt auf dem Gerät — der Prompt
+braucht die Entscheidung, nicht ihre Herkunft.
+
+---
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`
