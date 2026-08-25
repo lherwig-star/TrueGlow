@@ -239,6 +239,51 @@ function zielRegeln(richtung: Richtungsangaben, sprache: Sprache): string {
   Abnehmen, Verzicht auf Essen, Selbstbehandlung von Hautproblemen), baue
   darauf keinen Plan. Nimm das Anliegen ernst, benenne freundlich das Risiko
   und schlage einen gesunden Weg zum gleichen Wunschbild vor.
+${freitextRegeln(richtung, sprache)}`;
+}
+
+/**
+ * Was aus dem Freitext werden soll.
+ *
+ * Der Freitext war bisher Stimmung im Prompt: Er färbte die Fließtexte ein
+ * und verschwand dann. Gearbeitet wird aber mit der Tagesliste – ein Wunsch,
+ * der es nicht bis dorthin schafft, ist für den Nutzer nicht passiert.
+ *
+ * Zwei Sorten stehen in diesem Feld, und beide sollen dort landen:
+ * Aussehenswünsche ("gepflegtere Hände") und Gewohnheiten, die jemand sich
+ * an- oder abgewöhnen will ("aufhören zu rauchen", "mehr Wasser trinken").
+ * Die zweite Sorte bekommt zusätzlich einen eigenen Abschnitt, weil eine
+ * abhakbare Aufgabe allein noch keine Strategie ist.
+ */
+function freitextRegeln(
+  richtung: Richtungsangaben,
+  sprache: Sprache,
+): string {
+  if (richtung.freitext.trim().length === 0) return '';
+
+  return `- Der Freitext ist der wichtigste Teil der Ziele. Leite aus JEDEM Wunsch
+  darin mindestens eine, höchstens drei tägliche Aufgaben ab und trage sie in
+  die "habits" des Kapitels ein, das inhaltlich am besten passt – gibt es
+  keins, gehoeren sie in "basis". Sie zählen in die 4 bis 7 Aufgaben dieses
+  Kapitels hinein und ersetzen dort die schwächsten.
+- Jede solche Aufgabe ist heute abhakbar, dauert wenige Minuten und benennt
+  eine konkrete Handlung – nicht "weniger rauchen", sondern was genau zu tun
+  ist, wenn das Verlangen kommt.
+- Nennt der Freitext eine Gewohnheit, die die Person sich abgewöhnen oder
+  angewöhnen möchte, dann lege im passendsten Kapitel zusätzlich eine Sektion
+  an, deren "titel" GENAU "${sektion('ziel', sprache)}" lautet. Sie kommt zu
+  den 2 bis 4 Sektionen dieses Kapitels hinzu. Darin:
+  - "einschaetzung": Wofür der Wunsch im Alltag steht und was ihn schwer
+    macht. Beschreibend, nicht belehrend.
+  - "empfehlungen": Auslöser-Strategien. Benenne die typischen Situationen
+    (Feierabend, Kaffee, Stress, Warten) und gib für jede eine konkrete
+    Alternative oder einen Ersatzgriff – etwa ein Ritual, das dieselbe Lücke
+    füllt, oder etwas, das die Hand beschäftigt.
+- Der Ton bleibt unterstützend. KEINE Heilaussagen, keine Versprechen über
+  gesundheitliche Wirkungen, keine Zahlen zu Krankheitsrisiken, kein
+  erhobener Zeigefinger und kein Wort darüber, was die Person bisher falsch
+  gemacht hat. Geht es um eine Abhängigkeit, erwähne einmal beiläufig und
+  ohne Druck, dass es dafür auch fachliche Unterstützung gibt.
 `;
 }
 

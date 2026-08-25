@@ -97,6 +97,7 @@ export const SEKTIONEN = {
   augenbrauen: { de: 'Augenbrauen', en: 'Eyebrows' },
   alltagsLook: { de: 'Alltags-Look', en: 'Everyday look' },
   farben: { de: 'Farben', en: 'Colours' },
+  ziel: { de: 'Dein Ziel', en: 'Your goal' },
 } as const satisfies Record<string, Zweisprachig>;
 
 export function sektion(
