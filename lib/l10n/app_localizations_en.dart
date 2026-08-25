@@ -452,7 +452,15 @@ class LEn extends L {
   String get checkinSpaeter => 'Later';
 
   @override
-  String get checkinNaechster => 'Next check-in';
+  String checkinNaechsterIn(int tage) {
+    String _temp0 = intl.Intl.pluralLogic(
+      tage,
+      locale: localeName,
+      other: 'Next check-in in $tage days',
+      one: 'Next check-in tomorrow',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get checkinPushTitel => 'Quick check-in';
@@ -1679,6 +1687,9 @@ class LEn extends L {
 
   @override
   String get streakTage => 'days in a row';
+
+  @override
+  String get streakAllesErledigt => 'All done for today. Nice.';
 
   @override
   String get streakKeineAufgaben => 'No daily tasks yet.';

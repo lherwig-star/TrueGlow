@@ -907,11 +907,11 @@ abstract class L {
   /// **'Später'**
   String get checkinSpaeter;
 
-  /// No description provided for @checkinNaechster.
+  /// Zeile unter dem Plan. Der Zeitraum steckt mit im Satz, weil er sich in anderen Sprachen nicht als Baustein anhängen lässt.
   ///
   /// In de, this message translates to:
-  /// **'Nächster Check-in'**
-  String get checkinNaechster;
+  /// **'{tage, plural, one{Nächster Check-in in einem Tag} other{Nächster Check-in in {tage} Tagen}}'**
+  String checkinNaechsterIn(int tage);
 
   /// No description provided for @checkinPushTitel.
   ///
@@ -3102,6 +3102,12 @@ abstract class L {
   /// In de, this message translates to:
   /// **'Tage am Stück'**
   String get streakTage;
+
+  /// No description provided for @streakAllesErledigt.
+  ///
+  /// In de, this message translates to:
+  /// **'Heute alles erledigt. Stark.'**
+  String get streakAllesErledigt;
 
   /// No description provided for @streakKeineAufgaben.
   ///

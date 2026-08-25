@@ -152,7 +152,13 @@
   "checkinStarten": "Check-in starten",
   "checkinFortsetzen": "Weitermachen",
   "checkinSpaeter": "Später",
-  "checkinNaechster": "Nächster Check-in",
+  "checkinNaechsterIn": "{tage, plural, one{Nächster Check-in in einem Tag} other{Nächster Check-in in {tage} Tagen}}",
+  "@checkinNaechsterIn": {
+    "description": "Zeile unter dem Plan. Der Zeitraum steckt mit im Satz, weil er sich in anderen Sprachen nicht als Baustein anhängen lässt.",
+    "placeholders": {
+      "tage": { "type": "int" }
+    }
+  },
   "checkinPushTitel": "Kurzer Check-in",
   "checkinPushText": "Dauert unter einer Minute.",
   "checkinHabitsTitel": "Wie gut passen die Aufgaben?",
@@ -661,6 +667,7 @@
     }
   },
   "streakTage": "Tage am Stück",
+  "streakAllesErledigt": "Heute alles erledigt. Stark.",
   "streakKeineAufgaben": "Noch keine Tagesaufgaben.",
   "streakNichtsAbgehakt": "Heute noch nichts abgehakt – ein Haken sichert den Tag.",
   "streakHeuteErledigt": "Heute {erledigt} von {gesamt} erledigt",

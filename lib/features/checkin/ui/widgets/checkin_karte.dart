@@ -121,9 +121,7 @@ class CheckinVorschau extends ConsumerWidget {
           ),
           const SizedBox(width: 6),
           Expanded(
-            child: MutedText(
-              '${texte.checkinNaechster} in $tage ${tage == 1 ? 'Tag' : 'Tagen'}',
-            ),
+            child: MutedText(texte.checkinNaechsterIn(tage)),
           ),
         ],
       ),

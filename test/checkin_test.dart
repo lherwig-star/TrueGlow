@@ -719,8 +719,10 @@ void main() {
       await _jubelWegtippen(tester);
 
       expect(find.text(texte.checkinKarteTitel), findsNothing);
-      expect(find.textContaining(texte.checkinNaechster), findsOneWidget);
-      expect(find.textContaining('in 5 Tagen'), findsOneWidget);
+      // Der Zeitraum steckt mit im uebersetzten Satz, nicht im Dart-Code –
+      // sonst stuende im Englischen „Next check-in in 5 Tagen".
+      expect(find.text(texte.checkinNaechsterIn(5)), findsOneWidget);
+      expect(find.text('Nächster Check-in in 5 Tagen'), findsOneWidget);
     });
   });
 }

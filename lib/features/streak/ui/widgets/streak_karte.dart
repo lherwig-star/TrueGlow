@@ -108,7 +108,7 @@ class _StreakKarteState extends ConsumerState<StreakKarte>
                   switch (habits.isEmpty) {
                     true => texte.streakKeineAufgaben,
                     false when erledigt == habits.length =>
-                      'Heute alles erledigt. Stark.',
+                      texte.streakAllesErledigt,
                     false when erledigt == 0 =>
                       texte.streakNichtsAbgehakt,
                     false => texte.streakHeuteErledigt(erledigt, habits.length),
