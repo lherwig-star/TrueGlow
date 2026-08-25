@@ -97,6 +97,34 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!-- Ohne diese beiden Empfaenger zeigt Android eine geplante
+             Benachrichtigung ueberhaupt nicht an. Das Plugin bringt sie
+             ausdruecklich NICHT in seinem eigenen Manifest mit; sein Manifest
+             enthaelt nur zwei Berechtigungen. Ein Blick in das
+             zusammengefuehrte Manifest unter build/ zeigt es:
+
+               grep -o '<receiver[^>]*' build/app/intermediates/merged_manifest/...
+
+             `ScheduledNotificationReceiver` stellt die Benachrichtigung zur
+             geplanten Zeit zu. `ScheduledNotificationBootReceiver` legt die
+             Termine nach einem Neustart des Geraets wieder an – ohne ihn
+             waeren sie weg, und die App merkt davon nichts, weil sie zu dem
+             Zeitpunkt nicht laeuft. `MY_PACKAGE_REPLACED` deckt denselben
+             Fall nach einem App-Update ab. -->
+        <receiver
+            android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+        <receiver
+            android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

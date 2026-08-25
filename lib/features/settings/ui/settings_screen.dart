@@ -29,6 +29,8 @@ import '../../history/logic/analysis_repository.dart';
 import '../../onboarding/logic/onboarding_controller.dart';
 import '../../onboarding/models/onboarding_profile.dart';
 import '../../plan/logic/plan_progress_repository.dart';
+import '../../streak/logic/erinnerung_einstellung.dart';
+import '../../streak/logic/tages_erinnerung.dart';
 import '../../../core/utils/datum.dart';
 
 /// Einstellungen: Angaben aendern, Daten loeschen (DSGVO), Rechtstexte.
@@ -87,6 +89,8 @@ class SettingsScreen extends ConsumerWidget {
         const _ErscheinungsbildKarte(),
         const SizedBox(height: AppTheme.gapS),
         const _SprachKarte(),
+        const SizedBox(height: AppTheme.gapS),
+        const _ErinnerungsKarte(),
         const SizedBox(height: AppTheme.gapS),
         const _ModusKarte(),
         const SizedBox(height: AppTheme.gapM),
@@ -176,6 +180,8 @@ class SettingsScreen extends ConsumerWidget {
     // Theme und Sprache liegen in derselben Box und wurden mitgeloescht.
     ref.read(themeControllerProvider.notifier).neuLaden();
     ref.read(sprachControllerProvider.notifier).neuLaden();
+    ref.read(erinnerungProvider.notifier).neuLaden();
+    await ref.read(tagesErinnerungProvider).abbrechen();
 
     if (kontoWeg) {
       await ref.read(authRepositoryProvider).abmelden();
@@ -645,6 +651,104 @@ class _SprachKarte extends ConsumerWidget {
           ),
           const SizedBox(height: AppTheme.gapXs),
           MutedText(texte.spracheReportHinweis),
+        ],
+      ),
+    );
+  }
+}
+
+/// Schalter und Uhrzeit der täglichen Erinnerung.
+///
+/// Die Karte fragt beim Bauen nach, ob das System Benachrichtigungen
+/// überhaupt zulässt. Ohne diese Nachfrage stünde hier ein Schalter auf
+/// „an", während nichts passiert – und niemand käme auf die Idee, dass es an
+/// einer Systemeinstellung liegt.
+class _ErinnerungsKarte extends ConsumerStatefulWidget {
+  const _ErinnerungsKarte();
+
+  @override
+  ConsumerState<_ErinnerungsKarte> createState() => _ErinnerungsKarteState();
+}
+
+class _ErinnerungsKarteState extends ConsumerState<_ErinnerungsKarte> {
+  /// `null`, solange noch nicht nachgesehen wurde.
+  bool? _systemErlaubt;
+
+  @override
+  void initState() {
+    super.initState();
+    _systemStandLesen();
+  }
+
+  Future<void> _systemStandLesen() async {
+    final erlaubt =
+        await ref.read(tagesErinnerungProvider).berechtigungVorhanden();
+    if (mounted) setState(() => _systemErlaubt = erlaubt);
+  }
+
+  /// Beim Einschalten wird gefragt, falls die Berechtigung fehlt – an dieser
+  /// Stelle ist die Frage keine Belästigung, sondern die Antwort auf das,
+  /// was der Nutzer gerade angetippt hat.
+  Future<void> _anAus(bool an) async {
+    final dienst = ref.read(tagesErinnerungProvider);
+
+    if (an && _systemErlaubt == false) {
+      final erteilt = await dienst.berechtigungAnfragen();
+      if (mounted) setState(() => _systemErlaubt = erteilt);
+      if (!erteilt) return;
+    }
+
+    await ref.read(erinnerungProvider.notifier).anAus(an);
+  }
+
+  Future<void> _uhrzeit() async {
+    final aktuell = ref.read(erinnerungProvider);
+    final gewaehlt = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: aktuell.stunde, minute: aktuell.minute),
+      helpText: context.texte.erinnerungZeitWaehlen,
+    );
+    if (gewaehlt == null) return;
+
+    await ref
+        .read(erinnerungProvider.notifier)
+        .uhrzeit(gewaehlt.hour, gewaehlt.minute);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final texte = context.texte;
+    final einstellung = ref.watch(erinnerungProvider);
+
+    return SectionCard(
+      title: texte.einstellungenErinnerung,
+      icon: Icons.notifications_active_outlined,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(texte.erinnerungAn),
+            value: einstellung.aktiv,
+            onChanged: (an) => _anAus(an),
+          ),
+          if (einstellung.aktiv)
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(texte.erinnerungZeit),
+              trailing: Text(
+                Datum.uhrzeit(einstellung.stunde, einstellung.minute,
+                    texte.localeName),
+                style: const TextStyle(fontWeight: FontWeight.w700),
+              ),
+              onTap: _uhrzeit,
+            ),
+          const SizedBox(height: AppTheme.gapXs),
+          MutedText(texte.erinnerungHinweis),
+          if (_systemErlaubt == false) ...[
+            const SizedBox(height: AppTheme.gapXs),
+            MutedText(texte.erinnerungOhneBerechtigung),
+          ],
         ],
       ),
     );

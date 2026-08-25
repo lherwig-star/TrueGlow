@@ -881,6 +881,85 @@ nicht den Quelltext, sondern den **erzeugten** Prompt: Im englischen Prompt
 darf kein deutscher Abschnittsname stehen. Das fängt auch den Namen, der
 später dazukommt und beim Übersetzen vergessen wird.
 
+## 37 · Der Freitext gehört in die Tagesliste, nicht in die Fließtexte
+
+Bei „Deine Richtung" gibt es anklickbare Punkte und ein Freitextfeld. Die
+Punkte sind grobe Überbegriffe zum Look und bleiben, wie sie sind. Das
+Freitextfeld war bisher Stimmung: Es färbte die Fließtexte ein und verschwand
+dann.
+
+Gearbeitet wird aber mit der Checkliste. Ein Wunsch, der es nicht bis dorthin
+schafft, ist für den Nutzer nicht passiert. Der Prompt verlangt deshalb jetzt
+aus jedem Wunsch im Freitext eine bis drei tägliche Aufgaben.
+
+**Warum „basis" als Auffangkapitel:** „Gepflegtere Hände" passt in kein
+Kapitel. Ohne einen Ort, an dem so etwas landen darf, fällt es unter den
+Tisch — und zwar unsichtbar, weil niemand vermisst, was er nicht sieht. Die
+Basis gibt es immer.
+
+**Warum Gewohnheits-Ziele eine eigene Sektion bekommen:** Eine abhakbare
+Aufgabe allein ist noch keine Strategie. „Nicht rauchen" hilft niemandem;
+„wenn nach dem Essen das Verlangen kommt, Kaugummi statt Zigarette" ist ein
+Handgriff. Die Auslöser gehören benannt, sonst steht die Aufgabe ohne
+Kontext da.
+
+**Was der Prompt ausdrücklich verbietet:** Heilaussagen, Versprechen über
+gesundheitliche Wirkungen, Zahlen zu Krankheitsrisiken, jeden Hinweis
+darauf, was jemand bisher falsch gemacht hat. Bei einer Abhängigkeit einmal
+beiläufig, dass es fachliche Unterstützung gibt — einmal, nicht als
+Refrain. Wer „aufhören zu rauchen" in ein Styling-Programm schreibt, sucht
+keinen Vortrag.
+
+**Warum das ohne Freitext nichts ändert:** Die Regeln stehen nur im Prompt,
+wenn das Feld gefüllt ist. Ein leeres Feld erzeugt denselben Prompt wie
+vorher, und alte gespeicherte Analysen sind ohnehin unberührt — hier ändert
+sich nichts am Datenformat.
+
+## 38 · Die Erinnerung, die es nie gab
+
+Die tägliche Erinnerung ist eine lokale Benachrichtigung, kein Server. Beim
+Einbauen kam heraus, dass die **bestehende Check-in-Erinnerung nie
+funktioniert haben kann.**
+
+`flutter_local_notifications` braucht zwei Empfänger im Manifest. Der eine
+stellt die Benachrichtigung zur geplanten Zeit überhaupt zu, der andere legt
+die Termine nach einem Neustart des Geräts wieder an. Das Plugin bringt sie
+**nicht** selbst mit — sein Manifest enthält zwei Berechtigungen und sonst
+nichts. Sie standen nirgends.
+
+Das ist die unangenehmste Sorte Fehler: Nichts stürzt ab, nichts wird
+protokolliert, `zonedSchedule` meldet Erfolg, und die Benachrichtigung kommt
+einfach nicht. Ein Test liest das Manifest jetzt und besteht auf beiden
+Einträgen.
+
+**Warum sieben Termine im Voraus geplant werden.** Eine lokale
+Benachrichtigung kann beim Auslösen nichts prüfen; das Gerät zeigt an, was
+vorher hinterlegt wurde. Ein einziger Termin hieße: Er feuert einmal, danach
+ist Ruhe, bis jemand die App öffnet — ausgerechnet bei dem, den die
+Erinnerung zurückholen soll.
+
+Der heutige Termin steht nur, wenn heute noch nichts abgehakt ist. Die
+künftigen stehen ohne Bedingung, und das ist kein Kompromiss, sondern
+richtig: Abhaken geht nur in der App, und jedes Abhaken plant neu. Wer morgen
+abhakt, löscht damit den Termin von morgen.
+
+**Warum sie von Anfang an eingeschaltet ist.** Die Serie lebt vom täglichen
+Abhaken, und wer eine Erinnerung erst suchen muss, schaltet sie nie ein.
+Aufdringlich wird es dadurch nicht: ohne Systemberechtigung passiert nichts,
+ohne Plan passiert nichts, und wer heute schon abgehakt hat, hört nichts.
+
+**Warum nur einmal gefragt wird.** Wer ablehnt, hat geantwortet. Eine zweite
+Frage beim nächsten Start wäre Drängeln. Die Ablehnung schaltet die
+Einstellung gleich mit ab — sonst stünde in den Einstellungen ein Schalter
+auf „an", während nichts passiert, und niemand käme auf die Idee, dass es an
+einer Systemeinstellung liegt. Die Karte in den Einstellungen sieht deshalb
+selbst nach und sagt es, wenn das System blockiert.
+
+**Warum die Planung ungenau ist** (`inexactAllowWhileIdle`): Genaue Alarme
+brauchen seit Android 14 eine eigene Berechtigung, die Google prüft. Für eine
+Erinnerung, die „irgendwann am Abend" kommen soll, ist das der falsche
+Preis.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

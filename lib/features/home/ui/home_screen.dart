@@ -19,6 +19,7 @@ import '../../checkin/ui/widgets/checkin_karte.dart';
 import '../../modules/logic/module_controller.dart';
 import '../../history/logic/analysis_repository.dart';
 import '../../plan/ui/widgets/checkliste_karte.dart';
+import '../../streak/logic/erinnerung_planer.dart';
 import '../../streak/logic/streak_repository.dart';
 import '../../streak/ui/jubel_overlay.dart';
 import '../../streak/ui/widgets/abzeichen_sektion.dart';
@@ -45,7 +46,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     // Beim Start pruefen statt nur auf die Push zu vertrauen: Erinnerungen
     // koennen abgeschaltet sein, faellig ist der Check-in trotzdem.
-    WidgetsBinding.instance.addPostFrameCallback((_) => _pruefeCheckin());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _pruefeCheckin();
+      _erinnerungEinrichten();
+    });
   }
 
   /// Startet den Check-in-Zyklus, sobald ein Plan existiert, und haelt die
@@ -68,6 +72,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     await benachrichtigung.planen(
       ref.read(checkinControllerProvider).naechsterTermin,
     );
+  }
+
+  /// Fragt beim allerersten Start nach der Berechtigung und plant danach.
+  ///
+  /// Das Lesen des Providers ist kein Beiwerk: Er haengt sich dabei an die
+  /// vier Ausloeser, die eine Neuplanung noetig machen, und bleibt danach
+  /// stehen, solange die App laeuft.
+  Future<void> _erinnerungEinrichten() async {
+    final planer = ref.read(erinnerungPlanerProvider);
+    await planer.erstmaligFragen();
+    await planer.aktualisieren();
   }
 
   /// Zeigt den Jubel-Moment fuer ein frisch erreichtes Abzeichen und merkt

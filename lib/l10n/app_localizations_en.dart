@@ -649,6 +649,40 @@ class LEn extends L {
   String get disclaimerZustimmung => 'I have read the notes above and agree.';
 
   @override
+  String get erinnerungPushTitel => 'Your daily goal';
+
+  @override
+  String get erinnerungPushText =>
+      'Nothing ticked off today — one tick secures the day.';
+
+  @override
+  String get erinnerungKanalName => 'Daily reminder';
+
+  @override
+  String get erinnerungKanalBeschreibung =>
+      'Reminds you in the evening if you have not ticked anything off yet.';
+
+  @override
+  String get einstellungenErinnerung => 'Daily reminder';
+
+  @override
+  String get erinnerungAn => 'Remind me';
+
+  @override
+  String get erinnerungZeit => 'Time';
+
+  @override
+  String get erinnerungHinweis =>
+      'Only arrives if you have a plan and nothing is ticked off that day.';
+
+  @override
+  String get erinnerungOhneBerechtigung =>
+      'Your phone is currently not allowing notifications for TrueGlow. You can change that in the system settings.';
+
+  @override
+  String get erinnerungZeitWaehlen => 'Pick a time';
+
+  @override
   String get pushKanalName => 'Check-in reminders';
 
   @override

@@ -1237,6 +1237,66 @@ abstract class L {
   /// **'Ich habe die Hinweise gelesen und stimme zu.'**
   String get disclaimerZustimmung;
 
+  /// Titel der täglichen Erinnerung. Kurz halten – Android kürzt lange Titel in der Leiste ab.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Tagesziel'**
+  String get erinnerungPushTitel;
+
+  /// No description provided for @erinnerungPushText.
+  ///
+  /// In de, this message translates to:
+  /// **'Heute noch nichts abgehakt – ein Haken sichert den Tag.'**
+  String get erinnerungPushText;
+
+  /// Name des Benachrichtigungs-Kanals in den Android-Einstellungen. Steht dort in der Sprache, in der er angelegt wurde – Android benennt einen bestehenden Kanal nicht um.
+  ///
+  /// In de, this message translates to:
+  /// **'Tägliche Erinnerung'**
+  String get erinnerungKanalName;
+
+  /// No description provided for @erinnerungKanalBeschreibung.
+  ///
+  /// In de, this message translates to:
+  /// **'Erinnert dich abends, wenn du heute noch keine Aufgabe abgehakt hast.'**
+  String get erinnerungKanalBeschreibung;
+
+  /// No description provided for @einstellungenErinnerung.
+  ///
+  /// In de, this message translates to:
+  /// **'Tägliche Erinnerung'**
+  String get einstellungenErinnerung;
+
+  /// No description provided for @erinnerungAn.
+  ///
+  /// In de, this message translates to:
+  /// **'Erinnere mich'**
+  String get erinnerungAn;
+
+  /// No description provided for @erinnerungZeit.
+  ///
+  /// In de, this message translates to:
+  /// **'Uhrzeit'**
+  String get erinnerungZeit;
+
+  /// No description provided for @erinnerungHinweis.
+  ///
+  /// In de, this message translates to:
+  /// **'Kommt nur, wenn du einen Plan hast und an dem Tag noch nichts abgehakt ist.'**
+  String get erinnerungHinweis;
+
+  /// No description provided for @erinnerungOhneBerechtigung.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Handy lässt für TrueGlow gerade keine Benachrichtigungen zu. Das lässt sich in den Systemeinstellungen ändern.'**
+  String get erinnerungOhneBerechtigung;
+
+  /// No description provided for @erinnerungZeitWaehlen.
+  ///
+  /// In de, this message translates to:
+  /// **'Uhrzeit wählen'**
+  String get erinnerungZeitWaehlen;
+
   /// Name des Android-Benachrichtigungskanals. Steht so in den Systemeinstellungen des Geraets.
   ///
   /// In de, this message translates to:

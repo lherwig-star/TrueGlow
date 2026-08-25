@@ -481,6 +481,20 @@ Abschnitte 31–33.
 
 ---
 
+### 4.8 Gewohnheits-Ziele und tägliche Erinnerung
+
+Begründungen in `DECISIONS.md`, Abschnitte 37 und 38.
+
+- [x] Der Freitext bei „Deine Richtung" erzeugt tägliche Aufgaben — **M** — *eine bis drei je Wunsch, im passendsten Kapitel; „basis" fängt auf, was in keins passt*
+- [x] Gewohnheits-Ziele bekommen eine eigene Sektion mit Auslöser-Strategien — **S** — *Ton festgeschrieben: keine Heilaussagen, kein erhobener Zeigefinger*
+- [x] Tägliche Erinnerung als lokale Benachrichtigung — **L** — *sieben Termine im Voraus; heute nur, wenn noch nichts abgehakt ist*
+- [x] Berechtigung einmal aktiv erfragen, Ablehnung akzeptieren — **S** — *danach nie wieder; wieder einschaltbar in den Einstellungen*
+- [x] Schalter und Uhrzeit in den Einstellungen — **S** — *Standard 19 Uhr, von Anfang an eingeschaltet*
+- [x] Die fehlenden Benachrichtigungs-Empfänger im Android-Manifest — **S** — *ohne sie zeigt Android geplante Benachrichtigungen gar nicht an; die Check-in-Erinnerung kann nie funktioniert haben*
+- [ ] Erinnerung am Gerät prüfen: kommt sie, bleibt sie nach dem Abhaken weg, übersteht sie einen Neustart — **S** — *nur am echten Gerät prüfbar*
+
+---
+
 ## Phase 5 — Launch
 
 ### 5.1 Store-Listing

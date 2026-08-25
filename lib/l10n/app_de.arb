@@ -227,6 +227,22 @@
   "disclaimerMedizin": "TrueGlow ersetzt keine medizinische Beratung. Bei Hautproblemen wende dich an eine dermatologische Praxis.",
   "disclaimerFotos": "Deine Fotos werden ausschließlich zur Analyse an den KI-Dienst gesendet und dort nicht dauerhaft gespeichert. Auf deinem Gerät bleiben sie lokal.",
   "disclaimerZustimmung": "Ich habe die Hinweise gelesen und stimme zu.",
+  "erinnerungPushTitel": "Dein Tagesziel",
+  "@erinnerungPushTitel": {
+    "description": "Titel der täglichen Erinnerung. Kurz halten – Android kürzt lange Titel in der Leiste ab."
+  },
+  "erinnerungPushText": "Heute noch nichts abgehakt – ein Haken sichert den Tag.",
+  "erinnerungKanalName": "Tägliche Erinnerung",
+  "@erinnerungKanalName": {
+    "description": "Name des Benachrichtigungs-Kanals in den Android-Einstellungen. Steht dort in der Sprache, in der er angelegt wurde – Android benennt einen bestehenden Kanal nicht um."
+  },
+  "erinnerungKanalBeschreibung": "Erinnert dich abends, wenn du heute noch keine Aufgabe abgehakt hast.",
+  "einstellungenErinnerung": "Tägliche Erinnerung",
+  "erinnerungAn": "Erinnere mich",
+  "erinnerungZeit": "Uhrzeit",
+  "erinnerungHinweis": "Kommt nur, wenn du einen Plan hast und an dem Tag noch nichts abgehakt ist.",
+  "erinnerungOhneBerechtigung": "Dein Handy lässt für TrueGlow gerade keine Benachrichtigungen zu. Das lässt sich in den Systemeinstellungen ändern.",
+  "erinnerungZeitWaehlen": "Uhrzeit wählen",
   "pushKanalName": "Check-in-Erinnerungen",
   "@pushKanalName": {
     "description": "Name des Android-Benachrichtigungskanals. Steht so in den Systemeinstellungen des Geraets."

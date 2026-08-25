@@ -652,6 +652,40 @@ class LDe extends L {
       'Ich habe die Hinweise gelesen und stimme zu.';
 
   @override
+  String get erinnerungPushTitel => 'Dein Tagesziel';
+
+  @override
+  String get erinnerungPushText =>
+      'Heute noch nichts abgehakt – ein Haken sichert den Tag.';
+
+  @override
+  String get erinnerungKanalName => 'Tägliche Erinnerung';
+
+  @override
+  String get erinnerungKanalBeschreibung =>
+      'Erinnert dich abends, wenn du heute noch keine Aufgabe abgehakt hast.';
+
+  @override
+  String get einstellungenErinnerung => 'Tägliche Erinnerung';
+
+  @override
+  String get erinnerungAn => 'Erinnere mich';
+
+  @override
+  String get erinnerungZeit => 'Uhrzeit';
+
+  @override
+  String get erinnerungHinweis =>
+      'Kommt nur, wenn du einen Plan hast und an dem Tag noch nichts abgehakt ist.';
+
+  @override
+  String get erinnerungOhneBerechtigung =>
+      'Dein Handy lässt für TrueGlow gerade keine Benachrichtigungen zu. Das lässt sich in den Systemeinstellungen ändern.';
+
+  @override
+  String get erinnerungZeitWaehlen => 'Uhrzeit wählen';
+
+  @override
   String get pushKanalName => 'Check-in-Erinnerungen';
 
   @override

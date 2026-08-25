@@ -48,4 +48,8 @@ class Datum {
       _ => lang(datum, sprache),
     };
   }
+  /// Eine Uhrzeit ohne Datum, in der Schreibweise der Sprache: 19:00 auf
+  /// Deutsch, 7:00 PM auf Englisch.
+  static String uhrzeit(int stunde, int minute, String sprache) =>
+      DateFormat.Hm(sprache).format(DateTime(2000, 1, 1, stunde, minute));
 }
