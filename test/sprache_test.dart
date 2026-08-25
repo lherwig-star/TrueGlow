@@ -255,6 +255,35 @@ void main() {
       expect(english, isNot(contains('Empfehlung')));
     });
 
+    test('die Kategorie eines Produkts folgt der App-Sprache', () {
+      // Sie kam frueher als Wort aus dem Modell, und dann stand „Pflege"
+      // auch in einem englischen Report. Jetzt liefert das Modell nur die
+      // Kennung, das Wort steht in der Übersetzung – und wechselt deshalb
+      // mit, wenn jemand die Sprache nach der Analyse umstellt.
+      const produkt = Produkt(
+        name: 'Getönte Tagescreme',
+        kategorie: 'pflege',
+        beschreibung: '',
+      );
+
+      expect(produkt.kategorieText(texte), 'Pflege');
+      expect(produkt.kategorieText(englisch), 'Care');
+    });
+
+    test('ein alter Report behält seine Kategorie, statt sie zu verlieren', () {
+      // Vor dem Umbau stand dort das Wort selbst. Es gibt keine Kennung, auf
+      // die sich das abbilden ließe – dann lieber das alte Wort zeigen als
+      // eine leere Pille.
+      const alt = Produkt(
+        name: 'Bartöl',
+        kategorie: 'Bartpflege',
+        beschreibung: '',
+      );
+
+      expect(alt.kategorieText(texte), 'Bartpflege');
+      expect(alt.kategorieText(englisch), 'Bartpflege');
+    });
+
     test('die Oberflaeche enthaelt kein fest verdrahtetes Deutsch', () {
       // Zwei deutsche Zeilen sind erst am Gerät aufgefallen, nachdem die App
       // auf Englisch stand: „Heute alles erledigt. Stark." in der

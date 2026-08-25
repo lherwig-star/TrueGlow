@@ -89,7 +89,7 @@ class MockAnalysisService implements AnalysisService {
           "produkte": [
             {
               "name": "Mattes Stylingpaste mit mittlerem Halt",
-              "kategorie": "Styling",
+              "kategorie": "styling",
               "beschreibung": "Haselnussgroße Menge im handtuchtrockenen Haar verteilen, von hinten nach vorn durchfahren.",
               "affiliateUrl": null
             }
@@ -106,7 +106,7 @@ class MockAnalysisService implements AnalysisService {
           "produkte": [
             {
               "name": "Bartöl mit Jojoba",
-              "kategorie": "Pflege",
+              "kategorie": "pflege",
               "beschreibung": "Drei Tropfen in die Handflächen, in Bart und Haut einmassieren. Abends nach dem Waschen.",
               "affiliateUrl": null
             }
@@ -137,13 +137,13 @@ class MockAnalysisService implements AnalysisService {
           "produkte": [
             {
               "name": "Mildes Reinigungsgel",
-              "kategorie": "Reinigung",
+              "kategorie": "reinigung",
               "beschreibung": "Morgens und abends eine haselnussgroße Menge auf die feuchte Haut, 30 Sekunden einmassieren, lauwarm abspülen.",
               "affiliateUrl": null
             },
             {
               "name": "Leichte Feuchtigkeitscreme (ölfrei)",
-              "kategorie": "Pflege",
+              "kategorie": "pflege",
               "beschreibung": "Nach der Reinigung dünn auftragen. Ölfrei, damit die T-Zone nicht zusätzlich glänzt.",
               "affiliateUrl": null
             }
@@ -184,7 +184,7 @@ class MockAnalysisService implements AnalysisService {
           "produkte": [
             {
               "name": "Getönte Tagescreme",
-              "kategorie": "Teint",
+              "kategorie": "makeup",
               "beschreibung": "Mit den Fingern von der Mitte nach außen verteilen. Ein Ton, der am Kiefer verschwindet, ist der richtige.",
               "affiliateUrl": null
             }
@@ -224,7 +224,7 @@ class MockAnalysisService implements AnalysisService {
           "produkte": [
             {
               "name": "Interdentalbürsten im Set",
-              "kategorie": "Werkzeug",
+              "kategorie": "werkzeug",
               "beschreibung": "Abends vor dem Zähneputzen, verschiedene Größen ausprobieren und die passende behalten.",
               "affiliateUrl": null
             }
@@ -295,7 +295,7 @@ class MockAnalysisService implements AnalysisService {
           "produkte": [
             {
               "name": "Overshirt aus Baumwolltwill",
-              "kategorie": "Kleidung",
+              "kategorie": "kleidung",
               "beschreibung": "Als dritte Schicht über T-Shirt oder Hemd. Gedeckte Farbe, damit es zu allem passt.",
               "affiliateUrl": null
             }

@@ -77,6 +77,54 @@ export function moduleFuer(ausrichtung: Ausrichtung): readonly Modul[] {
   return MODULE.filter((m) => m !== 'makeupAusstrahlung');
 }
 
+/**
+ * Abschnittsnamen, die der Prompt dem Modell vorgibt.
+ *
+ * Sie sind der Grund fuer einen Fehler, der erst am Geraet aufgefallen ist:
+ * Ein Name, den der Prompt woertlich nennt, landet woertlich im Report. Stand
+ * dort "Sektionen: Frisur, Augenbrauen", schrieb das Modell "Frisur" und
+ * "Augenbrauen" auch in einen englischen Report – die Kapitelueberschriften
+ * darueber waren laengst englisch.
+ *
+ * Der uebrige Prompt bleibt einsprachig (Begruendung in DECISIONS 31). Was
+ * das Modell abschreiben soll, kann es aber nicht: Diese Namen sind Ausgabe,
+ * keine Anweisung.
+ */
+export const SEKTIONEN = {
+  frisur: { de: 'Frisur', en: 'Hair' },
+  bart: { de: 'Bart', en: 'Beard' },
+  brillenform: { de: 'Brillenform', en: 'Glasses' },
+  augenbrauen: { de: 'Augenbrauen', en: 'Eyebrows' },
+  alltagsLook: { de: 'Alltags-Look', en: 'Everyday look' },
+  farben: { de: 'Farben', en: 'Colours' },
+} as const satisfies Record<string, Zweisprachig>;
+
+export function sektion(
+  name: keyof typeof SEKTIONEN,
+  sprache: Sprache,
+): string {
+  return SEKTIONEN[name][sprache];
+}
+
+/**
+ * Die Kategorie eines Produkts – als Kennung, nicht als Wort.
+ *
+ * Frueher standen im Prompt deutsche Beispiele ("z.B. Reinigung, Pflege,
+ * Styling"), und genau die kamen im englischen Report wieder heraus. Jetzt
+ * waehlt das Modell aus einer festen Liste, wie bei "modul", und die App
+ * schreibt das Wort dazu. Damit folgt die Kategorie auch dann der
+ * App-Sprache, wenn jemand sie nach der Analyse umstellt.
+ */
+export const PRODUKTKATEGORIEN = [
+  'reinigung',
+  'pflege',
+  'styling',
+  'werkzeug',
+  'makeup',
+  'kleidung',
+  'sonstiges',
+] as const;
+
 /** Ueberschrift des Report-Kapitels (AnalyseModul.kapitel). */
 export const MODUL_KAPITEL: Record<Modul, Zweisprachig> = {
   basis: { de: 'Gesicht, Haare & Bart', en: 'Face, hair & beard' },

@@ -835,6 +835,48 @@ abstract class L {
   /// **'Produkte'**
   String get ergebnisProdukte;
 
+  /// Kategorie-Pille an einem Produkt. Das Modell liefert nur die Kennung ("reinigung"), das Wort steht hier – sonst bleibt die Kategorie in der Sprache, in der der Report entstanden ist.
+  ///
+  /// In de, this message translates to:
+  /// **'Reinigung'**
+  String get produktReinigung;
+
+  /// No description provided for @produktPflege.
+  ///
+  /// In de, this message translates to:
+  /// **'Pflege'**
+  String get produktPflege;
+
+  /// No description provided for @produktStyling.
+  ///
+  /// In de, this message translates to:
+  /// **'Styling'**
+  String get produktStyling;
+
+  /// No description provided for @produktWerkzeug.
+  ///
+  /// In de, this message translates to:
+  /// **'Werkzeug'**
+  String get produktWerkzeug;
+
+  /// No description provided for @produktMakeup.
+  ///
+  /// In de, this message translates to:
+  /// **'Make-up'**
+  String get produktMakeup;
+
+  /// No description provided for @produktKleidung.
+  ///
+  /// In de, this message translates to:
+  /// **'Kleidung'**
+  String get produktKleidung;
+
+  /// No description provided for @produktSonstiges.
+  ///
+  /// In de, this message translates to:
+  /// **'Sonstiges'**
+  String get produktSonstiges;
+
   /// No description provided for @planTitel.
   ///
   /// In de, this message translates to:

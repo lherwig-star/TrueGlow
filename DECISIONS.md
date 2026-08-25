@@ -831,6 +831,56 @@ reparieren, nur neu erzeugen — und das kostet ein zweites Mal Kontingent.
 Drei Läufe pro Tag sind knapp. Lieber ein Report in der falschen Sprache und
 ein Eintrag im Protokoll als gar keiner.
 
+## 36 · Was der Prompt wörtlich nennt, schreibt das Modell wörtlich ab
+
+Im englischen Report des weiblichen Modus stimmte fast alles: Kapitel-
+überschriften englisch, Fließtexte englisch, kein Bart. Die Überschriften der
+Unterabschnitte hießen trotzdem „Frisur", „Augenbrauen", „Alltags-Look",
+„Farben" — und die Kategorie eines Produkts „Pflege".
+
+**Weil genau diese Wörter im Prompt standen.** Der Prompt ist auf Deutsch
+(Begründung in 31), und in der Kapitelvorgabe stand „Sektionen: Frisur
+(Schnitt, Länge …), Augenbrauen (Form und Pflege …)". Für das Modell ist das
+kein deutscher Satz, sondern eine Liste von Namen — und Namen übersetzt man
+nicht. Im männlichen Modus fiel es nicht auf, weil die Vorgabe dort knapper
+ist („Sektionen: Frisur, Bart, bei Bedarf Brillenform") und das Modell sich
+eigene Überschriften ausgedacht hat.
+
+**Die Trennlinie liegt also nicht zwischen Prompt und Report, sondern
+zwischen Anweisung und Ausgabe.** Eine Anweisung darf einsprachig bleiben —
+sie wird gelesen, nicht abgeschrieben. Was das Modell wörtlich übernehmen
+soll, muss in der Zielsprache dastehen. Die sechs Abschnittsnamen liegen
+deshalb jetzt als `SEKTIONEN` zweisprachig in `labels.ts`, und die Vorgabe
+sagt ausdrücklich: `Sektionen, deren "titel" GENAU so lautet: …`.
+
+**Die Produktkategorie ist einen Schritt weiter gegangen und gar kein Wort
+mehr.** Sie kommt aus einem kleinen, festen Vorrat — Reinigung, Pflege,
+Styling, Werkzeug, Make-up, Kleidung, Sonstiges. So etwas gehört als Kennung
+über die Leitung und nicht als Text, genau wie `modul`. Das Wort setzt die
+App aus ihrer Übersetzung.
+
+Der Nebeneffekt ist die Antwort auf die dritte Frage aus der Rückmeldung: Ein
+Report, der auf Englisch entstanden ist, zeigt seine Kategorien auf Deutsch,
+sobald jemand die App umstellt — ohne neuen Modellaufruf. Ein alter Report
+ohne Kennung fällt auf sein gespeichertes Wort zurück; eine leere Pille wäre
+schlechter als eine deutsche.
+
+**Was beim Sprachwechsel nicht mitwandert und warum:** die Abschnitts-
+überschriften und die Fließtexte. Das sind die eigenen Worte des Modells, in
+freier Formulierung. Sie ließen sich nur übersetzen, indem man sie neu
+erzeugen lässt — und das kostet ein zweites Mal Kontingent, bei drei Läufen
+pro Tag. Die Kapitelüberschriften wandern übrigens längst mit: Sie standen
+nie im gespeicherten Report, sondern kommen aus
+`AnalyseModul.kapitel(L, Ausrichtung)`.
+
+**Warum der Wächter aus 34 das nicht gefunden hat:** Er liest Dart-Dateien
+unter `lib/`. Diese Wörter standen in TypeScript unter `functions/src/` — und
+schlimmer, sie standen dort völlig zu Recht, nur eben in der falschen Rolle.
+Sein Gegenstück auf dem Server (`test/prompt_sprache.test.ts`) prüft deshalb
+nicht den Quelltext, sondern den **erzeugten** Prompt: Im englischen Prompt
+darf kein deutscher Abschnittsname stehen. Das fängt auch den Namen, der
+später dazukommt und beim Übersetzen vergessen wird.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

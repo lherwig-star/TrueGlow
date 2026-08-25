@@ -148,6 +148,16 @@
   "ergebnisPlanErstellen": "Plan erstellen",
   "ergebnisEmpfehlungen": "Empfehlungen",
   "ergebnisProdukte": "Produkte",
+  "produktReinigung": "Reinigung",
+  "@produktReinigung": {
+    "description": "Kategorie-Pille an einem Produkt. Das Modell liefert nur die Kennung (\"reinigung\"), das Wort steht hier – sonst bleibt die Kategorie in der Sprache, in der der Report entstanden ist."
+  },
+  "produktPflege": "Pflege",
+  "produktStyling": "Styling",
+  "produktWerkzeug": "Werkzeug",
+  "produktMakeup": "Make-up",
+  "produktKleidung": "Kleidung",
+  "produktSonstiges": "Sonstiges",
   "planTitel": "Dein Plan",
   "planSofort": "Sofort umsetzbar",
   "planDreissigTage": "Erste 30 Tage",

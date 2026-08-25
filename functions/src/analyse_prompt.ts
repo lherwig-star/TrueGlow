@@ -8,6 +8,8 @@ import {
   MODULE,
   kapitelUeberschrift,
   PFLEGEAUFWAND,
+  PRODUKTKATEGORIEN,
+  sektion,
   RICHTUNGSZIEL,
   STILZIEL,
   ZEIT,
@@ -122,7 +124,7 @@ Fließtext davor oder danach, keine Markdown-Codefences:
           "produkte": [
             {
               "name": "Produkttyp oder konkretes Produkt",
-              "kategorie": "z.B. Reinigung, Pflege, Styling, Werkzeug",
+              "kategorie": "${PRODUKTKATEGORIEN.join(' | ')}",
               "beschreibung": "wofür und wie anzuwenden",
               "affiliateUrl": null
             }
@@ -139,10 +141,14 @@ Fließtext davor oder danach, keine Markdown-Codefences:
 }
 
 Erzeuge GENAU diese Kapitel, in dieser Reihenfolge, und keine weiteren:
-${gewaehlt.map((m) => kapitelVorgabe(m, ausrichtung)).join('\n')}
+${gewaehlt.map((m) => kapitelVorgabe(m, ausrichtung, sprache)).join('\n')}
 
 Vorgaben zum Inhalt:
 - "modul" ist exakt einer der genannten Bezeichner – nicht übersetzen.
+- "kategorie" ist exakt einer der aufgezählten Bezeichner – kleingeschrieben,
+  nicht übersetzen, nichts anderes. Das Wort dazu setzt die App.
+- "titel" ist Anzeigetext und steht deshalb in der Zielsprache, genau wie
+  jedes andere Textfeld. ${AUSGABESPRACHE_KURZ[sprache]}
 - "sektionen": 2 bis 4 pro Kapitel.
 - "empfehlungen": 2 bis 4 pro Sektion.
 - "produkte": 0 bis 3 pro Sektion, "affiliateUrl" immer null.
@@ -244,26 +250,35 @@ function zielRegeln(richtung: Richtungsangaben, sprache: Sprache): string {
  * ueberhaupt erst. Alles andere ist fuer alle gleich – eine Gesichtsform ist
  * eine Gesichtsform.
  */
-function kapitelVorgabe(modul: Modul, ausrichtung: Ausrichtung): string {
+function kapitelVorgabe(
+  modul: Modul,
+  ausrichtung: Ausrichtung,
+  sprache: Sprache,
+): string {
   const weiblich = ausrichtung === 'weiblich';
+  // Abschnittsnamen sind Ausgabe, keine Anweisung: Was der Prompt woertlich
+  // nennt, schreibt das Modell woertlich ab.
+  const s = (name: Parameters<typeof sektion>[0]) => sektion(name, sprache);
 
   switch (modul) {
     case 'basis':
       if (weiblich) {
         return (
           '- "basis" – Gesicht & Haare. Die "einleitung" beschreibt die ' +
-          'Gesichtsform neutral und was formal dazu passt. Sektionen: ' +
-          'Frisur (Schnitt, Länge und Scheitel passend zu Gesichtsform und ' +
-          'Proportionen; nenne konkrete Schnittnamen), Augenbrauen (Form ' +
-          'und Pflege, keine Behandlung), bei Bedarf Brillenform. Es gibt ' +
+          'Gesichtsform neutral und was formal dazu passt. Sektionen, ' +
+          `deren "titel" GENAU so lautet: "${s('frisur')}" (Schnitt, Länge ` +
+          'und Scheitel passend zu Gesichtsform und Proportionen; nenne ' +
+          `konkrete Schnittnamen), "${s('augenbrauen')}" (Form und Pflege, ` +
+          `keine Behandlung), bei Bedarf "${s('brillenform')}". Es gibt ` +
           'KEINEN Bart-Abschnitt und keine Rasurempfehlung.'
         );
       }
       return (
         '- "basis" – Gesicht, Haare & Bart. Die "einleitung" beschreibt die ' +
-        'Gesichtsform neutral und was formal dazu passt. Sektionen: ' +
-        'Frisur, Bart (weglassen, wenn kein Bartwuchs erkennbar ist), ' +
-        'bei Bedarf Brillenform.'
+        'Gesichtsform neutral und was formal dazu passt. Sektionen, deren ' +
+        `"titel" GENAU so lautet: "${s('frisur')}", "${s('bart')}" ` +
+        '(weglassen, wenn kein Bartwuchs erkennbar ist), bei Bedarf ' +
+        `"${s('brillenform')}".`
       );
     case 'hautFarbtyp':
       return (
@@ -285,10 +300,11 @@ function kapitelVorgabe(modul: Modul, ausrichtung: Ausrichtung): string {
       return (
         '- "makeupAusstrahlung" – Make-up & Ausstrahlung. Auch hierfür gibt ' +
         'es KEINE eigene Aufnahme: Lies Gesichtszüge, Augenpartie und ' +
-        'Farbwirkung aus dem Frontalfoto der Basis. Sektionen: ' +
-        'Alltags-Look (Teint, Augen, Brauen, Lippen – je ein konkreter ' +
-        'Handgriff, keine Produktschlacht) und Farben (welche Töne für ' +
-        'Lider, Lippen und Rouge zum Unterton passen, mit Namen). Richte ' +
+        'Farbwirkung aus dem Frontalfoto der Basis. Sektionen, deren ' +
+        `"titel" GENAU so lautet: "${s('alltagsLook')}" (Teint, Augen, ` +
+        'Brauen, Lippen – je ein konkreter Handgriff, keine ' +
+        `Produktschlacht) und "${s('farben')}" (welche Töne für Lider, ` +
+        'Lippen und Rouge zum Unterton passen, mit Namen). Richte ' +
         'Aufwand und Preisniveau am Zeit- und Pflegebudget aus. Empfiehl ' +
         'NICHTS, das eine kosmetische Behandlung, einen Eingriff oder ein ' +
         'Permanent-Make-up voraussetzt. Wenn auf dem Foto bereits Make-up ' +

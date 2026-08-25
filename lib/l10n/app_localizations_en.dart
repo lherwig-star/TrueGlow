@@ -429,6 +429,27 @@ class LEn extends L {
   String get ergebnisProdukte => 'Products';
 
   @override
+  String get produktReinigung => 'Cleansing';
+
+  @override
+  String get produktPflege => 'Care';
+
+  @override
+  String get produktStyling => 'Styling';
+
+  @override
+  String get produktWerkzeug => 'Tools';
+
+  @override
+  String get produktMakeup => 'Make-up';
+
+  @override
+  String get produktKleidung => 'Clothing';
+
+  @override
+  String get produktSonstiges => 'Other';
+
+  @override
   String get planTitel => 'Your plan';
 
   @override

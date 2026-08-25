@@ -22,6 +22,23 @@ class Produkt {
   final String beschreibung;
   final String? affiliateUrl;
 
+  /// Das Wort zur Kennung, in der Sprache der App.
+  ///
+  /// Das Modell liefert seit dem Umbau nur noch eine Kennung
+  /// (`'pflege'`, `'styling'`, …). Frueher schrieb es das Wort selbst, und
+  /// dann stand „Pflege" auch in einem englischen Report. Alte Reports
+  /// tragen dieses Wort noch – sie fallen deshalb auf sich selbst zurueck.
+  String kategorieText(L texte) => switch (kategorie.toLowerCase()) {
+        'reinigung' => texte.produktReinigung,
+        'pflege' => texte.produktPflege,
+        'styling' => texte.produktStyling,
+        'werkzeug' => texte.produktWerkzeug,
+        'makeup' || 'make-up' => texte.produktMakeup,
+        'kleidung' => texte.produktKleidung,
+        'sonstiges' => texte.produktSonstiges,
+        _ => kategorie,
+      };
+
   Map<String, dynamic> toJson() => {
         'name': name,
         'kategorie': kategorie,

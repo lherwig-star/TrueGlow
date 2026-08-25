@@ -490,6 +490,7 @@ class _ProduktZeile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final farben = context.farben;
+    final texte = context.texte;
 
     return Container(
       margin: const EdgeInsets.only(bottom: AppTheme.gapXs),
@@ -520,7 +521,7 @@ class _ProduktZeile extends StatelessWidget {
                   // Farbe in der Pille, Text in der Vordergrundfarbe – sonst
                   // reicht der Kontrast der Kleinschrift nicht.
                   child: Text(
-                    produkt.kategorie,
+                    produkt.kategorieText(texte),
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,

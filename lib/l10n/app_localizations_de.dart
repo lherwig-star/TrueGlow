@@ -430,6 +430,27 @@ class LDe extends L {
   String get ergebnisProdukte => 'Produkte';
 
   @override
+  String get produktReinigung => 'Reinigung';
+
+  @override
+  String get produktPflege => 'Pflege';
+
+  @override
+  String get produktStyling => 'Styling';
+
+  @override
+  String get produktWerkzeug => 'Werkzeug';
+
+  @override
+  String get produktMakeup => 'Make-up';
+
+  @override
+  String get produktKleidung => 'Kleidung';
+
+  @override
+  String get produktSonstiges => 'Sonstiges';
+
+  @override
   String get planTitel => 'Dein Plan';
 
   @override
