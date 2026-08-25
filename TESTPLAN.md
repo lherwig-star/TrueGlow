@@ -305,6 +305,66 @@ Ein alter Report von vorher zeigt seine Produktkategorie weiter so, wie sie
 damals gespeichert wurde. Das ist Absicht — dort gibt es keine Kennung, auf
 die sich das abbilden ließe.
 
+## 9 · Gewohnheits-Ziele im Report
+
+Ein Analyse-Lauf reicht für beide Punkte — er kostet nur einmal Kontingent.
+
+**Vorbereitung:** Bei „Deine Richtung" die anklickbaren Punkte wie gewohnt
+wählen und ins Freitextfeld **zwei** Sätze schreiben, einen von jeder Sorte,
+zum Beispiel: *„Ich will aufhören zu rauchen und hätte gern gepflegtere
+Hände."*
+
+1. **Der Report.** Erwartet: ein Abschnitt „Dein Ziel" (auf Englisch „Your
+   goal") mit Auslöser-Strategien — konkrete Situationen wie Feierabend,
+   Kaffee, Stress und für jede eine Alternative. Ton unterstützend, keine
+   Heilaussagen, keine Zahlen zu Krankheitsrisiken, kein erhobener
+   Zeigefinger.
+
+2. **Die Tagesliste auf der Startseite.** Erwartet: Zwischen den Aufgaben
+   stehen welche, die aus deinem Freitext kommen — je eine bis drei pro
+   Wunsch. Sie müssen heute abhakbar sein und eine konkrete Handlung nennen,
+   nicht „weniger rauchen". Auch der Wunsch nach gepflegteren Händen muss
+   auftauchen, obwohl es dafür kein Kapitel gibt.
+
+3. **Gegenprobe ohne Kontingent.** Eine ältere Analyse aus dem Verlauf
+   öffnen. Erwartet: unverändert, kein Abschnitt „Dein Ziel", keine neuen
+   Aufgaben.
+
+## 10 · Die tägliche Erinnerung
+
+Kostet kein Kontingent. Braucht aber Geduld — oder das Verstellen der
+Uhrzeit.
+
+1. **Nach dem Update einmal die App öffnen.** Erwartet: Android fragt einmal,
+   ob TrueGlow Benachrichtigungen schicken darf. Erlauben.
+
+2. **Einstellungen → Tägliche Erinnerung.** Erwartet: Schalter steht auf an,
+   Uhrzeit auf 19:00. Auf eine Zeit in zwei, drei Minuten stellen.
+
+3. **App verlassen und warten.** Erwartet: Zur eingestellten Zeit kommt
+   „Dein Tagesziel — Heute noch nichts abgehakt …". Wichtig: **vorher an dem
+   Tag noch nichts abhaken**, sonst kommt sie zu Recht nicht.
+
+4. **Eine Aufgabe abhaken, Uhrzeit erneut auf gleich stellen, warten.**
+   Erwartet: Es kommt **nichts**. Das ist der eigentliche Test — die
+   Erinnerung soll nur kommen, wenn der Tag noch offen ist.
+
+5. **Sprache auf English, Uhrzeit erneut stellen** (nachdem der Tag wieder
+   offen ist, also am nächsten Tag oder nach dem Entfernen des Hakens).
+   Erwartet: „Your daily goal — Nothing ticked off today …".
+
+6. **Schalter aus, Uhrzeit stellen, warten.** Erwartet: nichts.
+
+7. **Handy neu starten, Uhrzeit vorher auf ein paar Minuten später
+   stellen.** Erwartet: Die Erinnerung kommt trotzdem. Das prüft die beiden
+   Manifest-Einträge, die gefehlt haben — ohne sie überlebt kein Termin einen
+   Neustart.
+
+Wenn Punkt 1 ausbleibt, weil du die Berechtigung früher schon abgelehnt
+hattest: In den Einstellungen den Schalter aus- und wieder einschalten — dann
+fragt die App erneut. Blockiert das System weiterhin, steht ein Hinweis unter
+der Karte.
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

@@ -46,9 +46,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     // Beim Start pruefen statt nur auf die Push zu vertrauen: Erinnerungen
     // koennen abgeschaltet sein, faellig ist der Check-in trotzdem.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _pruefeCheckin();
-      _erinnerungEinrichten();
+    // Nacheinander, nicht nebeneinander: Beide koennen nach der Berechtigung
+    // fuer Benachrichtigungen fragen, und zwei Systemdialoge gleichzeitig
+    // enden damit, dass einer davon keine Antwort bekommt.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _pruefeCheckin();
+      await _erinnerungEinrichten();
     });
   }
 
