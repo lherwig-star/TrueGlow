@@ -1,52 +1,51 @@
-/// Kleine Datumsformatierung auf Deutsch. Bewusst ohne intl-Paket – die App
-/// braucht genau zwei Formate.
+import 'package:intl/intl.dart';
+
+/// Datums- und Zeitformate der App.
+///
+/// Seit der Zweisprachigkeit über `intl` statt über eine eigene Monatsliste:
+/// Ein deutscher „22. August 2026" heißt auf Englisch „August 22, 2026" – die
+/// Reihenfolge ändert sich, nicht nur das Wort. Das von Hand nachzubauen wäre
+/// für jede weitere Sprache erneut Arbeit und in jeder Sprache neu falsch.
+///
+/// Jede Methode nimmt den Sprachcode entgegen (`texte.localeName`). Die
+/// Formatdaten dazu lädt `flutter_localizations` beim Setzen der Sprache mit;
+/// eine eigene Initialisierung braucht es nicht.
 class Datum {
   Datum._();
 
-  static const _monate = [
-    'Januar',
-    'Februar',
-    'März',
-    'April',
-    'Mai',
-    'Juni',
-    'Juli',
-    'August',
-    'September',
-    'Oktober',
-    'November',
-    'Dezember',
-  ];
+  /// z. B. „22. August 2026" bzw. „August 22, 2026"
+  static String lang(DateTime datum, String sprache) =>
+      DateFormat.yMMMMd(sprache).format(datum);
 
-  /// z. B. "22. August 2026"
-  static String lang(DateTime datum) =>
-      '${datum.day}. ${_monate[datum.month - 1]} ${datum.year}';
+  /// z. B. „22.08.2026" bzw. „08/22/2026"
+  static String nurTag(DateTime datum, String sprache) =>
+      DateFormat.yMd(sprache).format(datum);
 
-  /// z. B. "22.08.2026"
-  static String nurTag(DateTime datum) =>
-      '${datum.day.toString().padLeft(2, '0')}.'
-      '${datum.month.toString().padLeft(2, '0')}.${datum.year}';
+  /// z. B. „22.08.2026, 14:05"
+  static String kurz(DateTime datum, String sprache) =>
+      '${DateFormat.yMd(sprache).format(datum)}, '
+      '${DateFormat.Hm(sprache).format(datum)}';
 
-  /// z. B. "22.08.2026, 14:05"
-  static String kurz(DateTime datum) {
-    final tag = datum.day.toString().padLeft(2, '0');
-    final monat = datum.month.toString().padLeft(2, '0');
-    final stunde = datum.hour.toString().padLeft(2, '0');
-    final minute = datum.minute.toString().padLeft(2, '0');
-    return '$tag.$monat.${datum.year}, $stunde:$minute';
-  }
-
-  /// "heute", "gestern" oder das lange Datum.
-  static String relativ(DateTime datum) {
+  /// „heute", „gestern" oder das lange Datum.
+  ///
+  /// [heute] und [gestern] kommen von außen, weil sie in der ARB-Datei stehen
+  /// und nicht in `intl` – die Bibliothek kennt Monatsnamen, aber keine
+  /// Umgangssprache.
+  static String relativ(
+    DateTime datum,
+    String sprache, {
+    required String heute,
+    required String gestern,
+  }) {
     final jetzt = DateTime.now();
     final tage = DateTime(jetzt.year, jetzt.month, jetzt.day)
         .difference(DateTime(datum.year, datum.month, datum.day))
         .inDays;
 
     return switch (tage) {
-      0 => 'heute',
-      1 => 'gestern',
-      _ => lang(datum),
+      0 => heute,
+      1 => gestern,
+      _ => lang(datum, sprache),
     };
   }
 }

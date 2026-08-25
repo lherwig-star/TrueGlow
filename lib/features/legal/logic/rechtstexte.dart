@@ -1,5 +1,9 @@
 // Bewusst ohne Flutter-Abhaengigkeit: tool/rechtstexte_pruefen.dart laeuft als
 // reines Dart-Skript vor dem Release-Build und muss diese Datei lesen koennen.
+//
+// Deshalb steht hier auch kein einziger Anzeigetext mehr. Titel und
+// Beschreibung der Dokumente liegen in `ui/rechtsdokument_texte.dart` – der
+// Umweg kostet eine Datei und haelt dieses Modul frei von Flutter.
 
 /// Die drei Pflichtdokumente.
 ///
@@ -7,23 +11,9 @@
 /// oben, weil Play sie ausdruecklich verlangt und Nutzer sie am haeufigsten
 /// suchen.
 enum Rechtsdokument {
-  datenschutz(
-    titel: 'Datenschutzerklärung',
-    beschreibung: 'Welche Daten wir verarbeiten, wozu und wie lange.',
-  ),
-  nutzungsbedingungen(
-    titel: 'Nutzungsbedingungen',
-    beschreibung: 'Die Regeln für die Nutzung von TrueGlow.',
-  ),
-  impressum(
-    titel: 'Impressum',
-    beschreibung: 'Wer hinter der App steht und wie du uns erreichst.',
-  );
-
-  const Rechtsdokument({required this.titel, required this.beschreibung});
-
-  final String titel;
-  final String beschreibung;
+  datenschutz,
+  nutzungsbedingungen,
+  impressum;
 
   /// Stabiler Name fuer Routen und gespeicherte Einwilligungen.
   String get schluessel => name;
@@ -124,7 +114,7 @@ class Rechtstexte {
 
     final teile = <String>[];
     if (fehlende.isNotEmpty) {
-      teile.add('ohne Quelle: ${fehlende.map((d) => d.titel).join(', ')}');
+      teile.add('ohne Quelle: ${fehlende.map((d) => d.name).join(', ')}');
     }
     if (istEntwurf) {
       teile.add('Textversion steht noch auf "$version"');

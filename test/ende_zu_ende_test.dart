@@ -82,7 +82,7 @@ void main() {
     // Die erste Analyse schaltet ein Abzeichen frei – der Jubel liegt jetzt
     // ueber dem Dashboard und muss erst weggetippt werden.
     expect(find.text('Weiter so'), findsOneWidget);
-    expect(find.text(Abzeichen.ersteAnalyse.jubel), findsWidgets);
+    expect(find.text(Abzeichen.ersteAnalyse.jubel(texte)), findsWidgets);
     await tester.tap(find.text('Weiter so'));
     await tester.pumpAndSettle();
     expect(
@@ -94,7 +94,7 @@ void main() {
     expect(find.text(texte.homeLeerTitel), findsNothing);
     expect(find.text('Dein Plan'), findsOneWidget);
     // Eine Checkliste pro Kapitel – bei reiner Basis-Analyse genau eine.
-    expect(find.text(AnalyseModul.basis.checkliste), findsOneWidget);
+    expect(find.text(AnalyseModul.basis.checkliste(texte)), findsOneWidget);
 
     // Solange nichts abgehakt ist, bleibt die Serie bei null.
     expect(container2.read(streakProvider).aktuell, 0);

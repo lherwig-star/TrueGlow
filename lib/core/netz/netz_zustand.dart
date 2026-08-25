@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
+import '../../core/l10n/texte.dart';
 
 /// Ob das Geraet gerade eine Netzwerkverbindung hat.
 ///
@@ -74,8 +75,7 @@ class OfflineBand extends ConsumerWidget {
                   const SizedBox(width: AppTheme.gapXs),
                   Expanded(
                     child: Text(
-                      'Offline – Plan und Checkliste laufen weiter, '
-                      'Änderungen werden nachgetragen.',
+                      context.texte.offlineBand,
                       style: TextStyle(
                         fontSize: 12,
                         color: farben.textSekundaer,

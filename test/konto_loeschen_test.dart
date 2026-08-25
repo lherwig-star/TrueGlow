@@ -146,7 +146,7 @@ void main() {
       isTrue,
       reason: 'lokaler Bestand unangetastet',
     );
-    expect(find.textContaining(KontoFehler.keinInternet.titel), findsOneWidget);
+    expect(find.textContaining(KontoFehler.keinInternet.titel(texte)), findsOneWidget);
   });
 
   testWidgets('ohne Backend laeuft die lokale Loeschung trotzdem',
@@ -175,8 +175,8 @@ void main() {
   group('Fehlerabbildung', () {
     test('jeder Fall hat Titel und Tipp', () {
       for (final fehler in KontoFehler.values) {
-        expect(fehler.titel, isNotEmpty);
-        expect(fehler.tipp, isNotEmpty);
+        expect(fehler.titel(texte), isNotEmpty);
+        expect(fehler.tipp(texte), isNotEmpty);
       }
     });
 

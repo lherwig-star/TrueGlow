@@ -1,4 +1,5 @@
 import '../../modules/models/analyse_modul.dart';
+import '../../../core/l10n/texte.dart';
 
 /// Welche Hilfslinien im Sucher liegen.
 enum Overlaytyp {
@@ -68,33 +69,21 @@ enum AufnahmeTyp {
   // --- Basis ---
   basisFrontal(
     modul: AnalyseModul.basis,
-    label: 'Frontalfoto',
-    hinweis: 'Schau direkt in die Kamera. Neutrales Gesicht, gutes Licht, '
-        'keine Kopfbedeckung.',
     overlay: Overlaytyp.gesichtsOval,
     pruefung: Pruefprofil.gesichtNah,
   ),
   basisProfilLinks(
     modul: AnalyseModul.basis,
-    label: 'Profil links',
-    hinweis: 'Dreh deinen Kopf nach rechts – deine linke Gesichtshälfte zeigt '
-        'zur Kamera. Ohr und Kinnlinie sollten sichtbar sein.',
     overlay: Overlaytyp.profilNaseRechts,
     pruefung: Pruefprofil.gesichtWeit,
   ),
   basisProfilRechts(
     modul: AnalyseModul.basis,
-    label: 'Profil rechts',
-    hinweis: 'Dreh deinen Kopf nach links – deine rechte Gesichtshälfte zeigt '
-        'zur Kamera. Ohr und Kinnlinie sollten sichtbar sein.',
     overlay: Overlaytyp.profilNaseLinks,
     pruefung: Pruefprofil.gesichtWeit,
   ),
   basisWinkel45(
     modul: AnalyseModul.basis,
-    label: '45°-Winkel',
-    hinweis: 'Dreh deinen Kopf nur halb nach rechts – etwa 45 Grad. Beide '
-        'Augen bleiben dabei sichtbar.',
     overlay: Overlaytyp.winkel45,
     pruefung: Pruefprofil.gesichtWeit,
   ),
@@ -106,9 +95,6 @@ enum AufnahmeTyp {
   // --- Zaehne & Laecheln ---
   zaehneLaecheln(
     modul: AnalyseModul.zaehneLaecheln,
-    label: 'Lächeln',
-    hinweis: 'Frontal in die Kamera lächeln, sodass die Zähne gut sichtbar '
-        'sind.',
     overlay: Overlaytyp.gesichtsOval,
     pruefung: Pruefprofil.gesichtNah,
   ),
@@ -116,9 +102,6 @@ enum AufnahmeTyp {
   // --- Figur & Passform ---
   figurGanzkoerperFrontal(
     modul: AnalyseModul.figurPassform,
-    label: 'Ganzkörper frontal',
-    hinweis: 'Ganzer Körper im Bild, gerade stehen, Arme locker seitlich. '
-        'Eng anliegende Kleidung zeigt die Silhouette am besten.',
     overlay: Overlaytyp.ganzkoerperFrontal,
     pruefung: Pruefprofil.ganzkoerper,
     rueckkamera: true,
@@ -126,9 +109,6 @@ enum AufnahmeTyp {
   ),
   figurGanzkoerperSeitlich(
     modul: AnalyseModul.figurPassform,
-    label: 'Ganzkörper seitlich',
-    hinweis: 'Dieselbe Haltung um 90 Grad gedreht – so sieht man Haltung und '
-        'Proportionen von der Seite.',
     overlay: Overlaytyp.ganzkoerperSeitlich,
     pruefung: Pruefprofil.ganzkoerper,
     rueckkamera: true,
@@ -138,25 +118,18 @@ enum AufnahmeTyp {
   // --- Stil & Kleiderschrank ---
   stilOutfitEins(
     modul: AnalyseModul.stilKleiderschrank,
-    label: 'Outfit 1',
-    hinweis: 'Ein Outfit, das du oft trägst – am Körper oder ausgelegt.',
     overlay: Overlaytyp.keins,
     pruefung: Pruefprofil.frei,
     rueckkamera: true,
   ),
   stilOutfitZwei(
     modul: AnalyseModul.stilKleiderschrank,
-    label: 'Outfit 2',
-    hinweis: 'Ein zweites Outfit, gern aus einem anderen Anlass.',
     overlay: Overlaytyp.keins,
     pruefung: Pruefprofil.frei,
     rueckkamera: true,
   ),
   stilOutfitDrei(
     modul: AnalyseModul.stilKleiderschrank,
-    label: 'Outfit 3',
-    hinweis: 'Optional: ein drittes Outfit. Du kannst diesen Schritt auch '
-        'überspringen.',
     overlay: Overlaytyp.keins,
     pruefung: Pruefprofil.frei,
     rueckkamera: true,
@@ -165,8 +138,6 @@ enum AufnahmeTyp {
 
   const AufnahmeTyp({
     required this.modul,
-    required this.label,
-    required this.hinweis,
     required this.overlay,
     required this.pruefung,
     this.rueckkamera = false,
@@ -175,8 +146,6 @@ enum AufnahmeTyp {
   });
 
   final AnalyseModul modul;
-  final String label;
-  final String hinweis;
   final Overlaytyp overlay;
   final Pruefprofil pruefung;
 
@@ -212,21 +181,51 @@ enum AufnahmeTyp {
   /// Farbtyp" ueberhaupt gewaehlt ist. Wer das Modul nicht gebucht hat, soll
   /// nicht mit Anforderungen belastet werden, die fuer seine Analyse nichts
   /// aendern.
-  String hinweisFuer(Set<AnalyseModul> module) =>
+  String hinweisFuer(Set<AnalyseModul> module, L texte) =>
       this == AufnahmeTyp.basisFrontal &&
               module.contains(AnalyseModul.hautFarbtyp)
-          ? '$hinweis\n\n$hautLichtZusatz'
-          : hinweis;
+          ? '${hinweis(texte)}\n\n${texte.aufnahmeHautLichtZusatz}'
+          : hinweis(texte);
 
-  /// Warum das Frontalfoto mit gewaehltem Haut-Modul mehr Gewicht hat.
-  ///
-  /// Bewusst **keine** Wiederholung der Lichtregeln: Die stehen wortgleich in
-  /// der Licht-Checkliste (`licht_checkliste.dart`), die ohnehin vor dem
-  /// ersten Foto laeuft. Doppelter Text liest sich wie eine neue Anforderung
-  /// und wird dann ueberlesen. Hier zaehlt nur die Verknuepfung.
-  static const String hautLichtZusatz =
-      'Dieses Foto wertet auch die Hautanalyse aus. Das Tageslicht aus der '
-      'Checkliste zählt hier deshalb doppelt.';
+}
+
+// Anzeigetexte als Erweiterung – Begruendung in `features/onboarding/models/onboarding_profile.dart`.
+///
+/// Warum das Frontalfoto mit gewaehltem Haut-Modul einen Zusatz bekommt:
+/// Bewusst **keine** Wiederholung der Lichtregeln – die stehen wortgleich in
+/// der Licht-Checkliste (`licht_checkliste.dart`), die ohnehin vor dem ersten
+/// Foto laeuft. Doppelter Text liest sich wie eine neue Anforderung und wird
+/// dann ueberlesen. Der Zusatz nennt nur die Verknuepfung.
+extension AufnahmeTypText on AufnahmeTyp {
+  String label(L texte) => switch (this) {
+        AufnahmeTyp.basisFrontal => texte.aufnahmeBasisFrontalLabel,
+        AufnahmeTyp.basisProfilLinks => texte.aufnahmeProfilLinksLabel,
+        AufnahmeTyp.basisProfilRechts => texte.aufnahmeProfilRechtsLabel,
+        AufnahmeTyp.basisWinkel45 => texte.aufnahmeWinkelLabel,
+        AufnahmeTyp.zaehneLaecheln => texte.aufnahmeLaechelnLabel,
+        AufnahmeTyp.figurGanzkoerperFrontal =>
+          texte.aufnahmeGanzkoerperFrontalLabel,
+        AufnahmeTyp.figurGanzkoerperSeitlich =>
+          texte.aufnahmeGanzkoerperSeitlichLabel,
+        AufnahmeTyp.stilOutfitEins => texte.aufnahmeOutfitEinsLabel,
+        AufnahmeTyp.stilOutfitZwei => texte.aufnahmeOutfitZweiLabel,
+        AufnahmeTyp.stilOutfitDrei => texte.aufnahmeOutfitDreiLabel,
+      };
+
+  String hinweis(L texte) => switch (this) {
+        AufnahmeTyp.basisFrontal => texte.aufnahmeBasisFrontalHinweis,
+        AufnahmeTyp.basisProfilLinks => texte.aufnahmeProfilLinksHinweis,
+        AufnahmeTyp.basisProfilRechts => texte.aufnahmeProfilRechtsHinweis,
+        AufnahmeTyp.basisWinkel45 => texte.aufnahmeWinkelHinweis,
+        AufnahmeTyp.zaehneLaecheln => texte.aufnahmeLaechelnHinweis,
+        AufnahmeTyp.figurGanzkoerperFrontal =>
+          texte.aufnahmeGanzkoerperFrontalHinweis,
+        AufnahmeTyp.figurGanzkoerperSeitlich =>
+          texte.aufnahmeGanzkoerperSeitlichHinweis,
+        AufnahmeTyp.stilOutfitEins => texte.aufnahmeOutfitEinsHinweis,
+        AufnahmeTyp.stilOutfitZwei => texte.aufnahmeOutfitZweiHinweis,
+        AufnahmeTyp.stilOutfitDrei => texte.aufnahmeOutfitDreiHinweis,
+      };
 }
 
 /// Die Aufnahmen eines Moduls in Flow-Reihenfolge.
@@ -235,17 +234,11 @@ extension AnalyseModulAufnahmen on AnalyseModul {
       AufnahmeTyp.values.where((t) => t.modul == this).toList();
 
   /// Kurztext fuer die Modul-Karte: was an Material gebraucht wird.
-  String get benoetigt => switch (this) {
-        AnalyseModul.basis =>
-          'Frontal, beide Seitenprofile und 45°-Winkel.',
-        AnalyseModul.hautFarbtyp =>
-          'Keine eigene Aufnahme – nutzt das Frontalfoto der Basis. Mach es '
-              'bei indirektem Tageslicht.',
-        AnalyseModul.zaehneLaecheln => '1 Foto lächelnd.',
-        AnalyseModul.figurPassform =>
-          '2 Ganzkörperfotos (frontal + seitlich) sowie Körpergröße und '
-              'Gewicht.',
-        AnalyseModul.stilKleiderschrank =>
-          '2–3 Outfit-Fotos und ein paar kurze Fragen.',
+  String benoetigt(L texte) => switch (this) {
+        AnalyseModul.basis => texte.modulBenoetigtBasis,
+        AnalyseModul.hautFarbtyp => texte.modulBenoetigtHaut,
+        AnalyseModul.zaehneLaecheln => texte.modulBenoetigtZaehne,
+        AnalyseModul.figurPassform => texte.modulBenoetigtFigur,
+        AnalyseModul.stilKleiderschrank => texte.modulBenoetigtStil,
       };
 }

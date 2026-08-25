@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../logic/hive_migration.dart';
+import '../../../core/l10n/texte.dart';
 
 /// Fragt beim ersten echten Login, ob der bisherige Bestand mitkommen soll.
 ///
@@ -33,24 +34,22 @@ class MigrationDialog {
     // dann gibt es keinen BuildContext mehr zu benutzen.
     final messenger = ScaffoldMessenger.maybeOf(context);
 
+    final texte = context.texte;
+
     final uebernehmen = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
-        title: const Text('Deine bisherigen Daten übernehmen?'),
-        content: const Text(
-          'Auf diesem Gerät liegen Analysen, Plan, Streak und Check-ins aus '
-          'der Zeit ohne Konto. Sollen sie zu deinem Konto gehören?\n\n'
-          'Deine Fotos bleiben in jedem Fall nur auf dem Gerät.',
-        ),
+        title: Text(texte.migrationTitel),
+        content: Text(texte.migrationText),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Nein, frisch starten'),
+            child: Text(texte.migrationAblehnen),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Übernehmen'),
+            child: Text(texte.migrationUebernehmen),
           ),
         ],
       ),
@@ -62,8 +61,8 @@ class MigrationDialog {
         _melden(
           messenger,
           anzahl == 0
-              ? 'Es gab nichts zu übernehmen.'
-              : 'Übernommen: $anzahl Einträge.',
+              ? texte.migrationNichts
+              : texte.migrationErfolg(anzahl),
         );
       } else {
         // Die Frage gilt als beantwortet – sonst kaeme sie bei jeder
@@ -74,8 +73,7 @@ class MigrationDialog {
       debugPrint('Migration fehlgeschlagen: $e');
       _melden(
         messenger,
-        'Übernahme fehlgeschlagen. Deine Daten sind weiter auf dem Gerät – '
-        'wir fragen beim nächsten Start erneut.',
+        texte.migrationFehler,
       );
     }
   }

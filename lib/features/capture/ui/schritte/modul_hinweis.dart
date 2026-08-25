@@ -5,6 +5,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/section_card.dart';
 import '../../../modules/models/analyse_modul.dart';
 import '../../models/aufnahme_typ.dart';
+import '../../../../core/l10n/texte.dart';
 
 /// Vorbereitungsseite eines Moduls – steht vor dessen Aufnahmen, wenn die
 /// Bedingungen ueber den normalen Sucher-Hinweis hinausgehen.
@@ -20,20 +21,17 @@ class ModulHinweis extends StatelessWidget {
   /// Ratschlaege zur Aufnahme waeren hier also zu spaet. Deshalb erklaert sie
   /// jetzt, warum kein Foto kommt, und zeigt den Rueckweg, falls das
   /// Frontalfoto nichts taugt.
-  List<(IconData, String, String)> get _punkte => switch (modul) {
-        AnalyseModul.hautFarbtyp => const [
+  List<(IconData, String, String)> _punkte(L texte) => switch (modul) {
+        AnalyseModul.hautFarbtyp => [
             (
               Icons.photo_camera_back_outlined,
-              'Kein eigenes Foto nötig',
-              'Unterton und Farbpalette lesen wir aus deinem Frontalfoto der '
-                  'Basis mit. Eine zusätzliche Nahaufnahme brauchst du nicht.',
+              texte.modulHautKeinFotoTitel,
+              texte.modulHautKeinFotoText,
             ),
             (
               Icons.wb_twilight,
-              'Licht zählt hier doppelt',
-              'War dein Frontalfoto zu dunkel oder farbstichig, geh einen '
-                  'Schritt zurück und nimm es bei indirektem Tageslicht neu '
-                  'auf – warmes Kunstlicht verfälscht den Unterton.',
+              texte.modulHautLichtTitel,
+              texte.modulHautLichtText,
             ),
           ],
         _ => const [],
@@ -41,6 +39,7 @@ class ModulHinweis extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
 
     return Column(
@@ -60,7 +59,7 @@ class ModulHinweis extends StatelessWidget {
             const SizedBox(width: AppTheme.gapS),
             Expanded(
               child: Text(
-                modul.titel,
+                modul.titel(texte),
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
@@ -71,9 +70,9 @@ class ModulHinweis extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AppTheme.gapS),
-        MutedText(modul.benoetigt),
+        MutedText(modul.benoetigt(texte)),
         const SizedBox(height: AppTheme.gapM),
-        for (final (icon, titel, text) in _punkte) ...[
+        for (final (icon, titel, text) in _punkte(texte)) ...[
           SectionCard(
             title: titel,
             icon: icon,

@@ -4,19 +4,18 @@ import '../models/aufnahme_typ.dart';
 /// Ein Schritt im Aufnahme-Flow. Die Schrittliste ergibt sich aus den
 /// gewaehlten Modulen, damit die Fortschrittsanzeige ("Schritt 3 von 7")
 /// immer zur tatsaechlichen Auswahl passt.
+///
+/// Die Schritte trugen frueher eine Ueberschrift, die niemand las: Die
+/// Kopfzeile des Flows zeigt die Schrittnummer, jeder Schritt seinen eigenen
+/// Titel. Mit der Uebersetzung haette sie ueberall einen `L` durchgereicht –
+/// fuer einen Wert, den kein Aufrufer je gelesen hat. Deshalb ist sie weg.
 sealed class FlowSchritt {
   const FlowSchritt();
-
-  /// Ueberschrift in der Kopfzeile des Flows.
-  String get titel;
 }
 
 /// Einmalige Checkliste fuer gute Lichtbedingungen vor dem ersten Foto.
 class LichtCheckSchritt extends FlowSchritt {
   const LichtCheckSchritt();
-
-  @override
-  String get titel => 'Kurz vorab';
 }
 
 /// Hinweisseite vor den Aufnahmen eines Moduls.
@@ -24,9 +23,6 @@ class ModulHinweisSchritt extends FlowSchritt {
   const ModulHinweisSchritt(this.modul);
 
   final AnalyseModul modul;
-
-  @override
-  String get titel => modul.titel;
 }
 
 /// Eine Foto-Aufnahme.
@@ -34,25 +30,16 @@ class FotoSchritt extends FlowSchritt {
   const FotoSchritt(this.typ);
 
   final AufnahmeTyp typ;
-
-  @override
-  String get titel => typ.label;
 }
 
 /// Koerpergroesse und Gewicht fuer "Figur & Passform".
 class FigurFormularSchritt extends FlowSchritt {
   const FigurFormularSchritt();
-
-  @override
-  String get titel => 'Deine Maße';
 }
 
 /// Kurzer Fragebogen fuer "Stil & Kleiderschrank".
 class StilFragebogenSchritt extends FlowSchritt {
   const StilFragebogenSchritt();
-
-  @override
-  String get titel => 'Dein Stil';
 }
 
 /// Baut die Schrittfolge aus den gewaehlten Modulen.

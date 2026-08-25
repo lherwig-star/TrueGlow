@@ -100,12 +100,9 @@ class _FigurFormularState extends ConsumerState<FigurFormular> {
         ),
         const SizedBox(height: AppTheme.gapS),
         SectionCard(
-          title: 'Bleibt auf dem Gerät',
+          title: texte.figurBleibtLokalTitel,
           icon: Icons.lock_outline,
-          child: const MutedText(
-            'Größe und Gewicht werden nur für die Passform-Empfehlung '
-            'mitgeschickt und nicht dauerhaft beim Analyse-Dienst gespeichert.',
-          ),
+          child: MutedText(texte.figurBleibtLokalText),
         ),
       ],
     );

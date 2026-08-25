@@ -6,6 +6,8 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/markdown_ansicht.dart';
 import '../../../core/widgets/section_card.dart';
 import '../logic/rechtstexte.dart';
+import 'rechtsdokument_texte.dart';
+import '../../../core/l10n/texte.dart';
 
 /// Zeigt einen Rechtstext in der App an.
 ///
@@ -19,31 +21,27 @@ class RechtsdokumentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final quelle = Rechtstexte.quelle(dokument);
 
     return AppPage(
-      title: dokument.titel,
+      title: dokument.titel(texte),
       children: [
         if (!quelle.hatAsset)
-          const SectionCard(
-            title: 'Noch nicht verfügbar',
+          SectionCard(
+            title: texte.dokumentKeinTextTitel,
             icon: Icons.pending_outlined,
-            child: MutedText(
-              'Für dieses Dokument ist noch kein Text hinterlegt.',
-            ),
+            child: MutedText(texte.dokumentKeinTextText),
           )
         else
           FutureBuilder<String>(
             future: rootBundle.loadString(quelle.asset!),
             builder: (context, stand) {
               if (stand.hasError) {
-                return const SectionCard(
-                  title: 'Text nicht lesbar',
+                return SectionCard(
+                  title: texte.dokumentNichtLesbarTitel,
                   icon: Icons.error_outline,
-                  child: MutedText(
-                    'Der hinterlegte Text lässt sich nicht laden. Bitte ruf '
-                    'ihn über die Webseite auf.',
-                  ),
+                  child: MutedText(texte.dokumentNichtLesbarText),
                 );
               }
               if (!stand.hasData) {

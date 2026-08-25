@@ -1,3 +1,5 @@
+import '../../../core/l10n/texte.dart';
+
 // Nachweisbare Einwilligungen. Eine pauschale Checkbox ohne Zeitstempel und
 // ohne Textversion haelt einer Pruefung nicht stand – erst recht nicht bei
 // Gesichtsfotos, die als biometrienah gelten.
@@ -10,10 +12,7 @@
 enum Einwilligungsart {
   /// Nutzungsbedingungen und Datenschutzerklaerung. Ohne sie laeuft die App
   /// nicht – sie beschreibt, was ueberhaupt passiert.
-  nutzung(
-    titel: 'Nutzungsbedingungen und Datenschutz',
-    pflicht: true,
-  ),
+  nutzung(pflicht: true),
 
   /// Bestaetigung, mindestens 18 Jahre alt zu sein.
   ///
@@ -25,31 +24,20 @@ enum Einwilligungsart {
   /// Formal keine Einwilligung, sondern eine Erklaerung. Sie liegt trotzdem
   /// hier, weil sie denselben Nachweis braucht: wann, zu welcher Textfassung,
   /// an welcher Stelle.
-  mindestalter(
-    titel: 'Ich bin mindestens 18 Jahre alt',
-    pflicht: false,
-  ),
+  mindestalter(pflicht: false),
 
   /// Verarbeitung von Gesichtsfotos durch den KI-Dienst. Freiwillig und
   /// jederzeit widerrufbar; ohne sie gibt es keine neuen Analysen, die
   /// bestehenden Reports bleiben aber erhalten.
-  fotoKi(
-    titel: 'Analyse meiner Fotos durch den KI-Dienst',
-    pflicht: false,
-  ),
+  fotoKi(pflicht: false),
 
   /// Absturzberichte und eine sehr sparsame Nutzungsstatistik.
   ///
   /// Standardmaessig aus. Ohne sie erfaehrt niemand von Abstuerzen ausser
   /// ueber Ein-Sterne-Bewertungen – deshalb wird gefragt, aber eben gefragt.
-  diagnose(
-    titel: 'Absturzberichte und Nutzungsstatistik',
-    pflicht: false,
-  );
+  diagnose(pflicht: false);
 
-  const Einwilligungsart({required this.titel, required this.pflicht});
-
-  final String titel;
+  const Einwilligungsart({required this.pflicht});
 
   /// Ob die App ohne diese Einwilligung gar nicht benutzbar ist.
   final bool pflicht;
@@ -201,4 +189,14 @@ class Einwilligungsstand {
     }
     return Einwilligungsstand(eintraege: eintraege);
   }
+}
+
+// Anzeigetexte als Erweiterung – Begruendung in `onboarding_profile.dart`.
+extension EinwilligungsartText on Einwilligungsart {
+  String titel(L texte) => switch (this) {
+        Einwilligungsart.nutzung => texte.einwilligungNutzung,
+        Einwilligungsart.mindestalter => texte.einwilligungMindestalter,
+        Einwilligungsart.fotoKi => texte.einwilligungFotoKi,
+        Einwilligungsart.diagnose => texte.einwilligungDiagnose,
+      };
 }

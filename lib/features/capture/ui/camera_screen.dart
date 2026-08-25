@@ -727,7 +727,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
               child: Column(
                 children: [
                   _Kopfzeile(
-                    label: widget.typ.label,
+                    label: widget.typ.label(texte),
                     onSchliessen: () => Navigator.of(context).pop(false),
                   ),
                   const Spacer(),
@@ -740,7 +740,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
                       bereit: bereit && _fehlschlag == null,
                     )
                   else
-                    _Anleitung(text: widget.typ.hinweis),
+                    _Anleitung(text: widget.typ.hinweis(texte)),
                   const SizedBox(height: AppTheme.gapM),
                   _Bedienleiste(
                     bereit: bereit,
@@ -1202,7 +1202,7 @@ class _PruefUeberlagerung extends StatelessWidget {
   Widget build(BuildContext context) {
     return ColoredBox(
       color: Colors.black.withValues(alpha: 0.7),
-      child: const Column(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
@@ -1212,8 +1212,11 @@ class _PruefUeberlagerung extends StatelessWidget {
           ),
           SizedBox(height: AppTheme.gapS),
           Text(
-            'Foto wird geprüft...',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+            context.texte.fotoWirdGeprueft,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),

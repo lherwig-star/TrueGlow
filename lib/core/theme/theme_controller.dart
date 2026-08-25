@@ -3,18 +3,28 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../storage/hive_service.dart';
 import '../storage/key_value_store.dart';
+import '../l10n/texte.dart';
 
 /// Auswahl im Einstellungspunkt "Erscheinungsbild".
 enum Erscheinungsbild {
-  hell('Hell', Icons.light_mode_outlined, ThemeMode.light),
-  dunkel('Dunkel', Icons.dark_mode_outlined, ThemeMode.dark),
-  system('System', Icons.brightness_auto_outlined, ThemeMode.system);
+  hell(Icons.light_mode_outlined, ThemeMode.light),
+  dunkel(Icons.dark_mode_outlined, ThemeMode.dark),
+  system(Icons.brightness_auto_outlined, ThemeMode.system);
 
-  const Erscheinungsbild(this.label, this.icon, this.modus);
+  const Erscheinungsbild(this.icon, this.modus);
 
-  final String label;
   final IconData icon;
   final ThemeMode modus;
+}
+
+// Anzeigetexte als Erweiterung – Begruendung in
+// `features/onboarding/models/onboarding_profile.dart`.
+extension ErscheinungsbildText on Erscheinungsbild {
+  String label(L texte) => switch (this) {
+        Erscheinungsbild.hell => texte.erscheinungHell,
+        Erscheinungsbild.dunkel => texte.erscheinungDunkel,
+        Erscheinungsbild.system => texte.erscheinungSystem,
+      };
 }
 
 /// Haelt die Theme-Auswahl und schreibt sie in denselben Speicher wie die

@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../core/l10n/texte.dart';
+
 // Was der Nutzer der Analyse an eigenen Zielen mitgibt: eine geführte
 // Auswahl plus ein freier Text. Beides ist optional und fliesst als eigener
 // Abschnitt in den Prompt ein.
@@ -7,20 +9,16 @@ import 'package:flutter/foundation.dart';
 /// Die angebotenen Richtungen. Bewusst wertfrei formuliert – es geht um
 /// Richtung und Stil, nicht um "besser" oder "schlechter".
 enum Richtungsziel {
-  maskuliner('Maskuliner'),
-  weicher('Weicher / Sanfter'),
-  markanter('Markanter'),
-  gepflegter('Gepflegter'),
-  serioeser('Seriöser / Professioneller'),
-  juenger('Jünger wirken'),
-  reifer('Reifer wirken'),
-  natuerlicher('Natürlicher'),
-  auffaelliger('Auffälliger / Mutiger'),
-  sportlicher('Sportlicher');
-
-  const Richtungsziel(this.label);
-
-  final String label;
+  maskuliner,
+  weicher,
+  markanter,
+  gepflegter,
+  serioeser,
+  juenger,
+  reifer,
+  natuerlicher,
+  auffaelliger,
+  sportlicher;
 
   /// Liest einen gespeicherten Namen; unbekannte Namen fallen weg.
   static Richtungsziel? ausName(Object? name) {
@@ -29,6 +27,22 @@ enum Richtungsziel {
     }
     return null;
   }
+}
+
+// Anzeigetexte als Erweiterung – Begruendung in `onboarding_profile.dart`.
+extension RichtungszielText on Richtungsziel {
+  String label(L texte) => switch (this) {
+        Richtungsziel.maskuliner => texte.richtungszielMaskuliner,
+        Richtungsziel.weicher => texte.richtungszielWeicher,
+        Richtungsziel.markanter => texte.richtungszielMarkanter,
+        Richtungsziel.gepflegter => texte.richtungszielGepflegter,
+        Richtungsziel.serioeser => texte.richtungszielSerioeser,
+        Richtungsziel.juenger => texte.richtungszielJuenger,
+        Richtungsziel.reifer => texte.richtungszielReifer,
+        Richtungsziel.natuerlicher => texte.richtungszielNatuerlicher,
+        Richtungsziel.auffaelliger => texte.richtungszielAuffaelliger,
+        Richtungsziel.sportlicher => texte.richtungszielSportlicher,
+      };
 }
 
 /// Die persönliche Richtung des Nutzers.

@@ -7,6 +7,7 @@ import '../../../../core/widgets/section_card.dart';
 import '../../../history/logic/analysis_repository.dart';
 import '../../../plan/logic/plan_progress_repository.dart';
 import '../../logic/streak_repository.dart';
+import '../../../../core/l10n/texte.dart';
 
 /// Tages-Serie oben auf der Startseite.
 ///
@@ -50,6 +51,7 @@ class _StreakKarteState extends ConsumerState<StreakKarte>
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
     final streak = ref.watch(streakProvider);
 
@@ -94,7 +96,7 @@ class _StreakKarteState extends ConsumerState<StreakKarte>
                   ),
                 ),
                 Text(
-                  'Tage am Stück',
+                  texte.streakTage,
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
@@ -104,12 +106,12 @@ class _StreakKarteState extends ConsumerState<StreakKarte>
                 const SizedBox(height: AppTheme.gapXs),
                 MutedText(
                   switch (habits.isEmpty) {
-                    true => 'Noch keine Tagesaufgaben.',
+                    true => texte.streakKeineAufgaben,
                     false when erledigt == habits.length =>
                       'Heute alles erledigt. Stark.',
                     false when erledigt == 0 =>
-                      'Heute noch nichts abgehakt – ein Haken sichert den Tag.',
-                    false => 'Heute $erledigt von ${habits.length} erledigt',
+                      texte.streakNichtsAbgehakt,
+                    false => texte.streakHeuteErledigt(erledigt, habits.length),
                   },
                 ),
               ],

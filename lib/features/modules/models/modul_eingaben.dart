@@ -1,51 +1,73 @@
 // Texteingaben und Auswahlantworten, die einzelne Module zusaetzlich zu den
 // Fotos brauchen. Fliessen wie das Onboarding-Profil in den Prompt ein.
 
+import '../../../core/l10n/texte.dart';
+
 /// Stilziel im Modul "Stil & Kleiderschrank".
 enum Stilziel {
-  klassisch('Klassisch'),
-  minimalistisch('Minimalistisch'),
-  sportlich('Sportlich'),
-  smartCasual('Smart Casual'),
-  kreativ('Kreativ'),
-  rockig('Rockig');
-
-  const Stilziel(this.label);
-  final String label;
+  klassisch,
+  minimalistisch,
+  sportlich,
+  smartCasual,
+  kreativ,
+  rockig,
 }
 
 /// Was der Alltag an Kleidung verlangt.
 enum Dresscode {
-  buero('Büro / formell'),
-  businessCasual('Business Casual'),
-  handwerk('Handwerk / Arbeitskleidung'),
-  homeoffice('Homeoffice'),
-  uniform('Uniform / Dienstkleidung'),
-  frei('Keine Vorgaben');
-
-  const Dresscode(this.label);
-  final String label;
+  buero,
+  businessCasual,
+  handwerk,
+  homeoffice,
+  uniform,
+  frei,
 }
 
 /// Preisrahmen speziell fuer Kleidung – bewusst getrennt vom Pflegebudget
 /// aus dem Onboarding.
-enum Kleidungsbudget {
-  klein('Bis 50 € pro Teil'),
-  mittel('50–150 € pro Teil'),
-  gross('Über 150 € pro Teil');
-
-  const Kleidungsbudget(this.label);
-  final String label;
-}
+enum Kleidungsbudget { klein, mittel, gross }
 
 /// Wie viel Aufwand beim Pflegen und Kombinieren akzeptabel ist.
-enum Pflegeaufwand {
-  minimal('So wenig wie möglich'),
-  mittel('Etwas Aufwand ist okay'),
-  hoch('Ich investiere gern Zeit');
+enum Pflegeaufwand { minimal, mittel, hoch }
 
-  const Pflegeaufwand(this.label);
-  final String label;
+// Anzeigetexte als Erweiterungen – Begruendung in `onboarding_profile.dart`.
+
+extension StilzielText on Stilziel {
+  String label(L texte) => switch (this) {
+        Stilziel.klassisch => texte.stilzielKlassisch,
+        Stilziel.minimalistisch => texte.stilzielMinimalistisch,
+        Stilziel.sportlich => texte.stilzielSportlich,
+        Stilziel.smartCasual => texte.stilzielSmartCasual,
+        Stilziel.kreativ => texte.stilzielKreativ,
+        Stilziel.rockig => texte.stilzielRockig,
+      };
+}
+
+extension DresscodeText on Dresscode {
+  String label(L texte) => switch (this) {
+        Dresscode.buero => texte.dresscodeBuero,
+        Dresscode.businessCasual => texte.dresscodeBusinessCasual,
+        Dresscode.handwerk => texte.dresscodeHandwerk,
+        Dresscode.homeoffice => texte.dresscodeHomeoffice,
+        Dresscode.uniform => texte.dresscodeUniform,
+        Dresscode.frei => texte.dresscodeFrei,
+      };
+}
+
+extension KleidungsbudgetText on Kleidungsbudget {
+  String label(L texte) => switch (this) {
+        Kleidungsbudget.klein => texte.kleidungsbudgetKlein,
+        Kleidungsbudget.mittel => texte.kleidungsbudgetMittel,
+        Kleidungsbudget.gross => texte.kleidungsbudgetGross,
+      };
+}
+
+extension PflegeaufwandText on Pflegeaufwand {
+  String label(L texte) => switch (this) {
+        Pflegeaufwand.minimal => texte.pflegeaufwandMinimal,
+        Pflegeaufwand.mittel => texte.pflegeaufwandMittel,
+        Pflegeaufwand.hoch => texte.pflegeaufwandHoch,
+      };
 }
 
 /// Koerpermasse fuer das Modul "Figur & Passform".

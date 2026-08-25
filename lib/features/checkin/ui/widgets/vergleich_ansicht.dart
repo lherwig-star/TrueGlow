@@ -40,10 +40,7 @@ class VergleichAnsicht extends ConsumerWidget {
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppTheme.gapS),
-        const MutedText(
-          'Gleicher Ausschnitt, gleiches Licht – so lässt sich vergleichen, '
-          'was sich wirklich verändert hat.',
-        ),
+        MutedText(texte.vergleichHinweis),
         const SizedBox(height: AppTheme.gapM),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,12 +64,9 @@ class VergleichAnsicht extends ConsumerWidget {
         ),
         const SizedBox(height: AppTheme.gapM),
         SectionCard(
-          title: 'Nur für dich',
+          title: texte.vergleichNurFuerDichTitel,
           icon: Icons.lock_outline,
-          child: const MutedText(
-            'Auch das Fortschrittsfoto bleibt auf deinem Gerät und geht nur '
-            'für die Auswertung an den Analyse-Dienst.',
-          ),
+          child: MutedText(texte.vergleichNurFuerDichText),
         ),
       ],
     );
@@ -142,7 +136,11 @@ class _Seite extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppTheme.gapXs),
-        MutedText(datum == null ? 'ohne Datum' : Datum.nurTag(datum!)),
+        MutedText(
+          datum == null
+              ? context.texte.vergleichOhneDatum
+              : Datum.nurTag(datum!, context.texte.localeName),
+        ),
       ],
     );
   }

@@ -7,6 +7,7 @@ import '../../modules/models/analyse_modul.dart';
 import '../../modules/models/modul_eingaben.dart';
 import '../../onboarding/models/onboarding_profile.dart';
 import '../models/analysis_result.dart';
+import '../../../core/l10n/texte.dart';
 
 /// Zentrale Konfiguration der Analyse. Alles, was man beim Wechsel des
 /// Vision-Modells oder des Anbieters anfassen muss, steht hier.
@@ -41,44 +42,39 @@ class AnalysisConfig {
 
 /// Fehlerfaelle der Analyse – jeweils mit verstaendlichem Text fuer die UI.
 enum AnalysisFehler {
-  keinInternet(
-    'Keine Verbindung',
-    'Prüf deine Internetverbindung und versuch es noch einmal.',
-  ),
-  zeitueberschreitung(
-    'Zeitüberschreitung',
-    'Die Analyse hat zu lange gedauert. Versuch es bitte erneut.',
-  ),
-  apiFehler(
-    'Analyse nicht möglich',
-    'Der Analyse-Dienst antwortet gerade nicht. Bitte später noch einmal versuchen.',
-  ),
-  kontingent(
-    'Kontingent erschöpft',
-    'Das Limit des Analyse-Dienstes ist erreicht. Versuch es später noch einmal.',
-  ),
-  ungueltigeAntwort(
-    'Antwort nicht lesbar',
-    'Die Analyse kam unvollständig zurück. Ein erneuter Versuch hilft meistens.',
-  ),
-  keinApiKey(
-    'Analyse-Dienst nicht eingerichtet',
-    'Der Dienst ist gerade nicht einsatzbereit. Wir kümmern uns darum – '
-        'versuch es später noch einmal.',
-  ),
-  fotosFehlen(
-    'Fotos fehlen',
-    'Für diese Auswahl fehlen noch Aufnahmen. Geh zurück und hol sie nach.',
-  ),
-  einwilligungFehlt(
-    'Einwilligung fehlt',
-    'Für eine Analyse brauchen wir deine Einwilligung, deine Fotos an den '
-        'KI-Dienst zu senden. Du kannst sie in den Einstellungen erteilen.',
-  );
+  keinInternet,
+  zeitueberschreitung,
+  apiFehler,
+  kontingent,
+  ungueltigeAntwort,
+  keinApiKey,
+  fotosFehlen,
+  einwilligungFehlt,
+}
 
-  const AnalysisFehler(this.titel, this.tipp);
-  final String titel;
-  final String tipp;
+// Anzeigetexte als Erweiterung – Begruendung in `onboarding_profile.dart`.
+extension AnalysisFehlerText on AnalysisFehler {
+  String titel(L texte) => switch (this) {
+        AnalysisFehler.keinInternet => texte.analyseKeinInternetTitel,
+        AnalysisFehler.zeitueberschreitung => texte.analyseZeitTitel,
+        AnalysisFehler.apiFehler => texte.analyseApiTitel,
+        AnalysisFehler.kontingent => texte.analyseKontingentTitel,
+        AnalysisFehler.ungueltigeAntwort => texte.analyseAntwortTitel,
+        AnalysisFehler.keinApiKey => texte.analyseKeinSchluesselTitel,
+        AnalysisFehler.fotosFehlen => texte.analyseFotosFehlenTitel,
+        AnalysisFehler.einwilligungFehlt => texte.analyseEinwilligungTitel,
+      };
+
+  String tipp(L texte) => switch (this) {
+        AnalysisFehler.keinInternet => texte.analyseKeinInternetTipp,
+        AnalysisFehler.zeitueberschreitung => texte.analyseZeitTipp,
+        AnalysisFehler.apiFehler => texte.analyseApiTipp,
+        AnalysisFehler.kontingent => texte.analyseKontingentTipp,
+        AnalysisFehler.ungueltigeAntwort => texte.analyseAntwortTipp,
+        AnalysisFehler.keinApiKey => texte.analyseKeinSchluesselTipp,
+        AnalysisFehler.fotosFehlen => texte.analyseFotosFehlenTipp,
+        AnalysisFehler.einwilligungFehlt => texte.analyseEinwilligungTipp,
+      };
 }
 
 /// Wird vom Service geworfen und vom Controller in einen Zustand uebersetzt.

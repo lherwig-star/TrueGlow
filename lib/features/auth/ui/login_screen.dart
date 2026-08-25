@@ -89,11 +89,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
               ),
               const SizedBox(height: AppTheme.gapS),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: AppTheme.gapS),
                 child: MutedText(
-                  'Damit Plan, Streak und Verlauf einen Gerätewechsel '
-                  'überleben, gehört alles zu einem Konto.',
+                  texte.loginWarumKonto,
                   align: TextAlign.center,
                 ),
               ),
@@ -110,7 +109,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     icon: _laeuft == a
                         ? const _Spinner()
                         : Icon(_symbol(a), size: 20),
-                    label: Text('Mit ${a.label} anmelden'),
+                    label: Text(texte.loginMitAnbieter(a.label(texte))),
                   ),
                 ),
               OutlinedButton(
@@ -119,20 +118,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     : null,
                 child: _laeuft == AuthAnbieter.anonym
                     ? const _Spinner()
-                    : const Text('Erst ausprobieren'),
+                    : Text(texte.loginGast),
               ),
               const SizedBox(height: AppTheme.gapM),
-              const MutedText(
-                'Beim „Erst ausprobieren" legen wir ein Konto ohne Namen und '
-                'ohne E-Mail an. Meldest du dich später mit Google an, nehmen '
-                'wir deine Daten mit.',
-                align: TextAlign.center,
-              ),
+              MutedText(texte.loginGastErklaerung, align: TextAlign.center),
               const SizedBox(height: AppTheme.gapM),
-              const MutedText(
-                'Deine Fotos bleiben auf dem Gerät.',
-                align: TextAlign.center,
-              ),
+              MutedText(texte.loginFotosBleiben, align: TextAlign.center),
               const SizedBox(height: AppTheme.gapM),
             ],
           ),
@@ -156,9 +147,9 @@ class _Fehlerkarte extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SectionCard(
-      title: fehler.titel,
+      title: fehler.titel(context.texte),
       icon: Icons.error_outline,
-      child: MutedText(fehler.tipp),
+      child: MutedText(fehler.tipp(context.texte)),
     );
   }
 }

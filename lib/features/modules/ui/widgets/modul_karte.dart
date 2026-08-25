@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../capture/models/aufnahme_typ.dart';
 import '../../models/analyse_modul.dart';
+import '../../../../core/l10n/texte.dart';
 
 /// Karte eines Analyse-Moduls.
 ///
@@ -34,6 +35,7 @@ class ModulKarte extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
 
     return Material(
@@ -87,7 +89,7 @@ class ModulKarte extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            modul.titel,
+                            modul.titel(texte),
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
@@ -99,7 +101,7 @@ class ModulKarte extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      modul.beschreibung,
+                      modul.beschreibung(texte),
                       style: TextStyle(
                         fontSize: 14,
                         height: 1.45,
@@ -120,7 +122,7 @@ class ModulKarte extends StatelessWidget {
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
-                            modul.benoetigt,
+                            modul.benoetigt(texte),
                             style: TextStyle(
                               fontSize: 12.5,
                               height: 1.4,

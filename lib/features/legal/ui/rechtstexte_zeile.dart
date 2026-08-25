@@ -4,6 +4,8 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../logic/rechtstexte.dart';
 import 'legal_screen.dart';
+import 'rechtsdokument_texte.dart';
+import '../../../core/l10n/texte.dart';
 
 /// Eine Zeile mit Verweisen auf die Rechtstexte.
 ///
@@ -54,6 +56,7 @@ class _Verweis extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final vorhanden = Rechtstexte.quelle(dokument).vorhanden;
 
     return InkWell(
@@ -62,7 +65,9 @@ class _Verweis extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
         child: Text(
-          vorhanden ? dokument.titel : '${dokument.titel} (folgt)',
+          vorhanden
+              ? dokument.titel(texte)
+              : texte.dokumentTitelFolgt(dokument.titel(texte)),
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,

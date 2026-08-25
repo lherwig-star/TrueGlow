@@ -25,6 +25,7 @@ import '../../features/onboarding/ui/onboarding_screen.dart';
 import '../../features/plan/ui/plan_screen.dart';
 import '../../features/result/ui/result_screen.dart';
 import '../../features/settings/ui/settings_screen.dart';
+import '../../core/l10n/texte.dart';
 
 /// Zentrale Routen-Namen. Ueber Konstanten, damit sich Tippfehler nicht
 /// erst zur Laufzeit zeigen.
@@ -230,7 +231,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
     ],
     errorBuilder: (context, state) => Scaffold(
-      body: Center(child: Text('Route nicht gefunden: ${state.uri}')),
+      body: Center(
+        child: Text(context.texte.routeNichtGefunden('${state.uri}')),
+      ),
     ),
   );
 });

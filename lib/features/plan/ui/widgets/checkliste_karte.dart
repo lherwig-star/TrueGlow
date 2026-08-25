@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/section_card.dart';
+import '../../../../core/l10n/texte.dart';
+import '../../../modules/models/analyse_modul.dart';
 import '../../../analysis/models/analysis_result.dart';
 import '../../../checkin/logic/checkin_controller.dart';
 import '../../logic/plan_progress_repository.dart';
@@ -21,6 +23,7 @@ class ChecklisteKarte extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final farben = context.farben;
     final fortschritt = ref.watch(planFortschrittProvider);
     final neueHabits = ref.watch(neueHabitsProvider);
@@ -30,7 +33,7 @@ class ChecklisteKarte extends ConsumerWidget {
     final alleErledigt = erledigt == kapitel.habits.length;
 
     return SectionCard(
-      title: kapitel.modul.checkliste,
+      title: kapitel.modul.checkliste(texte),
       icon: kapitel.modul.icon,
       trailing: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),

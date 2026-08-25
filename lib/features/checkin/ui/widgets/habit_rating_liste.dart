@@ -127,7 +127,7 @@ class _HabitKarte extends StatelessWidget {
               children: [
                 for (final grund in PasstNichtGrund.values)
                   AuswahlChip(
-                    label: grund.label,
+                    label: grund.label(texte),
                     aktiv: feedback?.grund == grund,
                     // Nochmal tippen hebt die Auswahl wieder auf.
                     onTap: () =>
@@ -167,12 +167,13 @@ class _RatingKnopf extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
 
     return Semantics(
       button: true,
       selected: aktiv,
-      label: bewertung.label,
+      label: bewertung.label(texte),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppTheme.radiusButton),
@@ -196,7 +197,7 @@ class _RatingKnopf extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                bewertung.label,
+                bewertung.label(texte),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 12,

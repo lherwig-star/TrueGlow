@@ -42,7 +42,7 @@ class StilFragebogen extends ConsumerWidget {
           children: [
             for (final ziel in Stilziel.values)
               AuswahlChip(
-                label: ziel.label,
+                label: ziel.label(texte),
                 aktiv: stil.ziele.contains(ziel),
                 onTap: () {
                   final neu = Set<Stilziel>.from(stil.ziele);
@@ -58,7 +58,7 @@ class StilFragebogen extends ConsumerWidget {
         _Frage(titel: texte.stilDresscode),
         for (final code in Dresscode.values)
           _Zeile(
-            label: code.label,
+            label: code.label(texte),
             aktiv: stil.dresscode == code,
             onTap: () => ctrl.setzeStil(stil.copyWith(dresscode: code)),
           ),
@@ -68,7 +68,7 @@ class StilFragebogen extends ConsumerWidget {
         _Frage(titel: texte.stilBudget),
         for (final budget in Kleidungsbudget.values)
           _Zeile(
-            label: budget.label,
+            label: budget.label(texte),
             aktiv: stil.budget == budget,
             onTap: () => ctrl.setzeStil(stil.copyWith(budget: budget)),
           ),
@@ -78,7 +78,7 @@ class StilFragebogen extends ConsumerWidget {
         _Frage(titel: texte.stilPflege),
         for (final aufwand in Pflegeaufwand.values)
           _Zeile(
-            label: aufwand.label,
+            label: aufwand.label(texte),
             aktiv: stil.pflegeaufwand == aufwand,
             onTap: () => ctrl.setzeStil(stil.copyWith(pflegeaufwand: aufwand)),
           ),

@@ -110,7 +110,7 @@ class _DirectionScreenState extends ConsumerState<DirectionScreen> {
           children: [
             for (final ziel in Richtungsziel.values)
               AuswahlChip(
-                label: ziel.label,
+                label: ziel.label(texte),
                 aktiv: richtung.ziele.contains(ziel),
                 onTap: () => ctrl.umschalten(ziel),
               ),
@@ -127,7 +127,7 @@ class _DirectionScreenState extends ConsumerState<DirectionScreen> {
         _Nachrichtenfeld(controller: _feld, onChanged: ctrl.setzeFreitext),
         const SizedBox(height: AppTheme.gapS),
         SectionCard(
-          title: 'Bleibt auf dem Gerät',
+          title: texte.richtungBleibtLokal,
           icon: Icons.lock_outline,
           child: MutedText(texte.richtungFreitextHinweis),
         ),

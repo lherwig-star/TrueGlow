@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import '../../../core/l10n/texte.dart';
 
 /// Womit sich jemand angemeldet hat.
 ///
@@ -6,19 +7,15 @@ import 'package:flutter/foundation.dart';
 /// Ein weiterer Wert, ein weiterer `case` im Repository, eine weitere
 /// Schaltfläche auf dem Login-Screen – mehr nicht.
 enum AuthAnbieter {
-  google('Google'),
+  google,
 
   /// Pflicht von Apple, sobald die iOS-App Google Sign-In anbietet.
-  apple('Apple'),
+  apple,
 
   /// „Erst ausprobieren": ein echtes Firebase-Konto ohne Anmeldedaten. Es
   /// wird beim spaeteren Google-Login per Verknuepfung uebernommen, nicht
   /// verworfen.
-  anonym('Ohne Konto');
-
-  const AuthAnbieter(this.label);
-
-  final String label;
+  anonym;
 
   /// Ob der Anbieter auf dieser Plattform angeboten wird.
   ///
@@ -28,6 +25,19 @@ enum AuthAnbieter {
         AuthAnbieter.apple => plattform == TargetPlatform.iOS ||
             plattform == TargetPlatform.macOS,
         _ => true,
+      };
+}
+
+// Anzeigetexte als Erweiterung – Begruendung in `onboarding_profile.dart`.
+///
+/// „Google" und „Apple" sind Eigennamen und stehen trotzdem in der
+/// Uebersetzungsdatei: Sie werden in einen Satz eingesetzt („Mit Google
+/// anmelden"), und wie dieser Satz gebaut wird, entscheidet die Sprache.
+extension AuthAnbieterText on AuthAnbieter {
+  String label(L texte) => switch (this) {
+        AuthAnbieter.google => texte.anbieterGoogle,
+        AuthAnbieter.apple => texte.anbieterApple,
+        AuthAnbieter.anonym => texte.anbieterAnonym,
       };
 }
 
@@ -50,11 +60,11 @@ class TrueGlowNutzer {
   final String? anzeigename;
 
   /// Was in den Einstellungen unter dem Konto steht.
-  String get beschriftung {
-    if (anonym) return 'Ohne Konto angemeldet';
+  String beschriftung(L texte) {
+    if (anonym) return texte.nutzerOhneKonto;
     final name = anzeigename?.trim();
     if (name != null && name.isNotEmpty) return name;
-    return email ?? 'Angemeldet';
+    return email ?? texte.nutzerAngemeldet;
   }
 
   @override

@@ -626,4 +626,1180 @@ class LEn extends L {
 
   @override
   String get spracheWaehlen => 'Choose language';
+
+  @override
+  String get alter18bis24 => '18–24';
+
+  @override
+  String get alter25bis34 => '25–34';
+
+  @override
+  String get alter35bis44 => '35–44';
+
+  @override
+  String get alterAb45 => '45+';
+
+  @override
+  String get budgetNiedrig => 'Low';
+
+  @override
+  String get budgetNiedrigText => 'Drugstore, under €30 a month';
+
+  @override
+  String get budgetMittel => 'Medium';
+
+  @override
+  String get budgetMittelText => '€30–80 a month';
+
+  @override
+  String get budgetHoch => 'High';
+
+  @override
+  String get budgetHochText => 'over €80 a month';
+
+  @override
+  String get zeitKurz => '5 minutes';
+
+  @override
+  String get zeitKurzText => 'Just the essentials';
+
+  @override
+  String get zeitMittel => '15 minutes';
+
+  @override
+  String get zeitMittelText => 'A solid routine';
+
+  @override
+  String get zeitLang => '30+ minutes';
+
+  @override
+  String get zeitLangText => 'The full works';
+
+  @override
+  String get fokusHaut => 'Skin';
+
+  @override
+  String get fokusHaare => 'Hair';
+
+  @override
+  String get fokusBart => 'Beard';
+
+  @override
+  String get fokusStyle => 'Style';
+
+  @override
+  String get fokusFitness => 'Fitness habits';
+
+  @override
+  String get modulBasisTitel => 'Face, hair & beard';
+
+  @override
+  String get modulBasisText => 'Face shape, haircut and beard recommendations.';
+
+  @override
+  String get modulBasisCheckliste => 'Hair & beard';
+
+  @override
+  String get modulHautTitel => 'Skin & colour type';
+
+  @override
+  String get modulHautText =>
+      'Skin condition, undertone, a colour palette for your clothes.';
+
+  @override
+  String get modulHautCheckliste => 'Skin';
+
+  @override
+  String get modulZaehneTitel => 'Teeth & smile';
+
+  @override
+  String get modulZaehneText =>
+      'Tooth colour, alignment, how your smile reads.';
+
+  @override
+  String get modulZaehneCheckliste => 'Teeth';
+
+  @override
+  String get modulFigurTitel => 'Figure & fit';
+
+  @override
+  String get modulFigurText => 'Silhouette, proportions, which cuts suit you.';
+
+  @override
+  String get modulFigurCheckliste => 'Posture & figure';
+
+  @override
+  String get modulStilTitel => 'Style & wardrobe';
+
+  @override
+  String get modulStilText =>
+      'Your current outfits, where you want to take them, specific looks to try.';
+
+  @override
+  String get modulStilCheckliste => 'Style';
+
+  @override
+  String get stilzielKlassisch => 'Classic';
+
+  @override
+  String get stilzielMinimalistisch => 'Minimalist';
+
+  @override
+  String get stilzielSportlich => 'Sporty';
+
+  @override
+  String get stilzielSmartCasual => 'Smart casual';
+
+  @override
+  String get stilzielKreativ => 'Creative';
+
+  @override
+  String get stilzielRockig => 'Rock';
+
+  @override
+  String get dresscodeBuero => 'Office / formal';
+
+  @override
+  String get dresscodeBusinessCasual => 'Business casual';
+
+  @override
+  String get dresscodeHandwerk => 'Trades / workwear';
+
+  @override
+  String get dresscodeHomeoffice => 'Working from home';
+
+  @override
+  String get dresscodeUniform => 'Uniform / service dress';
+
+  @override
+  String get dresscodeFrei => 'No dress code';
+
+  @override
+  String get kleidungsbudgetKlein => 'Up to €50 per item';
+
+  @override
+  String get kleidungsbudgetMittel => '€50–150 per item';
+
+  @override
+  String get kleidungsbudgetGross => 'Over €150 per item';
+
+  @override
+  String get pflegeaufwandMinimal => 'As little as possible';
+
+  @override
+  String get pflegeaufwandMittel => 'A bit of effort is fine';
+
+  @override
+  String get pflegeaufwandHoch => 'I\'m happy to put time in';
+
+  @override
+  String get richtungszielMaskuliner => 'More masculine';
+
+  @override
+  String get richtungszielWeicher => 'Softer / gentler';
+
+  @override
+  String get richtungszielMarkanter => 'More striking';
+
+  @override
+  String get richtungszielGepflegter => 'Better groomed';
+
+  @override
+  String get richtungszielSerioeser => 'More serious / professional';
+
+  @override
+  String get richtungszielJuenger => 'Look younger';
+
+  @override
+  String get richtungszielReifer => 'Look more mature';
+
+  @override
+  String get richtungszielNatuerlicher => 'More natural';
+
+  @override
+  String get richtungszielAuffaelliger => 'Bolder';
+
+  @override
+  String get richtungszielSportlicher => 'More athletic';
+
+  @override
+  String get fotoproblemKeinGesichtTitel => 'No face detected';
+
+  @override
+  String get fotoproblemKeinGesichtTipp =>
+      'Hold the camera so your whole face is in frame — no sunglasses, hat or mask.';
+
+  @override
+  String get fotoproblemMehrereTitel => 'More than one face';
+
+  @override
+  String get fotoproblemMehrereTipp =>
+      'Only your face should be in the photo. Find a quiet background with nobody else in it.';
+
+  @override
+  String get fotoproblemZuKleinTitel => 'Face too small';
+
+  @override
+  String get fotoproblemZuKleinTipp =>
+      'Move closer to the camera, or hold your phone nearer, until your head fills most of the frame.';
+
+  @override
+  String get fotoproblemZuDunkelTitel => 'Photo too dark';
+
+  @override
+  String get fotoproblemZuDunkelTipp =>
+      'Stand by a window or turn more lights on. Even light from the front works best.';
+
+  @override
+  String get fotoproblemUngueltigTitel => 'Image could not be read';
+
+  @override
+  String get fotoproblemUngueltigTipp =>
+      'Try a different photo, or take a new one.';
+
+  @override
+  String get fotoproblemFehlerTitel => 'Something went wrong';
+
+  @override
+  String get fotoproblemFehlerTipp => 'Please try again.';
+
+  @override
+  String get authAbgebrochenTitel => 'Sign-in cancelled';
+
+  @override
+  String get authAbgebrochenTipp =>
+      'No problem — you can try again whenever you like.';
+
+  @override
+  String get authKeinInternetTitel => 'No connection';
+
+  @override
+  String get authKeinInternetTipp =>
+      'Check your internet connection and try again.';
+
+  @override
+  String get authKontoVergebenTitel => 'Account already in use';
+
+  @override
+  String get authKontoVergebenTipp =>
+      'This Google account already belongs to a TrueGlow login. We\'ve signed you in with it.';
+
+  @override
+  String get authNichtVerfuegbarTitel => 'Sign-in unavailable';
+
+  @override
+  String get authNichtVerfuegbarTipp =>
+      'This way of signing in isn\'t available on your device.';
+
+  @override
+  String get authUnbekanntTitel => 'Sign-in failed';
+
+  @override
+  String get authUnbekanntTipp => 'Something went wrong. Please try again.';
+
+  @override
+  String get anbieterGoogle => 'Google';
+
+  @override
+  String get anbieterApple => 'Apple';
+
+  @override
+  String get anbieterAnonym => 'No account';
+
+  @override
+  String get nutzerOhneKonto => 'Signed in without an account';
+
+  @override
+  String get nutzerAngemeldet => 'Signed in';
+
+  @override
+  String get kontoNeuAnmeldenTitel => 'Please sign in again';
+
+  @override
+  String get kontoNeuAnmeldenTipp =>
+      'Deleting an account can\'t be undone. That\'s why we ask you to sign in once more first.';
+
+  @override
+  String get kontoKeinInternetTitel => 'No connection';
+
+  @override
+  String get kontoKeinInternetTipp =>
+      'Deleting needs a moment of internet — otherwise your account would stay in the cloud. Try again once you\'re online.';
+
+  @override
+  String get kontoFehlgeschlagenTitel => 'Couldn\'t delete';
+
+  @override
+  String get kontoFehlgeschlagenTipp =>
+      'Something went wrong. Your data is unchanged — please try again later.';
+
+  @override
+  String get analyseKeinInternetTitel => 'No connection';
+
+  @override
+  String get analyseKeinInternetTipp =>
+      'Check your internet connection and try again.';
+
+  @override
+  String get analyseZeitTitel => 'Timed out';
+
+  @override
+  String get analyseZeitTipp => 'The analysis took too long. Please try again.';
+
+  @override
+  String get analyseApiTitel => 'Analysis unavailable';
+
+  @override
+  String get analyseApiTipp =>
+      'The analysis service isn\'t responding right now. Please try again later.';
+
+  @override
+  String get analyseKontingentTitel => 'Allowance used up';
+
+  @override
+  String get analyseKontingentTipp =>
+      'The analysis service has hit its limit. Please try again later.';
+
+  @override
+  String get analyseAntwortTitel => 'Response unreadable';
+
+  @override
+  String get analyseAntwortTipp =>
+      'The analysis came back incomplete. Trying again usually helps.';
+
+  @override
+  String get analyseKeinSchluesselTitel => 'Analysis service not set up';
+
+  @override
+  String get analyseKeinSchluesselTipp =>
+      'The service isn\'t ready right now. We\'re on it — please try again later.';
+
+  @override
+  String get analyseFotosFehlenTitel => 'Photos missing';
+
+  @override
+  String get analyseFotosFehlenTipp =>
+      'Some photos for this selection are still missing. Go back and take them.';
+
+  @override
+  String get analyseEinwilligungTitel => 'Consent missing';
+
+  @override
+  String get analyseEinwilligungTipp =>
+      'To run an analysis we need your consent to send your photos to the AI service. You can give it in your settings.';
+
+  @override
+  String get einwilligungNutzung => 'Terms of use and privacy';
+
+  @override
+  String get einwilligungMindestalter => 'I am at least 18 years old';
+
+  @override
+  String get einwilligungFotoKi => 'Analysis of my photos by the AI service';
+
+  @override
+  String get einwilligungDiagnose => 'Crash reports and usage statistics';
+
+  @override
+  String get dokumentDatenschutzTitel => 'Privacy policy';
+
+  @override
+  String get dokumentDatenschutzText =>
+      'What data we process, why, and for how long.';
+
+  @override
+  String get dokumentAgbTitel => 'Terms of use';
+
+  @override
+  String get dokumentAgbText => 'The rules for using TrueGlow.';
+
+  @override
+  String get dokumentImpressumTitel => 'Legal notice';
+
+  @override
+  String get dokumentImpressumText =>
+      'Who is behind the app and how to reach us.';
+
+  @override
+  String get abzeichenErsteAnalyseTitel => 'First analysis done';
+
+  @override
+  String get abzeichenErsteAnalyseText => 'You completed your first analysis.';
+
+  @override
+  String get abzeichenDreiTitel => 'Getting started';
+
+  @override
+  String get abzeichenDreiText =>
+      'Three days in a row with something ticked off.';
+
+  @override
+  String get abzeichenSiebenTitel => 'First week done';
+
+  @override
+  String get abzeichenSiebenText =>
+      'Seven days in a row — that\'s the first week.';
+
+  @override
+  String get abzeichenVierzehnTitel => 'Two solid weeks';
+
+  @override
+  String get abzeichenVierzehnText =>
+      'Fourteen days in a row. That\'s a routine now.';
+
+  @override
+  String get abzeichenDreissigTitel => 'A month in';
+
+  @override
+  String get abzeichenDreissigText => 'Thirty days in a row. Impressive.';
+
+  @override
+  String get abzeichenSechzigTitel => 'Two months strong';
+
+  @override
+  String get abzeichenSechzigText =>
+      'Sixty days in a row — few people get this far.';
+
+  @override
+  String get abzeichenNeunzigTitel => 'A quarter of a year';
+
+  @override
+  String get abzeichenNeunzigText =>
+      'Ninety days in a row. This is just your life now.';
+
+  @override
+  String get abzeichenAlleModuleTitel => 'Everything unlocked';
+
+  @override
+  String get abzeichenAlleModuleText => 'Your analysis covers every module.';
+
+  @override
+  String abzeichenJubelTage(int tage) {
+    return '$tage days straight!';
+  }
+
+  @override
+  String get erscheinungHell => 'Light';
+
+  @override
+  String get erscheinungDunkel => 'Dark';
+
+  @override
+  String get erscheinungSystem => 'System';
+
+  @override
+  String get aufnahmeBasisFrontalLabel => 'Front photo';
+
+  @override
+  String get aufnahmeBasisFrontalHinweis =>
+      'Look straight into the camera. Neutral expression, good light, nothing on your head.';
+
+  @override
+  String get aufnahmeProfilLinksLabel => 'Left profile';
+
+  @override
+  String get aufnahmeProfilLinksHinweis =>
+      'Turn your head to the right so the left side of your face points at the camera. Your ear and jawline should be visible.';
+
+  @override
+  String get aufnahmeProfilRechtsLabel => 'Right profile';
+
+  @override
+  String get aufnahmeProfilRechtsHinweis =>
+      'Turn your head to the left so the right side of your face points at the camera. Your ear and jawline should be visible.';
+
+  @override
+  String get aufnahmeWinkelLabel => '45° angle';
+
+  @override
+  String get aufnahmeWinkelHinweis =>
+      'Turn your head halfway to the right — about 45 degrees. Both eyes stay visible.';
+
+  @override
+  String get aufnahmeLaechelnLabel => 'Smile';
+
+  @override
+  String get aufnahmeLaechelnHinweis =>
+      'Smile straight at the camera so your teeth are clearly visible.';
+
+  @override
+  String get aufnahmeGanzkoerperFrontalLabel => 'Full body, front';
+
+  @override
+  String get aufnahmeGanzkoerperFrontalHinweis =>
+      'Your whole body in frame, standing straight, arms relaxed at your sides. Close-fitting clothes show your silhouette best.';
+
+  @override
+  String get aufnahmeGanzkoerperSeitlichLabel => 'Full body, side';
+
+  @override
+  String get aufnahmeGanzkoerperSeitlichHinweis =>
+      'The same pose turned 90 degrees — that shows your posture and proportions from the side.';
+
+  @override
+  String get aufnahmeOutfitEinsLabel => 'Outfit 1';
+
+  @override
+  String get aufnahmeOutfitEinsHinweis =>
+      'An outfit you wear often — on you or laid out flat.';
+
+  @override
+  String get aufnahmeOutfitZweiLabel => 'Outfit 2';
+
+  @override
+  String get aufnahmeOutfitZweiHinweis =>
+      'A second outfit, ideally for a different occasion.';
+
+  @override
+  String get aufnahmeOutfitDreiLabel => 'Outfit 3';
+
+  @override
+  String get aufnahmeOutfitDreiHinweis =>
+      'Optional: a third outfit. You can skip this step.';
+
+  @override
+  String get aufnahmeHautLichtZusatz =>
+      'This photo also feeds the skin analysis, so the daylight from the checklist counts double here.';
+
+  @override
+  String get modulBenoetigtBasis =>
+      'Front, both side profiles and a 45° angle.';
+
+  @override
+  String get modulBenoetigtHaut =>
+      'No photo of its own — it uses your front photo. Take that one in indirect daylight.';
+
+  @override
+  String get modulBenoetigtZaehne => '1 photo, smiling.';
+
+  @override
+  String get modulBenoetigtFigur =>
+      '2 full-body photos (front and side) plus your height and weight.';
+
+  @override
+  String get modulBenoetigtStil =>
+      '2–3 outfit photos and a few quick questions.';
+
+  @override
+  String get checkinTypAlltagTitel => 'Everyday check';
+
+  @override
+  String get checkinTypAlltagIntro =>
+      'One week in! We only want to know one thing: how well do the tasks fit into your day?';
+
+  @override
+  String get checkinTypZwischenTitel => 'Halfway check';
+
+  @override
+  String get checkinTypZwischenIntro =>
+      'Two weeks in. We\'ll take a quick look at the tasks that gave you trouble — and how the first days have felt.';
+
+  @override
+  String get checkinTypWirkungTitel => 'Results check';
+
+  @override
+  String get checkinTypWirkungIntro =>
+      'A month is up. Now it\'s worth looking at what has changed — and what we should sharpen up.';
+
+  @override
+  String get bewertungLaeuftGut => 'Going well';
+
+  @override
+  String get bewertungGehtSo => 'So-so';
+
+  @override
+  String get bewertungPasstNicht => 'Not working';
+
+  @override
+  String get grundZeit => 'Takes too long';
+
+  @override
+  String get grundVergessen => 'I forget';
+
+  @override
+  String get grundUnangenehm => 'Unpleasant / don\'t like it';
+
+  @override
+  String get grundTeuer => 'Too expensive';
+
+  @override
+  String get grundAnderer => 'Another reason';
+
+  @override
+  String get frageRoutine => 'How well is your morning routine going?';
+
+  @override
+  String get frageHautGefuehl => 'How does your skin feel?';
+
+  @override
+  String get frageZaehneGefuehl => 'How clean do your teeth feel?';
+
+  @override
+  String get frageHaltungGefuehl => 'How aware are you of your posture?';
+
+  @override
+  String get frageAnziehen => 'How easy is getting dressed in the morning?';
+
+  @override
+  String get frageBasisErgebnis => 'How have your hair and beard come along?';
+
+  @override
+  String get frageHautErgebnis => 'How has your skin come along?';
+
+  @override
+  String get frageZaehneErgebnis => 'How have your teeth and smile come along?';
+
+  @override
+  String get frageHaltungErgebnis => 'How has your posture come along?';
+
+  @override
+  String get frageStilErgebnis => 'How well are your outfits working now?';
+
+  @override
+  String get einordnungHaut =>
+      'Visible changes in skin usually show from week 4–6 — you\'re on track.';
+
+  @override
+  String get einordnungZaehne =>
+      'Discolouration fades slowly: the difference usually shows from week 4 — you\'re on track.';
+
+  @override
+  String get einordnungHaltung =>
+      'Posture changes over weeks, not days — from week 4 to 6 other people start noticing. You\'re on track.';
+
+  @override
+  String get einordnungStil =>
+      'A wardrobe changes piece by piece — after four to six weeks the new combinations come naturally.';
+
+  @override
+  String get einordnungBasis =>
+      'Hair grows about a centimetre a month — the new shape shows from week 4. You\'re on track.';
+
+  @override
+  String get dokumentFolgt => 'Not available yet';
+
+  @override
+  String dokumentTitelFolgt(String titel) {
+    return '$titel (coming soon)';
+  }
+
+  @override
+  String loginMitAnbieter(String anbieter) {
+    return 'Sign in with $anbieter';
+  }
+
+  @override
+  String get offlineBand =>
+      'Offline — your plan and checklist keep working, changes will sync later.';
+
+  @override
+  String routeNichtGefunden(String pfad) {
+    return 'Page not found: $pfad';
+  }
+
+  @override
+  String get ladeGesichtsform => 'Analysing face shape...';
+
+  @override
+  String get ladeHautbild => 'Checking your skin...';
+
+  @override
+  String get ladeFrisur => 'Comparing haircut options...';
+
+  @override
+  String get ladeEmpfehlungen => 'Putting recommendations together...';
+
+  @override
+  String get ladePlan => 'Building your plan...';
+
+  @override
+  String get unterbrochenTitel => 'Analysis interrupted';
+
+  @override
+  String get unterbrochenText =>
+      'Your last analysis didn\'t finish — the app was closed in between. Nothing was saved. Your photos are still there, so you can start again right away.';
+
+  @override
+  String get loginWarumKonto =>
+      'So your plan, streak and history survive a change of phone, everything belongs to an account.';
+
+  @override
+  String get loginGast => 'Just have a look first';
+
+  @override
+  String get loginGastErklaerung =>
+      'If you just look around, we create an account with no name and no email. Sign in with Google later and we bring your data along.';
+
+  @override
+  String get loginFotosBleiben => 'Your photos stay on your device.';
+
+  @override
+  String get fotoWirdGeprueft => 'Checking photo...';
+
+  @override
+  String get flowNichtsAufzunehmen =>
+      'There\'s nothing to photograph for this selection.';
+
+  @override
+  String flowSchritt(int nummer, int gesamt) {
+    return 'Step $nummer of $gesamt';
+  }
+
+  @override
+  String get figurBleibtLokalTitel => 'Stays on your device';
+
+  @override
+  String get figurBleibtLokalText =>
+      'Your height and weight are only sent along for the fit recommendation and are not stored by the analysis service.';
+
+  @override
+  String get fotoOptional => 'Optional — you can skip this step.';
+
+  @override
+  String get fotoSoKlapptEs => 'How to get this shot';
+
+  @override
+  String get fotoAutoTitel => 'The app takes it for you';
+
+  @override
+  String get fotoGeprueft => 'Checked';
+
+  @override
+  String get hinweisSchliessen => 'Dismiss notice';
+
+  @override
+  String get modulHautKeinFotoTitel => 'No separate photo needed';
+
+  @override
+  String get modulHautKeinFotoText =>
+      'We read your undertone and colour palette from your front photo. No extra close-up needed.';
+
+  @override
+  String get modulHautLichtTitel => 'Light counts double here';
+
+  @override
+  String get modulHautLichtText =>
+      'If your front photo was too dark or had a colour cast, go back a step and retake it in indirect daylight — warm artificial light distorts your undertone.';
+
+  @override
+  String get aufnahmeTitel => 'Photos';
+
+  @override
+  String get richtungBleibtLokal => 'Stays on your device';
+
+  @override
+  String get checkinKeiner => 'No check-in is due right now.';
+
+  @override
+  String checkinSchrittZaehler(int aktuell, int gesamt) {
+    return '$aktuell of $gesamt';
+  }
+
+  @override
+  String get checkinUnterEinerMinute => 'Under a minute';
+
+  @override
+  String get checkinAbbrechbar =>
+      'You can stop at any time — what you\'ve entered stays saved.';
+
+  @override
+  String get checkinAufKurs => 'You\'re on track';
+
+  @override
+  String get checkinPlanUnveraendert => 'Leave plan as it is';
+
+  @override
+  String get checkinOhneAnpassung => 'Finish without changes';
+
+  @override
+  String get vergleichHinweis =>
+      'Same framing, same light — that\'s what makes a real comparison possible.';
+
+  @override
+  String get vergleichNurFuerDichTitel => 'Just for you';
+
+  @override
+  String get vergleichNurFuerDichText =>
+      'Your progress photo also stays on your device and only goes to the analysis service for the evaluation.';
+
+  @override
+  String get vergleichOhneDatum => 'no date';
+
+  @override
+  String get altersTitel => 'Adults only';
+
+  @override
+  String get altersWeiter => 'Continue to the analysis';
+
+  @override
+  String get altersZurueck => 'Back to the dashboard';
+
+  @override
+  String get altersWarumTitel => 'Why we ask';
+
+  @override
+  String get altersWarumText =>
+      'To run an analysis, TrueGlow processes images of your face. That kind of data is specially protected, and only adults can give valid consent for it. That\'s why the app is 18+.';
+
+  @override
+  String get altersOhneText =>
+      'Without confirmation, only the analysis section stays closed. Your plan, daily checklist, streak and check-ins keep working — and the reports you already have stay put.';
+
+  @override
+  String get einwilligungKurzTitel => 'One quick confirmation';
+
+  @override
+  String get einwilligungNachgeschaerftTitel => 'We\'ve tightened this up';
+
+  @override
+  String get einwilligungNeueFassungTitel => 'New version of our terms';
+
+  @override
+  String get einwilligungNachgeschaerftText =>
+      'There used to be a single tick box for everything. Because your photos are a different matter from using the app, we now ask about both separately — once, and never again.';
+
+  @override
+  String get einwilligungNeueFassungText =>
+      'Our legal texts have changed. So that your agreement covers what actually applies, we\'re asking you to confirm once.';
+
+  @override
+  String get einwilligungBleibtErhalten =>
+      'Your existing analyses, your plan and your streak stay exactly as they are.';
+
+  @override
+  String get erklaerungMindestalter =>
+      'TrueGlow processes images of your face and is therefore for adults only. By ticking this box you confirm that you are of legal age.';
+
+  @override
+  String get erklaerungNutzung =>
+      'I have read the terms of use and the privacy policy and agree to them.';
+
+  @override
+  String get erklaerungDiagnose =>
+      'I consent to anonymous crash reports and minimal usage statistics being collected. Only THAT a step was reached is recorded — no photos, no analysis content, no free text, no profile details.';
+
+  @override
+  String get erklaerungFotoKi =>
+      'I consent to my photos — including images of my face — being sent to the AI service Google Gemini for evaluation. Processing takes place on Google servers, including outside the EU (third-country transfer). The images are neither stored nor logged there.';
+
+  @override
+  String get freiwilligFotoKi =>
+      'Optional and revocable at any time in your settings. Without it there are no new analyses — everything else keeps working and existing reports stay.';
+
+  @override
+  String get freiwilligMindestalter =>
+      'Without confirmation the analysis section stays closed. You can still use your plan, checklists and check-ins.';
+
+  @override
+  String get freiwilligDiagnose =>
+      'Optional, off by default and revocable at any time. It helps us find crashes before they end up in a review.';
+
+  @override
+  String get datumHeute => 'today';
+
+  @override
+  String get datumGestern => 'yesterday';
+
+  @override
+  String get verlaufLoeschenTitel => 'Delete analysis?';
+
+  @override
+  String verlaufLoeschenText(String datum) {
+    return 'The analysis from $datum will be removed from this device.';
+  }
+
+  @override
+  String get loeschen => 'Delete';
+
+  @override
+  String get verlaufLoeschenTooltip => 'Delete analysis';
+
+  @override
+  String get homeDeinPlan => 'Your plan';
+
+  @override
+  String get homeAnalyseKurz => 'Analysis';
+
+  @override
+  String homeErstelltAm(String datum) {
+    return 'created $datum';
+  }
+
+  @override
+  String get legalFotosText =>
+      'Your photos only leave the device for the duration of an analysis, and are not stored anywhere in the process.';
+
+  @override
+  String legalNichtOeffenbar(String titel) {
+    return '$titel can\'t be opened right now.';
+  }
+
+  @override
+  String get legalStehenAusTitel => 'Texts still to come';
+
+  @override
+  String get dokumentKeinTextTitel => 'Not available yet';
+
+  @override
+  String get dokumentKeinTextText =>
+      'No text has been added for this document yet.';
+
+  @override
+  String get dokumentNichtLesbarTitel => 'Text can\'t be read';
+
+  @override
+  String get dokumentNichtLesbarText =>
+      'The stored text can\'t be loaded. Please open it on the website instead.';
+
+  @override
+  String get migrationTitel => 'Bring your existing data along?';
+
+  @override
+  String get migrationText =>
+      'This device holds analyses, a plan, a streak and check-ins from before you had an account. Should they belong to your account?\n\nEither way, your photos stay on the device only.';
+
+  @override
+  String get migrationUebernehmen => 'Bring them along';
+
+  @override
+  String get migrationNichts => 'There was nothing to bring.';
+
+  @override
+  String migrationErfolg(int anzahl) {
+    return 'Brought along: $anzahl entries.';
+  }
+
+  @override
+  String get migrationFehler =>
+      'Couldn\'t bring your data along. It\'s still on the device — we\'ll ask again next time you start the app.';
+
+  @override
+  String get onbPunktFotos => 'Take two photos';
+
+  @override
+  String get onbPunktAnalyse => 'AI analysis of your features';
+
+  @override
+  String get onbPunktPlan => 'A concrete plan with a checklist';
+
+  @override
+  String get onbDatenschutzText =>
+      'Please read the notes below before we start.';
+
+  @override
+  String get onbKeineMedizin => 'Not medical advice';
+
+  @override
+  String get onbUmgangFotos => 'How we handle your photos';
+
+  @override
+  String get planLeer => 'No plan yet. Run an analysis first.';
+
+  @override
+  String get ergebnisNichtVorhanden => 'This analysis no longer exists.';
+
+  @override
+  String get settingsKontoLoeschenFrage => 'Delete account permanently?';
+
+  @override
+  String get settingsDatenLoeschenFrage => 'Delete all data?';
+
+  @override
+  String get settingsKontoLoeschenText =>
+      'Your account and everything in it will be deleted for good — on this device and in the cloud. Your photos on the device go too.\n\nAfterwards you won\'t be able to sign in with this account.';
+
+  @override
+  String get settingsDatenLoeschenText =>
+      'Analyses, your plan, your progress and your details will be removed for good — on this device and in your account. Your photos on the device go too.\n\nYour account itself stays.';
+
+  @override
+  String get settingsKontoLoeschenKnopf => 'Delete account';
+
+  @override
+  String get settingsFotoJa =>
+      'Analyses are possible. Your photos go to the AI service only for the duration of the evaluation.';
+
+  @override
+  String get settingsFotoNein =>
+      'Without photo consent there are no new analyses. Your existing reports, your plan and your streak stay.';
+
+  @override
+  String settingsNochNichtGefragt(String titel) {
+    return '$titel: not asked yet';
+  }
+
+  @override
+  String get settingsNachtraeglich => 'later';
+
+  @override
+  String get settingsAnmeldungUnklar =>
+      'We can\'t check your sign-in status right now. Your data on the device isn\'t affected.';
+
+  @override
+  String get settingsKontoAnonym =>
+      'Your data is tied to this device. Sign in with Google so it survives a change of phone — everything you have so far comes with you.';
+
+  @override
+  String get settingsKontoEcht =>
+      'Your plan, streak and history belong to this account. Photos stay on the device.';
+
+  @override
+  String get settingsVerknuepfen => 'Link with Google';
+
+  @override
+  String get settingsVerknuepft => 'Account linked.';
+
+  @override
+  String get settingsAbmeldenAnonym =>
+      'You\'re signed in without an account. Once you sign out, you can\'t get back to this state. The data on this device stays.';
+
+  @override
+  String get settingsAbmeldenEcht =>
+      'Your data stays in your account. It\'ll be there again after your next sign-in.';
+
+  @override
+  String get settingsKonto => 'Account';
+
+  @override
+  String get settingsAnalyseModus => 'Analysis mode';
+
+  @override
+  String get settingsModusDemo =>
+      'No photos are sent. The app shows a stored sample analysis. Switch at build time with --dart-define=TRUEGLOW_MOCK.';
+
+  @override
+  String settingsModusLive(String modell) {
+    return 'Analyses run through the TrueGlow service ($modell). Your photos are transmitted for the evaluation and are neither stored nor logged there.';
+  }
+
+  @override
+  String settingsFehlerMeldung(String titel, String tipp) {
+    return '$titel: $tipp';
+  }
+
+  @override
+  String get streakTage => 'days in a row';
+
+  @override
+  String get streakKeineAufgaben => 'No daily tasks yet.';
+
+  @override
+  String get streakNichtsAbgehakt =>
+      'Nothing ticked off today — one tick secures the day.';
+
+  @override
+  String streakHeuteErledigt(int erledigt, int gesamt) {
+    return '$erledigt of $gesamt done today';
+  }
+
+  @override
+  String streakNochModule(int anzahl) {
+    return '$anzahl to go';
+  }
+
+  @override
+  String streakNochTage(int anzahl) {
+    return '$anzahl to go';
+  }
+
+  @override
+  String verlaufZeile(int bereiche, int empfehlungen) {
+    return '$bereiche areas · $empfehlungen recommendations';
+  }
+
+  @override
+  String homePlanZeile(String datum, int empfehlungen) {
+    return 'created $datum · $empfehlungen recommendations';
+  }
+
+  @override
+  String legalEntwurfHinweis(String bericht) {
+    return 'The final versions haven\'t been added yet. Until then the affected entries stay locked.\n\n$bericht';
+  }
+
+  @override
+  String get migrationAblehnen => 'No, start fresh';
+
+  @override
+  String get settingsEinwilligungen => 'Consents';
+
+  @override
+  String get settingsWirdGeladen => 'Loading …';
+
+  @override
+  String get settingsNichtAngemeldet => 'Not signed in.';
+
+  @override
+  String get settingsAbmelden => 'Sign out';
+
+  @override
+  String get settingsAbmeldenFrage => 'Sign out?';
+
+  @override
+  String get settingsErteilt => 'given';
+
+  @override
+  String get settingsNichtErteilt => 'not given';
+
+  @override
+  String settingsNachweis(
+    String titel,
+    String stand,
+    String datum,
+    String version,
+    String kanal,
+  ) {
+    return '$titel: $stand on $datum (text version $version, $kanal)';
+  }
+
+  @override
+  String get settingsVersionUnbekannt => 'unknown';
+
+  @override
+  String get settingsKanalOnboarding => 'during onboarding';
+
+  @override
+  String get settingsKanalEinstellungen => 'in settings';
+
+  @override
+  String get settingsKanalNachtrag => 'later';
+
+  @override
+  String get settingsModusMock => 'Mock';
+
+  @override
+  String get settingsModusLiveKurz => 'Live';
+
+  @override
+  String get abzeichenErsteAnalyseOffen => 'Run your first analysis';
+
+  @override
+  String abzeichenNochModule(int anzahl) {
+    String _temp0 = intl.Intl.pluralLogic(
+      anzahl,
+      locale: localeName,
+      other: '$anzahl modules to go',
+      one: '1 module to go',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String abzeichenNochTage(int anzahl) {
+    String _temp0 = intl.Intl.pluralLogic(
+      anzahl,
+      locale: localeName,
+      other: '$anzahl days to go',
+      one: '1 day to go',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get erscheinungFolgtSystem =>
+      'TrueGlow follows your phone’s system setting.';
+
+  @override
+  String get erscheinungFest =>
+      'Fixed choice — independent of your system setting.';
 }

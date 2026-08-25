@@ -9,6 +9,7 @@ import '../../../core/widgets/section_card.dart';
 import '../logic/einwilligung_controller.dart';
 import '../models/einwilligung.dart';
 import 'einwilligungs_auswahl.dart';
+import '../../../core/l10n/texte.dart';
 
 /// Erklärt, warum der Analyse-Bereich ohne Altersbestätigung zubleibt.
 ///
@@ -25,10 +26,11 @@ class AltersHinweisScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final bestaetigt = ref.watch(volljaehrigBestaetigtProvider);
 
     return AppPage(
-      title: 'Nur für Erwachsene',
+      title: texte.altersTitel,
       showBackButton: false,
       bottomBar: Column(
         mainAxisSize: MainAxisSize.min,
@@ -37,25 +39,20 @@ class AltersHinweisScreen extends ConsumerWidget {
             onPressed: bestaetigt
                 ? () => context.go(ziel ?? Routes.home)
                 : null,
-            child: const Text('Weiter zur Analyse'),
+            child: Text(texte.altersWeiter),
           ),
           const SizedBox(height: AppTheme.gapXs),
           TextButton(
             onPressed: () => context.go(Routes.home),
-            child: const Text('Zurück zum Dashboard'),
+            child: Text(texte.altersZurueck),
           ),
         ],
       ),
       children: [
-        const SectionCard(
-          title: 'Warum wir fragen',
+        SectionCard(
+          title: texte.altersWarumTitel,
           icon: Icons.info_outline,
-          child: MutedText(
-            'Für eine Analyse verarbeitet TrueGlow Aufnahmen deines Gesichts. '
-            'Solche Daten sind besonders geschützt, und eine wirksame '
-            'Einwilligung dazu können nur Erwachsene selbst erteilen. Deshalb '
-            'ist die App ab 18.',
-          ),
+          child: MutedText(texte.altersWarumText),
         ),
         const SizedBox(height: AppTheme.gapM),
         const EinwilligungsHaken(
@@ -63,13 +60,9 @@ class AltersHinweisScreen extends ConsumerWidget {
           kanal: Einwilligungskanal.nachtrag,
         ),
         const SizedBox(height: AppTheme.gapM),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppTheme.gapXs),
-          child: MutedText(
-            'Ohne Bestätigung bleibt nur der Analyse-Bereich zu. Dein Plan, '
-            'die Tages-Checkliste, deine Serie und die Check-ins funktionieren '
-            'weiter — und deine bisherigen Reports bleiben erhalten.',
-          ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.gapXs),
+          child: MutedText(texte.altersOhneText),
         ),
       ],
     );

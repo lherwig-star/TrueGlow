@@ -62,10 +62,11 @@ class HistoryScreen extends ConsumerWidget {
     final bestaetigt = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Analyse löschen?'),
+        title: Text(context.texte.verlaufLoeschenTitel),
         content: Text(
-          'Die Analyse vom ${Datum.kurz(analyse.erstelltAm)} wird vom Gerät '
-          'entfernt.',
+          context.texte.verlaufLoeschenText(
+            Datum.kurz(analyse.erstelltAm, context.texte.localeName),
+          ),
         ),
         actions: [
           TextButton(
@@ -77,7 +78,7 @@ class HistoryScreen extends ConsumerWidget {
             style: TextButton.styleFrom(
               foregroundColor: context.farben.warnung,
             ),
-            child: const Text('Löschen'),
+            child: Text(context.texte.loeschen),
           ),
         ],
       ),
@@ -101,6 +102,7 @@ class _VerlaufKarte extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
 
     return SectionCard(
@@ -126,13 +128,15 @@ class _VerlaufKarte extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  Datum.kurz(analyse.erstelltAm),
+                  Datum.kurz(analyse.erstelltAm, texte.localeName),
                   style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 2),
                 MutedText(
-                  '${analyse.sektionen.length} Bereiche · '
-                  '${analyse.anzahlEmpfehlungen} Empfehlungen',
+                  texte.verlaufZeile(
+                    analyse.sektionen.length,
+                    analyse.anzahlEmpfehlungen,
+                  ),
                 ),
               ],
             ),
@@ -141,7 +145,7 @@ class _VerlaufKarte extends StatelessWidget {
             onPressed: onLoeschen,
             icon: const Icon(Icons.delete_outline, size: 20),
             color: farben.textSekundaer,
-            tooltip: 'Analyse löschen',
+            tooltip: texte.verlaufLoeschenTooltip,
           ),
         ],
       ),

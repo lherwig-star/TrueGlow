@@ -225,13 +225,13 @@ void main() {
 
       // Statt aufs Dashboard geht es auf den Nachtrags-Screen.
       expect(find.text('Wir haben nachgeschärft'), findsOneWidget);
-      expect(find.text(Einwilligungsart.fotoKi.titel), findsOneWidget);
+      expect(find.text(Einwilligungsart.fotoKi.titel(texte)), findsOneWidget);
 
       // Pflicht ankreuzen, dann ist der Weg frei.
       await tester.tap(
         find.descendant(
           of: find.ancestor(
-            of: find.text(Einwilligungsart.nutzung.titel),
+            of: find.text(Einwilligungsart.nutzung.titel(texte)),
             matching: find.byType(SectionCard),
           ),
           matching: find.byType(Checkbox),

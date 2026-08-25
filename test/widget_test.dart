@@ -51,7 +51,7 @@ void main() {
     await tester.tap(
       find.descendant(
         of: find.ancestor(
-          of: find.text(Einwilligungsart.nutzung.titel),
+          of: find.text(Einwilligungsart.nutzung.titel(texte)),
           matching: find.byType(SectionCard),
         ),
         matching: find.byType(Checkbox),

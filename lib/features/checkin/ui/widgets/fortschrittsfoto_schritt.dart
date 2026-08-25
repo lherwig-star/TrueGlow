@@ -10,6 +10,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/section_card.dart';
 import '../../logic/checkin_controller.dart';
+import '../../../capture/models/photo_check_result.dart';
 import '../../models/checkin.dart';
 
 /// Optionales Fortschrittsfoto beim Wirkungs-Check.
@@ -65,14 +66,14 @@ class FortschrittsfotoSchritt extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        problem.titel,
+                        problem.titel(texte),
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           color: farben.warnung,
                         ),
                       ),
                       const SizedBox(height: 4),
-                      MutedText(problem.tipp),
+                      MutedText(problem.tipp(texte)),
                     ],
                   ),
                 ),
@@ -83,7 +84,7 @@ class FortschrittsfotoSchritt extends ConsumerWidget {
                   icon: const Icon(Icons.close, size: 18),
                   color: farben.textSekundaer,
                   visualDensity: VisualDensity.compact,
-                  tooltip: 'Hinweis schließen',
+                  tooltip: texte.hinweisSchliessen,
                 ),
               ],
             ),

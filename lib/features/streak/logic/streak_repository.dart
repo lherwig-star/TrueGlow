@@ -180,24 +180,17 @@ List<AbzeichenStand> abzeichenStaende({
         Abzeichen.ersteAnalyse => AbzeichenStand(
             abzeichen: abzeichen,
             erreicht: analyse != null,
-            fortschrittstext:
-                analyse != null ? '' : 'Starte deine erste Analyse',
+            fehlend: analyse != null ? 0 : 1,
           ),
         Abzeichen.alleModule => AbzeichenStand(
             abzeichen: abzeichen,
             erreicht: alleModule,
-            fortschrittstext: alleModule
-                ? ''
-                : 'noch ${AnalyseModul.values.length - module.length} '
-                    '${AnalyseModul.values.length - module.length == 1 ? 'Modul' : 'Module'}',
+            fehlend: AnalyseModul.values.length - module.length,
           ),
         _ => AbzeichenStand(
             abzeichen: abzeichen,
             erreicht: streak.aktuell >= abzeichen.tage!,
-            fortschrittstext: streak.aktuell >= abzeichen.tage!
-                ? ''
-                : 'noch ${abzeichen.tage! - streak.aktuell} '
-                    '${abzeichen.tage! - streak.aktuell == 1 ? 'Tag' : 'Tage'}',
+            fehlend: (abzeichen.tage! - streak.aktuell).clamp(0, abzeichen.tage!),
           ),
       },
   ];

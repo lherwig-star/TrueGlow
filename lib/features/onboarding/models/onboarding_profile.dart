@@ -1,3 +1,5 @@
+import '../../../core/l10n/texte.dart';
+
 /// Antworten aus dem Onboarding. Fliessen spaeter in den Analyse-Prompt ein.
 /// Die Altersbereiche, nach denen das Onboarding fragt.
 ///
@@ -8,45 +10,68 @@
 ///
 /// Ein gespeicherter Altwert `unter18` faellt beim Lesen heraus und laesst das
 /// Feld leer – das Onboarding fragt dann neu.
-enum Altersbereich {
-  a18bis24('18–24'),
-  a25bis34('25–34'),
-  a35bis44('35–44'),
-  ab45('45+');
+enum Altersbereich { a18bis24, a25bis34, a35bis44, ab45 }
 
-  const Altersbereich(this.label);
-  final String label;
+enum Budget { niedrig, mittel, hoch }
+
+enum Zeitbudget { kurz, mittel, lang }
+
+enum Fokusbereich { haut, haare, bart, style, fitness }
+
+// Die Anzeigetexte stehen bewusst nicht mehr im Enum, sondern in
+// Erweiterungen daneben.
+//
+// Ein Enum-Wert ist konstant, ein übersetzter Text hängt an der gewählten
+// Sprache – beides in einem Feld unterzubringen geht nicht. Die Zuordnung
+// bleibt trotzdem hier, direkt neben der Liste: So fällt beim Ergänzen eines
+// Werts sofort auf, dass auch ein Text dazugehört, und der Compiler besteht
+// darauf.
+
+extension AltersbereichText on Altersbereich {
+  String label(L texte) => switch (this) {
+        Altersbereich.a18bis24 => texte.alter18bis24,
+        Altersbereich.a25bis34 => texte.alter25bis34,
+        Altersbereich.a35bis44 => texte.alter35bis44,
+        Altersbereich.ab45 => texte.alterAb45,
+      };
 }
 
-enum Budget {
-  niedrig('Niedrig', 'Drogerie, unter 30 € im Monat'),
-  mittel('Mittel', '30–80 € im Monat'),
-  hoch('Hoch', 'über 80 € im Monat');
+extension BudgetText on Budget {
+  String label(L texte) => switch (this) {
+        Budget.niedrig => texte.budgetNiedrig,
+        Budget.mittel => texte.budgetMittel,
+        Budget.hoch => texte.budgetHoch,
+      };
 
-  const Budget(this.label, this.beschreibung);
-  final String label;
-  final String beschreibung;
+  String beschreibung(L texte) => switch (this) {
+        Budget.niedrig => texte.budgetNiedrigText,
+        Budget.mittel => texte.budgetMittelText,
+        Budget.hoch => texte.budgetHochText,
+      };
 }
 
-enum Zeitbudget {
-  kurz('5 Minuten', 'Nur das Nötigste'),
-  mittel('15 Minuten', 'Solide Routine'),
-  lang('30+ Minuten', 'Volles Programm');
+extension ZeitbudgetText on Zeitbudget {
+  String label(L texte) => switch (this) {
+        Zeitbudget.kurz => texte.zeitKurz,
+        Zeitbudget.mittel => texte.zeitMittel,
+        Zeitbudget.lang => texte.zeitLang,
+      };
 
-  const Zeitbudget(this.label, this.beschreibung);
-  final String label;
-  final String beschreibung;
+  String beschreibung(L texte) => switch (this) {
+        Zeitbudget.kurz => texte.zeitKurzText,
+        Zeitbudget.mittel => texte.zeitMittelText,
+        Zeitbudget.lang => texte.zeitLangText,
+      };
 }
 
-enum Fokusbereich {
-  haut('Haut'),
-  haare('Haare'),
-  bart('Bart'),
-  style('Style'),
-  fitness('Fitness-Habits');
-
-  const Fokusbereich(this.label);
-  final String label;
+extension FokusbereichText on Fokusbereich {
+  String label(L texte) => switch (this) {
+        Fokusbereich.haut => texte.fokusHaut,
+        Fokusbereich.haare => texte.fokusHaare,
+        Fokusbereich.bart => texte.fokusBart,
+        Fokusbereich.style => texte.fokusStyle,
+        Fokusbereich.fitness => texte.fokusFitness,
+      };
 }
 
 class OnboardingProfile {

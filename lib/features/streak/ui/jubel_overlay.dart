@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../models/abzeichen.dart';
+import '../../../core/l10n/texte.dart';
 
 /// Zeigt den Jubel-Moment fuer ein frisch erreichtes Abzeichen.
 ///
@@ -101,6 +102,7 @@ class _Karte extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
 
     final skalierung = CurvedAnimation(
@@ -138,7 +140,7 @@ class _Karte extends StatelessWidget {
               ),
               const SizedBox(height: AppTheme.gapM),
               Text(
-                abzeichen.jubel,
+                abzeichen.jubel(texte),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 24,
@@ -151,7 +153,7 @@ class _Karte extends StatelessWidget {
               if (abzeichen.jubel != abzeichen.titel) ...[
                 const SizedBox(height: AppTheme.gapXs),
                 Text(
-                  abzeichen.titel,
+                  abzeichen.titel(texte),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15,
@@ -164,7 +166,7 @@ class _Karte extends StatelessWidget {
               ],
               const SizedBox(height: AppTheme.gapS),
               Text(
-                abzeichen.beschreibung,
+                abzeichen.beschreibung(texte),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   height: 1.5,

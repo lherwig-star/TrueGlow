@@ -31,7 +31,7 @@ class EinwilligungScreen extends ConsumerWidget {
     final pflichtFehlt = ref.watch(pflichtEinwilligungFehltProvider);
 
     return AppPage(
-      title: 'Kurz bestätigen',
+      title: texte.einwilligungKurzTitel,
       showBackButton: false,
       bottomBar: FilledButton(
         onPressed: pflichtFehlt
@@ -50,29 +50,21 @@ class EinwilligungScreen extends ConsumerWidget {
       children: [
         SectionCard(
           title: ausAlterZustimmung
-              ? 'Wir haben nachgeschärft'
-              : 'Neue Fassung der Texte',
+              ? texte.einwilligungNachgeschaerftTitel
+              : texte.einwilligungNeueFassungTitel,
           icon: Icons.fact_check_outlined,
           child: MutedText(
             ausAlterZustimmung
-                ? 'Bisher gab es ein einzelnes Häkchen für alles. Weil deine '
-                    'Fotos etwas anderes sind als die Nutzung der App, fragen '
-                    'wir beides jetzt getrennt — einmalig und danach nie '
-                    'wieder.'
-                : 'Unsere Rechtstexte haben sich geändert. Damit deine '
-                    'Zustimmung sich auf das bezieht, was tatsächlich gilt, '
-                    'bitten wir dich einmal um Bestätigung.',
+                ? texte.einwilligungNachgeschaerftText
+                : texte.einwilligungNeueFassungText,
           ),
         ),
         const SizedBox(height: AppTheme.gapM),
         const EinwilligungsAuswahl(kanal: Einwilligungskanal.nachtrag),
         const SizedBox(height: AppTheme.gapM),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppTheme.gapXs),
-          child: MutedText(
-            'Deine bisherigen Analysen, dein Plan und deine Serie bleiben '
-            'unverändert erhalten.',
-          ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.gapXs),
+          child: MutedText(texte.einwilligungBleibtErhalten),
         ),
       ],
     );

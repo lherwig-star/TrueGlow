@@ -29,13 +29,24 @@ class AnalysisLoadingScreen extends ConsumerStatefulWidget {
 }
 
 class _AnalysisLoadingScreenState extends ConsumerState<AnalysisLoadingScreen> {
-  static const _statusTexte = [
-    'Analysiere Gesichtsform...',
-    'Prüfe Hautbild...',
-    'Vergleiche Frisur-Optionen...',
-    'Stelle Empfehlungen zusammen...',
-    'Erstelle deinen Plan...',
+  /// Die Zeilen, die während der Analyse durchlaufen.
+  ///
+  /// Als Funktionen und nicht als fertige Zeichenketten: Eine Konstante würde
+  /// beim Start der Klasse ausgewertet, die Sprache steht aber erst im
+  /// `build` fest.
+  static const _statusTexte = <String Function(L)>[
+    _gesichtsform,
+    _hautbild,
+    _frisur,
+    _empfehlungen,
+    _plan,
   ];
+
+  static String _gesichtsform(L t) => t.ladeGesichtsform;
+  static String _hautbild(L t) => t.ladeHautbild;
+  static String _frisur(L t) => t.ladeFrisur;
+  static String _empfehlungen(L t) => t.ladeEmpfehlungen;
+  static String _plan(L t) => t.ladePlan;
 
   Timer? _rotation;
   int _index = 0;
@@ -82,6 +93,7 @@ class _AnalysisLoadingScreenState extends ConsumerState<AnalysisLoadingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     // Bei Erfolg direkt zum Ergebnis wechseln, beim Abbruch zurueck.
     ref.listen<AnalyseZustand>(analysisControllerProvider, (_, neu) {
       if (neu is AnalyseFertig) {
@@ -104,7 +116,7 @@ class _AnalysisLoadingScreenState extends ConsumerState<AnalysisLoadingScreen> {
                 onZurueck: () => context.pop(),
               ),
             _ => _Laden(
-                text: _statusTexte[_index],
+                text: _statusTexte[_index](texte),
                 index: _index,
                 onAbbrechen: _abbrechen,
               ),
@@ -250,13 +262,13 @@ class _Fehler extends StatelessWidget {
         ),
         const SizedBox(height: AppTheme.gapM),
         Text(
-          fehler.titel,
+          fehler.titel(texte),
           textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppTheme.gapS),
         Text(
-          fehler.tipp,
+          fehler.tipp(texte),
           textAlign: TextAlign.center,
           style: TextStyle(
             color: farben.textSekundaer,

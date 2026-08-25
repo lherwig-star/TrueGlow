@@ -255,7 +255,7 @@ void main() {
       container.read(routerProvider).push(Routes.richtung);
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text(Richtungsziel.markanter.label));
+      await tester.tap(find.text(Richtungsziel.markanter.label(texte)));
       await tester.pumpAndSettle();
 
       await tester.enterText(
@@ -308,7 +308,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(texte.richtungTitel), findsOneWidget);
-      expect(find.text(Richtungsziel.gepflegter.label), findsOneWidget);
+      expect(find.text(Richtungsziel.gepflegter.label(texte)), findsOneWidget);
       expect(find.text(texte.richtungAktualisieren), findsNothing);
 
       // Richtung aendern -> der Report bietet die Neuberechnung an.

@@ -1,4 +1,5 @@
 import '../../modules/models/analyse_modul.dart';
+import '../../../core/l10n/texte.dart';
 
 // Datenmodell der Check-ins. Ein Check-in ist eine kurze Rueckmeldung des
 // Nutzers zum laufenden Plan: erst nur zur Alltagstauglichkeit, spaeter auch
@@ -10,30 +11,13 @@ import '../../modules/models/analyse_modul.dart';
 /// im 30-Tage-Takt immer wieder [wirkung].
 enum CheckinTyp {
   /// Tag 7 – ausschliesslich Machbarkeit.
-  alltag(
-    titel: 'Alltags-Check',
-    intro: 'Eine Woche geschafft! Uns interessiert nur eins: Wie gut passen '
-        'die Aufgaben in deinen Alltag?',
-  ),
+  alltag,
 
   /// Tag 14 – Machbarkeit der Wackelkandidaten plus weiche Schnell-Effekte.
-  zwischen(
-    titel: 'Zwischencheck',
-    intro: 'Zwei Wochen dabei. Wir schauen kurz auf die Aufgaben, die zuletzt '
-        'gehakt haben – und wie sich die ersten Tage anfühlen.',
-  ),
+  zwischen,
 
   /// Tag 30 und alle 30 Tage danach – Wirkung inklusive Fortschrittsfoto.
-  wirkung(
-    titel: 'Wirkungs-Check',
-    intro: 'Ein Monat ist um. Jetzt lohnt der Blick darauf, was sich getan '
-        'hat – und was wir nachschärfen.',
-  );
-
-  const CheckinTyp({required this.titel, required this.intro});
-
-  final String titel;
-  final String intro;
+  wirkung;
 
   /// Ob in dieser Stufe nach Wirkung gefragt wird. Tag 7 bleibt bewusst
   /// aussen vor: sichtbare Veraenderungen brauchen Wochen, und eine zu fruehe
@@ -44,15 +28,26 @@ enum CheckinTyp {
   bool get mitFortschrittsfoto => this == CheckinTyp.wirkung;
 }
 
+// Anzeigetexte als Erweiterung – Begruendung in `features/onboarding/models/onboarding_profile.dart`.
+extension CheckinTypText on CheckinTyp {
+  String titel(L texte) => switch (this) {
+        CheckinTyp.alltag => texte.checkinTypAlltagTitel,
+        CheckinTyp.zwischen => texte.checkinTypZwischenTitel,
+        CheckinTyp.wirkung => texte.checkinTypWirkungTitel,
+      };
+
+  String intro(L texte) => switch (this) {
+        CheckinTyp.alltag => texte.checkinTypAlltagIntro,
+        CheckinTyp.zwischen => texte.checkinTypZwischenIntro,
+        CheckinTyp.wirkung => texte.checkinTypWirkungIntro,
+      };
+}
+
 /// Das 3-Tap-Rating pro Habit.
 enum HabitBewertung {
-  laeuftGut('Läuft gut'),
-  gehtSo('Geht so'),
-  passtNicht('Passt nicht');
-
-  const HabitBewertung(this.label);
-
-  final String label;
+  laeuftGut,
+  gehtSo,
+  passtNicht;
 
   /// Ob nach dem Grund gefragt wird.
   bool get brauchtGrund => this == HabitBewertung.passtNicht;
@@ -65,31 +60,29 @@ enum HabitBewertung {
   }
 }
 
+// Anzeigetexte als Erweiterung – Begruendung in `features/onboarding/models/onboarding_profile.dart`.
+extension HabitBewertungText on HabitBewertung {
+  String label(L texte) => switch (this) {
+        HabitBewertung.laeuftGut => texte.bewertungLaeuftGut,
+        HabitBewertung.gehtSo => texte.bewertungGehtSo,
+        HabitBewertung.passtNicht => texte.bewertungPasstNicht,
+      };
+}
+
 /// Warum ein Habit nicht passt – die Auswahl entscheidet, wie die KI den
 /// Habit umbaut.
+///
+/// Was die KI aus dem Grund machen soll, stand frueher als `anweisung` hier.
+/// Sie steht jetzt ausschliesslich in `functions/src/labels.ts`: Der Prompt
+/// gehoert auf den Server, und zwei Fassungen desselben Satzes waeren zwei
+/// Fassungen, die auseinanderlaufen. Der Client schickt nur den Namen des
+/// Werts.
 enum PasstNichtGrund {
-  zeit('Zu zeitaufwendig'),
-  vergessen('Vergesse ich'),
-  unangenehm('Unangenehm / mag ich nicht'),
-  teuer('Zu teuer'),
-  anderer('Anderer Grund');
-
-  const PasstNichtGrund(this.label);
-
-  final String label;
-
-  /// Was die KI aus dem Grund machen soll.
-  String get anweisung => switch (this) {
-        PasstNichtGrund.zeit =>
-          'kürzere Alternative oder geringere Frequenz wählen',
-        PasstNichtGrund.vergessen =>
-          'an eine bestehende Alltagsroutine koppeln (Trigger nennen)',
-        PasstNichtGrund.unangenehm =>
-          'durch etwas ersetzen, das denselben Zweck angenehmer erreicht',
-        PasstNichtGrund.teuer =>
-          'günstigere Alternative mit gleichem Zweck vorschlagen',
-        PasstNichtGrund.anderer => 'den genannten Grund berücksichtigen',
-      };
+  zeit,
+  vergessen,
+  unangenehm,
+  teuer,
+  anderer;
 
   static PasstNichtGrund? ausName(Object? name) {
     for (final wert in values) {
@@ -174,17 +167,40 @@ class HabitFeedback {
 /// Eine Wirkungsfrage samt stabiler ID – die ID steht in der Historie, damit
 /// spaetere Textaenderungen alte Antworten nicht entwerten.
 class WirkungsFrage {
-  const WirkungsFrage({
-    required this.id,
-    required this.text,
-    this.modul,
-  });
+  const WirkungsFrage({required this.id, this.modul});
 
+  /// Stabiler Schluessel. Steht so in gespeicherten Check-ins und ist
+  /// zugleich der Weg zum uebersetzten Text – siehe [WirkungsFrageText].
   final String id;
-  final String text;
 
   /// Zu welchem Modul die Frage gehoert; null = modulunabhaengig.
   final AnalyseModul? modul;
+}
+
+/// Der Fragetext.
+///
+/// Nachgeschlagen ueber die [WirkungsFrage.id] statt als Feld mitgefuehrt:
+/// Die id liegt in gespeicherten Check-ins und darf sich nie aendern, der
+/// Text darf jederzeit umformuliert oder uebersetzt werden. Beides in einem
+/// Feld haette den Text zum Datenmodell gemacht.
+///
+/// Eine unbekannte id kann nur aus einem Programmierfehler stammen – die
+/// Liste in `wirkungsfragen.dart` ist die einzige Quelle. Deshalb ein
+/// sprechender Rueckfall statt einer leeren Zeile im Check-in.
+extension WirkungsFrageText on WirkungsFrage {
+  String text(L texte) => switch (id) {
+        'routine' => texte.frageRoutine,
+        'hautGefuehl' => texte.frageHautGefuehl,
+        'zaehneGefuehl' => texte.frageZaehneGefuehl,
+        'haltungGefuehl' => texte.frageHaltungGefuehl,
+        'anziehen' => texte.frageAnziehen,
+        'basisErgebnis' => texte.frageBasisErgebnis,
+        'hautErgebnis' => texte.frageHautErgebnis,
+        'zaehneErgebnis' => texte.frageZaehneErgebnis,
+        'figurErgebnis' => texte.frageHaltungErgebnis,
+        'stilErgebnis' => texte.frageStilErgebnis,
+        _ => id,
+      };
 }
 
 /// Die Antwort auf eine Wirkungsfrage.
@@ -342,12 +358,16 @@ class Checkin {
     );
   }
 
-  Checkin mitWirkung(WirkungsFrage frage, WirkungsAntwort antwort) {
+  Checkin mitWirkung(
+    WirkungsFrage frage,
+    WirkungsAntwort antwort,
+    L texte,
+  ) {
     final vorhanden = wirkung.where((w) => w.frageId == frage.id).firstOrNull;
     final neu = vorhanden == null
         ? WirkungsFeedback(
             frageId: frage.id,
-            frage: frage.text,
+            frage: frage.text(texte),
             antwort: antwort,
           )
         : vorhanden.copyWith(antwort: antwort);
@@ -418,4 +438,15 @@ class Checkin {
           : '',
     );
   }
+}
+
+// Anzeigetexte als Erweiterung – Begruendung in `features/onboarding/models/onboarding_profile.dart`.
+extension PasstNichtGrundText on PasstNichtGrund {
+  String label(L texte) => switch (this) {
+        PasstNichtGrund.zeit => texte.grundZeit,
+        PasstNichtGrund.vergessen => texte.grundVergessen,
+        PasstNichtGrund.unangenehm => texte.grundUnangenehm,
+        PasstNichtGrund.teuer => texte.grundTeuer,
+        PasstNichtGrund.anderer => texte.grundAnderer,
+      };
 }

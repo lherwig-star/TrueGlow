@@ -11,6 +11,7 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../analysis/models/analysis_result.dart';
 import '../../direction/logic/direction_controller.dart';
+import '../../direction/models/richtung.dart';
 import '../../history/logic/analysis_repository.dart';
 import '../../modules/logic/module_controller.dart';
 import '../../modules/models/analyse_modul.dart';
@@ -42,8 +43,8 @@ class ResultScreen extends ConsumerWidget {
             color: context.farben.textSekundaer,
           ),
           const SizedBox(height: AppTheme.gapS),
-          const MutedText(
-            'Diese Analyse ist nicht mehr vorhanden.',
+          MutedText(
+            texte.ergebnisNichtVorhanden,
             align: TextAlign.center,
           ),
         ],
@@ -104,6 +105,7 @@ class _Kopf extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
 
     return Row(
@@ -112,7 +114,7 @@ class _Kopf extends StatelessWidget {
         const SizedBox(width: 6),
         Expanded(
           child: MutedText(
-            '${Datum.relativ(ergebnis.erstelltAm)} · '
+            '${Datum.relativ(ergebnis.erstelltAm, texte.localeName, heute: texte.datumHeute, gestern: texte.datumGestern)} · '
             '${ergebnis.kapitel.length} Kapitel · '
             '${ergebnis.anzahlEmpfehlungen} Empfehlungen',
           ),
@@ -162,7 +164,7 @@ class _RichtungKarte extends ConsumerWidget {
                 runSpacing: AppTheme.gapXs,
                 children: [
                   for (final ziel in verwendet.sortierteZiele)
-                    _ZielPille(ziel.label),
+                    _ZielPille(ziel.label(texte)),
                 ],
               ),
             if (verwendet.kurzfassung.isNotEmpty) ...[
@@ -242,6 +244,7 @@ class _KapitelBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
 
     return Column(
@@ -261,7 +264,7 @@ class _KapitelBlock extends StatelessWidget {
             const SizedBox(width: AppTheme.gapS),
             Expanded(
               child: Text(
-                kapitel.titel,
+                kapitel.titel(texte),
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,

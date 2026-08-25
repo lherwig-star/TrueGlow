@@ -1,5 +1,6 @@
 import '../../modules/models/analyse_modul.dart';
 import '../models/checkin.dart';
+import '../../../core/l10n/texte.dart';
 
 /// Die Fragen zur Wirkung – getrennt nach dem, was frueh ueberhaupt spuerbar
 /// ist, und dem, was sich erst nach Wochen zeigt.
@@ -19,26 +20,21 @@ class Wirkungsfragen {
   static const _frueh = [
     WirkungsFrage(
       id: 'routine',
-      text: 'Wie gut läuft deine Morgenroutine?',
     ),
     WirkungsFrage(
       id: 'hautGefuehl',
-      text: 'Wie fühlt sich deine Haut an?',
       modul: AnalyseModul.hautFarbtyp,
     ),
     WirkungsFrage(
       id: 'zaehneGefuehl',
-      text: 'Wie sauber fühlen sich deine Zähne an?',
       modul: AnalyseModul.zaehneLaecheln,
     ),
     WirkungsFrage(
       id: 'haltungGefuehl',
-      text: 'Wie bewusst nimmst du deine Haltung wahr?',
       modul: AnalyseModul.figurPassform,
     ),
     WirkungsFrage(
       id: 'anziehen',
-      text: 'Wie leicht fällt dir das Anziehen morgens?',
       modul: AnalyseModul.stilKleiderschrank,
     ),
   ];
@@ -47,27 +43,22 @@ class Wirkungsfragen {
   static const _wirkung = [
     WirkungsFrage(
       id: 'basisErgebnis',
-      text: 'Wie haben sich Frisur und Bart entwickelt?',
       modul: AnalyseModul.basis,
     ),
     WirkungsFrage(
       id: 'hautErgebnis',
-      text: 'Wie hat sich dein Hautbild entwickelt?',
       modul: AnalyseModul.hautFarbtyp,
     ),
     WirkungsFrage(
       id: 'zaehneErgebnis',
-      text: 'Wie haben sich Zähne und Lächeln entwickelt?',
       modul: AnalyseModul.zaehneLaecheln,
     ),
     WirkungsFrage(
       id: 'figurErgebnis',
-      text: 'Wie hat sich deine Haltung entwickelt?',
       modul: AnalyseModul.figurPassform,
     ),
     WirkungsFrage(
       id: 'stilErgebnis',
-      text: 'Wie gut funktionieren deine Outfits inzwischen?',
       modul: AnalyseModul.stilKleiderschrank,
     ),
   ];
@@ -95,24 +86,17 @@ class Wirkungsfragen {
   /// Erwartungsmanagement fuer den Zwischencheck: was jetzt noch nicht zu
   /// sehen sein kann. Der Text richtet sich nach dem Modul, bei dem die
   /// Ungeduld am groessten ist.
-  static String erwartung(Set<AnalyseModul> module) {
-    if (module.contains(AnalyseModul.hautFarbtyp)) {
-      return 'Sichtbare Hautveränderungen zeigen sich meist ab Woche 4–6 – '
-          'du bist auf Kurs.';
-    }
+  static String erwartung(Set<AnalyseModul> module, L texte) {
+    if (module.contains(AnalyseModul.hautFarbtyp)) return texte.einordnungHaut;
     if (module.contains(AnalyseModul.zaehneLaecheln)) {
-      return 'Verfärbungen gehen langsam zurück: Der Unterschied wird meist '
-          'ab Woche 4 sichtbar – du bist auf Kurs.';
+      return texte.einordnungZaehne;
     }
     if (module.contains(AnalyseModul.figurPassform)) {
-      return 'Haltung ändert sich über Wochen, nicht über Tage – ab Woche 4 '
-          'bis 6 fällt es auch anderen auf. Du bist auf Kurs.';
+      return texte.einordnungHaltung;
     }
     if (module.contains(AnalyseModul.stilKleiderschrank)) {
-      return 'Ein Kleiderschrank verändert sich Stück für Stück – nach vier '
-          'bis sechs Wochen greift die neue Kombination von selbst.';
+      return texte.einordnungStil;
     }
-    return 'Haare wachsen rund einen Zentimeter im Monat – die neue Form '
-        'zeigt sich ab Woche 4. Du bist auf Kurs.';
+    return texte.einordnungBasis;
   }
 }

@@ -150,8 +150,9 @@ void main() {
           .mitBewertung('Bart ölen', HabitBewertung.passtNicht)
           .mitGrund('Bart ölen', PasstNichtGrund.zeit, notiz: 'morgens hektisch')
           .mitWirkung(
-            const WirkungsFrage(id: 'hautErgebnis', text: 'Und die Haut?'),
+            const WirkungsFrage(id: 'hautErgebnis'),
             WirkungsAntwort.besser,
+            texte,
           )
           .copyWith(erledigtAm: DateTime(2026, 9, 1), fazit: 'Läuft.');
 
@@ -236,11 +237,11 @@ void main() {
 
     test('der Erwartungstext richtet sich nach den Modulen', () {
       expect(
-        Wirkungsfragen.erwartung({AnalyseModul.hautFarbtyp}),
+        Wirkungsfragen.erwartung({AnalyseModul.hautFarbtyp}, texte),
         contains('Woche 4–6'),
       );
       expect(
-        Wirkungsfragen.erwartung({AnalyseModul.basis}),
+        Wirkungsfragen.erwartung({AnalyseModul.basis}, texte),
         contains('Zentimeter'),
       );
     });
@@ -257,7 +258,7 @@ void main() {
           checkin: checkin ?? _checkin(typ: typ),
           habits: habits,
           fragen: Wirkungsfragen.fuer(typ, {AnalyseModul.basis}),
-          erwartung: Wirkungsfragen.erwartung({AnalyseModul.basis}),
+          erwartung: Wirkungsfragen.erwartung({AnalyseModul.basis}, texte),
           fotoMoeglich: mitFoto,
         );
 
@@ -631,14 +632,14 @@ void main() {
       final weiter = find.widgetWithText(FilledButton, texte.weiter);
       expect(tester.widget<FilledButton>(weiter).onPressed, isNull);
 
-      await tester.tap(find.text(HabitBewertung.laeuftGut.label).first);
+      await tester.tap(find.text(HabitBewertung.laeuftGut.label(texte)).first);
       await tester.pumpAndSettle();
-      await tester.tap(find.text(HabitBewertung.passtNicht.label).last);
+      await tester.tap(find.text(HabitBewertung.passtNicht.label(texte)).last);
       await tester.pumpAndSettle();
 
       // Die Nachfrage klappt direkt unter dem Habit auf.
-      expect(find.text(PasstNichtGrund.zeit.label), findsOneWidget);
-      await tester.tap(find.text(PasstNichtGrund.zeit.label));
+      expect(find.text(PasstNichtGrund.zeit.label(texte)), findsOneWidget);
+      await tester.tap(find.text(PasstNichtGrund.zeit.label(texte)));
       await tester.pumpAndSettle();
 
       await tester.tap(find.widgetWithText(FilledButton, texte.weiter));

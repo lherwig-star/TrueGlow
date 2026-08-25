@@ -177,19 +177,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     WidgetRef ref,
     AnalysisResult analyse,
   ) {
+    final texte = context.texte;
+
     return [
       const CheckinKarte(),
       const StreakKarte(),
       const SizedBox(height: AppTheme.gapS),
       SectionCard(
-        title: 'Dein Plan',
+        title: texte.homeDeinPlan,
         icon: Icons.flag_outlined,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             MutedText(
-              '${Datum.relativ(analyse.erstelltAm)} erstellt · '
-              '${analyse.anzahlEmpfehlungen} Empfehlungen',
+              texte.homePlanZeile(
+                Datum.relativ(
+                  analyse.erstelltAm,
+                  texte.localeName,
+                  heute: texte.datumHeute,
+                  gestern: texte.datumGestern,
+                ),
+                analyse.anzahlEmpfehlungen,
+              ),
             ),
             if (analyse.gesichtsform.isNotEmpty) ...[
               const SizedBox(height: AppTheme.gapS),
@@ -216,7 +225,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: OutlinedButton(
                     onPressed: () =>
                         context.push('${Routes.result}/${analyse.id}'),
-                    child: const Text('Analyse'),
+                    child: Text(texte.homeAnalyseKurz),
                   ),
                 ),
               ],

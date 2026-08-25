@@ -6,6 +6,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/section_card.dart';
 import '../../logic/streak_repository.dart';
 import '../../models/abzeichen.dart';
+import '../../../../core/l10n/texte.dart';
 
 /// Uebersicht aller Meilensteine: erreichte farbig, offene ausgegraut mit
 /// Hinweis, was noch fehlt.
@@ -53,6 +54,7 @@ class _AbzeichenZeile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
     final erreicht = stand.erreicht;
     final farbe = erreicht ? farben.akzent : farben.textSekundaer;
@@ -77,16 +79,16 @@ class _AbzeichenZeile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                stand.abzeichen.titel,
+                stand.abzeichen.titel(texte),
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   color: erreicht ? farben.textPrimaer : farben.textSekundaer,
                 ),
               ),
-              if (stand.fortschrittstext.isNotEmpty) ...[
+              if (!stand.erreicht) ...[
                 const SizedBox(height: 1),
                 Text(
-                  stand.fortschrittstext,
+                  _fortschritt(stand, texte),
                   style: TextStyle(
                     fontSize: 13,
                     color: farben.textSekundaer,
@@ -102,3 +104,14 @@ class _AbzeichenZeile extends StatelessWidget {
     );
   }
 }
+
+/// Was einem noch nicht erreichten Abzeichen fehlt.
+///
+/// Der Satz haengt am Abzeichen: Bei „Alles freigeschaltet" sind es Module,
+/// bei den Streak-Zielen Tage, und die erste Analyse ist gar keine Zahl,
+/// sondern eine Aufforderung.
+String _fortschritt(AbzeichenStand stand, L texte) => switch (stand.abzeichen) {
+      Abzeichen.ersteAnalyse => texte.abzeichenErsteAnalyseOffen,
+      Abzeichen.alleModule => texte.abzeichenNochModule(stand.fehlend),
+      _ => texte.abzeichenNochTage(stand.fehlend),
+    };

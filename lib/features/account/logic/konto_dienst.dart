@@ -3,29 +3,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/firebase/firebase_start.dart';
 import '../../analysis/logic/functions_client.dart';
+import '../../../core/l10n/texte.dart';
 
 /// Was beim Löschen schiefgehen kann.
-enum KontoFehler {
-  neuAnmelden(
-    'Bitte kurz neu anmelden',
-    'Eine Kontolöschung lässt sich nicht rückgängig machen. Deshalb fragen '
-        'wir vorher noch einmal nach deiner Anmeldung.',
-  ),
-  keinInternet(
-    'Keine Verbindung',
-    'Zum Löschen brauchen wir kurz Internet – sonst bliebe dein Konto in der '
-        'Cloud stehen. Versuch es noch einmal, sobald du online bist.',
-  ),
-  fehlgeschlagen(
-    'Löschen nicht möglich',
-    'Da ist etwas schiefgelaufen. Deine Daten sind unverändert – bitte '
-        'versuch es später noch einmal.',
-  );
+enum KontoFehler { neuAnmelden, keinInternet, fehlgeschlagen }
 
-  const KontoFehler(this.titel, this.tipp);
+// Anzeigetexte als Erweiterung – Begruendung in `onboarding_profile.dart`.
+extension KontoFehlerText on KontoFehler {
+  String titel(L texte) => switch (this) {
+        KontoFehler.neuAnmelden => texte.kontoNeuAnmeldenTitel,
+        KontoFehler.keinInternet => texte.kontoKeinInternetTitel,
+        KontoFehler.fehlgeschlagen => texte.kontoFehlgeschlagenTitel,
+      };
 
-  final String titel;
-  final String tipp;
+  String tipp(L texte) => switch (this) {
+        KontoFehler.neuAnmelden => texte.kontoNeuAnmeldenTipp,
+        KontoFehler.keinInternet => texte.kontoKeinInternetTipp,
+        KontoFehler.fehlgeschlagen => texte.kontoFehlgeschlagenTipp,
+      };
 }
 
 class KontoException implements Exception {

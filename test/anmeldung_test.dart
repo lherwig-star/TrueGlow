@@ -51,8 +51,8 @@ void main() {
     handyGroesse(tester, hoehe: 1400);
     await _start(tester);
 
-    expect(find.text('Erst ausprobieren'), findsOneWidget);
-    expect(find.text('Mit Google anmelden'), findsOneWidget);
+    expect(find.text(texte.loginGast), findsOneWidget);
+    expect(find.text(texte.loginMitAnbieter(texte.anbieterGoogle)), findsOneWidget);
   });
 
   testWidgets('"Erst ausprobieren" fuehrt anonym ins Dashboard',
@@ -60,12 +60,12 @@ void main() {
     handyGroesse(tester, hoehe: 1400);
     final (container, anmeldung) = await _start(tester);
 
-    await tester.tap(find.text('Erst ausprobieren'));
+    await tester.tap(find.text(texte.loginGast));
     await tester.pumpAndSettle();
 
     expect(anmeldung.zuletztGenutzt, AuthAnbieter.anonym);
     expect(container.read(authRepositoryProvider).aktuell?.anonym, isTrue);
-    expect(find.text('Erst ausprobieren'), findsNothing);
+    expect(find.text(texte.loginGast), findsNothing);
   });
 
   testWidgets('ein Fehler bleibt auf dem Screen stehen', (tester) async {
@@ -73,13 +73,13 @@ void main() {
     final (_, anmeldung) = await _start(tester);
 
     anmeldung.naechsterFehler = AuthFehler.keinInternet;
-    await tester.tap(find.text('Mit Google anmelden'));
+    await tester.tap(find.text(texte.loginMitAnbieter(texte.anbieterGoogle)));
     await tester.pumpAndSettle();
 
-    expect(find.text(AuthFehler.keinInternet.titel), findsOneWidget);
-    expect(find.text(AuthFehler.keinInternet.tipp), findsOneWidget);
+    expect(find.text(AuthFehler.keinInternet.titel(texte)), findsOneWidget);
+    expect(find.text(AuthFehler.keinInternet.tipp(texte)), findsOneWidget);
     // Der Screen bleibt bedienbar, statt in einen Ladezustand zu kippen.
-    expect(find.text('Erst ausprobieren'), findsOneWidget);
+    expect(find.text(texte.loginGast), findsOneWidget);
   });
 
   testWidgets('angemeldet startet die App direkt im Dashboard',
@@ -90,7 +90,7 @@ void main() {
       nutzer: const TrueGlowNutzer(uid: 'u1', anonym: true),
     );
 
-    expect(find.text('Erst ausprobieren'), findsNothing);
+    expect(find.text(texte.loginGast), findsNothing);
   });
 
   testWidgets('Abmelden in den Einstellungen fuehrt zurueck zur Anmeldung',
@@ -111,7 +111,7 @@ void main() {
 
     expect(find.text('Jemand'), findsOneWidget);
 
-    await tester.tap(find.text('Abmelden'));
+    await tester.tap(find.text(texte.settingsAbmelden));
     await tester.pumpAndSettle();
 
     // Der Dialog erklaert die Folge, bevor er sie ausloest.
@@ -119,13 +119,13 @@ void main() {
     await tester.tap(
       find.descendant(
         of: find.byType(AlertDialog),
-        matching: find.widgetWithText(TextButton, 'Abmelden'),
+        matching: find.widgetWithText(TextButton, texte.settingsAbmelden),
       ),
     );
     await tester.pumpAndSettle();
 
     expect(anmeldung.aktuell, isNull);
-    expect(find.text('Erst ausprobieren'), findsOneWidget);
+    expect(find.text(texte.loginGast), findsOneWidget);
   });
 
   group('AuthAnbieter', () {
@@ -162,9 +162,9 @@ void main() {
         email: 'jemand@example.com',
       );
 
-      expect(anonym.beschriftung, 'Ohne Konto angemeldet');
-      expect(mitName.beschriftung, 'Jemand');
-      expect(nurMail.beschriftung, 'jemand@example.com');
+      expect(anonym.beschriftung(texte), 'Ohne Konto angemeldet');
+      expect(mitName.beschriftung(texte), 'Jemand');
+      expect(nurMail.beschriftung(texte), 'jemand@example.com');
     });
   });
 }

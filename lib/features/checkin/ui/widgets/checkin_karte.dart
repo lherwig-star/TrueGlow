@@ -8,6 +8,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/section_card.dart';
 import '../../logic/checkin_controller.dart';
+import '../../models/checkin.dart';
 
 /// Die Einladung zum Check-in auf der Startseite.
 ///
@@ -62,7 +63,7 @@ class CheckinKarte extends ConsumerWidget {
                         ),
                       ),
                       Text(
-                        typ.titel,
+                        typ.titel(texte),
                         style: TextStyle(
                           fontSize: 12.5,
                           fontWeight: FontWeight.w600,

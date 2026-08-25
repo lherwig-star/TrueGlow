@@ -237,17 +237,17 @@ class _WillkommenSeite extends StatelessWidget {
             children: [
               _Punkt(
                 icon: Icons.photo_camera_outlined,
-                text: 'Zwei Fotos aufnehmen',
+                text: texte.onbPunktFotos,
               ),
               SizedBox(height: AppTheme.gapM),
               _Punkt(
                 icon: Icons.auto_awesome_outlined,
-                text: 'KI-Analyse deiner Merkmale',
+                text: texte.onbPunktAnalyse,
               ),
               SizedBox(height: AppTheme.gapM),
               _Punkt(
                 icon: Icons.checklist_rtl_outlined,
-                text: 'Konkreter Plan mit Checkliste',
+                text: texte.onbPunktPlan,
               ),
             ],
           ),
@@ -306,7 +306,7 @@ class _AlterBudgetSeite extends StatelessWidget {
           children: [
             for (final a in Altersbereich.values)
               _Chip(
-                label: a.label,
+                label: a.label(texte),
                 aktiv: profil.alter == a,
                 onTap: () => ctrl.setAlter(a),
               ),
@@ -324,8 +324,8 @@ class _AlterBudgetSeite extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: AppTheme.gapS),
             child: _Auswahlkarte(
-              titel: b.label,
-              untertitel: b.beschreibung,
+              titel: b.label(texte),
+              untertitel: b.beschreibung(texte),
               aktiv: profil.budget == b,
               onTap: () => ctrl.setBudget(b),
             ),
@@ -352,8 +352,8 @@ class _ZeitSeite extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: AppTheme.gapS),
             child: _Auswahlkarte(
-              titel: z.label,
-              untertitel: z.beschreibung,
+              titel: z.label(texte),
+              untertitel: z.beschreibung(texte),
               aktiv: profil.zeit == z,
               onTap: () => ctrl.setZeit(z),
             ),
@@ -380,7 +380,7 @@ class _FokusSeite extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: AppTheme.gapS),
             child: _Auswahlkarte(
-              titel: f.label,
+              titel: f.label(texte),
               aktiv: profil.fokus.contains(f),
               mehrfach: true,
               onTap: () => ctrl.toggleFokus(f),
@@ -404,16 +404,16 @@ class _DatenschutzSeite extends StatelessWidget {
     final texte = context.texte;
     return _Seite(
       titel: texte.onbDatenschutzTitel,
-      text: 'Bitte lies die folgenden Hinweise, bevor es losgeht.',
+      text: texte.onbDatenschutzText,
       children: [
         SectionCard(
-          title: 'Keine medizinische Beratung',
+          title: texte.onbKeineMedizin,
           icon: Icons.medical_information_outlined,
           child: MutedText(texte.disclaimerMedizin),
         ),
         SizedBox(height: AppTheme.gapS),
         SectionCard(
-          title: 'Umgang mit deinen Fotos',
+          title: texte.onbUmgangFotos,
           icon: Icons.lock_outline,
           child: MutedText(texte.disclaimerFotos),
         ),

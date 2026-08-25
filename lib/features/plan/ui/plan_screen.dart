@@ -68,8 +68,8 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
                   color: farben.textSekundaer,
                 ),
                 const SizedBox(height: AppTheme.gapS),
-                const MutedText(
-                  'Noch kein Plan vorhanden. Starte zuerst eine Analyse.',
+                MutedText(
+                  texte.planLeer,
                   align: TextAlign.center,
                 ),
               ]

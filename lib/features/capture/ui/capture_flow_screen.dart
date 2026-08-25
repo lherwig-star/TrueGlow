@@ -56,19 +56,17 @@ class _CaptureFlowScreenState extends ConsumerState<CaptureFlowScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final zustand = ref.watch(moduleControllerProvider);
     final aufnahmen = ref.watch(captureControllerProvider);
 
     final schritte = baueAufnahmeFlow(zustand.module, nur: widget.nurModul);
     if (schritte.isEmpty) {
-      return const AppPage(
-        title: 'Aufnahme',
+      return AppPage(
+        title: texte.aufnahmeTitel,
         children: [
-          SizedBox(height: AppTheme.gapXl),
-          MutedText(
-            'Für diese Auswahl gibt es nichts aufzunehmen.',
-            align: TextAlign.center,
-          ),
+          const SizedBox(height: AppTheme.gapXl),
+          MutedText(texte.flowNichtsAufzunehmen, align: TextAlign.center),
         ],
       );
     }
@@ -83,7 +81,7 @@ class _CaptureFlowScreenState extends ConsumerState<CaptureFlowScreen> {
         if (!didPop) setState(() => _index = index - 1);
       },
       child: AppPage(
-        title: 'Schritt ${index + 1} von ${schritte.length}',
+        title: texte.flowSchritt(index + 1, schritte.length),
         bottomFade: true,
         bottomBar: _Aktionen(
           schritt: schritt,

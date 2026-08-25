@@ -7,6 +7,7 @@ import '../../../core/widgets/section_card.dart';
 import '../../legal/ui/rechtstexte_zeile.dart';
 import '../logic/einwilligung_controller.dart';
 import '../models/einwilligung.dart';
+import '../../../core/l10n/texte.dart';
 
 /// Alle Bestaetigungen zum Ankreuzen.
 ///
@@ -49,6 +50,7 @@ class EinwilligungsHaken extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final farben = context.farben;
     final gilt = ref.watch(einwilligungGiltProvider(art));
 
@@ -76,17 +78,17 @@ class EinwilligungsHaken extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      art.titel,
+                      art.titel(texte),
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         color: farben.textPrimaer,
                       ),
                     ),
                     const SizedBox(height: AppTheme.gapXs),
-                    MutedText(erklaerung(art)),
+                    MutedText(erklaerung(art, texte)),
                     if (!art.pflicht) ...[
                       const SizedBox(height: AppTheme.gapXs),
-                      MutedText(freiwilligkeitshinweis(art)),
+                      MutedText(freiwilligkeitshinweis(art, texte)),
                     ],
                   ],
                 ),
@@ -103,38 +105,18 @@ class EinwilligungsHaken extends ConsumerWidget {
   /// Der Drittlandbezug steht ausdruecklich drin: Gesichtsaufnahmen sind
   /// biometrienah, und die Uebermittlung an einen US-Anbieter ist der Punkt,
   /// den eine Einwilligung tragen muss.
-  static String erklaerung(Einwilligungsart art) => switch (art) {
-        Einwilligungsart.mindestalter =>
-          'TrueGlow verarbeitet Aufnahmen deines Gesichts und richtet sich '
-              'deshalb ausschließlich an Erwachsene. Mit dem Häkchen '
-              'bestätigst du, dass du volljährig bist.',
-        Einwilligungsart.nutzung =>
-          'Ich habe die Nutzungsbedingungen und die Datenschutzerklärung '
-              'gelesen und stimme ihnen zu.',
-        Einwilligungsart.diagnose =>
-          'Ich willige ein, dass anonyme Absturzberichte und eine sparsame '
-              'Nutzungsstatistik erfasst werden. Erfasst wird nur, DASS ein '
-              'Schritt erreicht wurde – keine Fotos, keine Analyse-Inhalte, '
-              'keine Freitexte, keine Profilangaben.',
-        Einwilligungsart.fotoKi =>
-          'Ich willige ein, dass meine Fotos – darunter Aufnahmen meines '
-              'Gesichts – zur Auswertung an den KI-Dienst Google Gemini '
-              'übermittelt werden. Die Verarbeitung findet auf Servern von '
-              'Google statt, auch außerhalb der EU (Drittlandtransfer). Die '
-              'Bilder werden dort nicht gespeichert und nicht protokolliert.',
+  static String erklaerung(Einwilligungsart art, L texte) => switch (art) {
+        Einwilligungsart.mindestalter => texte.erklaerungMindestalter,
+        Einwilligungsart.nutzung => texte.erklaerungNutzung,
+        Einwilligungsart.diagnose => texte.erklaerungDiagnose,
+        Einwilligungsart.fotoKi => texte.erklaerungFotoKi,
       };
 
-  static String freiwilligkeitshinweis(Einwilligungsart art) => switch (art) {
-        Einwilligungsart.fotoKi =>
-          'Freiwillig und jederzeit in den Einstellungen widerrufbar. Ohne '
-              'diese Einwilligung sind keine neuen Analysen möglich – alles '
-              'andere funktioniert weiter, bestehende Reports bleiben.',
-        Einwilligungsart.mindestalter =>
-          'Ohne Bestätigung bleibt der Analyse-Bereich zu. Plan, Checklisten '
-              'und Check-ins kannst du trotzdem nutzen.',
-        Einwilligungsart.diagnose =>
-          'Freiwillig, standardmäßig aus und jederzeit widerrufbar. Hilft '
-              'uns, Abstürze zu finden, bevor sie in einer Bewertung landen.',
+  static String freiwilligkeitshinweis(Einwilligungsart art, L texte) =>
+      switch (art) {
+        Einwilligungsart.fotoKi => texte.freiwilligFotoKi,
+        Einwilligungsart.mindestalter => texte.freiwilligMindestalter,
+        Einwilligungsart.diagnose => texte.freiwilligDiagnose,
         Einwilligungsart.nutzung => '',
       };
 }

@@ -34,7 +34,7 @@ class FotoSchrittAnsicht extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          typ.label,
+          typ.label(texte),
           style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w800,
@@ -43,7 +43,7 @@ class FotoSchrittAnsicht extends ConsumerWidget {
         ),
         if (typ.optional) ...[
           const SizedBox(height: AppTheme.gapXs),
-          const MutedText('Optional – du kannst diesen Schritt überspringen.'),
+          MutedText(texte.fotoOptional),
         ],
         const SizedBox(height: AppTheme.gapM),
         _Sucher(typ: typ, foto: foto, laeuft: zustand.laeuft),
@@ -68,14 +68,14 @@ class FotoSchrittAnsicht extends ConsumerWidget {
           const SizedBox(height: AppTheme.gapS),
         ],
         SectionCard(
-          title: 'So klappt das Foto',
+          title: texte.fotoSoKlapptEs,
           icon: Icons.tips_and_updates_outlined,
-          child: MutedText(typ.hinweisFuer(module)),
+          child: MutedText(typ.hinweisFuer(module, texte)),
         ),
         if (typ.autoAusloeser) ...[
           const SizedBox(height: AppTheme.gapS),
           SectionCard(
-            title: 'Die App löst selbst aus',
+            title: texte.fotoAutoTitel,
             icon: Icons.timer_outlined,
             child: MutedText(texte.koerperAutoHinweis),
           ),
@@ -215,7 +215,7 @@ class _GeprueftBadge extends StatelessWidget {
           Icon(Icons.check_circle, size: 14, color: farben.erfolg),
           const SizedBox(width: 6),
           Text(
-            'Geprüft',
+            context.texte.fotoGeprueft,
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
@@ -235,7 +235,7 @@ class _PruefUeberlagerung extends StatelessWidget {
   Widget build(BuildContext context) {
     return ColoredBox(
       color: context.farben.hintergrund.withValues(alpha: 0.7),
-      child: const Column(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
@@ -245,8 +245,8 @@ class _PruefUeberlagerung extends StatelessWidget {
           ),
           SizedBox(height: AppTheme.gapS),
           Text(
-            'Foto wird geprüft...',
-            style: TextStyle(fontWeight: FontWeight.w600),
+            context.texte.fotoWirdGeprueft,
+            style: const TextStyle(fontWeight: FontWeight.w600),
           ),
         ],
       ),
@@ -263,6 +263,7 @@ class _Problemkarte extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
 
     return Container(
@@ -285,14 +286,14 @@ class _Problemkarte extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  problem.titel,
+                  problem.titel(texte),
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     color: farben.warnung,
                   ),
                 ),
                 const SizedBox(height: 4),
-                MutedText(problem.tipp),
+                MutedText(problem.tipp(texte)),
               ],
             ),
           ),
@@ -301,7 +302,7 @@ class _Problemkarte extends StatelessWidget {
             icon: const Icon(Icons.close, size: 18),
             color: farben.textSekundaer,
             visualDensity: VisualDensity.compact,
-            tooltip: 'Hinweis schließen',
+            tooltip: context.texte.hinweisSchliessen,
           ),
         ],
       ),

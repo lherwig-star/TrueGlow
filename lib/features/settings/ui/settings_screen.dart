@@ -28,6 +28,7 @@ import '../../modules/logic/module_controller.dart';
 import '../../history/logic/analysis_repository.dart';
 import '../../onboarding/logic/onboarding_controller.dart';
 import '../../plan/logic/plan_progress_repository.dart';
+import '../../../core/utils/datum.dart';
 
 /// Einstellungen: Angaben aendern, Daten loeschen (DSGVO), Rechtstexte.
 class SettingsScreen extends ConsumerWidget {
@@ -110,24 +111,21 @@ class SettingsScreen extends ConsumerWidget {
     WidgetRef ref,
     Loeschmodus modus,
   ) async {
+    final texte = context.texte;
     final kontoWeg = modus == Loeschmodus.kontoKomplett;
 
     final bestaetigt = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(
-          kontoWeg ? 'Konto endgültig löschen?' : 'Alle Daten löschen?',
+          kontoWeg
+              ? texte.settingsKontoLoeschenFrage
+              : texte.settingsDatenLoeschenFrage,
         ),
         content: Text(
           kontoWeg
-              ? 'Dein Konto und alle Inhalte werden unwiderruflich gelöscht – '
-                  'auf diesem Gerät und in der Cloud. Auch deine Fotos auf '
-                  'dem Gerät werden entfernt.\n\n'
-                  'Danach kannst du dich mit diesem Konto nicht mehr anmelden.'
-              : 'Analysen, Plan, Fortschritt und deine Angaben werden '
-                  'unwiderruflich entfernt – auf diesem Gerät und in deinem '
-                  'Konto. Auch deine Fotos auf dem Gerät werden gelöscht.\n\n'
-                  'Dein Konto selbst bleibt bestehen.',
+              ? texte.settingsKontoLoeschenText
+              : texte.settingsDatenLoeschenText,
         ),
         actions: [
           TextButton(
@@ -139,7 +137,11 @@ class SettingsScreen extends ConsumerWidget {
             style: TextButton.styleFrom(
               foregroundColor: context.farben.warnung,
             ),
-            child: Text(kontoWeg ? 'Konto löschen' : 'Löschen'),
+            child: Text(
+              kontoWeg
+                  ? texte.settingsKontoLoeschenKnopf
+                  : texte.loeschen,
+            ),
           ),
         ],
       ),
@@ -152,7 +154,7 @@ class SettingsScreen extends ConsumerWidget {
     // Zuerst die Cloud. Scheitert sie, wird lokal nichts angefasst: Ein
     // halbes Loeschen waere schlimmer als keins, weil der Nutzer glaubt,
     // es sei erledigt.
-    if (!await _cloudRaeumen(ref, modus, messenger)) return;
+    if (!await _cloudRaeumen(ref, modus, messenger, texte)) return;
 
     await ref.read(alleDatenLoeschenProvider)();
     await ref.read(imageQualityServiceProvider).fotosLoeschen();
@@ -168,8 +170,9 @@ class SettingsScreen extends ConsumerWidget {
     ref.read(planFortschrittProvider.notifier).neuLaden();
     ref.read(onboardingControllerProvider.notifier).zuruecksetzen();
     ref.read(einwilligungControllerProvider.notifier).zuruecksetzen();
-    // Die Theme-Auswahl liegt in derselben Box und wurde mitgeloescht.
+    // Theme und Sprache liegen in derselben Box und wurden mitgeloescht.
     ref.read(themeControllerProvider.notifier).neuLaden();
+    ref.read(sprachControllerProvider.notifier).neuLaden();
 
     if (kontoWeg) {
       await ref.read(authRepositoryProvider).abmelden();
@@ -187,6 +190,7 @@ class SettingsScreen extends ConsumerWidget {
     WidgetRef ref,
     Loeschmodus modus,
     ScaffoldMessengerState? messenger,
+    L texte,
   ) async {
     final dienst = ref.read(kontoDienstProvider);
     if (dienst == null) return true;
@@ -196,7 +200,7 @@ class SettingsScreen extends ConsumerWidget {
       return true;
     } on KontoException catch (e) {
       if (e.fehler != KontoFehler.neuAnmelden) {
-        _melden(messenger, e.fehler);
+        _melden(messenger, e.fehler, texte);
         return false;
       }
     }
@@ -208,19 +212,34 @@ class SettingsScreen extends ConsumerWidget {
       await dienst.loeschen(modus);
       return true;
     } on KontoException catch (e) {
-      _melden(messenger, e.fehler);
+      _melden(messenger, e.fehler, texte);
       return false;
     } on AuthException catch (e) {
       messenger?.showSnackBar(
-        SnackBar(content: Text('${e.fehler.titel}: ${e.fehler.tipp}')),
+        SnackBar(
+          content: Text(
+            texte.settingsFehlerMeldung(
+              e.fehler.titel(texte),
+              e.fehler.tipp(texte),
+            ),
+          ),
+        ),
       );
       return false;
     }
   }
 
-  static void _melden(ScaffoldMessengerState? messenger, KontoFehler fehler) {
+  static void _melden(
+    ScaffoldMessengerState? messenger,
+    KontoFehler fehler,
+    L texte,
+  ) {
     messenger?.showSnackBar(
-      SnackBar(content: Text('${fehler.titel}: ${fehler.tipp}')),
+      SnackBar(
+        content: Text(
+          texte.settingsFehlerMeldung(fehler.titel(texte), fehler.tipp(texte)),
+        ),
+      ),
     );
   }
 }
@@ -235,22 +254,18 @@ class _EinwilligungsKarte extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final stand = ref.watch(einwilligungControllerProvider);
     final fotoErlaubt = ref.watch(einwilligungGiltProvider(Einwilligungsart.fotoKi));
 
     return SectionCard(
-      title: 'Einwilligungen',
+      title: texte.settingsEinwilligungen,
       icon: Icons.fact_check_outlined,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           MutedText(
-            fotoErlaubt
-                ? 'Analysen sind möglich. Deine Fotos gehen nur für die Dauer '
-                    'der Auswertung an den KI-Dienst.'
-                : 'Ohne Foto-Einwilligung sind keine neuen Analysen möglich. '
-                    'Deine bisherigen Reports, dein Plan und deine Serie '
-                    'bleiben erhalten.',
+            fotoErlaubt ? texte.settingsFotoJa : texte.settingsFotoNein,
           ),
           const SizedBox(height: AppTheme.gapS),
           // Das Haekchen ist zugleich der Widerrufsweg: abwaehlen genuegt.
@@ -276,29 +291,27 @@ class _Nachweis extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final e = eintrag;
     if (e == null) {
-      return MutedText('${art.titel}: noch nicht gefragt');
+      return MutedText(texte.settingsNochNichtGefragt(art.titel(texte)));
     }
 
-    final zeitpunkt = e.zeitpunkt.toLocal();
-    final datum = '${zeitpunkt.day.toString().padLeft(2, '0')}.'
-        '${zeitpunkt.month.toString().padLeft(2, '0')}.${zeitpunkt.year}';
-
     return MutedText(
-      '${art.titel}: ${e.erteilt ? 'erteilt' : 'nicht erteilt'} am $datum '
-      '(Textstand $_textversion, ${_kanal(e.kanal)})',
+      texte.settingsNachweis(
+        art.titel(texte),
+        e.erteilt ? texte.settingsErteilt : texte.settingsNichtErteilt,
+        Datum.nurTag(e.zeitpunkt.toLocal(), texte.localeName),
+        e.textversion.isEmpty ? texte.settingsVersionUnbekannt : e.textversion,
+        _kanal(e.kanal, texte),
+      ),
     );
   }
 
-  String get _textversion => eintrag!.textversion.isEmpty
-      ? 'unbekannt'
-      : eintrag!.textversion;
-
-  static String _kanal(Einwilligungskanal kanal) => switch (kanal) {
-        Einwilligungskanal.onboarding => 'im Onboarding',
-        Einwilligungskanal.einstellungen => 'in den Einstellungen',
-        Einwilligungskanal.nachtrag => 'nachträglich',
+  static String _kanal(Einwilligungskanal kanal, L texte) => switch (kanal) {
+        Einwilligungskanal.onboarding => texte.settingsKanalOnboarding,
+        Einwilligungskanal.einstellungen => texte.settingsKanalEinstellungen,
+        Einwilligungskanal.nachtrag => texte.settingsKanalNachtrag,
       };
 }
 
@@ -311,13 +324,14 @@ class _KontoKarte extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final stand = ref.watch(nutzerProvider);
     final farben = context.farben;
 
     // Drei Zustaende statt einem: Waehrend der Anmeldezustand noch geladen
     // wird, waere „Nicht angemeldet" schlicht falsch.
     if (stand.isLoading) {
-      return const SectionCard(
+      return SectionCard(
         title: 'Konto',
         icon: Icons.person_outline,
         child: Row(
@@ -328,50 +342,44 @@ class _KontoKarte extends ConsumerWidget {
               child: CircularProgressIndicator(strokeWidth: 2),
             ),
             SizedBox(width: AppTheme.gapS),
-            MutedText('Wird geladen …'),
+            MutedText(context.texte.settingsWirdGeladen),
           ],
         ),
       );
     }
 
     if (stand.hasError) {
-      return const SectionCard(
-        title: 'Konto',
+      return SectionCard(
+        title: texte.settingsKonto,
         icon: Icons.error_outline,
-        child: MutedText(
-          'Der Anmeldezustand lässt sich gerade nicht abfragen. '
-          'Deine Daten auf dem Gerät sind davon nicht betroffen.',
-        ),
+        child: MutedText(texte.settingsAnmeldungUnklar),
       );
     }
 
     final nutzer = stand.valueOrNull;
     if (nutzer == null) {
-      return const SectionCard(
-        title: 'Konto',
+      return SectionCard(
+        title: texte.settingsKonto,
         icon: Icons.person_outline,
-        child: MutedText('Nicht angemeldet.'),
+        child: MutedText(texte.settingsNichtAngemeldet),
       );
     }
 
     return SectionCard(
-      title: 'Konto',
+      title: texte.settingsKonto,
       icon: nutzer.anonym ? Icons.person_outline : Icons.verified_user_outlined,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            nutzer.beschriftung,
+            nutzer.beschriftung(texte),
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: AppTheme.gapXs),
           MutedText(
             nutzer.anonym
-                ? 'Deine Daten hängen an diesem Gerät. Melde dich mit Google '
-                    'an, damit sie einen Gerätewechsel überleben – dein '
-                    'bisheriger Stand wird dabei übernommen.'
-                : 'Plan, Streak und Verlauf gehören zu diesem Konto. Fotos '
-                    'bleiben auf dem Gerät.',
+                ? texte.settingsKontoAnonym
+                : texte.settingsKontoEcht,
           ),
           const SizedBox(height: AppTheme.gapS),
           if (nutzer.anonym) ...[
@@ -380,7 +388,7 @@ class _KontoKarte extends ConsumerWidget {
             FilledButton.icon(
               onPressed: () => _verknuepfen(context, ref),
               icon: const Icon(Icons.link, size: 18),
-              label: const Text('Mit Google verknüpfen'),
+              label: Text(texte.settingsVerknuepfen),
             ),
             const SizedBox(height: AppTheme.gapXs),
           ],
@@ -390,7 +398,7 @@ class _KontoKarte extends ConsumerWidget {
               onPressed: () => _abmelden(context, ref, anonym: nutzer.anonym),
               icon: Icon(Icons.logout, size: 18, color: farben.warnung),
               label: Text(
-                'Abmelden',
+                texte.settingsAbmelden,
                 style: TextStyle(color: farben.warnung),
               ),
             ),
@@ -403,6 +411,7 @@ class _KontoKarte extends ConsumerWidget {
   /// Macht aus dem anonymen Konto ein Google-Konto, ohne die Daten zu
   /// verlieren.
   Future<void> _verknuepfen(BuildContext context, WidgetRef ref) async {
+    final texte = context.texte;
     final messenger = ScaffoldMessenger.maybeOf(context);
 
     try {
@@ -413,11 +422,18 @@ class _KontoKarte extends ConsumerWidget {
       // jetzt der richtige Moment dafuer.
       await MigrationDialog.zeigenWennNoetig(context, ref);
       messenger?.showSnackBar(
-        const SnackBar(content: Text('Konto verknüpft.')),
+        SnackBar(content: Text(texte.settingsVerknuepft)),
       );
     } on AuthException catch (e) {
       messenger?.showSnackBar(
-        SnackBar(content: Text('${e.fehler.titel}: ${e.fehler.tipp}')),
+        SnackBar(
+          content: Text(
+            texte.settingsFehlerMeldung(
+              e.fehler.titel(texte),
+              e.fehler.tipp(texte),
+            ),
+          ),
+        ),
       );
     }
   }
@@ -427,19 +443,17 @@ class _KontoKarte extends ConsumerWidget {
     WidgetRef ref, {
     required bool anonym,
   }) async {
+    final texte = context.texte;
     final bestaetigt = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Abmelden?'),
+        title: Text(texte.settingsAbmeldenFrage),
         content: Text(
           anonym
               // Ein anonymes Konto laesst sich nach dem Abmelden nicht wieder
               // aufrufen – das gehoert vorher gesagt, nicht hinterher.
-              ? 'Du bist ohne Konto angemeldet. Nach dem Abmelden kommst du '
-                  'an diesen Stand nicht mehr heran. Die Daten auf diesem '
-                  'Gerät bleiben erhalten.'
-              : 'Deine Daten bleiben in deinem Konto. Nach der nächsten '
-                  'Anmeldung sind sie wieder da.',
+              ? texte.settingsAbmeldenAnonym
+              : texte.settingsAbmeldenEcht,
         ),
         actions: [
           TextButton(
@@ -471,12 +485,13 @@ class _ModusKarte extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
     final mock = AnalysisConfig.useMockData;
     final farbe = mock ? farben.akzent : farben.erfolg;
 
     return SectionCard(
-      title: 'Analyse-Modus',
+      title: texte.settingsAnalyseModus,
       icon: mock ? Icons.science_outlined : Icons.cloud_outlined,
       trailing: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -487,7 +502,7 @@ class _ModusKarte extends StatelessWidget {
         // Die Farbe traegt die Pille, nicht die Schrift: eingefaerbte
         // Kleinschrift auf der Karte bleibt sonst unter 4,5:1.
         child: Text(
-          mock ? 'Mock' : 'Live',
+          mock ? texte.settingsModusMock : texte.settingsModusLiveKurz,
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w800,
@@ -497,13 +512,8 @@ class _ModusKarte extends StatelessWidget {
       ),
       child: MutedText(
         mock
-            ? 'Es werden keine Fotos versendet. Die App zeigt eine hinterlegte '
-                'Beispiel-Analyse. Umschalten beim Build über '
-                '--dart-define=TRUEGLOW_MOCK.'
-            : 'Analysen laufen über den TrueGlow-Dienst '
-                '(${AnalysisConfig.modell}). Deine Fotos werden für die '
-                'Auswertung übertragen und dort weder gespeichert noch '
-                'protokolliert.',
+            ? texte.settingsModusDemo
+            : texte.settingsModusLive(AnalysisConfig.modell),
       ),
     );
   }
@@ -608,7 +618,7 @@ class _ErscheinungsbildKarte extends ConsumerWidget {
               for (final wahl in Erscheinungsbild.values)
                 ButtonSegment(
                   value: wahl,
-                  label: Text(wahl.label),
+                  label: Text(wahl.label(texte)),
                   icon: Icon(wahl.icon, size: 18),
                 ),
             ],
@@ -621,8 +631,8 @@ class _ErscheinungsbildKarte extends ConsumerWidget {
           const SizedBox(height: AppTheme.gapS),
           MutedText(
             aktuell == Erscheinungsbild.system
-                ? 'TrueGlow folgt der Systemeinstellung deines Handys.'
-                : 'Feste Auswahl – unabhängig von der Systemeinstellung.',
+                ? texte.erscheinungFolgtSystem
+                : texte.erscheinungFest,
           ),
         ],
       ),

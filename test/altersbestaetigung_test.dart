@@ -35,7 +35,7 @@ void main() {
         Altersbereich.values.map((a) => a.name),
         ['a18bis24', 'a25bis34', 'a35bis44', 'ab45'],
       );
-      expect(Altersbereich.values.first.label, '18–24');
+      expect(Altersbereich.values.first.label(texte), '18–24');
     });
 
     test('ein gespeicherter Altwert faellt heraus statt durchzurutschen', () {
@@ -156,7 +156,7 @@ void main() {
       await tester.tap(
         find.descendant(
           of: find.ancestor(
-            of: find.text(Einwilligungsart.mindestalter.titel),
+            of: find.text(Einwilligungsart.mindestalter.titel(texte)),
             matching: find.byType(SectionCard),
           ),
           matching: find.byType(Checkbox),
@@ -205,7 +205,7 @@ void main() {
       container.read(routerProvider).go(Routes.home);
       await tester.pumpAndSettle();
 
-      expect(find.text(Einwilligungsart.mindestalter.titel), findsOneWidget);
+      expect(find.text(Einwilligungsart.mindestalter.titel(texte)), findsOneWidget);
 
       // Wer nicht bestaetigt, kommt trotzdem weiter – und wird nicht wieder
       // hierhin geschickt.
@@ -214,7 +214,7 @@ void main() {
 
       expect(container.read(nachtragNoetigProvider), isFalse);
       expect(container.read(volljaehrigBestaetigtProvider), isFalse);
-      expect(find.text(Einwilligungsart.mindestalter.titel), findsNothing);
+      expect(find.text(Einwilligungsart.mindestalter.titel(texte)), findsNothing);
     });
   });
 }

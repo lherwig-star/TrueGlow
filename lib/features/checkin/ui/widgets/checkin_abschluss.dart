@@ -243,7 +243,7 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
             onPressed:
                 _speichert ? null : () => _abschliessen(mitAnpassung: false),
             style: OutlinedButton.styleFrom(shape: const StadiumBorder()),
-            child: const Text('Plan unverändert lassen'),
+            child: Text(texte.checkinPlanUnveraendert),
           ),
         ],
       ],
@@ -381,7 +381,7 @@ class _Fehler extends StatelessWidget {
             const SizedBox(width: AppTheme.gapS),
             Expanded(
               child: Text(
-                fehler.titel,
+                fehler.titel(texte),
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
@@ -391,7 +391,7 @@ class _Fehler extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AppTheme.gapS),
-        MutedText(fehler.tipp),
+        MutedText(fehler.tipp(texte)),
         const SizedBox(height: AppTheme.gapM),
         FilledButton.icon(
           onPressed: blockiert ? null : onErneut,
@@ -405,7 +405,7 @@ class _Fehler extends StatelessWidget {
         OutlinedButton(
           onPressed: blockiert ? null : onTrotzdem,
           style: OutlinedButton.styleFrom(shape: const StadiumBorder()),
-          child: const Text('Ohne Anpassung abschließen'),
+          child: Text(context.texte.checkinOhneAnpassung),
         ),
       ],
     );

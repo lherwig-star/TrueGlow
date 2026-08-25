@@ -1,64 +1,22 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/l10n/texte.dart';
+
 /// Die waehlbaren Bausteine einer Analyse.
 ///
 /// [basis] ist immer dabei und laesst sich nicht abwaehlen – alles andere
 /// entscheidet der Nutzer vor der Aufnahme und kann es spaeter ueber
 /// "Analyse erweitern" nachholen.
 enum AnalyseModul {
-  basis(
-    titel: 'Gesicht, Haare & Bart',
-    beschreibung: 'Gesichtsform, Frisur- und Bart-Empfehlungen.',
-    icon: Icons.face_retouching_natural,
-    kapitel: 'Gesicht, Haare & Bart',
-    checkliste: 'Haare & Bart',
-  ),
-  hautFarbtyp(
-    titel: 'Haut & Farbtyp',
-    beschreibung: 'Hautbild, Unterton, Farbpalette für Kleidung.',
-    icon: Icons.spa_outlined,
-    kapitel: 'Haut & Farbtyp',
-    checkliste: 'Haut',
-  ),
-  zaehneLaecheln(
-    titel: 'Zähne & Lächeln',
-    beschreibung: 'Zahnfarbe, Zahnstellung, Mimik beim Lächeln.',
-    icon: Icons.sentiment_satisfied_alt_outlined,
-    kapitel: 'Zähne & Lächeln',
-    checkliste: 'Zähne',
-  ),
-  figurPassform(
-    titel: 'Figur & Passform',
-    beschreibung: 'Silhouette, Proportionen, Schnitt-Empfehlungen.',
-    icon: Icons.accessibility_new_outlined,
-    kapitel: 'Figur & Passform',
-    checkliste: 'Haltung & Figur',
-  ),
-  stilKleiderschrank(
-    titel: 'Stil & Kleiderschrank',
-    beschreibung: 'Aktuelle Outfits, Stilziel, konkrete Look-Vorschläge.',
-    icon: Icons.checkroom_outlined,
-    kapitel: 'Stil & Kleiderschrank',
-    checkliste: 'Stil',
-  );
+  basis(icon: Icons.face_retouching_natural),
+  hautFarbtyp(icon: Icons.spa_outlined),
+  zaehneLaecheln(icon: Icons.sentiment_satisfied_alt_outlined),
+  figurPassform(icon: Icons.accessibility_new_outlined),
+  stilKleiderschrank(icon: Icons.checkroom_outlined);
 
-  const AnalyseModul({
-    required this.titel,
-    required this.beschreibung,
-    required this.icon,
-    required this.kapitel,
-    required this.checkliste,
-  });
+  const AnalyseModul({required this.icon});
 
-  final String titel;
-  final String beschreibung;
   final IconData icon;
-
-  /// Ueberschrift des zugehoerigen Report-Kapitels.
-  final String kapitel;
-
-  /// Kurze Ueberschrift der Tages-Checkliste dieses Kapitels.
-  final String checkliste;
 
   bool get istBasis => this == AnalyseModul.basis;
 
@@ -78,4 +36,40 @@ enum AnalyseModul {
     // Die Basis ist nicht verhandelbar.
     return {AnalyseModul.basis, ...gefunden};
   }
+}
+
+/// Titel, Beschreibung und Ueberschriften eines Moduls.
+///
+/// Anzeigetexte als Erweiterung – Begruendung in `onboarding_profile.dart`.
+/// [kapitel] ist die Ueberschrift im Report und stimmt bewusst mit [titel]
+/// ueberein; getrennt gehalten, weil beide Stellen unabhaengig voneinander
+/// umformuliert werden koennen.
+extension AnalyseModulText on AnalyseModul {
+  String titel(L texte) => switch (this) {
+        AnalyseModul.basis => texte.modulBasisTitel,
+        AnalyseModul.hautFarbtyp => texte.modulHautTitel,
+        AnalyseModul.zaehneLaecheln => texte.modulZaehneTitel,
+        AnalyseModul.figurPassform => texte.modulFigurTitel,
+        AnalyseModul.stilKleiderschrank => texte.modulStilTitel,
+      };
+
+  String beschreibung(L texte) => switch (this) {
+        AnalyseModul.basis => texte.modulBasisText,
+        AnalyseModul.hautFarbtyp => texte.modulHautText,
+        AnalyseModul.zaehneLaecheln => texte.modulZaehneText,
+        AnalyseModul.figurPassform => texte.modulFigurText,
+        AnalyseModul.stilKleiderschrank => texte.modulStilText,
+      };
+
+  /// Ueberschrift des zugehoerigen Report-Kapitels.
+  String kapitel(L texte) => titel(texte);
+
+  /// Kurze Ueberschrift der Tages-Checkliste dieses Kapitels.
+  String checkliste(L texte) => switch (this) {
+        AnalyseModul.basis => texte.modulBasisCheckliste,
+        AnalyseModul.hautFarbtyp => texte.modulHautCheckliste,
+        AnalyseModul.zaehneLaecheln => texte.modulZaehneCheckliste,
+        AnalyseModul.figurPassform => texte.modulFigurCheckliste,
+        AnalyseModul.stilKleiderschrank => texte.modulStilCheckliste,
+      };
 }

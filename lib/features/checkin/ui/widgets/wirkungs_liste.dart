@@ -50,7 +50,7 @@ class WirkungsListe extends ConsumerWidget {
                 .firstOrNull,
             mitNotiz: spaet,
             onAntwort: (antwort) =>
-                ctrl.entwurfSichern(checkin.mitWirkung(frage, antwort)),
+                ctrl.entwurfSichern(checkin.mitWirkung(frage, antwort, texte)),
             onNotiz: (notiz) =>
                 ctrl.entwurfSichern(checkin.mitWirkungsnotiz(frage.id, notiz)),
           ),
@@ -80,13 +80,14 @@ class _FrageKarte extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     return SectionCard(
       padding: const EdgeInsets.all(AppTheme.gapS + 2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            frage.text,
+            frage.text(texte),
             style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4),
           ),
           const SizedBox(height: AppTheme.gapS),

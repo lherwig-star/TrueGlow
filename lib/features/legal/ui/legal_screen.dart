@@ -9,6 +9,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
 import '../logic/rechtstexte.dart';
+import 'rechtsdokument_texte.dart';
+import '../../../core/l10n/texte.dart';
 
 /// Übersicht der Rechtstexte.
 ///
@@ -51,12 +53,9 @@ class LegalScreen extends ConsumerWidget {
           const _EntwurfsHinweis(),
         ],
         const SizedBox(height: AppTheme.gapM),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppTheme.gapXs),
-          child: MutedText(
-            'Deine Fotos verlassen das Gerät nur für die Dauer einer Analyse '
-            'und werden dabei nirgends gespeichert.',
-          ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.gapXs),
+          child: MutedText(context.texte.legalFotosText),
         ),
       ],
     );
@@ -70,6 +69,7 @@ class _DokumentEintrag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
     final quelle = Rechtstexte.quelle(dokument);
 
@@ -78,11 +78,11 @@ class _DokumentEintrag extends StatelessWidget {
       enabled: quelle.vorhanden,
       leading: Icon(_symbol, color: farben.akzent),
       title: Text(
-        dokument.titel,
+        dokument.titel(texte),
         style: const TextStyle(fontWeight: FontWeight.w600),
       ),
       subtitle: Text(
-        quelle.vorhanden ? dokument.beschreibung : 'Noch nicht verfügbar',
+        quelle.vorhanden ? dokument.beschreibung(texte) : texte.dokumentFolgt,
         style: TextStyle(
           fontSize: 13,
           color: quelle.vorhanden ? farben.textSekundaer : farben.warnung,
@@ -133,7 +133,9 @@ class _DokumentEintrag extends StatelessWidget {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${dokument.titel} lässt sich gerade nicht öffnen.'),
+        content: Text(
+          context.texte.legalNichtOeffenbar(dokument.titel(context.texte)),
+        ),
       ),
     );
   }
@@ -149,12 +151,10 @@ class _EntwurfsHinweis extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SectionCard(
-      title: 'Texte stehen noch aus',
+      title: context.texte.legalStehenAusTitel,
       icon: Icons.pending_outlined,
       child: MutedText(
-        'Die endgültigen Fassungen sind noch nicht eingetragen. Bis dahin '
-        'bleiben die betroffenen Einträge gesperrt.\n\n'
-        '${Rechtstexte.fehlerbericht}',
+        context.texte.legalEntwurfHinweis(Rechtstexte.fehlerbericht),
       ),
     );
   }

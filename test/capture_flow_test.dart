@@ -209,8 +209,8 @@ void main() {
   group('PhotoProblem', () {
     test('jeder Fehlerfall hat Titel und konkreten Tipp', () {
       for (final problem in PhotoProblem.values) {
-        expect(problem.titel, isNotEmpty);
-        expect(problem.tipp, isNotEmpty);
+        expect(problem.titel(texte), isNotEmpty);
+        expect(problem.tipp(texte), isNotEmpty);
       }
     });
   });
@@ -232,8 +232,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text(AufnahmeTyp.basisFrontal.label), findsOneWidget);
-    expect(find.text(AufnahmeTyp.basisFrontal.hinweis), findsOneWidget);
+    expect(find.text(AufnahmeTyp.basisFrontal.label(texte)), findsOneWidget);
+    expect(find.text(AufnahmeTyp.basisFrontal.hinweis(texte)), findsOneWidget);
     expect(find.text(texte.fotoKamera), findsOneWidget);
     expect(find.text(texte.fotoGalerie), findsOneWidget);
   });
@@ -263,8 +263,8 @@ void main() {
         );
     await tester.pumpAndSettle();
 
-    expect(find.text(PhotoProblem.zuKlein.titel), findsOneWidget);
-    expect(find.text(PhotoProblem.zuKlein.tipp), findsOneWidget);
+    expect(find.text(PhotoProblem.zuKlein.titel(texte)), findsOneWidget);
+    expect(find.text(PhotoProblem.zuKlein.tipp(texte)), findsOneWidget);
   });
 
   testWidgets('die Foto-Leiste zeigt jede Aufnahme und springt hin',
@@ -297,7 +297,7 @@ void main() {
 
     expect(find.text('Schritt 4 von ${fotos + 1}'), findsOneWidget);
     expect(
-      find.text(AnalyseModul.basis.aufnahmen[2].label),
+      find.text(AnalyseModul.basis.aufnahmen[2].label(texte)),
       findsWidgets,
     );
   });
@@ -433,11 +433,11 @@ void main() {
 
     test('die Profil-Hinweise nennen Drehrichtung und Gesichtshaelfte', () {
       expect(
-        AufnahmeTyp.basisProfilLinks.hinweis,
+        AufnahmeTyp.basisProfilLinks.hinweis(texte),
         allOf(contains('nach rechts'), contains('linke Gesichtshälfte')),
       );
       expect(
-        AufnahmeTyp.basisProfilRechts.hinweis,
+        AufnahmeTyp.basisProfilRechts.hinweis(texte),
         allOf(contains('nach links'), contains('rechte Gesichtshälfte')),
       );
     });
@@ -449,18 +449,19 @@ void main() {
       // Ohne ihn faellt die Anforderung an das Licht ersatzlos weg.
       final text = AufnahmeTyp.basisFrontal.hinweisFuer(
         {AnalyseModul.basis, AnalyseModul.hautFarbtyp},
+        texte,
       );
 
-      expect(text, startsWith(AufnahmeTyp.basisFrontal.hinweis));
-      expect(text, contains(AufnahmeTyp.hautLichtZusatz));
+      expect(text, startsWith(AufnahmeTyp.basisFrontal.hinweis(texte)));
+      expect(text, contains(texte.aufnahmeHautLichtZusatz));
     });
 
     test('ohne Haut-Modul bleibt der Hinweis unveraendert', () {
       // Wer das Modul nicht gebucht hat, soll keine Anforderung lesen, die
       // fuer seine Analyse nichts aendert.
       expect(
-        AufnahmeTyp.basisFrontal.hinweisFuer({AnalyseModul.basis}),
-        AufnahmeTyp.basisFrontal.hinweis,
+        AufnahmeTyp.basisFrontal.hinweisFuer({AnalyseModul.basis}, texte),
+        AufnahmeTyp.basisFrontal.hinweis(texte),
       );
     });
 
@@ -468,8 +469,11 @@ void main() {
       for (final typ in AufnahmeTyp.values) {
         if (typ == AufnahmeTyp.basisFrontal) continue;
         expect(
-          typ.hinweisFuer({AnalyseModul.basis, AnalyseModul.hautFarbtyp}),
-          typ.hinweis,
+          typ.hinweisFuer(
+            {AnalyseModul.basis, AnalyseModul.hautFarbtyp},
+            texte,
+          ),
+          typ.hinweis(texte),
           reason: '${typ.name} darf den Hautton-Zusatz nicht tragen',
         );
       }

@@ -6,6 +6,7 @@ import '../../../core/storage/hive_service.dart';
 import '../../../core/storage/key_value_store.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/section_card.dart';
+import '../../../core/l10n/texte.dart';
 
 /// Merkt sich, ob beim letzten Programmlauf eine Analyse offen geblieben ist.
 ///
@@ -46,6 +47,7 @@ class UnterbrochenKarte extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     if (!ref.watch(unterbrocheneAnalyseProvider)) {
       return const SizedBox.shrink();
     }
@@ -53,16 +55,12 @@ class UnterbrochenKarte extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppTheme.gapS),
       child: SectionCard(
-        title: 'Analyse unterbrochen',
+        title: texte.unterbrochenTitel,
         icon: Icons.info_outline,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const MutedText(
-              'Deine letzte Analyse wurde nicht fertig — die App war '
-              'zwischendurch geschlossen. Es wurde nichts gespeichert. '
-              'Deine Fotos sind noch da, du kannst direkt neu starten.',
-            ),
+            MutedText(texte.unterbrochenText),
             const SizedBox(height: AppTheme.gapXs),
             Align(
               alignment: Alignment.centerLeft,

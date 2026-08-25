@@ -101,10 +101,7 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
         title: texte.checkinTitel,
         children: [
           SizedBox(height: AppTheme.gapXl),
-          MutedText(
-            'Gerade steht kein Check-in an.',
-            align: TextAlign.center,
-          ),
+          MutedText(texte.checkinKeiner, align: TextAlign.center),
         ],
       );
     }
@@ -120,7 +117,7 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
         if (!didPop) _zurueck();
       },
       child: AppPage(
-        title: checkin.typ.titel,
+        title: checkin.typ.titel(texte),
         showBackButton: false,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -167,11 +164,13 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
     AnalysisResult analyse,
     CheckinZustand zustand,
   ) {
+    final texte = context.texte;
+
     return baueCheckinFlow(
       checkin: checkin,
       habits: _abzufragendeHabits(checkin, analyse, zustand),
       fragen: Wirkungsfragen.fuer(checkin.typ, analyse.module),
-      erwartung: Wirkungsfragen.erwartung(analyse.module),
+      erwartung: Wirkungsfragen.erwartung(analyse.module, texte),
       // Ohne Erstfoto gibt es nichts zu vergleichen – dann entfaellt das
       // Fortschrittsfoto samt Vorher/Nachher.
       fotoMoeglich: checkin.typ.mitFortschrittsfoto,
@@ -238,7 +237,7 @@ class _Fortschritt extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AppTheme.gapXs),
-        MutedText('${aktuell + 1} von $gesamt'),
+        MutedText(context.texte.checkinSchrittZaehler(aktuell + 1, gesamt)),
       ],
     );
   }
@@ -251,6 +250,7 @@ class _Intro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
 
     return Column(
@@ -271,7 +271,7 @@ class _Intro extends StatelessWidget {
         ),
         const SizedBox(height: AppTheme.gapM),
         Text(
-          checkin.typ.titel,
+          checkin.typ.titel(texte),
           style: const TextStyle(
             fontSize: 26,
             fontWeight: FontWeight.w800,
@@ -279,15 +279,12 @@ class _Intro extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppTheme.gapS),
-        Text(checkin.typ.intro, style: const TextStyle(height: 1.5)),
+        Text(checkin.typ.intro(texte), style: const TextStyle(height: 1.5)),
         const SizedBox(height: AppTheme.gapM),
         SectionCard(
-          title: 'Unter einer Minute',
+          title: texte.checkinUnterEinerMinute,
           icon: Icons.timer_outlined,
-          child: const MutedText(
-            'Du kannst jederzeit abbrechen – dein Zwischenstand bleibt '
-            'gespeichert.',
-          ),
+          child: MutedText(texte.checkinAbbrechbar),
         ),
       ],
     );
@@ -311,7 +308,7 @@ class _Erwartung extends StatelessWidget {
         ),
         const SizedBox(height: AppTheme.gapM),
         SectionCard(
-          title: 'Du bist auf Kurs',
+          title: texte.checkinAufKurs,
           icon: Icons.schedule_outlined,
           child: Text(text, style: const TextStyle(height: 1.5)),
         ),

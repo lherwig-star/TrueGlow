@@ -82,7 +82,7 @@ void main() {
       Einwilligungsart.mindestalter,
       Einwilligungsart.fotoKi,
     ]) {
-      await _hakeAn(tester, art.titel);
+      await _hakeAn(tester, art.titel(texte));
     }
     await _tippe(tester, 'Los geht es');
 

@@ -6,6 +6,8 @@ import 'package:trueglow/features/modules/models/analyse_modul.dart';
 import 'package:trueglow/features/streak/logic/streak_repository.dart';
 import 'package:trueglow/features/streak/models/abzeichen.dart';
 
+import 'hilfen.dart';
+
 AnalysisResult _analyse(Set<AnalyseModul> module) => AnalysisResult.vonApi(
       JsonExtractor.extrahiere(MockAnalysisService.antwortFuer(module))!,
       id: 'a1',
@@ -40,17 +42,17 @@ void main() {
 
     test('jedes Abzeichen hat Titel, Beschreibung und Jubeltext', () {
       for (final abzeichen in Abzeichen.values) {
-        expect(abzeichen.titel, isNotEmpty);
-        expect(abzeichen.beschreibung, isNotEmpty);
-        expect(abzeichen.jubel, isNotEmpty);
+        expect(abzeichen.titel(texte), isNotEmpty);
+        expect(abzeichen.beschreibung(texte), isNotEmpty);
+        expect(abzeichen.jubel(texte), isNotEmpty);
       }
     });
 
     test('der Jubeltext nennt bei Streak-Zielen die Tageszahl', () {
-      expect(Abzeichen.siebenTage.jubel, '7 Tage durchgezogen!');
-      expect(Abzeichen.dreissigTage.jubel, '30 Tage durchgezogen!');
+      expect(Abzeichen.siebenTage.jubel(texte), '7 Tage durchgezogen!');
+      expect(Abzeichen.dreissigTage.jubel(texte), '30 Tage durchgezogen!');
       // Ohne Tageszahl bleibt es beim Titel.
-      expect(Abzeichen.ersteAnalyse.jubel, Abzeichen.ersteAnalyse.titel);
+      expect(Abzeichen.ersteAnalyse.jubel(texte), Abzeichen.ersteAnalyse.titel(texte));
     });
   });
 
@@ -59,10 +61,7 @@ void main() {
       final staende = abzeichenStaende(streak: StreakStand.leer, analyse: null);
 
       expect(staende.every((s) => !s.erreicht), isTrue);
-      expect(
-        _stand(staende, Abzeichen.ersteAnalyse).fortschrittstext,
-        'Starte deine erste Analyse',
-      );
+      expect(_stand(staende, Abzeichen.ersteAnalyse).fehlend, 1);
     });
 
     test('die erste Analyse schaltet ihr Abzeichen frei', () {
@@ -72,22 +71,22 @@ void main() {
       );
 
       expect(_stand(staende, Abzeichen.ersteAnalyse).erreicht, isTrue);
-      expect(_stand(staende, Abzeichen.ersteAnalyse).fortschrittstext, isEmpty);
+      expect(_stand(staende, Abzeichen.ersteAnalyse).fehlend, 0);
     });
 
     test('Streak-Abzeichen fallen genau ab ihrer Tageszahl', () {
       final beiSechs = abzeichenStaende(streak: _streak(6), analyse: null);
       expect(_stand(beiSechs, Abzeichen.dreiTage).erreicht, isTrue);
       expect(_stand(beiSechs, Abzeichen.siebenTage).erreicht, isFalse);
-      expect(_stand(beiSechs, Abzeichen.siebenTage).fortschrittstext,
-          'noch 1 Tag');
+      expect(_stand(beiSechs, Abzeichen.siebenTage).fehlend, 1);
+      // Der Satz dazu entsteht erst in der Oberflaeche – im Deutschen „noch
+      // 1 Tag", im Englischen „1 day to go". Beides steht in der ARB-Datei.
+      expect(texte.abzeichenNochTage(1), 'noch 1 Tag');
+      expect(texte.abzeichenNochTage(7), 'noch 7 Tage');
 
       final beiSieben = abzeichenStaende(streak: _streak(7), analyse: null);
       expect(_stand(beiSieben, Abzeichen.siebenTage).erreicht, isTrue);
-      expect(
-        _stand(beiSieben, Abzeichen.vierzehnTage).fortschrittstext,
-        'noch 7 Tage',
-      );
+      expect(_stand(beiSieben, Abzeichen.vierzehnTage).fehlend, 7);
     });
 
     test('alle Module freigeschaltet erst bei vollstaendigem Report', () {
@@ -96,10 +95,9 @@ void main() {
         analyse: _analyse({AnalyseModul.basis, AnalyseModul.hautFarbtyp}),
       );
       expect(_stand(teilweise, Abzeichen.alleModule).erreicht, isFalse);
-      expect(
-        _stand(teilweise, Abzeichen.alleModule).fortschrittstext,
-        'noch 3 Module',
-      );
+      expect(_stand(teilweise, Abzeichen.alleModule).fehlend, 3);
+      expect(texte.abzeichenNochModule(3), 'noch 3 Module');
+      expect(texte.abzeichenNochModule(1), 'noch 1 Modul');
 
       final vollstaendig = abzeichenStaende(
         streak: StreakStand.leer,
@@ -108,14 +106,14 @@ void main() {
       expect(_stand(vollstaendig, Abzeichen.alleModule).erreicht, isTrue);
     });
 
-    test('der Fortschrittstext steht nur bei offenen Abzeichen', () {
+    test('erreichte Abzeichen haben nichts mehr offen', () {
       final staende = abzeichenStaende(
         streak: _streak(90),
         analyse: _analyse(AnalyseModul.values.toSet()),
       );
 
       expect(staende.every((s) => s.erreicht), isTrue);
-      expect(staende.every((s) => s.fortschrittstext.isEmpty), isTrue);
+      expect(staende.every((s) => s.fehlend == 0), isTrue);
     });
 
     test('die Reihenfolge folgt der Deklaration', () {

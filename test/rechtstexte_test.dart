@@ -5,6 +5,7 @@ import 'package:trueglow/core/widgets/markdown_ansicht.dart';
 import 'package:trueglow/features/legal/logic/rechtstexte.dart';
 
 import 'hilfen.dart';
+import 'package:trueglow/features/legal/ui/rechtsdokument_texte.dart';
 
 void main() {
   group('Rechtstexte-Konfiguration', () {
@@ -112,7 +113,7 @@ void main() {
       await tester.pumpAndSettle();
 
       for (final dokument in Rechtsdokument.values) {
-        expect(find.text(dokument.titel), findsOneWidget);
+        expect(find.text(dokument.titel(texte)), findsOneWidget);
       }
       // Solange nichts hinterlegt ist, sagt der Screen das dreimal deutlich.
       expect(find.text('Noch nicht verfügbar'), findsNWidgets(3));
@@ -130,7 +131,7 @@ void main() {
 
       final eintrag = tester.widget<ListTile>(
         find.ancestor(
-          of: find.text(Rechtsdokument.datenschutz.titel),
+          of: find.text(Rechtsdokument.datenschutz.titel(texte)),
           matching: find.byType(ListTile),
         ),
       );

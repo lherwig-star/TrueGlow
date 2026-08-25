@@ -226,5 +226,566 @@
   "spracheWaehlen": "Sprache wählen",
   "@spracheWaehlen": {
     "description": "Vorlesehinweis fuer den Umschalter auf dem Anmelde-Bildschirm."
-  }
+  },
+  "alter18bis24": "18–24",
+  "alter25bis34": "25–34",
+  "alter35bis44": "35–44",
+  "alterAb45": "45+",
+  "budgetNiedrig": "Niedrig",
+  "budgetNiedrigText": "Drogerie, unter 30 € im Monat",
+  "budgetMittel": "Mittel",
+  "budgetMittelText": "30–80 € im Monat",
+  "budgetHoch": "Hoch",
+  "budgetHochText": "über 80 € im Monat",
+  "zeitKurz": "5 Minuten",
+  "zeitKurzText": "Nur das Nötigste",
+  "zeitMittel": "15 Minuten",
+  "zeitMittelText": "Solide Routine",
+  "zeitLang": "30+ Minuten",
+  "zeitLangText": "Volles Programm",
+  "fokusHaut": "Haut",
+  "fokusHaare": "Haare",
+  "fokusBart": "Bart",
+  "fokusStyle": "Style",
+  "fokusFitness": "Fitness-Habits",
+  "modulBasisTitel": "Gesicht, Haare & Bart",
+  "modulBasisText": "Gesichtsform, Frisur- und Bart-Empfehlungen.",
+  "modulBasisCheckliste": "Haare & Bart",
+  "modulHautTitel": "Haut & Farbtyp",
+  "modulHautText": "Hautbild, Unterton, Farbpalette für Kleidung.",
+  "modulHautCheckliste": "Haut",
+  "modulZaehneTitel": "Zähne & Lächeln",
+  "modulZaehneText": "Zahnfarbe, Zahnstellung, Mimik beim Lächeln.",
+  "modulZaehneCheckliste": "Zähne",
+  "modulFigurTitel": "Figur & Passform",
+  "modulFigurText": "Silhouette, Proportionen, Schnitt-Empfehlungen.",
+  "modulFigurCheckliste": "Haltung & Figur",
+  "modulStilTitel": "Stil & Kleiderschrank",
+  "modulStilText": "Aktuelle Outfits, Stilziel, konkrete Look-Vorschläge.",
+  "modulStilCheckliste": "Stil",
+  "stilzielKlassisch": "Klassisch",
+  "stilzielMinimalistisch": "Minimalistisch",
+  "stilzielSportlich": "Sportlich",
+  "stilzielSmartCasual": "Smart Casual",
+  "stilzielKreativ": "Kreativ",
+  "stilzielRockig": "Rockig",
+  "dresscodeBuero": "Büro / formell",
+  "dresscodeBusinessCasual": "Business Casual",
+  "dresscodeHandwerk": "Handwerk / Arbeitskleidung",
+  "dresscodeHomeoffice": "Homeoffice",
+  "dresscodeUniform": "Uniform / Dienstkleidung",
+  "dresscodeFrei": "Keine Vorgaben",
+  "kleidungsbudgetKlein": "Bis 50 € pro Teil",
+  "kleidungsbudgetMittel": "50–150 € pro Teil",
+  "kleidungsbudgetGross": "Über 150 € pro Teil",
+  "pflegeaufwandMinimal": "So wenig wie möglich",
+  "pflegeaufwandMittel": "Etwas Aufwand ist okay",
+  "pflegeaufwandHoch": "Ich investiere gern Zeit",
+  "richtungszielMaskuliner": "Maskuliner",
+  "richtungszielWeicher": "Weicher / Sanfter",
+  "richtungszielMarkanter": "Markanter",
+  "richtungszielGepflegter": "Gepflegter",
+  "richtungszielSerioeser": "Seriöser / Professioneller",
+  "richtungszielJuenger": "Jünger wirken",
+  "richtungszielReifer": "Reifer wirken",
+  "richtungszielNatuerlicher": "Natürlicher",
+  "richtungszielAuffaelliger": "Auffälliger / Mutiger",
+  "richtungszielSportlicher": "Sportlicher",
+  "fotoproblemKeinGesichtTitel": "Kein Gesicht erkannt",
+  "fotoproblemKeinGesichtTipp": "Halte die Kamera so, dass dein Gesicht vollständig im Bild ist – ohne Sonnenbrille, Mütze oder Maske.",
+  "fotoproblemMehrereTitel": "Mehrere Gesichter im Bild",
+  "fotoproblemMehrereTipp": "Auf dem Foto darf nur dein Gesicht zu sehen sein. Such dir einen ruhigen Hintergrund ohne andere Personen.",
+  "fotoproblemZuKleinTitel": "Gesicht zu klein im Bild",
+  "fotoproblemZuKleinTipp": "Geh näher an die Kamera oder halte das Handy näher an dein Gesicht, bis der Kopf den Großteil des Bildes ausfüllt.",
+  "fotoproblemZuDunkelTitel": "Foto zu dunkel",
+  "fotoproblemZuDunkelTipp": "Stell dich an ein Fenster oder mach mehr Licht an. Gleichmäßiges Licht von vorne funktioniert am besten.",
+  "fotoproblemUngueltigTitel": "Bild konnte nicht gelesen werden",
+  "fotoproblemUngueltigTipp": "Versuch es mit einem anderen Foto oder nimm ein neues auf.",
+  "fotoproblemFehlerTitel": "Etwas ist schiefgelaufen",
+  "fotoproblemFehlerTipp": "Bitte versuch es noch einmal.",
+  "authAbgebrochenTitel": "Anmeldung abgebrochen",
+  "authAbgebrochenTipp": "Kein Problem – du kannst es jederzeit noch einmal versuchen.",
+  "authKeinInternetTitel": "Keine Verbindung",
+  "authKeinInternetTipp": "Prüf deine Internetverbindung und versuch es noch einmal.",
+  "authKontoVergebenTitel": "Konto schon in Benutzung",
+  "authKontoVergebenTipp": "Dieses Google-Konto gehört bereits zu einem TrueGlow-Zugang. Wir haben dich damit angemeldet.",
+  "authNichtVerfuegbarTitel": "Anmeldung nicht möglich",
+  "authNichtVerfuegbarTipp": "Diese Anmeldeart steht auf deinem Gerät nicht zur Verfügung.",
+  "authUnbekanntTitel": "Anmeldung fehlgeschlagen",
+  "authUnbekanntTipp": "Da ist etwas schiefgelaufen. Versuch es bitte noch einmal.",
+  "anbieterGoogle": "Google",
+  "anbieterApple": "Apple",
+  "anbieterAnonym": "Ohne Konto",
+  "nutzerOhneKonto": "Ohne Konto angemeldet",
+  "nutzerAngemeldet": "Angemeldet",
+  "kontoNeuAnmeldenTitel": "Bitte kurz neu anmelden",
+  "kontoNeuAnmeldenTipp": "Eine Kontolöschung lässt sich nicht rückgängig machen. Deshalb fragen wir vorher noch einmal nach deiner Anmeldung.",
+  "kontoKeinInternetTitel": "Keine Verbindung",
+  "kontoKeinInternetTipp": "Zum Löschen brauchen wir kurz Internet – sonst bliebe dein Konto in der Cloud stehen. Versuch es noch einmal, sobald du online bist.",
+  "kontoFehlgeschlagenTitel": "Löschen nicht möglich",
+  "kontoFehlgeschlagenTipp": "Da ist etwas schiefgelaufen. Deine Daten sind unverändert – bitte versuch es später noch einmal.",
+  "analyseKeinInternetTitel": "Keine Verbindung",
+  "analyseKeinInternetTipp": "Prüf deine Internetverbindung und versuch es noch einmal.",
+  "analyseZeitTitel": "Zeitüberschreitung",
+  "analyseZeitTipp": "Die Analyse hat zu lange gedauert. Versuch es bitte erneut.",
+  "analyseApiTitel": "Analyse nicht möglich",
+  "analyseApiTipp": "Der Analyse-Dienst antwortet gerade nicht. Bitte später noch einmal versuchen.",
+  "analyseKontingentTitel": "Kontingent erschöpft",
+  "analyseKontingentTipp": "Das Limit des Analyse-Dienstes ist erreicht. Versuch es später noch einmal.",
+  "analyseAntwortTitel": "Antwort nicht lesbar",
+  "analyseAntwortTipp": "Die Analyse kam unvollständig zurück. Ein erneuter Versuch hilft meistens.",
+  "analyseKeinSchluesselTitel": "Analyse-Dienst nicht eingerichtet",
+  "analyseKeinSchluesselTipp": "Der Dienst ist gerade nicht einsatzbereit. Wir kümmern uns darum – versuch es später noch einmal.",
+  "analyseFotosFehlenTitel": "Fotos fehlen",
+  "analyseFotosFehlenTipp": "Für diese Auswahl fehlen noch Aufnahmen. Geh zurück und hol sie nach.",
+  "analyseEinwilligungTitel": "Einwilligung fehlt",
+  "analyseEinwilligungTipp": "Für eine Analyse brauchen wir deine Einwilligung, deine Fotos an den KI-Dienst zu senden. Du kannst sie in den Einstellungen erteilen.",
+  "einwilligungNutzung": "Nutzungsbedingungen und Datenschutz",
+  "einwilligungMindestalter": "Ich bin mindestens 18 Jahre alt",
+  "einwilligungFotoKi": "Analyse meiner Fotos durch den KI-Dienst",
+  "einwilligungDiagnose": "Absturzberichte und Nutzungsstatistik",
+  "dokumentDatenschutzTitel": "Datenschutzerklärung",
+  "dokumentDatenschutzText": "Welche Daten wir verarbeiten, wozu und wie lange.",
+  "dokumentAgbTitel": "Nutzungsbedingungen",
+  "dokumentAgbText": "Die Regeln für die Nutzung von TrueGlow.",
+  "dokumentImpressumTitel": "Impressum",
+  "dokumentImpressumText": "Wer hinter der App steht und wie du uns erreichst.",
+  "abzeichenErsteAnalyseTitel": "Erste Analyse geschafft",
+  "abzeichenErsteAnalyseText": "Du hast deine erste Analyse abgeschlossen.",
+  "abzeichenDreiTitel": "Dranbleiben angefangen",
+  "abzeichenDreiText": "Drei Tage am Stück etwas abgehakt.",
+  "abzeichenSiebenTitel": "Erste Woche durchgezogen",
+  "abzeichenSiebenText": "Sieben Tage am Stück – die erste Woche steht.",
+  "abzeichenVierzehnTitel": "Zwei Wochen stark",
+  "abzeichenVierzehnText": "Vierzehn Tage am Stück. Das ist schon Routine.",
+  "abzeichenDreissigTitel": "Ein Monat dran",
+  "abzeichenDreissigText": "Dreißig Tage am Stück. Beeindruckend.",
+  "abzeichenSechzigTitel": "Zwei Monate durchgehalten",
+  "abzeichenSechzigText": "Sechzig Tage am Stück – das schaffen wenige.",
+  "abzeichenNeunzigTitel": "Ein Vierteljahr Disziplin",
+  "abzeichenNeunzigText": "Neunzig Tage am Stück. Das ist jetzt dein Alltag.",
+  "abzeichenAlleModuleTitel": "Alles freigeschaltet",
+  "abzeichenAlleModuleText": "Deine Analyse deckt alle Module ab.",
+  "abzeichenJubelTage": "{tage} Tage durchgezogen!",
+  "@abzeichenJubelTage": {
+    "description": "Text im Jubel-Overlay, wenn ein Streak-Abzeichen faellt.",
+    "placeholders": {
+      "tage": {
+        "type": "int"
+      }
+    }
+  },
+  "erscheinungHell": "Hell",
+  "erscheinungDunkel": "Dunkel",
+  "erscheinungSystem": "System",
+  "aufnahmeBasisFrontalLabel": "Frontalfoto",
+  "aufnahmeBasisFrontalHinweis": "Schau direkt in die Kamera. Neutrales Gesicht, gutes Licht, keine Kopfbedeckung.",
+  "aufnahmeProfilLinksLabel": "Profil links",
+  "aufnahmeProfilLinksHinweis": "Dreh deinen Kopf nach rechts – deine linke Gesichtshälfte zeigt zur Kamera. Ohr und Kinnlinie sollten sichtbar sein.",
+  "aufnahmeProfilRechtsLabel": "Profil rechts",
+  "aufnahmeProfilRechtsHinweis": "Dreh deinen Kopf nach links – deine rechte Gesichtshälfte zeigt zur Kamera. Ohr und Kinnlinie sollten sichtbar sein.",
+  "aufnahmeWinkelLabel": "45°-Winkel",
+  "aufnahmeWinkelHinweis": "Dreh deinen Kopf nur halb nach rechts – etwa 45 Grad. Beide Augen bleiben dabei sichtbar.",
+  "aufnahmeLaechelnLabel": "Lächeln",
+  "aufnahmeLaechelnHinweis": "Frontal in die Kamera lächeln, sodass die Zähne gut sichtbar sind.",
+  "aufnahmeGanzkoerperFrontalLabel": "Ganzkörper frontal",
+  "aufnahmeGanzkoerperFrontalHinweis": "Ganzer Körper im Bild, gerade stehen, Arme locker seitlich. Eng anliegende Kleidung zeigt die Silhouette am besten.",
+  "aufnahmeGanzkoerperSeitlichLabel": "Ganzkörper seitlich",
+  "aufnahmeGanzkoerperSeitlichHinweis": "Dieselbe Haltung um 90 Grad gedreht – so sieht man Haltung und Proportionen von der Seite.",
+  "aufnahmeOutfitEinsLabel": "Outfit 1",
+  "aufnahmeOutfitEinsHinweis": "Ein Outfit, das du oft trägst – am Körper oder ausgelegt.",
+  "aufnahmeOutfitZweiLabel": "Outfit 2",
+  "aufnahmeOutfitZweiHinweis": "Ein zweites Outfit, gern aus einem anderen Anlass.",
+  "aufnahmeOutfitDreiLabel": "Outfit 3",
+  "aufnahmeOutfitDreiHinweis": "Optional: ein drittes Outfit. Du kannst diesen Schritt auch überspringen.",
+  "aufnahmeHautLichtZusatz": "Dieses Foto wertet auch die Hautanalyse aus. Das Tageslicht aus der Checkliste zählt hier deshalb doppelt.",
+  "modulBenoetigtBasis": "Frontal, beide Seitenprofile und 45°-Winkel.",
+  "modulBenoetigtHaut": "Keine eigene Aufnahme – nutzt das Frontalfoto der Basis. Mach es bei indirektem Tageslicht.",
+  "modulBenoetigtZaehne": "1 Foto lächelnd.",
+  "modulBenoetigtFigur": "2 Ganzkörperfotos (frontal + seitlich) sowie Körpergröße und Gewicht.",
+  "modulBenoetigtStil": "2–3 Outfit-Fotos und ein paar kurze Fragen.",
+  "checkinTypAlltagTitel": "Alltags-Check",
+  "checkinTypAlltagIntro": "Eine Woche geschafft! Uns interessiert nur eins: Wie gut passen die Aufgaben in deinen Alltag?",
+  "checkinTypZwischenTitel": "Zwischencheck",
+  "checkinTypZwischenIntro": "Zwei Wochen dabei. Wir schauen kurz auf die Aufgaben, die zuletzt gehakt haben – und wie sich die ersten Tage anfühlen.",
+  "checkinTypWirkungTitel": "Wirkungs-Check",
+  "checkinTypWirkungIntro": "Ein Monat ist um. Jetzt lohnt der Blick darauf, was sich getan hat – und was wir nachschärfen.",
+  "bewertungLaeuftGut": "Läuft gut",
+  "bewertungGehtSo": "Geht so",
+  "bewertungPasstNicht": "Passt nicht",
+  "grundZeit": "Zu zeitaufwendig",
+  "grundVergessen": "Vergesse ich",
+  "grundUnangenehm": "Unangenehm / mag ich nicht",
+  "grundTeuer": "Zu teuer",
+  "grundAnderer": "Anderer Grund",
+  "frageRoutine": "Wie gut läuft deine Morgenroutine?",
+  "frageHautGefuehl": "Wie fühlt sich deine Haut an?",
+  "frageZaehneGefuehl": "Wie sauber fühlen sich deine Zähne an?",
+  "frageHaltungGefuehl": "Wie bewusst nimmst du deine Haltung wahr?",
+  "frageAnziehen": "Wie leicht fällt dir das Anziehen morgens?",
+  "frageBasisErgebnis": "Wie haben sich Frisur und Bart entwickelt?",
+  "frageHautErgebnis": "Wie hat sich dein Hautbild entwickelt?",
+  "frageZaehneErgebnis": "Wie haben sich Zähne und Lächeln entwickelt?",
+  "frageHaltungErgebnis": "Wie hat sich deine Haltung entwickelt?",
+  "frageStilErgebnis": "Wie gut funktionieren deine Outfits inzwischen?",
+  "einordnungHaut": "Sichtbare Hautveränderungen zeigen sich meist ab Woche 4–6 – du bist auf Kurs.",
+  "einordnungZaehne": "Verfärbungen gehen langsam zurück: Der Unterschied wird meist ab Woche 4 sichtbar – du bist auf Kurs.",
+  "einordnungHaltung": "Haltung ändert sich über Wochen, nicht über Tage – ab Woche 4 bis 6 fällt es auch anderen auf. Du bist auf Kurs.",
+  "einordnungStil": "Ein Kleiderschrank verändert sich Stück für Stück – nach vier bis sechs Wochen greift die neue Kombination von selbst.",
+  "einordnungBasis": "Haare wachsen rund einen Zentimeter im Monat – die neue Form zeigt sich ab Woche 4. Du bist auf Kurs.",
+  "dokumentFolgt": "Noch nicht verfügbar",
+  "@dokumentFolgt": {
+    "description": "Untertitel eines Rechtsdokuments, dessen Text noch nicht hinterlegt ist."
+  },
+  "dokumentTitelFolgt": "{titel} (folgt)",
+  "@dokumentTitelFolgt": {
+    "description": "Zeile im Fussbereich, wenn der Text des Dokuments noch fehlt.",
+    "placeholders": {
+      "titel": {
+        "type": "String"
+      }
+    }
+  },
+  "loginMitAnbieter": "Mit {anbieter} anmelden",
+  "@loginMitAnbieter": {
+    "description": "Beschriftung der Anmelde-Schaltflaeche, z. B. „Mit Google anmelden\".",
+    "placeholders": {
+      "anbieter": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineBand": "Offline – Plan und Checkliste laufen weiter, Änderungen werden nachgetragen.",
+  "routeNichtGefunden": "Route nicht gefunden: {pfad}",
+  "@routeNichtGefunden": {
+    "description": "Ausweichseite des Routers. Erscheint nur bei einem Programmierfehler.",
+    "placeholders": {
+      "pfad": {
+        "type": "String"
+      }
+    }
+  },
+  "ladeGesichtsform": "Analysiere Gesichtsform...",
+  "ladeHautbild": "Prüfe Hautbild...",
+  "ladeFrisur": "Vergleiche Frisur-Optionen...",
+  "ladeEmpfehlungen": "Stelle Empfehlungen zusammen...",
+  "ladePlan": "Erstelle deinen Plan...",
+  "unterbrochenTitel": "Analyse unterbrochen",
+  "unterbrochenText": "Deine letzte Analyse wurde nicht fertig — die App war zwischendurch geschlossen. Es wurde nichts gespeichert. Deine Fotos sind noch da, du kannst direkt neu starten.",
+  "loginWarumKonto": "Damit Plan, Streak und Verlauf einen Gerätewechsel überleben, gehört alles zu einem Konto.",
+  "loginGast": "Erst mal umschauen",
+  "loginGastErklaerung": "Beim Umschauen legen wir ein Konto ohne Namen und ohne E-Mail an. Meldest du dich später mit Google an, nehmen wir deine Daten mit.",
+  "loginFotosBleiben": "Deine Fotos bleiben auf dem Gerät.",
+  "fotoWirdGeprueft": "Foto wird geprüft...",
+  "flowNichtsAufzunehmen": "Für diese Auswahl gibt es nichts aufzunehmen.",
+  "flowSchritt": "Schritt {nummer} von {gesamt}",
+  "@flowSchritt": {
+    "description": "Fortschritt in der Kopfzeile des Aufnahme-Flows.",
+    "placeholders": {
+      "nummer": {
+        "type": "int"
+      },
+      "gesamt": {
+        "type": "int"
+      }
+    }
+  },
+  "figurBleibtLokalTitel": "Bleibt auf dem Gerät",
+  "figurBleibtLokalText": "Größe und Gewicht werden nur für die Passform-Empfehlung mitgeschickt und nicht dauerhaft beim Analyse-Dienst gespeichert.",
+  "fotoOptional": "Optional – du kannst diesen Schritt überspringen.",
+  "fotoSoKlapptEs": "So klappt das Foto",
+  "fotoAutoTitel": "Die App löst selbst aus",
+  "fotoGeprueft": "Geprüft",
+  "hinweisSchliessen": "Hinweis schließen",
+  "modulHautKeinFotoTitel": "Kein eigenes Foto nötig",
+  "modulHautKeinFotoText": "Unterton und Farbpalette lesen wir aus deinem Frontalfoto der Basis mit. Eine zusätzliche Nahaufnahme brauchst du nicht.",
+  "modulHautLichtTitel": "Licht zählt hier doppelt",
+  "modulHautLichtText": "War dein Frontalfoto zu dunkel oder farbstichig, geh einen Schritt zurück und nimm es bei indirektem Tageslicht neu auf – warmes Kunstlicht verfälscht den Unterton.",
+  "aufnahmeTitel": "Aufnahme",
+  "@aufnahmeTitel": {
+    "description": "Titel des Aufnahme-Flows, wenn es nichts aufzunehmen gibt."
+  },
+  "richtungBleibtLokal": "Bleibt auf dem Gerät",
+  "checkinKeiner": "Gerade steht kein Check-in an.",
+  "checkinSchrittZaehler": "{aktuell} von {gesamt}",
+  "@checkinSchrittZaehler": {
+    "description": "Fortschritt im Check-in.",
+    "placeholders": {
+      "aktuell": {
+        "type": "int"
+      },
+      "gesamt": {
+        "type": "int"
+      }
+    }
+  },
+  "checkinUnterEinerMinute": "Unter einer Minute",
+  "checkinAbbrechbar": "Du kannst jederzeit abbrechen – dein Zwischenstand bleibt gespeichert.",
+  "checkinAufKurs": "Du bist auf Kurs",
+  "checkinPlanUnveraendert": "Plan unverändert lassen",
+  "checkinOhneAnpassung": "Ohne Anpassung abschließen",
+  "vergleichHinweis": "Gleicher Ausschnitt, gleiches Licht – so lässt sich vergleichen, was sich wirklich verändert hat.",
+  "vergleichNurFuerDichTitel": "Nur für dich",
+  "vergleichNurFuerDichText": "Auch das Fortschrittsfoto bleibt auf deinem Gerät und geht nur für die Auswertung an den Analyse-Dienst.",
+  "vergleichOhneDatum": "ohne Datum",
+  "altersTitel": "Nur für Erwachsene",
+  "altersWeiter": "Weiter zur Analyse",
+  "altersZurueck": "Zurück zum Dashboard",
+  "altersWarumTitel": "Warum wir fragen",
+  "altersWarumText": "Für eine Analyse verarbeitet TrueGlow Aufnahmen deines Gesichts. Solche Daten sind besonders geschützt, und eine wirksame Einwilligung dazu können nur Erwachsene selbst erteilen. Deshalb ist die App ab 18.",
+  "altersOhneText": "Ohne Bestätigung bleibt nur der Analyse-Bereich zu. Dein Plan, die Tages-Checkliste, deine Serie und die Check-ins funktionieren weiter — und deine bisherigen Reports bleiben erhalten.",
+  "einwilligungKurzTitel": "Kurz bestätigen",
+  "einwilligungNachgeschaerftTitel": "Wir haben nachgeschärft",
+  "einwilligungNeueFassungTitel": "Neue Fassung der Texte",
+  "einwilligungNachgeschaerftText": "Bisher gab es ein einzelnes Häkchen für alles. Weil deine Fotos etwas anderes sind als die Nutzung der App, fragen wir beides jetzt getrennt — einmalig und danach nie wieder.",
+  "einwilligungNeueFassungText": "Unsere Rechtstexte haben sich geändert. Damit deine Zustimmung sich auf das bezieht, was tatsächlich gilt, bitten wir dich einmal um Bestätigung.",
+  "einwilligungBleibtErhalten": "Deine bisherigen Analysen, dein Plan und deine Serie bleiben unverändert erhalten.",
+  "erklaerungMindestalter": "TrueGlow verarbeitet Aufnahmen deines Gesichts und richtet sich deshalb ausschließlich an Erwachsene. Mit dem Häkchen bestätigst du, dass du volljährig bist.",
+  "erklaerungNutzung": "Ich habe die Nutzungsbedingungen und die Datenschutzerklärung gelesen und stimme ihnen zu.",
+  "erklaerungDiagnose": "Ich willige ein, dass anonyme Absturzberichte und eine sparsame Nutzungsstatistik erfasst werden. Erfasst wird nur, DASS ein Schritt erreicht wurde – keine Fotos, keine Analyse-Inhalte, keine Freitexte, keine Profilangaben.",
+  "erklaerungFotoKi": "Ich willige ein, dass meine Fotos – darunter Aufnahmen meines Gesichts – zur Auswertung an den KI-Dienst Google Gemini übermittelt werden. Die Verarbeitung findet auf Servern von Google statt, auch außerhalb der EU (Drittlandtransfer). Die Bilder werden dort nicht gespeichert und nicht protokolliert.",
+  "freiwilligFotoKi": "Freiwillig und jederzeit in den Einstellungen widerrufbar. Ohne diese Einwilligung sind keine neuen Analysen möglich – alles andere funktioniert weiter, bestehende Reports bleiben.",
+  "freiwilligMindestalter": "Ohne Bestätigung bleibt der Analyse-Bereich zu. Plan, Checklisten und Check-ins kannst du trotzdem nutzen.",
+  "freiwilligDiagnose": "Freiwillig, standardmäßig aus und jederzeit widerrufbar. Hilft uns, Abstürze zu finden, bevor sie in einer Bewertung landen.",
+  "datumHeute": "heute",
+  "datumGestern": "gestern",
+  "verlaufLoeschenTitel": "Analyse löschen?",
+  "verlaufLoeschenText": "Die Analyse vom {datum} wird vom Gerät entfernt.",
+  "@verlaufLoeschenText": {
+    "description": "Rueckfrage vor dem Loeschen einer Analyse.",
+    "placeholders": {
+      "datum": {
+        "type": "String"
+      }
+    }
+  },
+  "loeschen": "Löschen",
+  "verlaufLoeschenTooltip": "Analyse löschen",
+  "homeDeinPlan": "Dein Plan",
+  "homeAnalyseKurz": "Analyse",
+  "@homeAnalyseKurz": {
+    "description": "Beschriftung der schmalen Schaltflaeche neben „Plan ansehen\"."
+  },
+  "homeErstelltAm": "{datum} erstellt",
+  "@homeErstelltAm": {
+    "description": "Zeile unter dem Plan auf der Startseite.",
+    "placeholders": {
+      "datum": {
+        "type": "String"
+      }
+    }
+  },
+  "legalFotosText": "Deine Fotos verlassen das Gerät nur für die Dauer einer Analyse und werden dabei nirgends gespeichert.",
+  "legalNichtOeffenbar": "{titel} lässt sich gerade nicht öffnen.",
+  "@legalNichtOeffenbar": {
+    "description": "Meldung, wenn ein Rechtstext nicht geladen werden kann.",
+    "placeholders": {
+      "titel": {
+        "type": "String"
+      }
+    }
+  },
+  "legalStehenAusTitel": "Texte stehen noch aus",
+  "dokumentKeinTextTitel": "Noch nicht verfügbar",
+  "dokumentKeinTextText": "Für dieses Dokument ist noch kein Text hinterlegt.",
+  "dokumentNichtLesbarTitel": "Text nicht lesbar",
+  "dokumentNichtLesbarText": "Der hinterlegte Text lässt sich nicht laden. Bitte ruf ihn über die Webseite auf.",
+  "migrationTitel": "Deine bisherigen Daten übernehmen?",
+  "migrationText": "Auf diesem Gerät liegen Analysen, Plan, Streak und Check-ins aus der Zeit ohne Konto. Sollen sie zu deinem Konto gehören?\n\nDeine Fotos bleiben in jedem Fall nur auf dem Gerät.",
+  "migrationUebernehmen": "Übernehmen",
+  "migrationNichts": "Es gab nichts zu übernehmen.",
+  "migrationErfolg": "Übernommen: {anzahl} Einträge.",
+  "@migrationErfolg": {
+    "description": "Rueckmeldung nach der Uebernahme des lokalen Bestands.",
+    "placeholders": {
+      "anzahl": {
+        "type": "int"
+      }
+    }
+  },
+  "migrationFehler": "Übernahme fehlgeschlagen. Deine Daten sind weiter auf dem Gerät – wir fragen beim nächsten Start erneut.",
+  "onbPunktFotos": "Zwei Fotos aufnehmen",
+  "onbPunktAnalyse": "KI-Analyse deiner Merkmale",
+  "onbPunktPlan": "Konkreter Plan mit Checkliste",
+  "onbDatenschutzText": "Bitte lies die folgenden Hinweise, bevor es losgeht.",
+  "onbKeineMedizin": "Keine medizinische Beratung",
+  "onbUmgangFotos": "Umgang mit deinen Fotos",
+  "planLeer": "Noch kein Plan vorhanden. Starte zuerst eine Analyse.",
+  "ergebnisNichtVorhanden": "Diese Analyse ist nicht mehr vorhanden.",
+  "settingsKontoLoeschenFrage": "Konto endgültig löschen?",
+  "settingsDatenLoeschenFrage": "Alle Daten löschen?",
+  "settingsKontoLoeschenText": "Dein Konto und alle Inhalte werden unwiderruflich gelöscht – auf diesem Gerät und in der Cloud. Auch deine Fotos auf dem Gerät werden entfernt.\n\nDanach kannst du dich mit diesem Konto nicht mehr anmelden.",
+  "settingsDatenLoeschenText": "Analysen, Plan, Fortschritt und deine Angaben werden unwiderruflich entfernt – auf diesem Gerät und in deinem Konto. Auch deine Fotos auf dem Gerät werden gelöscht.\n\nDein Konto selbst bleibt bestehen.",
+  "settingsKontoLoeschenKnopf": "Konto löschen",
+  "settingsFotoJa": "Analysen sind möglich. Deine Fotos gehen nur für die Dauer der Auswertung an den KI-Dienst.",
+  "settingsFotoNein": "Ohne Foto-Einwilligung sind keine neuen Analysen möglich. Deine bisherigen Reports, dein Plan und deine Serie bleiben erhalten.",
+  "settingsNochNichtGefragt": "{titel}: noch nicht gefragt",
+  "@settingsNochNichtGefragt": {
+    "description": "Zeile in der Einwilligungs-Uebersicht.",
+    "placeholders": {
+      "titel": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsNachtraeglich": "nachträglich",
+  "settingsAnmeldungUnklar": "Der Anmeldezustand lässt sich gerade nicht abfragen. Deine Daten auf dem Gerät sind davon nicht betroffen.",
+  "settingsKontoAnonym": "Deine Daten hängen an diesem Gerät. Melde dich mit Google an, damit sie einen Gerätewechsel überleben – dein bisheriger Stand wird dabei übernommen.",
+  "settingsKontoEcht": "Plan, Streak und Verlauf gehören zu diesem Konto. Fotos bleiben auf dem Gerät.",
+  "settingsVerknuepfen": "Mit Google verknüpfen",
+  "settingsVerknuepft": "Konto verknüpft.",
+  "settingsAbmeldenAnonym": "Du bist ohne Konto angemeldet. Nach dem Abmelden kommst du an diesen Stand nicht mehr heran. Die Daten auf diesem Gerät bleiben erhalten.",
+  "settingsAbmeldenEcht": "Deine Daten bleiben in deinem Konto. Nach der nächsten Anmeldung sind sie wieder da.",
+  "settingsKonto": "Konto",
+  "settingsAnalyseModus": "Analyse-Modus",
+  "settingsModusDemo": "Es werden keine Fotos versendet. Die App zeigt eine hinterlegte Beispiel-Analyse. Umschalten beim Build über --dart-define=TRUEGLOW_MOCK.",
+  "settingsModusLive": "Analysen laufen über den TrueGlow-Dienst ({modell}). Deine Fotos werden für die Auswertung übertragen und dort weder gespeichert noch protokolliert.",
+  "@settingsModusLive": {
+    "description": "Erklaerung des Live-Modus in den Einstellungen.",
+    "placeholders": {
+      "modell": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsFehlerMeldung": "{titel}: {tipp}",
+  "@settingsFehlerMeldung": {
+    "description": "Kurzmeldung unten am Bildschirm: Titel und Tipp eines Fehlers.",
+    "placeholders": {
+      "titel": {
+        "type": "String"
+      },
+      "tipp": {
+        "type": "String"
+      }
+    }
+  },
+  "streakTage": "Tage am Stück",
+  "streakKeineAufgaben": "Noch keine Tagesaufgaben.",
+  "streakNichtsAbgehakt": "Heute noch nichts abgehakt – ein Haken sichert den Tag.",
+  "streakHeuteErledigt": "Heute {erledigt} von {gesamt} erledigt",
+  "@streakHeuteErledigt": {
+    "description": "Fortschritt der Tages-Checkliste.",
+    "placeholders": {
+      "erledigt": {
+        "type": "int"
+      },
+      "gesamt": {
+        "type": "int"
+      }
+    }
+  },
+  "streakNochModule": "noch {anzahl}",
+  "@streakNochModule": {
+    "description": "Fortschritt zum Abzeichen „Alles freigeschaltet\".",
+    "placeholders": {
+      "anzahl": {
+        "type": "int"
+      }
+    }
+  },
+  "streakNochTage": "noch {anzahl}",
+  "@streakNochTage": {
+    "description": "Fortschritt zu einem Streak-Abzeichen.",
+    "placeholders": {
+      "anzahl": {
+        "type": "int"
+      }
+    }
+  },
+  "verlaufZeile": "{bereiche} Bereiche · {empfehlungen} Empfehlungen",
+  "@verlaufZeile": {
+    "description": "Untertitel einer Analyse im Verlauf.",
+    "placeholders": {
+      "bereiche": {
+        "type": "int"
+      },
+      "empfehlungen": {
+        "type": "int"
+      }
+    }
+  },
+  "homePlanZeile": "{datum} erstellt · {empfehlungen} Empfehlungen",
+  "@homePlanZeile": {
+    "description": "Zeile unter „Dein Plan\" auf der Startseite.",
+    "placeholders": {
+      "datum": {
+        "type": "String"
+      },
+      "empfehlungen": {
+        "type": "int"
+      }
+    }
+  },
+  "legalEntwurfHinweis": "Die endgültigen Fassungen sind noch nicht eingetragen. Bis dahin bleiben die betroffenen Einträge gesperrt.\n\n{bericht}",
+  "@legalEntwurfHinweis": {
+    "description": "Entwurfshinweis mit dem Pruefbericht aus Rechtstexte.fehlerbericht.",
+    "placeholders": {
+      "bericht": {
+        "type": "String"
+      }
+    }
+  },
+  "migrationAblehnen": "Nein, frisch starten",
+  "settingsEinwilligungen": "Einwilligungen",
+  "settingsWirdGeladen": "Wird geladen …",
+  "settingsNichtAngemeldet": "Nicht angemeldet.",
+  "settingsAbmelden": "Abmelden",
+  "settingsAbmeldenFrage": "Abmelden?",
+  "settingsErteilt": "erteilt",
+  "settingsNichtErteilt": "nicht erteilt",
+  "settingsNachweis": "{titel}: {stand} am {datum} (Textstand {version}, {kanal})",
+  "@settingsNachweis": {
+    "description": "Eine Zeile des Einwilligungs-Nachweises.",
+    "placeholders": {
+      "titel": {
+        "type": "String"
+      },
+      "stand": {
+        "type": "String"
+      },
+      "datum": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      },
+      "kanal": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsVersionUnbekannt": "unbekannt",
+  "settingsKanalOnboarding": "im Onboarding",
+  "settingsKanalEinstellungen": "in den Einstellungen",
+  "settingsKanalNachtrag": "nachträglich",
+  "settingsModusMock": "Mock",
+  "@settingsModusMock": {
+    "description": "Pille auf der Karte „Analyse-Modus\". Fachbegriff, bleibt unuebersetzt."
+  },
+  "settingsModusLiveKurz": "Live",
+  "@settingsModusLiveKurz": {
+    "description": "Pille auf der Karte „Analyse-Modus\". Fachbegriff, bleibt unuebersetzt."
+  },
+  "abzeichenErsteAnalyseOffen": "Starte deine erste Analyse",
+  "abzeichenNochModule": "{anzahl, plural, =1{noch 1 Modul} other{noch {anzahl} Module}}",
+  "@abzeichenNochModule": {
+    "description": "Was dem Abzeichen „Alles freigeschaltet\" noch fehlt.",
+    "placeholders": {
+      "anzahl": {
+        "type": "int"
+      }
+    }
+  },
+  "abzeichenNochTage": "{anzahl, plural, =1{noch 1 Tag} other{noch {anzahl} Tage}}",
+  "@abzeichenNochTage": {
+    "description": "Was einem Streak-Abzeichen noch fehlt.",
+    "placeholders": {
+      "anzahl": {
+        "type": "int"
+      }
+    }
+  },
+  "erscheinungFolgtSystem": "TrueGlow folgt der Systemeinstellung deines Handys.",
+  "erscheinungFest": "Feste Auswahl – unabhängig von der Systemeinstellung."
 }

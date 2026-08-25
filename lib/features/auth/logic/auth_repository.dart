@@ -3,36 +3,35 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/trueglow_nutzer.dart';
+import '../../../core/l10n/texte.dart';
 
 /// Fehlerfaelle der Anmeldung – nach demselben Muster wie AnalysisFehler:
 /// jeder Fall mit Titel und konkretem Tipp, damit die UI nichts erfinden muss.
 enum AuthFehler {
-  abgebrochen(
-    'Anmeldung abgebrochen',
-    'Kein Problem – du kannst es jederzeit noch einmal versuchen.',
-  ),
-  keinInternet(
-    'Keine Verbindung',
-    'Prüf deine Internetverbindung und versuch es noch einmal.',
-  ),
-  kontoBereitsVergeben(
-    'Konto schon in Benutzung',
-    'Dieses Google-Konto gehört bereits zu einem TrueGlow-Zugang. Wir haben '
-        'dich damit angemeldet.',
-  ),
-  nichtVerfuegbar(
-    'Anmeldung nicht möglich',
-    'Diese Anmeldeart steht auf deinem Gerät nicht zur Verfügung.',
-  ),
-  unbekannt(
-    'Anmeldung fehlgeschlagen',
-    'Da ist etwas schiefgelaufen. Versuch es bitte noch einmal.',
-  );
+  abgebrochen,
+  keinInternet,
+  kontoBereitsVergeben,
+  nichtVerfuegbar,
+  unbekannt,
+}
 
-  const AuthFehler(this.titel, this.tipp);
+// Anzeigetexte als Erweiterung – Begruendung in `onboarding_profile.dart`.
+extension AuthFehlerText on AuthFehler {
+  String titel(L texte) => switch (this) {
+        AuthFehler.abgebrochen => texte.authAbgebrochenTitel,
+        AuthFehler.keinInternet => texte.authKeinInternetTitel,
+        AuthFehler.kontoBereitsVergeben => texte.authKontoVergebenTitel,
+        AuthFehler.nichtVerfuegbar => texte.authNichtVerfuegbarTitel,
+        AuthFehler.unbekannt => texte.authUnbekanntTitel,
+      };
 
-  final String titel;
-  final String tipp;
+  String tipp(L texte) => switch (this) {
+        AuthFehler.abgebrochen => texte.authAbgebrochenTipp,
+        AuthFehler.keinInternet => texte.authKeinInternetTipp,
+        AuthFehler.kontoBereitsVergeben => texte.authKontoVergebenTipp,
+        AuthFehler.nichtVerfuegbar => texte.authNichtVerfuegbarTipp,
+        AuthFehler.unbekannt => texte.authUnbekanntTipp,
+      };
 }
 
 class AuthException implements Exception {
