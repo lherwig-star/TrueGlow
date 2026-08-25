@@ -289,6 +289,22 @@ firebase functions:log --only analysiere
 Zeilen, die mit `Nachbereitung:` anfangen, sagen, was das Modell falsch
 geliefert hat und was der Server herausgefiltert hat.
 
+## 8 · Nachprüfung: Abschnittsnamen und Produktkategorien
+
+Nachtrag zu Abschnitt 7. Der erste Durchgang hat gezeigt, dass Kapitel-
+überschriften und Fließtexte englisch waren, die Überschriften der
+Unterabschnitte aber deutsch blieben.
+
+| # | Lauf | Worauf achten |
+|---|---|---|
+| 1 | **Englisch, weiblicher Modus, mit Make-up.** | Die Unterabschnitte heißen „Hair", „Eyebrows", „Everyday look", „Colours" — nicht „Frisur", „Augenbrauen", „Alltags-Look", „Farben". Die kleinen Pillen an den Produkten heißen „Cleansing", „Care", „Styling", „Tools", „Make-up", „Clothing" — kein „Pflege", kein „Werkzeug". |
+| 2 | **Danach ohne neue Analyse** in den Einstellungen auf Deutsch umstellen und denselben Report wieder öffnen. | Kapitelüberschriften und Produkt-Pillen wechseln auf Deutsch. Abschnittsüberschriften und Fließtexte bleiben englisch — das ist so gewollt, sie sind die eigenen Worte des Modells und ließen sich nur mit einem zweiten Durchlauf übersetzen. |
+| 3 | **Deutsch, Gegenprobe.** Neue Analyse auf Deutsch. | Unterabschnitte heißen wieder „Frisur", „Augenbrauen", „Alltags-Look", „Farben". |
+
+Ein alter Report von vorher zeigt seine Produktkategorie weiter so, wie sie
+damals gespeichert wurde. Das ist Absicht — dort gibt es keine Kennung, auf
+die sich das abbilden ließe.
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |
