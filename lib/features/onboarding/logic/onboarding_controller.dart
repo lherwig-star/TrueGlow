@@ -31,6 +31,8 @@ class OnboardingController extends StateNotifier<OnboardingProfile> {
     _box.put(_schluessel, jsonEncode(neu.toJson()));
   }
 
+  void setGeschlecht(Geschlecht wert) =>
+      _setze(state.copyWith(geschlecht: wert));
   void setAlter(Altersbereich wert) => _setze(state.copyWith(alter: wert));
   void setBudget(Budget wert) => _setze(state.copyWith(budget: wert));
   void setZeit(Zeitbudget wert) => _setze(state.copyWith(zeit: wert));
@@ -58,3 +60,13 @@ final onboardingControllerProvider =
     ref.watch(storeProvider(HiveService.boxEinstellungen)),
   ),
 );
+
+/// Wonach sich Module, Umrisse und Empfehlungen richten.
+///
+/// Ein eigener Provider und kein Durchreichen des ganzen Profils: Sehr viele
+/// Stellen brauchen genau diese eine Entscheidung und sonst nichts aus dem
+/// Onboarding. Wer nur die Ausrichtung liest, baut auch nur bei ihrer
+/// Aenderung neu.
+final ausrichtungProvider = Provider<Ausrichtung>((ref) {
+  return ref.watch(onboardingControllerProvider).geschlecht.ausrichtung;
+});

@@ -10,6 +10,7 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../analysis/logic/kontingent.dart';
 import '../logic/module_controller.dart';
+import '../../onboarding/logic/onboarding_controller.dart';
 import '../models/analyse_modul.dart';
 import 'widgets/modul_karte.dart';
 
@@ -99,7 +100,9 @@ class ModuleSelectionScreen extends ConsumerWidget {
           onTap: null,
         ),
         const SizedBox(height: AppTheme.gapS),
-        for (final modul in AnalyseModul.waehlbare) ...[
+        for (final modul
+            in AnalyseModul.waehlbareFuer(ref.watch(ausrichtungProvider)))
+          ...[
           ModulKarte(
             modul: modul,
             ausgewaehlt: zustand.enthaelt(modul),

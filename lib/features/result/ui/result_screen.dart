@@ -15,6 +15,7 @@ import '../../direction/models/richtung.dart';
 import '../../history/logic/analysis_repository.dart';
 import '../../modules/logic/module_controller.dart';
 import '../../modules/models/analyse_modul.dart';
+import '../../onboarding/logic/onboarding_controller.dart';
 import '../../modules/ui/widgets/modul_karte.dart';
 
 /// Ergebnis der Analyse, gegliedert nach Modulen. Liest die Analyse anhand der
@@ -28,6 +29,7 @@ class ResultScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final texte = context.texte;
+    final ausrichtung = ref.watch(ausrichtungProvider);
     // Neuladen, sobald sich der Bestand aendert.
     ref.watch(analysenProvider);
     final ergebnis = ref.watch(analysisRepositoryProvider).laden(analyseId);
@@ -51,7 +53,11 @@ class ResultScreen extends ConsumerWidget {
       );
     }
 
-    final offene = AnalyseModul.waehlbare
+    // Angeboten wird nur, was zur Ausrichtung passt: Wer im maennlichen
+    // Modus laeuft, soll unter „Analyse erweitern" kein Make-up-Kapitel
+    // finden. Was bereits im Report steht, bleibt davon unberuehrt – deshalb
+    // wird gefiltert und nicht entfernt.
+    final offene = AnalyseModul.waehlbareFuer(ausrichtung)
         .where((m) => !ergebnis.module.contains(m))
         .toList();
 
@@ -237,15 +243,16 @@ class _ZielPille extends StatelessWidget {
 }
 
 /// Ein Modul-Kapitel: Ueberschrift, Einleitung und die Sektionen darunter.
-class _KapitelBlock extends StatelessWidget {
+class _KapitelBlock extends ConsumerWidget {
   const _KapitelBlock({required this.kapitel});
 
   final Kapitel kapitel;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final texte = context.texte;
     final farben = context.farben;
+    final ausrichtung = ref.watch(ausrichtungProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -264,7 +271,7 @@ class _KapitelBlock extends StatelessWidget {
             const SizedBox(width: AppTheme.gapS),
             Expanded(
               child: Text(
-                kapitel.titel(texte),
+                kapitel.titel(texte, ausrichtung),
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,

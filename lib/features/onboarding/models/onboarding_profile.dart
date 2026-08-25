@@ -10,13 +10,59 @@ import '../../../core/l10n/texte.dart';
 ///
 /// Ein gespeicherter Altwert `unter18` faellt beim Lesen heraus und laesst das
 /// Feld leer – das Onboarding fragt dann neu.
+/// Die Angabe, nach der sich Module, Umrisse und Empfehlungen richten.
+///
+/// Bewusst vier Werte und nicht zwei. „Divers" und „keine Angabe" sind
+/// verschiedene Aussagen – die eine ist eine Identität, die andere ein
+/// Nein zur Frage – und führen trotzdem zur selben [Ausrichtung]: Beide
+/// heißen für die App „lass mir alles offen".
+enum Geschlecht { maennlich, weiblich, divers, keineAngabe }
+
+/// Wonach sich die App tatsächlich richtet.
+///
+/// Getrennt vom [Geschlecht], weil hier eine Entscheidung steht und dort
+/// eine Angabe. Vier Angaben, drei Ausrichtungen – und `null`, also „noch
+/// nie gefragt", ist eine fünfte Angabe mit demselben Verhalten wie vorher.
+enum Ausrichtung { maennlich, weiblich, neutral }
+
+extension GeschlechtAusrichtung on Geschlecht? {
+  /// Die Ausrichtung zu dieser Angabe.
+  ///
+  /// `null` ergibt [Ausrichtung.maennlich] – nicht als Aussage über
+  /// irgendjemanden, sondern weil das genau das Verhalten ist, das die App
+  /// vor dieser Frage hatte. Bestandsnutzer sollen von einem Update nichts
+  /// merken, und ein erzwungener Zusatzdialog beim ersten Start nach dem
+  /// Update wäre die schlechtere Antwort auf eine Frage, die sie nie
+  /// gestellt bekommen haben.
+  Ausrichtung get ausrichtung => switch (this) {
+        null || Geschlecht.maennlich => Ausrichtung.maennlich,
+        Geschlecht.weiblich => Ausrichtung.weiblich,
+        Geschlecht.divers || Geschlecht.keineAngabe => Ausrichtung.neutral,
+      };
+}
+
 enum Altersbereich { a18bis24, a25bis34, a35bis44, ab45 }
 
 enum Budget { niedrig, mittel, hoch }
 
 enum Zeitbudget { kurz, mittel, lang }
 
-enum Fokusbereich { haut, haare, bart, style, fitness }
+enum Fokusbereich {
+  haut,
+  haare,
+  bart,
+  style,
+  fitness;
+
+  /// Was zur Wahl steht.
+  ///
+  /// Im weiblichen Modus faellt „Bart" heraus – es waere die einzige Frage
+  /// auf dem Bildschirm, die im Report keine Entsprechung mehr hat.
+  static List<Fokusbereich> fuer(Ausrichtung ausrichtung) =>
+      ausrichtung == Ausrichtung.weiblich
+          ? values.where((f) => f != Fokusbereich.bart).toList()
+          : values;
+}
 
 // Die Anzeigetexte stehen bewusst nicht mehr im Enum, sondern in
 // Erweiterungen daneben.
@@ -26,6 +72,15 @@ enum Fokusbereich { haut, haare, bart, style, fitness }
 // bleibt trotzdem hier, direkt neben der Liste: So fällt beim Ergänzen eines
 // Werts sofort auf, dass auch ein Text dazugehört, und der Compiler besteht
 // darauf.
+
+extension GeschlechtText on Geschlecht {
+  String label(L texte) => switch (this) {
+        Geschlecht.maennlich => texte.geschlechtMaennlich,
+        Geschlecht.weiblich => texte.geschlechtWeiblich,
+        Geschlecht.divers => texte.geschlechtDivers,
+        Geschlecht.keineAngabe => texte.geschlechtKeineAngabe,
+      };
+}
 
 extension AltersbereichText on Altersbereich {
   String label(L texte) => switch (this) {
@@ -76,6 +131,7 @@ extension FokusbereichText on Fokusbereich {
 
 class OnboardingProfile {
   const OnboardingProfile({
+    this.geschlecht,
     this.alter,
     this.budget,
     this.zeit,
@@ -83,6 +139,9 @@ class OnboardingProfile {
     this.zugestimmt = false,
     this.abgeschlossen = false,
   });
+
+  /// `null` heißt „nie gefragt" – siehe [GeschlechtAusrichtung.ausrichtung].
+  final Geschlecht? geschlecht;
 
   final Altersbereich? alter;
   final Budget? budget;
@@ -92,6 +151,7 @@ class OnboardingProfile {
   final bool abgeschlossen;
 
   OnboardingProfile copyWith({
+    Geschlecht? geschlecht,
     Altersbereich? alter,
     Budget? budget,
     Zeitbudget? zeit,
@@ -100,6 +160,7 @@ class OnboardingProfile {
     bool? abgeschlossen,
   }) {
     return OnboardingProfile(
+      geschlecht: geschlecht ?? this.geschlecht,
       alter: alter ?? this.alter,
       budget: budget ?? this.budget,
       zeit: zeit ?? this.zeit,
@@ -110,6 +171,7 @@ class OnboardingProfile {
   }
 
   Map<String, dynamic> toJson() => {
+        'geschlecht': geschlecht?.name,
         'alter': alter?.name,
         'budget': budget?.name,
         'zeit': zeit?.name,
@@ -128,6 +190,7 @@ class OnboardingProfile {
     }
 
     return OnboardingProfile(
+      geschlecht: byName(Geschlecht.values, json['geschlecht']),
       alter: byName(Altersbereich.values, json['alter']),
       budget: byName(Budget.values, json['budget']),
       zeit: byName(Zeitbudget.values, json['zeit']),

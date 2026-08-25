@@ -4,6 +4,7 @@ import * as analyse from '../src/analyse_prompt';
 import * as checkin from '../src/checkin_prompt';
 import type { Modul } from '../src/labels';
 import type { Sprache } from '../src/sprache';
+import type { Ausrichtung } from '../src/ausrichtung';
 
 /**
  * Die Zusicherungen, die frueher in `test/richtung_test.dart` und
@@ -15,9 +16,11 @@ function analyseDaten(
   richtung: analyse.Richtungsangaben = { ziele: [], freitext: '' },
   module: Modul[] = ['basis'],
   sprache: Sprache = 'de',
+  ausrichtung: Ausrichtung = 'maennlich',
 ): analyse.AnalysePromptDaten {
   return {
     sprache,
+    ausrichtung,
     module,
     profil: { fokus: [] },
     figur: {},
@@ -94,6 +97,7 @@ describe('Analyse-Prompt', () => {
     const text = analyse.nutzerText(
       ['basisFrontal', 'zaehneLaecheln'],
       'de',
+      'maennlich',
     );
 
     expect(text).toContain('1. Frontalfoto (Gesicht, Haare & Bart)');
@@ -108,6 +112,7 @@ describe('Analyse-Prompt', () => {
     const text = analyse.nutzerText(
       ['basisFrontal', 'hautNahaufnahme', 'zaehneLaecheln'],
       'de',
+      'maennlich',
     );
 
     expect(text).toContain('1. Frontalfoto (Gesicht, Haare & Bart)');
@@ -157,9 +162,50 @@ describe('Analyse-Prompt', () => {
   });
 
   it('die Bildbeschriftung folgt der Zielsprache', () => {
-    const text = analyse.nutzerText(['basisFrontal'], 'en');
+    const text = analyse.nutzerText(['basisFrontal'], 'en', 'maennlich');
 
     expect(text).toContain('1. Front photo (Face, hair & beard)');
+  });
+
+  it('der weibliche Modus laesst den Bart weg und nennt Make-up', () => {
+    const weiblich = analyse.systemPrompt(
+      analyseDaten(
+        undefined,
+        ['basis', 'makeupAusstrahlung', 'figurPassform'],
+        'de',
+        'weiblich',
+      ),
+    );
+
+    expect(weiblich).toContain('"basis" – Gesicht & Haare');
+    expect(weiblich).toContain('KEINEN Bart-Abschnitt');
+    expect(weiblich).toContain('"makeupAusstrahlung" – Make-up & Ausstrahlung');
+    // Der Figurtyp wird beim Namen genannt, statt umschrieben zu werden.
+    expect(weiblich).toContain('Sanduhr');
+    // Und die Leitplanke bleibt: kein Eingriff, keine Behandlung.
+    expect(weiblich).toContain('kosmetische Behandlung');
+  });
+
+  it('der maennliche Modus bleibt, wie er war', () => {
+    const maennlich = analyse.systemPrompt(
+      analyseDaten(undefined, ['basis', 'figurPassform'], 'de', 'maennlich'),
+    );
+
+    expect(maennlich).toContain('"basis" – Gesicht, Haare & Bart');
+    expect(maennlich).not.toContain('KEINEN Bart-Abschnitt');
+    expect(maennlich).not.toContain('Sanduhr');
+    expect(maennlich).toContain('Die Person hat angegeben: männlich');
+  });
+
+  it('der neutrale Modus unterstellt nichts', () => {
+    const neutral = analyse.systemPrompt(
+      analyseDaten(undefined, ['basis'], 'de', 'neutral'),
+    );
+
+    expect(neutral).toContain('geschlechtsneutral');
+    // Die Basis behaelt den Bart-Abschnitt – er ist dort mit „weglassen,
+    // wenn kein Bartwuchs erkennbar ist" ohnehin an das Foto gebunden.
+    expect(neutral).toContain('"basis" – Gesicht, Haare & Bart');
   });
 
   it('das Haut-Kapitel verweist auf das Frontalfoto', () => {
@@ -177,6 +223,7 @@ function checkinDaten(
 ): checkin.CheckinPromptDaten {
   return {
     sprache: 'de',
+    ausrichtung: 'maennlich',
     typ: 'alltag',
     habits: [],
     wirkung: [],

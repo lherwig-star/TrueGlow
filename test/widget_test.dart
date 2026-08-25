@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:trueglow/core/widgets/section_card.dart';
 import 'package:trueglow/features/consent/models/einwilligung.dart';
 import 'package:trueglow/features/auth/logic/auth_repository.dart';
+import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
 import 'package:trueglow/features/start/ui/splash_screen.dart';
 
 import 'hilfen.dart';
@@ -69,7 +70,9 @@ void main() {
     await tester.tap(find.text(texte.weiter));
     await tester.pumpAndSettle();
 
-    // Seite 2: Alter + Budget
+    // Seite 2: Geschlecht, Alter, Budget
+    await tester.tap(find.text(Geschlecht.maennlich.label(texte)));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('25–34'));
     await tester.tap(find.text('Mittel'));
     await tester.pumpAndSettle();

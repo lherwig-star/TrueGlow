@@ -1,5 +1,6 @@
 import '../../../core/l10n/sprache.dart';
 import '../../analysis/models/analysis_result.dart';
+import '../../onboarding/models/onboarding_profile.dart';
 import '../models/checkin.dart';
 
 /// Baut die Nutzlast fuer die Cloud Function `checkinAuswerten`.
@@ -19,10 +20,12 @@ class CheckinAnfrage {
     required AnalysisResult analyse,
     required List<Checkin> historie,
     required Sprache sprache,
+    required Ausrichtung ausrichtung,
     List<String> bilder = const [],
   }) {
     return {
       'sprache': sprache.code,
+      'ausrichtung': ausrichtung.name,
       'checkin': {
         'typ': checkin.typ.name,
         'habits': [

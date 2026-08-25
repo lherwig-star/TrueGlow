@@ -61,7 +61,8 @@ List<FlowSchritt> baueAufnahmeFlow(
     // Haut bringt keine eigene Aufnahme mit. Die Seite erklaert deshalb, dass
     // das Frontalfoto mitgelesen wird – ohne sie waere unklar, warum ein
     // gewaehltes Modul im Flow gar nicht vorkommt.
-    if (modul == AnalyseModul.hautFarbtyp) {
+    if (modul == AnalyseModul.hautFarbtyp ||
+        modul == AnalyseModul.makeupAusstrahlung) {
       schritte.add(ModulHinweisSchritt(modul));
     }
 
@@ -74,6 +75,7 @@ List<FlowSchritt> baueAufnahmeFlow(
         schritte.add(const StilFragebogenSchritt());
       case AnalyseModul.basis:
       case AnalyseModul.hautFarbtyp:
+      case AnalyseModul.makeupAusstrahlung:
       case AnalyseModul.zaehneLaecheln:
         break;
     }

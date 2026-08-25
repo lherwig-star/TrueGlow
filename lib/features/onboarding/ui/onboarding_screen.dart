@@ -71,7 +71,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   bool _darfWeiter(OnboardingProfile p, {required bool pflichtErteilt}) =>
       switch (_seite) {
         0 => true,
-        1 => p.alter != null && p.budget != null,
+        1 => p.geschlecht != null && p.alter != null && p.budget != null,
         2 => p.zeit != null,
         3 => p.fokus.isNotEmpty,
         4 => pflichtErteilt,
@@ -298,10 +298,32 @@ class _AlterBudgetSeite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final texte = context.texte;
+    // Das Geschlecht steht vorn, weil es die uebrigen Fragen faerbt: Ob es
+    // ein Bart-Kapitel gibt und welcher Umriss im Sucher liegt, haengt daran.
     return _Seite(
-      titel: texte.onbAlterTitel,
-      text: texte.onbAlterText,
+      titel: texte.onbGeschlechtTitel,
+      text: texte.onbGeschlechtText,
       children: [
+        Wrap(
+          spacing: AppTheme.gapS,
+          runSpacing: AppTheme.gapS,
+          children: [
+            for (final g in Geschlecht.values)
+              _Chip(
+                label: g.label(texte),
+                aktiv: profil.geschlecht == g,
+                onTap: () => ctrl.setGeschlecht(g),
+              ),
+          ],
+        ),
+        const SizedBox(height: AppTheme.gapL),
+        Text(
+          texte.onbAlterTitel,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+        ),
+        const SizedBox(height: AppTheme.gapXs),
+        MutedText(texte.onbAlterText),
+        const SizedBox(height: AppTheme.gapM),
         Wrap(
           spacing: AppTheme.gapS,
           runSpacing: AppTheme.gapS,
@@ -317,7 +339,7 @@ class _AlterBudgetSeite extends StatelessWidget {
         const SizedBox(height: AppTheme.gapL),
         Text(
           texte.onbBudgetTitel,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppTheme.gapXs),
         MutedText(texte.onbBudgetText),
@@ -378,7 +400,8 @@ class _FokusSeite extends StatelessWidget {
       titel: texte.onbFokusTitel,
       text: texte.onbFokusText,
       children: [
-        for (final f in Fokusbereich.values)
+        // Bart steht nur zur Wahl, wo er auch im Report vorkommt.
+        for (final f in Fokusbereich.fuer(profil.geschlecht.ausrichtung))
           Padding(
             padding: const EdgeInsets.only(bottom: AppTheme.gapS),
             child: _Auswahlkarte(

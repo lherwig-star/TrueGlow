@@ -476,6 +476,7 @@ void main() {
         analyse: _analyse(),
         historie: const [],
         sprache: Sprache.deutsch,
+        ausrichtung: Ausrichtung.maennlich,
       );
 
       expect(auswertung.anpassungen, hasLength(1));
@@ -495,6 +496,7 @@ void main() {
         analyse: _analyse(),
         historie: const [],
         sprache: Sprache.deutsch,
+        ausrichtung: Ausrichtung.maennlich,
       );
 
       expect(auswertung.aendertPlan, isFalse);
@@ -530,6 +532,7 @@ void main() {
         analyse: _analyse(),
         historie: const [],
         sprache: Sprache.deutsch,
+        ausrichtung: Ausrichtung.maennlich,
       );
 
       expect(anfrage['plan'], [
@@ -560,6 +563,7 @@ void main() {
         analyse: _analyse(),
         historie: [alt],
         sprache: Sprache.deutsch,
+        ausrichtung: Ausrichtung.maennlich,
       );
 
       expect(anfrage['historie'], [
@@ -582,6 +586,7 @@ void main() {
         analyse: _analyse(),
         historie: const [],
         sprache: Sprache.deutsch,
+        ausrichtung: Ausrichtung.maennlich,
         bilder: const ['AAAA', 'BBBB'],
       );
 

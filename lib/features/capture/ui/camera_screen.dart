@@ -15,6 +15,7 @@ import '../../../core/diagnose/diagnose_dienst.dart';
 import '../../../core/l10n/texte.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../onboarding/logic/onboarding_controller.dart';
 import '../../checkin/logic/checkin_controller.dart';
 import '../logic/auto_ausloeser.dart';
 import '../logic/capture_controller.dart';
@@ -717,7 +718,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
               ),
             ),
             SilhouetteOverlay(
-              overlay: widget.typ.overlay,
+              overlay: widget.typ.overlayFuer(ref.watch(ausrichtungProvider)),
               farbe: bereit
                   ? farben.akzent
                   : Colors.white.withValues(alpha: 0.65),

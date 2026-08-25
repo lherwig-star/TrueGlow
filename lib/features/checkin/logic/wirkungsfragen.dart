@@ -37,6 +37,10 @@ class Wirkungsfragen {
       id: 'anziehen',
       modul: AnalyseModul.stilKleiderschrank,
     ),
+    WirkungsFrage(
+      id: 'makeupGefuehl',
+      modul: AnalyseModul.makeupAusstrahlung,
+    ),
   ];
 
   /// Tag 30 und danach: Ergebnisfragen pro Bereich.
@@ -60,6 +64,10 @@ class Wirkungsfragen {
     WirkungsFrage(
       id: 'stilErgebnis',
       modul: AnalyseModul.stilKleiderschrank,
+    ),
+    WirkungsFrage(
+      id: 'makeupErgebnis',
+      modul: AnalyseModul.makeupAusstrahlung,
     ),
   ];
 
@@ -93,6 +101,9 @@ class Wirkungsfragen {
     }
     if (module.contains(AnalyseModul.figurPassform)) {
       return texte.einordnungHaltung;
+    }
+    if (module.contains(AnalyseModul.makeupAusstrahlung)) {
+      return texte.einordnungMakeup;
     }
     if (module.contains(AnalyseModul.stilKleiderschrank)) {
       return texte.einordnungStil;

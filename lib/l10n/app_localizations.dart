@@ -3348,6 +3348,150 @@ abstract class L {
   /// In de, this message translates to:
   /// **'Bevor du loslegst:'**
   String get loginRechtliches;
+
+  /// No description provided for @geschlechtMaennlich.
+  ///
+  /// In de, this message translates to:
+  /// **'Männlich'**
+  String get geschlechtMaennlich;
+
+  /// No description provided for @geschlechtWeiblich.
+  ///
+  /// In de, this message translates to:
+  /// **'Weiblich'**
+  String get geschlechtWeiblich;
+
+  /// No description provided for @geschlechtDivers.
+  ///
+  /// In de, this message translates to:
+  /// **'Divers'**
+  String get geschlechtDivers;
+
+  /// No description provided for @geschlechtKeineAngabe.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Angabe'**
+  String get geschlechtKeineAngabe;
+
+  /// No description provided for @onbGeschlechtTitel.
+  ///
+  /// In de, this message translates to:
+  /// **'Für wen erstellen wir den Plan?'**
+  String get onbGeschlechtTitel;
+
+  /// No description provided for @onbGeschlechtText.
+  ///
+  /// In de, this message translates to:
+  /// **'Danach richten sich Module, Umriss-Hilfen und Empfehlungen. Du kannst es jederzeit in den Einstellungen ändern.'**
+  String get onbGeschlechtText;
+
+  /// No description provided for @einstellungenGeschlecht.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausrichtung'**
+  String get einstellungenGeschlecht;
+
+  /// No description provided for @geschlechtHinweisWeiblich.
+  ///
+  /// In de, this message translates to:
+  /// **'Make-up & Ausstrahlung ist dabei, Bart-Empfehlungen entfallen, und die Umrisse für die Ganzkörperfotos zeigen eine weibliche Figur.'**
+  String get geschlechtHinweisWeiblich;
+
+  /// No description provided for @geschlechtHinweisMaennlich.
+  ///
+  /// In de, this message translates to:
+  /// **'Bart und Konturen gehören zur Basis, die Umrisse für die Ganzkörperfotos zeigen eine männliche Figur.'**
+  String get geschlechtHinweisMaennlich;
+
+  /// No description provided for @geschlechtHinweisNeutral.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Module stehen zur Wahl – Bart ebenso wie Make-up. Die Umrisse für die Ganzkörperfotos bleiben neutral.'**
+  String get geschlechtHinweisNeutral;
+
+  /// No description provided for @geschlechtHinweisOffen.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch nichts gewählt. Bis dahin läuft alles wie bisher.'**
+  String get geschlechtHinweisOffen;
+
+  /// No description provided for @modulMakeupTitel.
+  ///
+  /// In de, this message translates to:
+  /// **'Make-up & Ausstrahlung'**
+  String get modulMakeupTitel;
+
+  /// No description provided for @modulMakeupText.
+  ///
+  /// In de, this message translates to:
+  /// **'Passende Farben, Betonungen und ein Alltags-Look, der zu deinen Zügen passt.'**
+  String get modulMakeupText;
+
+  /// No description provided for @modulMakeupCheckliste.
+  ///
+  /// In de, this message translates to:
+  /// **'Make-up'**
+  String get modulMakeupCheckliste;
+
+  /// No description provided for @modulBenoetigtMakeup.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine eigene Aufnahme – nutzt das Frontalfoto der Basis. Mach es ohne Make-up oder mit deinem Alltags-Look.'**
+  String get modulBenoetigtMakeup;
+
+  /// No description provided for @modulMakeupKeinFotoTitel.
+  ///
+  /// In de, this message translates to:
+  /// **'Kein eigenes Foto nötig'**
+  String get modulMakeupKeinFotoTitel;
+
+  /// No description provided for @modulMakeupKeinFotoText.
+  ///
+  /// In de, this message translates to:
+  /// **'Wir lesen Gesichtszüge und Farbwirkung aus deinem Frontalfoto mit. Ob du darauf geschminkt bist, entscheidest du – ungeschminkt zeigt die Grundlage, geschminkt deinen aktuellen Look.'**
+  String get modulMakeupKeinFotoText;
+
+  /// No description provided for @modulBasisTitelOhneBart.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesicht & Haare'**
+  String get modulBasisTitelOhneBart;
+
+  /// No description provided for @modulBasisTextOhneBart.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesichtsform und Frisur-Empfehlungen.'**
+  String get modulBasisTextOhneBart;
+
+  /// No description provided for @modulBasisCheckisteOhneBart.
+  ///
+  /// In de, this message translates to:
+  /// **'Haare'**
+  String get modulBasisCheckisteOhneBart;
+
+  /// No description provided for @modulBenoetigtBasisOhneBart.
+  ///
+  /// In de, this message translates to:
+  /// **'Frontal, beide Seitenprofile und 45°-Winkel.'**
+  String get modulBenoetigtBasisOhneBart;
+
+  /// No description provided for @frageMakeupGefuehl.
+  ///
+  /// In de, this message translates to:
+  /// **'Wie sicher fühlst du dich mit deinem Look?'**
+  String get frageMakeupGefuehl;
+
+  /// No description provided for @frageMakeupErgebnis.
+  ///
+  /// In de, this message translates to:
+  /// **'Wie gut funktioniert dein Alltags-Look inzwischen?'**
+  String get frageMakeupErgebnis;
+
+  /// No description provided for @einordnungMakeup.
+  ///
+  /// In de, this message translates to:
+  /// **'Ein neuer Look braucht ein paar Anläufe – nach zwei bis drei Wochen sitzt der Handgriff.'**
+  String get einordnungMakeup;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

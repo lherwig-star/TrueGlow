@@ -6,6 +6,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/section_card.dart';
 import '../../../../core/l10n/texte.dart';
 import '../../../modules/models/analyse_modul.dart';
+import '../../../onboarding/logic/onboarding_controller.dart';
 import '../../../analysis/models/analysis_result.dart';
 import '../../../checkin/logic/checkin_controller.dart';
 import '../../logic/plan_progress_repository.dart';
@@ -33,7 +34,7 @@ class ChecklisteKarte extends ConsumerWidget {
     final alleErledigt = erledigt == kapitel.habits.length;
 
     return SectionCard(
-      title: kapitel.modul.checkliste(texte),
+      title: kapitel.modul.checkliste(texte, ref.watch(ausrichtungProvider)),
       icon: kapitel.modul.icon,
       trailing: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),

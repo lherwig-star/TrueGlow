@@ -38,6 +38,10 @@ class AnalyseAnfrage {
       // weil sie keine Angabe ueber die Person ist, sondern eine ueber die
       // Ausgabe – und weil der Server sie an genau einer Stelle prueft.
       'sprache': sprache.code,
+      // Wonach der Report ausgerichtet wird. Abgeleitet aus der Angabe im
+      // Onboarding – die Angabe selbst („divers", „keine Angabe") bleibt auf
+      // dem Geraet, der Server sieht nur die Entscheidung daraus.
+      'ausrichtung': onboarding.geschlecht.ausrichtung.name,
       'module': AnalyseModul.values
           .where(module.contains)
           .map((m) => m.name)

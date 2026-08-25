@@ -33,17 +33,22 @@ class SilhouetteOverlay extends StatelessWidget {
   /// Wohnzimmer steht und drei Meter zuruecktritt. Im Test ist es eine
   /// Rechnung ueber [Path.getBounds].
   @visibleForTesting
-  static Path ganzkoerperUmriss(Size size, {required bool seitlich}) {
+  static Path ganzkoerperUmriss(
+    Size size, {
+    required bool seitlich,
+    bool weiblich = false,
+  }) {
     final maler = _SilhouettePainter(
-      overlay: seitlich
-          ? Overlaytyp.ganzkoerperSeitlich
-          : Overlaytyp.ganzkoerperFrontal,
+      overlay: Overlaytyp.ganzkoerperFrontal,
       farbe: const Color(0xFFFFFFFF),
       staerke: 2,
     );
-    return seitlich
-        ? maler._ganzkoerperSeitlichPfad(size)
-        : maler._ganzkoerperFrontalPfad(size);
+    return switch ((seitlich, weiblich)) {
+      (false, false) => maler._ganzkoerperFrontalPfad(size),
+      (true, false) => maler._ganzkoerperSeitlichPfad(size),
+      (false, true) => maler._weiblichFrontalPfad(size),
+      (true, true) => maler._weiblichSeitlichPfad(size),
+    };
   }
 
   @override
@@ -120,6 +125,10 @@ class _SilhouettePainter extends CustomPainter {
         _zeichneGestrichelt(canvas, _ganzkoerperFrontalPfad(size), stift);
       case Overlaytyp.ganzkoerperSeitlich:
         _zeichneGestrichelt(canvas, _ganzkoerperSeitlichPfad(size), stift);
+      case Overlaytyp.ganzkoerperFrontalWeiblich:
+        _zeichneGestrichelt(canvas, _weiblichFrontalPfad(size), stift);
+      case Overlaytyp.ganzkoerperSeitlichWeiblich:
+        _zeichneGestrichelt(canvas, _weiblichSeitlichPfad(size), stift);
       case Overlaytyp.keins:
         break;
     }
@@ -536,6 +545,123 @@ class _SilhouettePainter extends CustomPainter {
     // Linie gezeichnet schwebt er wie ein Strichfehler in der Figur, als
     // Kontur verdeckt er die Rueckenlinie – und die ist der Grund, warum
     // dieses zweite Foto ueberhaupt verlangt wird.
+    return Path()
+      ..addOval(_figurKopf(feld, versatz: 0.014))
+      ..addPath(
+        _glattDurch([for (final (dx, dy) in umriss) p(dx, dy)],
+            geschlossen: true),
+        Offset.zero,
+      );
+  }
+
+  /// Dieselbe stehende Figur, weiblich.
+  ///
+  /// Gegenueber der maennlichen Fassung: schmalere Schultern, eine Buestenlinie
+  /// statt eines geraden Brustkorbs, eine deutlich engere Taille und breitere
+  /// Hueften. Genau diese drei Punkte – Schulter, Taille, Huefte – sind das,
+  /// wonach sich jemand beim Aufstellen ausrichtet, und genau sie
+  /// unterscheiden sich am staerksten.
+  ///
+  /// Aufbau wie beim maennlichen Umriss: rechte Haelfte von oben nach unten,
+  /// linke durch Spiegeln, Arm als eigene schmale Kontur.
+  Path _weiblichFrontalPfad(Size size) {
+    final feld = _figurFeld(size);
+    Offset p(double dx, double dy) =>
+        Offset(feld.center.dx + dx * feld.width, feld.top + dy * feld.height);
+
+    const rumpf = <(double, double)>[
+      (0.030, 0.150), // Halsansatz
+      (0.112, 0.198), // Schulter oben
+      (0.136, 0.234), // Deltamuskel
+      (0.124, 0.296), // Bueste
+      (0.084, 0.384), // Taille
+      (0.142, 0.470), // Huefte
+      (0.122, 0.580), // Oberschenkel
+      (0.086, 0.678), // Knie
+      (0.076, 0.772), // Wade
+      (0.050, 0.888), // Knoechel aussen
+      (0.072, 0.928), // Fuss aussen
+      (0.020, 0.928), // Fuss innen
+      (0.026, 0.888), // Knoechel innen
+      (0.032, 0.678), // Knie innen
+      (0.012, 0.505), // Schrittmitte
+    ];
+
+    const arm = <(double, double)>[
+      (0.136, 0.236), // setzt am Deltamuskel an
+      (0.158, 0.320),
+      (0.164, 0.398), // Ellenbogen
+      (0.152, 0.470),
+      (0.140, 0.520), // Hand
+      (0.122, 0.470),
+      (0.128, 0.398),
+      (0.124, 0.320),
+      (0.128, 0.278), // Achsel, dicht an der Bueste
+    ];
+
+    final pfad = Path()..addOval(_figurKopf(feld, versatz: 0));
+
+    pfad.addPath(
+      _glattDurch(
+        [
+          for (final (dx, dy) in rumpf) p(dx, dy),
+          for (final (dx, dy) in rumpf.reversed) p(-dx, dy),
+        ],
+        geschlossen: true,
+      ),
+      Offset.zero,
+    );
+
+    for (final seite in [1, -1]) {
+      pfad.addPath(
+        _glattDurch(
+          [for (final (dx, dy) in arm) p(dx * seite, dy)],
+          geschlossen: false,
+        ),
+        Offset.zero,
+      );
+    }
+
+    return pfad;
+  }
+
+  /// Dieselbe Figur im Profil, weiblich.
+  ///
+  /// Die Rueckenlinie bleibt der Grund fuer dieses zweite Foto. Sie ist hier
+  /// staerker geschwungen: ausgepraegteres Hohlkreuz, weiter hinten sitzendes
+  /// Gesaess, und vorn die Buestenlinie statt einer geraden Brust.
+  Path _weiblichSeitlichPfad(Size size) {
+    final feld = _figurFeld(size);
+    Offset p(double dx, double dy) =>
+        Offset(feld.center.dx + dx * feld.width, feld.top + dy * feld.height);
+
+    const umriss = <(double, double)>[
+      (-0.044, 0.152), // Nacken
+      (-0.084, 0.200), // Schulter hinten
+      (-0.096, 0.276), // oberer Ruecken
+      (-0.062, 0.376), // Hohlkreuz
+      (-0.140, 0.468), // Gesaess
+      (-0.104, 0.585), // Oberschenkel hinten
+      (-0.070, 0.678), // Kniekehle
+      (-0.082, 0.752), // Wade
+      (-0.064, 0.900), // Ferse hinten
+      (-0.054, 0.932), // Ferse unten
+      (0.032, 0.936), // Sohle
+      // Doppelter Punkt, damit die Zehen spitz bleiben – siehe maennliche
+      // Fassung.
+      (0.108, 0.930),
+      (0.108, 0.930),
+      (0.030, 0.886), // Spann
+      (0.034, 0.752), // Schienbein
+      (0.044, 0.676), // Knie vorn
+      (0.064, 0.580), // Oberschenkel vorn
+      (0.076, 0.478), // Huefte vorn
+      (0.070, 0.394), // Bauch, flacher als die Bueste
+      (0.104, 0.292), // Bueste
+      (0.052, 0.206), // Schulter vorn
+      (0.020, 0.154), // Halsvorderseite
+    ];
+
     return Path()
       ..addOval(_figurKopf(feld, versatz: 0.014))
       ..addPath(

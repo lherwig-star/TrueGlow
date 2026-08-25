@@ -94,7 +94,7 @@ void main() {
     expect(find.text(texte.homeLeerTitel), findsNothing);
     expect(find.text('Dein Plan'), findsOneWidget);
     // Eine Checkliste pro Kapitel – bei reiner Basis-Analyse genau eine.
-    expect(find.text(AnalyseModul.basis.checkliste(texte)), findsOneWidget);
+    expect(find.text(AnalyseModul.basis.checkliste(texte, Ausrichtung.maennlich)), findsOneWidget);
 
     // Solange nichts abgehakt ist, bleibt die Serie bei null.
     expect(container2.read(streakProvider).aktuell, 0);

@@ -6,7 +6,7 @@ import {
   FOKUS,
   KLEIDUNGSBUDGET,
   MODULE,
-  MODUL_KAPITEL,
+  kapitelUeberschrift,
   PFLEGEAUFWAND,
   RICHTUNGSZIEL,
   STILZIEL,
@@ -20,6 +20,7 @@ import {
   AUSGABESPRACHE_KURZ,
   type Sprache,
 } from './sprache';
+import { kontextzeile, type Ausrichtung } from './ausrichtung';
 
 /**
  * Der System-Prompt der Analyse.
@@ -59,6 +60,8 @@ export interface Richtungsangaben {
 export interface AnalysePromptDaten {
   /** In welcher Sprache der Report geschrieben wird. */
   sprache: Sprache;
+  /** Wonach die Empfehlungen ausgerichtet werden. */
+  ausrichtung: Ausrichtung;
   module: Modul[];
   profil: Profilangaben;
   figur: Figurangaben;
@@ -76,9 +79,12 @@ export function systemPrompt(daten: AnalysePromptDaten): string {
   // Reihenfolge der Deklaration, damit Prompt und Report gleich sortiert sind.
   const gewaehlt = MODULE.filter((m) => daten.module.includes(m));
   const sprache = daten.sprache;
+  const ausrichtung = daten.ausrichtung;
 
   return `Du bist ein erfahrener, freundlicher Styling- und Grooming-Coach. Du siehst
 mehrere Fotos derselben Person.
+
+${kontextzeile(ausrichtung, sprache)}
 
 ${kontext(daten, gewaehlt)}
 ${ziele(daten.richtung, sprache)}
@@ -133,7 +139,7 @@ Fließtext davor oder danach, keine Markdown-Codefences:
 }
 
 Erzeuge GENAU diese Kapitel, in dieser Reihenfolge, und keine weiteren:
-${gewaehlt.map(kapitelVorgabe).join('\n')}
+${gewaehlt.map((m) => kapitelVorgabe(m, ausrichtung)).join('\n')}
 
 Vorgaben zum Inhalt:
 - "modul" ist exakt einer der genannten Bezeichner – nicht übersetzen.
@@ -157,7 +163,11 @@ Vorgaben zum Inhalt:
  * Nutzer-Nachricht, die die Bilder begleitet – benennt jedes Bild in der
  * Reihenfolge, in der es angehaengt wird.
  */
-export function nutzerText(reihenfolge: string[], sprache: Sprache): string {
+export function nutzerText(
+  reihenfolge: string[],
+  sprache: Sprache,
+  ausrichtung: Ausrichtung,
+): string {
   const liste = reihenfolge
     .map((typ, i) => {
       const eintrag = AUFNAHMEN[typ];
@@ -168,7 +178,7 @@ export function nutzerText(reihenfolge: string[], sprache: Sprache): string {
       // wuerde jedem folgenden Bild die falsche Beschriftung geben.
       return eintrag
         ? `${i + 1}. ${eintrag.label[sprache]} ` +
-            `(${MODUL_KAPITEL[eintrag.modul][sprache]})`
+            `(${kapitelUeberschrift(eintrag.modul, ausrichtung, sprache)})`
         : `${i + 1}. Weiteres Foto`;
     })
     .join('\n');
@@ -226,10 +236,29 @@ function zielRegeln(richtung: Richtungsangaben, sprache: Sprache): string {
 `;
 }
 
-/** Was in einem Kapitel stehen soll. */
-function kapitelVorgabe(modul: Modul): string {
+/**
+ * Was in einem Kapitel stehen soll.
+ *
+ * Zwei Kapitel haengen an der Ausrichtung: Die Basis verliert im weiblichen
+ * Modus ihren Bart-Abschnitt, und "makeupAusstrahlung" gibt es dort
+ * ueberhaupt erst. Alles andere ist fuer alle gleich – eine Gesichtsform ist
+ * eine Gesichtsform.
+ */
+function kapitelVorgabe(modul: Modul, ausrichtung: Ausrichtung): string {
+  const weiblich = ausrichtung === 'weiblich';
+
   switch (modul) {
     case 'basis':
+      if (weiblich) {
+        return (
+          '- "basis" – Gesicht & Haare. Die "einleitung" beschreibt die ' +
+          'Gesichtsform neutral und was formal dazu passt. Sektionen: ' +
+          'Frisur (Schnitt, Länge und Scheitel passend zu Gesichtsform und ' +
+          'Proportionen; nenne konkrete Schnittnamen), Augenbrauen (Form ' +
+          'und Pflege, keine Behandlung), bei Bedarf Brillenform. Es gibt ' +
+          'KEINEN Bart-Abschnitt und keine Rasurempfehlung.'
+        );
+      }
       return (
         '- "basis" – Gesicht, Haare & Bart. Die "einleitung" beschreibt die ' +
         'Gesichtsform neutral und was formal dazu passt. Sektionen: ' +
@@ -241,10 +270,30 @@ function kapitelVorgabe(modul: Modul): string {
         '- "hautFarbtyp" – Haut & Farbtyp. Es gibt für dieses Kapitel KEINE ' +
         'eigene Aufnahme: Beurteile Hautbild und Unterton anhand des ' +
         'Frontalfotos der Basis. Warmer oder kalter Unterton, dazu eine ' +
-        'konkrete Farbpalette für Kleidung (Farben benennen). Wenn das ' +
-        'Frontalfoto für eine Aussage zum Hautbild nicht hergibt (zu wenig ' +
-        'Licht, zu geringe Auflösung), sag das offen und beschränke dich ' +
-        'auf den Unterton und die Farbpalette – rate nicht.'
+        'konkrete Farbpalette für Kleidung (Farben benennen)' +
+        (weiblich
+          ? ' und, falls das Kapitel "makeupAusstrahlung" nicht angefordert ' +
+            'wurde, ein Satz dazu, welche Make-up-Töne zu diesem Unterton ' +
+            'passen'
+          : '') +
+        '. Wenn das Frontalfoto für eine Aussage zum Hautbild nicht hergibt ' +
+        '(zu wenig Licht, zu geringe Auflösung), sag das offen und ' +
+        'beschränke dich auf den Unterton und die Farbpalette – rate nicht.'
+      );
+
+    case 'makeupAusstrahlung':
+      return (
+        '- "makeupAusstrahlung" – Make-up & Ausstrahlung. Auch hierfür gibt ' +
+        'es KEINE eigene Aufnahme: Lies Gesichtszüge, Augenpartie und ' +
+        'Farbwirkung aus dem Frontalfoto der Basis. Sektionen: ' +
+        'Alltags-Look (Teint, Augen, Brauen, Lippen – je ein konkreter ' +
+        'Handgriff, keine Produktschlacht) und Farben (welche Töne für ' +
+        'Lider, Lippen und Rouge zum Unterton passen, mit Namen). Richte ' +
+        'Aufwand und Preisniveau am Zeit- und Pflegebudget aus. Empfiehl ' +
+        'NICHTS, das eine kosmetische Behandlung, einen Eingriff oder ein ' +
+        'Permanent-Make-up voraussetzt. Wenn auf dem Foto bereits Make-up ' +
+        'zu sehen ist, beurteile den vorhandenen Look, statt ihn zu ' +
+        'ignorieren.'
       );
     case 'zaehneLaecheln':
       return (
@@ -257,7 +306,15 @@ function kapitelVorgabe(modul: Modul): string {
         '- "figurPassform" – Figur & Passform. Körpertyp, ' +
         'Schulter-Hüft-Verhältnis, empfohlene Schnitte und Passformen, ' +
         'Haltungshinweise aus dem Seitenprofil. Sachlich und ohne ' +
-        'Gewichtsurteil.'
+        'Gewichtsurteil.' +
+        (weiblich
+          ? ' Ordne die Figur einem der gängigen Grundtypen zu (Sanduhr, ' +
+            'Birne, Apfel, gerade/rechteckig, umgekehrtes Dreieck), benenne ' +
+            'ihn beim Namen und leite daraus konkrete Schnitte ab: ' +
+            'Taillenhöhe, Rock- und Hosenformen, Ausschnitte, Längen. ' +
+            'Der Typ ist eine Beschreibung von Proportionen, kein Urteil – ' +
+            'formuliere ihn auch so.'
+          : '')
       );
     case 'stilKleiderschrank':
       return (

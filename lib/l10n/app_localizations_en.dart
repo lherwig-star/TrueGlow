@@ -1861,4 +1861,88 @@ class LEn extends L {
 
   @override
   String get loginRechtliches => 'Before you start:';
+
+  @override
+  String get geschlechtMaennlich => 'Male';
+
+  @override
+  String get geschlechtWeiblich => 'Female';
+
+  @override
+  String get geschlechtDivers => 'Non-binary';
+
+  @override
+  String get geschlechtKeineAngabe => 'Prefer not to say';
+
+  @override
+  String get onbGeschlechtTitel => 'Who are we building this plan for?';
+
+  @override
+  String get onbGeschlechtText =>
+      'This decides which modules, framing guides and recommendations you get. You can change it in your settings at any time.';
+
+  @override
+  String get einstellungenGeschlecht => 'Personalisation';
+
+  @override
+  String get geschlechtHinweisWeiblich =>
+      'Make-up & presence is included, beard advice is dropped, and the full-body framing guides show a female figure.';
+
+  @override
+  String get geschlechtHinweisMaennlich =>
+      'Beard and contours are part of the core module, and the full-body framing guides show a male figure.';
+
+  @override
+  String get geschlechtHinweisNeutral =>
+      'Every module is available — beard as well as make-up. The full-body framing guides stay neutral.';
+
+  @override
+  String get geschlechtHinweisOffen =>
+      'Nothing chosen yet. Until then, everything stays as it was.';
+
+  @override
+  String get modulMakeupTitel => 'Make-up & presence';
+
+  @override
+  String get modulMakeupText =>
+      'Colours that suit you, what to emphasise, and an everyday look that fits your features.';
+
+  @override
+  String get modulMakeupCheckliste => 'Make-up';
+
+  @override
+  String get modulBenoetigtMakeup =>
+      'No photo of its own — it uses your front photo. Take it either without make-up or with your everyday look.';
+
+  @override
+  String get modulMakeupKeinFotoTitel => 'No separate photo needed';
+
+  @override
+  String get modulMakeupKeinFotoText =>
+      'We read your features and how colours work on you from your front photo. Whether you wear make-up in it is up to you — bare shows the starting point, made-up shows your current look.';
+
+  @override
+  String get modulBasisTitelOhneBart => 'Face & hair';
+
+  @override
+  String get modulBasisTextOhneBart =>
+      'Face shape and haircut recommendations.';
+
+  @override
+  String get modulBasisCheckisteOhneBart => 'Hair';
+
+  @override
+  String get modulBenoetigtBasisOhneBart =>
+      'Front, both side profiles and a 45° angle.';
+
+  @override
+  String get frageMakeupGefuehl => 'How confident do you feel with your look?';
+
+  @override
+  String get frageMakeupErgebnis =>
+      'How well is your everyday look working now?';
+
+  @override
+  String get einordnungMakeup =>
+      'A new look takes a few tries — after two or three weeks it becomes second nature.';
 }

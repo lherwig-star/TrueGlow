@@ -19,6 +19,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:trueglow/core/l10n/sprache.dart';
+import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
 import 'package:trueglow/features/start/ui/splash_screen.dart';
 import 'package:trueglow/core/l10n/texte.dart';
 import 'package:trueglow/features/analysis/logic/analysis_controller.dart';
@@ -76,6 +77,7 @@ void main() {
     // Fuenf Seiten, jede mit einer Pflichtangabe. Die Reihenfolge steht in
     // onboarding_screen.dart. Seit dem Umbau kommen sie nach der Anmeldung.
     await _tippe(tester, texte.weiter);
+    await _tippe(tester, Geschlecht.maennlich.label(texte));
     await _tippe(tester, '25–34');
     await _tippe(tester, 'Mittel');
     await _tippe(tester, texte.weiter);

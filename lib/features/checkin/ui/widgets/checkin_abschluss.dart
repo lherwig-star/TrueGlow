@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/diagnose/diagnose_dienst.dart';
 import '../../../../core/l10n/sprache.dart';
+import '../../../onboarding/logic/onboarding_controller.dart';
 import '../../../../core/l10n/texte.dart';
 import '../../../../core/netz/wiederholung.dart';
 import '../../../../core/router/app_router.dart';
@@ -103,6 +104,7 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
                 analyse: widget.analyse,
                 historie: ref.read(checkinControllerProvider).historie,
                 sprache: ref.read(aktiveSpracheProvider),
+                ausrichtung: ref.read(ausrichtungProvider),
                 erstfoto: erstfoto == null ? null : File(erstfoto.pfad),
                 fortschrittsfoto: neu == null ? null : File(neu),
                 abbruch: abbruch,

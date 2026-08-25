@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../capture/models/aufnahme_typ.dart';
 import '../../models/analyse_modul.dart';
+import '../../../onboarding/logic/onboarding_controller.dart';
 import '../../../../core/l10n/texte.dart';
 
 /// Karte eines Analyse-Moduls.
@@ -11,7 +13,7 @@ import '../../../../core/l10n/texte.dart';
 /// Wird zweimal verwendet: im Auswahlscreen vor der Aufnahme und unter
 /// "Analyse erweitern" auf dem Ergebnis-Screen. Deshalb ist die Checkbox
 /// optional – beim Erweitern startet ein Tipp direkt den Flow.
-class ModulKarte extends StatelessWidget {
+class ModulKarte extends ConsumerWidget {
   const ModulKarte({
     super.key,
     required this.modul,
@@ -34,9 +36,10 @@ class ModulKarte extends StatelessWidget {
   final Widget? aktion;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final texte = context.texte;
     final farben = context.farben;
+    final ausrichtung = ref.watch(ausrichtungProvider);
 
     return Material(
       color: Colors.transparent,
@@ -89,7 +92,7 @@ class ModulKarte extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            modul.titel(texte),
+                            modul.titel(texte, ausrichtung),
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
@@ -101,7 +104,7 @@ class ModulKarte extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      modul.beschreibung(texte),
+                      modul.beschreibung(texte, ausrichtung),
                       style: TextStyle(
                         fontSize: 14,
                         height: 1.45,
@@ -122,7 +125,7 @@ class ModulKarte extends StatelessWidget {
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
-                            modul.benoetigt(texte),
+                            modul.benoetigt(texte, ausrichtung),
                             style: TextStyle(
                               fontSize: 12.5,
                               height: 1.4,

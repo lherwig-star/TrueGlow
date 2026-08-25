@@ -63,6 +63,7 @@ export const analysiere = onCall(OPTIONEN, async (request) => {
   const nutzer = analysePrompt.nutzerText(
     eingang.bildTypen,
     eingang.prompt.sprache,
+    eingang.prompt.ausrichtung,
   );
 
   const ergebnis = await mitKontingent(uid, 'analyse', () =>

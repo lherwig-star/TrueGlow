@@ -161,6 +161,47 @@ class MockAnalysisService implements AnalysisService {
         }
       ]
     }''',
+    AnalyseModul.makeupAusstrahlung: '''
+    {
+      "modul": "makeupAusstrahlung",
+      "einleitung": "Klare Augenpartie, mitteldichte Brauen, gleichmäßiger Teint mit warmem Unterton. Das ist eine gute Ausgangslage für einen Alltags-Look, der wenige Handgriffe braucht und trotzdem wirkt.",
+      "habits": [
+        "Brauen morgens in Form bürsten",
+        "Getönte Tagescreme statt Foundation",
+        "Wimpern tuschen, nur oben",
+        "Lippenpflege mit leichtem Ton",
+        "Abends alles gründlich abnehmen"
+      ],
+      "sektionen": [
+        {
+          "titel": "Alltags-Look",
+          "einschaetzung": "Der Teint ist ruhig genug, dass eine leichte Deckung reicht. Volle Foundation würde die eigene Struktur eher zudecken als betonen.",
+          "empfehlungen": [
+            "Getönte Tagescreme dünn auftragen und nur dort abdecken, wo es nötig ist.",
+            "Brauen mit einer Bürste in Form bringen und mit einem Gel fixieren – Farbe braucht es kaum.",
+            "Wimperntusche nur am Oberlid, das öffnet den Blick ohne harte Kontur."
+          ],
+          "produkte": [
+            {
+              "name": "Getönte Tagescreme",
+              "kategorie": "Teint",
+              "beschreibung": "Mit den Fingern von der Mitte nach außen verteilen. Ein Ton, der am Kiefer verschwindet, ist der richtige.",
+              "affiliateUrl": null
+            }
+          ]
+        },
+        {
+          "titel": "Farben, die tragen",
+          "einschaetzung": "Zum warmen Unterton passen weiche, erdige Töne besser als kühle Beeren. Auf den Lippen wirkt ein Ton, der zwei Nuancen kräftiger ist als die eigene Lippenfarbe, am natürlichsten.",
+          "empfehlungen": [
+            "Auf den Lidern mit Terracotta, warmem Taupe und Champagner arbeiten.",
+            "Für die Lippen ein warmes Rosenholz statt Pink oder Blaurot.",
+            "Rouge sparsam auf die Wangenmitte, nicht in die Wangenknochen ziehen."
+          ],
+          "produkte": []
+        }
+      ]
+    }''',
     AnalyseModul.zaehneLaecheln: '''
     {
       "modul": "zaehneLaecheln",

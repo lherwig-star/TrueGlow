@@ -1,6 +1,7 @@
 import '../../direction/models/richtung.dart';
 import '../../modules/models/analyse_modul.dart';
 import '../../../core/l10n/texte.dart';
+import '../../onboarding/models/onboarding_profile.dart';
 
 // Datenmodell der KI-Antwort. Das Schema ist im System-Prompt fest
 // vorgegeben; hier wird es defensiv gelesen: fehlende oder falsch getypte
@@ -147,7 +148,8 @@ class Kapitel {
   final List<String> habits;
 
   /// Ueberschrift des Kapitels – dieselbe wie die des Moduls.
-  String titel(L texte) => modul.kapitel(texte);
+  String titel(L texte, Ausrichtung ausrichtung) =>
+      modul.kapitel(texte, ausrichtung);
 
   int get anzahlEmpfehlungen =>
       sektionen.fold(0, (summe, s) => summe + s.empfehlungen.length);

@@ -27,6 +27,7 @@ import '../../direction/logic/direction_controller.dart';
 import '../../modules/logic/module_controller.dart';
 import '../../history/logic/analysis_repository.dart';
 import '../../onboarding/logic/onboarding_controller.dart';
+import '../../onboarding/models/onboarding_profile.dart';
 import '../../plan/logic/plan_progress_repository.dart';
 import '../../../core/utils/datum.dart';
 
@@ -80,6 +81,8 @@ class SettingsScreen extends ConsumerWidget {
         ),
         const SizedBox(height: AppTheme.gapS),
         const _EinwilligungsKarte(),
+        const SizedBox(height: AppTheme.gapS),
+        const _AusrichtungKarte(),
         const SizedBox(height: AppTheme.gapS),
         const _ErscheinungsbildKarte(),
         const SizedBox(height: AppTheme.gapS),
@@ -550,6 +553,57 @@ class _Eintrag extends StatelessWidget {
         size: 20,
       ),
     );
+  }
+}
+
+/// Männlich / weiblich / divers / keine Angabe.
+///
+/// Die Frage steht auch im Onboarding. Hier steht sie noch einmal, weil sie
+/// die einzige Angabe ist, die das Angebot der App verändert – wer sie ändern
+/// will, soll nicht das ganze Onboarding neu durchlaufen müssen.
+class _AusrichtungKarte extends ConsumerWidget {
+  const _AusrichtungKarte();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
+    final profil = ref.watch(onboardingControllerProvider);
+
+    return SectionCard(
+      title: texte.einstellungenGeschlecht,
+      icon: Icons.person_search_outlined,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Wrap(
+            spacing: AppTheme.gapXs,
+            runSpacing: AppTheme.gapXs,
+            children: [
+              for (final g in Geschlecht.values)
+                ChoiceChip(
+                  label: Text(g.label(texte)),
+                  selected: profil.geschlecht == g,
+                  onSelected: (_) => ref
+                      .read(onboardingControllerProvider.notifier)
+                      .setGeschlecht(g),
+                ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.gapS),
+          MutedText(_hinweis(profil.geschlecht, texte)),
+        ],
+      ),
+    );
+  }
+
+  /// Was die Wahl konkret ändert – in einem Satz, damit niemand raten muss.
+  static String _hinweis(Geschlecht? geschlecht, L texte) {
+    if (geschlecht == null) return texte.geschlechtHinweisOffen;
+    return switch (geschlecht.ausrichtung) {
+      Ausrichtung.weiblich => texte.geschlechtHinweisWeiblich,
+      Ausrichtung.maennlich => texte.geschlechtHinweisMaennlich,
+      Ausrichtung.neutral => texte.geschlechtHinweisNeutral,
+    };
   }
 }
 

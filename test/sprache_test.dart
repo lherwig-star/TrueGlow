@@ -158,6 +158,7 @@ void main() {
         ),
         historie: const [],
         sprache: Sprache.englisch,
+        ausrichtung: Ausrichtung.maennlich,
       );
 
       expect(anfrage['sprache'], 'en');
@@ -188,6 +189,7 @@ void main() {
         analyse: analyse,
         historie: const [],
         sprache: Sprache.englisch,
+        ausrichtung: Ausrichtung.maennlich,
       );
 
       expect(auf.zusammenfassung, contains("didn't fit your day"));

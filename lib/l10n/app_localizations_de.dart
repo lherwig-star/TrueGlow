@@ -1871,4 +1871,87 @@ class LDe extends L {
 
   @override
   String get loginRechtliches => 'Bevor du loslegst:';
+
+  @override
+  String get geschlechtMaennlich => 'Männlich';
+
+  @override
+  String get geschlechtWeiblich => 'Weiblich';
+
+  @override
+  String get geschlechtDivers => 'Divers';
+
+  @override
+  String get geschlechtKeineAngabe => 'Keine Angabe';
+
+  @override
+  String get onbGeschlechtTitel => 'Für wen erstellen wir den Plan?';
+
+  @override
+  String get onbGeschlechtText =>
+      'Danach richten sich Module, Umriss-Hilfen und Empfehlungen. Du kannst es jederzeit in den Einstellungen ändern.';
+
+  @override
+  String get einstellungenGeschlecht => 'Ausrichtung';
+
+  @override
+  String get geschlechtHinweisWeiblich =>
+      'Make-up & Ausstrahlung ist dabei, Bart-Empfehlungen entfallen, und die Umrisse für die Ganzkörperfotos zeigen eine weibliche Figur.';
+
+  @override
+  String get geschlechtHinweisMaennlich =>
+      'Bart und Konturen gehören zur Basis, die Umrisse für die Ganzkörperfotos zeigen eine männliche Figur.';
+
+  @override
+  String get geschlechtHinweisNeutral =>
+      'Alle Module stehen zur Wahl – Bart ebenso wie Make-up. Die Umrisse für die Ganzkörperfotos bleiben neutral.';
+
+  @override
+  String get geschlechtHinweisOffen =>
+      'Noch nichts gewählt. Bis dahin läuft alles wie bisher.';
+
+  @override
+  String get modulMakeupTitel => 'Make-up & Ausstrahlung';
+
+  @override
+  String get modulMakeupText =>
+      'Passende Farben, Betonungen und ein Alltags-Look, der zu deinen Zügen passt.';
+
+  @override
+  String get modulMakeupCheckliste => 'Make-up';
+
+  @override
+  String get modulBenoetigtMakeup =>
+      'Keine eigene Aufnahme – nutzt das Frontalfoto der Basis. Mach es ohne Make-up oder mit deinem Alltags-Look.';
+
+  @override
+  String get modulMakeupKeinFotoTitel => 'Kein eigenes Foto nötig';
+
+  @override
+  String get modulMakeupKeinFotoText =>
+      'Wir lesen Gesichtszüge und Farbwirkung aus deinem Frontalfoto mit. Ob du darauf geschminkt bist, entscheidest du – ungeschminkt zeigt die Grundlage, geschminkt deinen aktuellen Look.';
+
+  @override
+  String get modulBasisTitelOhneBart => 'Gesicht & Haare';
+
+  @override
+  String get modulBasisTextOhneBart => 'Gesichtsform und Frisur-Empfehlungen.';
+
+  @override
+  String get modulBasisCheckisteOhneBart => 'Haare';
+
+  @override
+  String get modulBenoetigtBasisOhneBart =>
+      'Frontal, beide Seitenprofile und 45°-Winkel.';
+
+  @override
+  String get frageMakeupGefuehl => 'Wie sicher fühlst du dich mit deinem Look?';
+
+  @override
+  String get frageMakeupErgebnis =>
+      'Wie gut funktioniert dein Alltags-Look inzwischen?';
+
+  @override
+  String get einordnungMakeup =>
+      'Ein neuer Look braucht ein paar Anläufe – nach zwei bis drei Wochen sitzt der Handgriff.';
 }

@@ -10,6 +10,7 @@ import '../../analysis/logic/analysis_service.dart';
 import '../../analysis/logic/functions_client.dart';
 import '../../analysis/models/analysis_result.dart';
 import '../../modules/models/analyse_modul.dart';
+import '../../onboarding/models/onboarding_profile.dart';
 import '../models/checkin.dart';
 import '../models/checkin_auswertung.dart';
 import 'checkin_anfrage.dart';
@@ -32,6 +33,7 @@ abstract interface class CheckinService {
     required AnalysisResult analyse,
     required List<Checkin> historie,
     required Sprache sprache,
+    required Ausrichtung ausrichtung,
     File? erstfoto,
     File? fortschrittsfoto,
     Abbruch? abbruch,
@@ -55,6 +57,7 @@ class FunctionsCheckinService implements CheckinService {
     required AnalysisResult analyse,
     required List<Checkin> historie,
     required Sprache sprache,
+    required Ausrichtung ausrichtung,
     File? erstfoto,
     File? fortschrittsfoto,
     Abbruch? abbruch,
@@ -77,6 +80,7 @@ class FunctionsCheckinService implements CheckinService {
         analyse: analyse,
         historie: historie,
         sprache: sprache,
+        ausrichtung: ausrichtung,
         bilder: bilder,
       ),
       abbruch: abbruch,
@@ -112,6 +116,7 @@ class MockCheckinService implements CheckinService {
     required AnalysisResult analyse,
     required List<Checkin> historie,
     required Sprache sprache,
+    required Ausrichtung ausrichtung,
     File? erstfoto,
     File? fortschrittsfoto,
     Abbruch? abbruch,

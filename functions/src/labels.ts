@@ -48,6 +48,7 @@ export function labels(
 export const MODULE = [
   'basis',
   'hautFarbtyp',
+  'makeupAusstrahlung',
   'zaehneLaecheln',
   'figurPassform',
   'stilKleiderschrank',
@@ -63,10 +64,30 @@ export function istModul(name: unknown): name is Modul {
 export const MODUL_KAPITEL: Record<Modul, Zweisprachig> = {
   basis: { de: 'Gesicht, Haare & Bart', en: 'Face, hair & beard' },
   hautFarbtyp: { de: 'Haut & Farbtyp', en: 'Skin & colour type' },
+  makeupAusstrahlung: { de: 'Make-up & Ausstrahlung', en: 'Make-up & presence' },
   zaehneLaecheln: { de: 'Zähne & Lächeln', en: 'Teeth & smile' },
   figurPassform: { de: 'Figur & Passform', en: 'Figure & fit' },
   stilKleiderschrank: { de: 'Stil & Kleiderschrank', en: 'Style & wardrobe' },
 };
+
+/**
+ * Die Basis heisst im weiblichen Modus anders, weil sie dort etwas anderes
+ * enthaelt – dieselbe Regel wie in `AnalyseModulText.titel` auf dem Client.
+ */
+export const MODUL_KAPITEL_WEIBLICH: Partial<Record<Modul, Zweisprachig>> = {
+  basis: { de: 'Gesicht & Haare', en: 'Face & hair' },
+};
+
+/** Kapitelueberschrift, passend zur Ausrichtung. */
+export function kapitelUeberschrift(
+  modul: Modul,
+  ausrichtung: string,
+  sprache: Sprache,
+): string {
+  const abweichend =
+    ausrichtung === 'weiblich' ? MODUL_KAPITEL_WEIBLICH[modul] : undefined;
+  return (abweichend ?? MODUL_KAPITEL[modul])[sprache];
+}
 
 // --- Aufnahmen ---------------------------------------------------------
 

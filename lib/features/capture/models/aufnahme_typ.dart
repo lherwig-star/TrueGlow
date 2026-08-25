@@ -1,4 +1,5 @@
 import '../../modules/models/analyse_modul.dart';
+import '../../onboarding/models/onboarding_profile.dart';
 import '../../../core/l10n/texte.dart';
 
 /// Welche Hilfslinien im Sucher liegen.
@@ -24,6 +25,16 @@ enum Overlaytyp {
 
   /// Dieselbe Figur im Profil, Blickrichtung rechts.
   ganzkoerperSeitlich,
+
+  /// Weibliche Fassung derselben beiden Umrisse.
+  ///
+  /// Warum ueberhaupt eine zweite Figur: Der Umriss ist eine Anweisung, wie
+  /// weit man zuruecktreten und wie man stehen soll. Wer sich an einer Figur
+  /// ausrichten soll, die anders gebaut ist als er selbst, richtet sich
+  /// schlechter aus – und die Schulter-Huefte-Verhaeltnisse sind genau das,
+  /// was das Ganzkoerperfoto zeigen soll.
+  ganzkoerperFrontalWeiblich,
+  ganzkoerperSeitlichWeiblich,
 
   /// Freies Bild ohne Hilfslinien (Outfit-Fotos).
   keins,
@@ -146,6 +157,11 @@ enum AufnahmeTyp {
   });
 
   final AnalyseModul modul;
+
+  /// Die Hilfslinien im Sucher – die neutrale Fassung.
+  ///
+  /// Fuer die tatsaechlich gezeigte Fassung [overlayFuer] benutzen: Bei den
+  /// Ganzkoerperfotos haengt sie an der Ausrichtung.
   final Overlaytyp overlay;
   final Pruefprofil pruefung;
 
@@ -163,6 +179,21 @@ enum AufnahmeTyp {
   /// Bei allen anderen Aufnahmen haelt man das Geraet in der Hand, und ein
   /// Automatismus waere nur ein Foto zum falschen Zeitpunkt.
   final bool autoAusloeser;
+
+  /// Die Hilfslinien, die im Sucher wirklich liegen.
+  ///
+  /// Nur die beiden Ganzkoerper-Umrisse haben eine weibliche Fassung. Das
+  /// Gesichts-Oval hat keine: Gesichtsformen unterscheiden sich zwischen
+  /// Menschen mehr als zwischen Geschlechtern, und ein zweites Oval waere
+  /// eine Aussage ohne Grundlage.
+  Overlaytyp overlayFuer(Ausrichtung ausrichtung) {
+    if (ausrichtung != Ausrichtung.weiblich) return overlay;
+    return switch (overlay) {
+      Overlaytyp.ganzkoerperFrontal => Overlaytyp.ganzkoerperFrontalWeiblich,
+      Overlaytyp.ganzkoerperSeitlich => Overlaytyp.ganzkoerperSeitlichWeiblich,
+      _ => overlay,
+    };
+  }
 
   /// Ob die Live-Erkennung im Sucher sinnvoll ist.
   bool get mitLiveHilfe => pruefung.pruefeGesicht;
@@ -234,9 +265,12 @@ extension AnalyseModulAufnahmen on AnalyseModul {
       AufnahmeTyp.values.where((t) => t.modul == this).toList();
 
   /// Kurztext fuer die Modul-Karte: was an Material gebraucht wird.
-  String benoetigt(L texte) => switch (this) {
-        AnalyseModul.basis => texte.modulBenoetigtBasis,
+  String benoetigt(L texte, Ausrichtung ausrichtung) => switch (this) {
+        AnalyseModul.basis => ausrichtung == Ausrichtung.weiblich
+            ? texte.modulBenoetigtBasisOhneBart
+            : texte.modulBenoetigtBasis,
         AnalyseModul.hautFarbtyp => texte.modulBenoetigtHaut,
+        AnalyseModul.makeupAusstrahlung => texte.modulBenoetigtMakeup,
         AnalyseModul.zaehneLaecheln => texte.modulBenoetigtZaehne,
         AnalyseModul.figurPassform => texte.modulBenoetigtFigur,
         AnalyseModul.stilKleiderschrank => texte.modulBenoetigtStil,

@@ -199,6 +199,8 @@ extension WirkungsFrageText on WirkungsFrage {
         'zaehneErgebnis' => texte.frageZaehneErgebnis,
         'figurErgebnis' => texte.frageHaltungErgebnis,
         'stilErgebnis' => texte.frageStilErgebnis,
+        'makeupGefuehl' => texte.frageMakeupGefuehl,
+        'makeupErgebnis' => texte.frageMakeupErgebnis,
         _ => id,
       };
 }

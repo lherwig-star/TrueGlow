@@ -95,7 +95,11 @@ void main() {
         analyse: _analyse({AnalyseModul.basis, AnalyseModul.hautFarbtyp}),
       );
       expect(_stand(teilweise, Abzeichen.alleModule).erreicht, isFalse);
-      expect(_stand(teilweise, Abzeichen.alleModule).fehlend, 3);
+      // Zwei von sechs Modulen sind drin – vier fehlen.
+      expect(
+        _stand(teilweise, Abzeichen.alleModule).fehlend,
+        AnalyseModul.values.length - 2,
+      );
       expect(texte.abzeichenNochModule(3), 'noch 3 Module');
       expect(texte.abzeichenNochModule(1), 'noch 1 Modul');
 

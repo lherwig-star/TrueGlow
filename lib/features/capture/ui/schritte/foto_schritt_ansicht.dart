@@ -11,6 +11,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/section_card.dart';
 import '../../../modules/logic/module_controller.dart';
 import '../../logic/capture_controller.dart';
+import '../../../onboarding/logic/onboarding_controller.dart';
 import '../../models/aufnahme_typ.dart';
 import '../../models/captured_photo.dart';
 import '../../models/photo_check_result.dart';
@@ -86,7 +87,7 @@ class FotoSchrittAnsicht extends ConsumerWidget {
 }
 
 /// Sucher-Bereich: entweder die Hilfslinien oder das gepruefte Foto.
-class _Sucher extends StatelessWidget {
+class _Sucher extends ConsumerWidget {
   const _Sucher({
     required this.typ,
     required this.foto,
@@ -98,7 +99,7 @@ class _Sucher extends StatelessWidget {
   final bool laeuft;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final farben = context.farben;
 
     return AspectRatio(
@@ -132,7 +133,9 @@ class _Sucher extends StatelessWidget {
                 ),
               )
             else
-              SilhouetteOverlay(overlay: typ.overlay),
+              SilhouetteOverlay(
+                overlay: typ.overlayFuer(ref.watch(ausrichtungProvider)),
+              ),
             if (foto != null)
               const Positioned(
                 top: AppTheme.gapS,

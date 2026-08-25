@@ -1,7 +1,7 @@
 import {
   CHECKIN_TYP,
   HABIT_BEWERTUNG,
-  MODUL_KAPITEL,
+  kapitelUeberschrift,
   PASST_NICHT_GRUND,
   RICHTUNGSZIEL,
   WIRKUNGS_ANTWORT,
@@ -11,6 +11,7 @@ import {
   type Modul,
 } from './labels';
 import type { Richtungsangaben } from './analyse_prompt';
+import { type Ausrichtung } from './ausrichtung';
 import {
   AUSGABESPRACHE,
   AUSGABESPRACHE_KURZ,
@@ -54,6 +55,8 @@ export interface Historieneintrag {
 export interface CheckinPromptDaten {
   /** In welcher Sprache die Auswertung geschrieben wird. */
   sprache: Sprache;
+  /** Wonach die Empfehlungen ausgerichtet werden. */
+  ausrichtung: Ausrichtung;
   typ: string;
   habits: HabitRueckmeldung[];
   wirkung: WirkungsRueckmeldung[];
@@ -74,13 +77,14 @@ export const JSON_NACHFASSEN =
 
 export function systemPrompt(daten: CheckinPromptDaten): string {
   const sprache = daten.sprache;
+  const ausrichtung = daten.ausrichtung;
   const titel = label(CHECKIN_TYP, daten.typ, sprache) ?? 'Check-in';
   const mitFoto = mitFortschrittsfoto(daten.typ);
 
   return `Du bist derselbe Styling- und Grooming-Coach, der den Plan dieser Person
 erstellt hat. Sie meldet sich zum ${titel} zurück.
 
-${planUeberblick(daten.plan, sprache)}
+${planUeberblick(daten.plan, sprache, ausrichtung)}
 ${richtungsText(daten.richtung, sprache)}
 ${antworten(daten)}
 ${historieText(daten.historie, sprache)}
@@ -164,11 +168,16 @@ function fazitVorgabe(mitFoto: boolean): string {
  * Der aktuelle Plan, gegliedert nach Kapiteln – nur die Habits, denn nur die
  * werden angepasst.
  */
-function planUeberblick(plan: Kapitelplan[], sprache: Sprache): string {
+function planUeberblick(
+  plan: Kapitelplan[],
+  sprache: Sprache,
+  ausrichtung: Ausrichtung,
+): string {
   const zeilen: string[] = [];
   for (const kapitel of plan) {
     zeilen.push(
-      `- Modul "${kapitel.modul}" (${MODUL_KAPITEL[kapitel.modul][sprache]}):`,
+      `- Modul "${kapitel.modul}" ` +
+        `(${kapitelUeberschrift(kapitel.modul, ausrichtung, sprache)}):`,
     );
     for (const habit of kapitel.habits) {
       zeilen.push(`  * ${habit}`);

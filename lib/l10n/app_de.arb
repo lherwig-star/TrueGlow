@@ -856,5 +856,29 @@
   "loginRechtliches": "Bevor du loslegst:",
   "@loginRechtliches": {
     "description": "Ueberschrift ueber den Verweisen auf die Rechtstexte."
-  }
+  },
+  "geschlechtMaennlich": "Männlich",
+  "geschlechtWeiblich": "Weiblich",
+  "geschlechtDivers": "Divers",
+  "geschlechtKeineAngabe": "Keine Angabe",
+  "onbGeschlechtTitel": "Für wen erstellen wir den Plan?",
+  "onbGeschlechtText": "Danach richten sich Module, Umriss-Hilfen und Empfehlungen. Du kannst es jederzeit in den Einstellungen ändern.",
+  "einstellungenGeschlecht": "Ausrichtung",
+  "geschlechtHinweisWeiblich": "Make-up & Ausstrahlung ist dabei, Bart-Empfehlungen entfallen, und die Umrisse für die Ganzkörperfotos zeigen eine weibliche Figur.",
+  "geschlechtHinweisMaennlich": "Bart und Konturen gehören zur Basis, die Umrisse für die Ganzkörperfotos zeigen eine männliche Figur.",
+  "geschlechtHinweisNeutral": "Alle Module stehen zur Wahl – Bart ebenso wie Make-up. Die Umrisse für die Ganzkörperfotos bleiben neutral.",
+  "geschlechtHinweisOffen": "Noch nichts gewählt. Bis dahin läuft alles wie bisher.",
+  "modulMakeupTitel": "Make-up & Ausstrahlung",
+  "modulMakeupText": "Passende Farben, Betonungen und ein Alltags-Look, der zu deinen Zügen passt.",
+  "modulMakeupCheckliste": "Make-up",
+  "modulBenoetigtMakeup": "Keine eigene Aufnahme – nutzt das Frontalfoto der Basis. Mach es ohne Make-up oder mit deinem Alltags-Look.",
+  "modulMakeupKeinFotoTitel": "Kein eigenes Foto nötig",
+  "modulMakeupKeinFotoText": "Wir lesen Gesichtszüge und Farbwirkung aus deinem Frontalfoto mit. Ob du darauf geschminkt bist, entscheidest du – ungeschminkt zeigt die Grundlage, geschminkt deinen aktuellen Look.",
+  "modulBasisTitelOhneBart": "Gesicht & Haare",
+  "modulBasisTextOhneBart": "Gesichtsform und Frisur-Empfehlungen.",
+  "modulBasisCheckisteOhneBart": "Haare",
+  "modulBenoetigtBasisOhneBart": "Frontal, beide Seitenprofile und 45°-Winkel.",
+  "frageMakeupGefuehl": "Wie sicher fühlst du dich mit deinem Look?",
+  "frageMakeupErgebnis": "Wie gut funktioniert dein Alltags-Look inzwischen?",
+  "einordnungMakeup": "Ein neuer Look braucht ein paar Anläufe – nach zwei bis drei Wochen sitzt der Handgriff."
 }

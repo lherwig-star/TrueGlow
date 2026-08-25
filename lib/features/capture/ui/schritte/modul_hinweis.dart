@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/section_card.dart';
 import '../../../modules/models/analyse_modul.dart';
+import '../../../onboarding/logic/onboarding_controller.dart';
 import '../../models/aufnahme_typ.dart';
 import '../../../../core/l10n/texte.dart';
 
 /// Vorbereitungsseite eines Moduls – steht vor dessen Aufnahmen, wenn die
 /// Bedingungen ueber den normalen Sucher-Hinweis hinausgehen.
-class ModulHinweis extends StatelessWidget {
+class ModulHinweis extends ConsumerWidget {
   const ModulHinweis({super.key, required this.modul});
 
   final AnalyseModul modul;
@@ -34,13 +36,21 @@ class ModulHinweis extends StatelessWidget {
               texte.modulHautLichtText,
             ),
           ],
+        AnalyseModul.makeupAusstrahlung => [
+            (
+              Icons.photo_camera_back_outlined,
+              texte.modulMakeupKeinFotoTitel,
+              texte.modulMakeupKeinFotoText,
+            ),
+          ],
         _ => const [],
       };
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final texte = context.texte;
     final farben = context.farben;
+    final ausrichtung = ref.watch(ausrichtungProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +69,7 @@ class ModulHinweis extends StatelessWidget {
             const SizedBox(width: AppTheme.gapS),
             Expanded(
               child: Text(
-                modul.titel(texte),
+                modul.titel(texte, ausrichtung),
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
@@ -70,7 +80,7 @@ class ModulHinweis extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AppTheme.gapS),
-        MutedText(modul.benoetigt(texte)),
+        MutedText(modul.benoetigt(texte, ausrichtung)),
         const SizedBox(height: AppTheme.gapM),
         for (final (icon, titel, text) in _punkte(texte)) ...[
           SectionCard(
