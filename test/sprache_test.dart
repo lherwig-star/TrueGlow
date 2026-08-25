@@ -238,6 +238,23 @@ void main() {
       expect(englisch.kontingentUebrig(2, 3), contains('2 of 3'));
     });
 
+    test('die Kopfzeile des Reports ist ganz übersetzt', () {
+      // Sie stand als „today · 1 Kapitel · 4 Empfehlungen" auf dem Gerät –
+      // halb englisch, halb deutsch, weil sie aus drei Bausteinen bestand.
+      final deutsch = texte.ergebnisKopf('heute', 2, 7);
+      expect(deutsch, 'heute · 2 Kapitel · 7 Empfehlungen');
+      expect(texte.ergebnisKopf('heute', 1, 1), 'heute · 1 Kapitel · 1 Empfehlung');
+
+      final english = englisch.ergebnisKopf('today', 2, 7);
+      expect(english, 'today · 2 chapters · 7 recommendations');
+      expect(englisch.ergebnisKopf('today', 1, 1),
+          'today · 1 chapter · 1 recommendation');
+
+      // Kein deutsches Wort im englischen Satz.
+      expect(english, isNot(contains('Kapitel')));
+      expect(english, isNot(contains('Empfehlung')));
+    });
+
     test('die Oberflaeche enthaelt kein fest verdrahtetes Deutsch', () {
       // Zwei deutsche Zeilen sind erst am Gerät aufgefallen, nachdem die App
       // auf Englisch stand: „Heute alles erledigt. Stark." in der
@@ -267,6 +284,13 @@ void main() {
         'von', 'vor', 'wähle', 'wählst', 'warum', 'was', 'weil', 'weiter',
         'welche', 'wenn', 'wer', 'wie', 'wieder', 'wir', 'wird', 'wirst',
         'zum', 'zur', 'zwei',
+        // Substantive, die als Anzeigetext auftauchen. Sie stehen hier, weil
+        // die Kopfzeile des Reports aus Bausteinen bestand: Der Baustein
+        // ' Kapitel · ' trug kein anderes deutsches Wort bei sich.
+        'Kapitel', 'Empfehlung', 'Empfehlungen', 'Produkt', 'Produkte',
+        'Schritt', 'Schritte', 'Aufnahme', 'Aufnahmen', 'Modul', 'Module',
+        'Bild', 'Bilder', 'Serie', 'Punkt', 'Punkte', 'Antwort', 'Antworten',
+        'Frage', 'Fragen', 'Ziel', 'Ziele', 'Einstellungen', 'Analyse',
       ];
 
       // Wörter, die schon allein reichen – auch ohne Satz drumherum. Damit
@@ -295,8 +319,11 @@ void main() {
           r')(?![A-Za-zÄÖÜäöüß])');
       final allein = RegExp('^(${alleinReichend.join('|')})\$');
       // Zeilen, die nie an die Oberfläche gehen.
-      final egal = RegExp(r'debugPrint|assert\(|^\s*//|^\s*\*|^\s*import ');
-      final wurf = RegExp(r'throw |Error\(|Exception\(');
+      final egal = RegExp(r'assert\(|^\s*//|^\s*\*|^\s*import ');
+      // Anweisungen, deren Text nie jemand sieht. Sie reichen oft ueber
+      // mehrere Zeilen, der Text steht dann nicht bei ihrem Schluesselwort –
+      // deshalb wird ab hier bis zum Semikolon uebersprungen.
+      final unsichtbar = RegExp(r'throw |Error\(|Exception\(|debugPrint\(');
       final literale = RegExp('\'([^\'\n]{2,})\'|"([^"\n]{2,})"');
 
       final funde = <String>[];
@@ -308,8 +335,6 @@ void main() {
         if (ausnahmen.contains(pfad)) continue;
 
         final zeilen = eintrag.readAsLinesSync();
-        // Ein `throw` reicht oft über mehrere Zeilen; sein Text steht dann
-        // nicht auf der Zeile mit dem Schlüsselwort.
         var imWurf = false;
         for (var i = 0; i < zeilen.length; i++) {
           final zeile = zeilen[i];
@@ -317,7 +342,7 @@ void main() {
             if (zeile.contains(';')) imWurf = false;
             continue;
           }
-          if (wurf.hasMatch(zeile)) {
+          if (unsichtbar.hasMatch(zeile)) {
             if (!zeile.contains(';')) imWurf = true;
             continue;
           }
@@ -325,10 +350,16 @@ void main() {
 
           for (final treffer in literale.allMatches(zeile)) {
             final text = treffer.group(1) ?? treffer.group(2)!;
+            // Ein Bruchstueck ist nie fuer sich genommen richtiger
+            // Anzeigetext: Es haengt an einer Einsetzung und ergibt erst mit
+            // ihr einen Satz. Ein einziges deutsches Wort reicht dann schon.
+            final bruchstueck = text != text.trim() || text.contains('·');
+            final deutscheWoerter = wort.allMatches(text).length;
+
             final verdacht = allein.hasMatch(text) ||
+                (bruchstueck && (umlaut.hasMatch(text) || deutscheWoerter >= 1)) ||
                 (text.contains(' ') &&
-                    (umlaut.hasMatch(text) ||
-                        wort.allMatches(text).length >= 2));
+                    (umlaut.hasMatch(text) || deutscheWoerter >= 2));
             if (verdacht) funde.add('$pfad:${i + 1}  $text');
           }
         }

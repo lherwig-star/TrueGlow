@@ -805,6 +805,12 @@ abstract class L {
   /// **'Deine Analyse'**
   String get ergebnisTitel;
 
+  /// Zeile über dem Report. Datum, Kapitelzahl und Empfehlungszahl stehen bewusst zusammen in einem Satz: Als drei Bausteine im Dart-Code blieben zwei davon deutsch, während die Oberfläche schon englisch war.
+  ///
+  /// In de, this message translates to:
+  /// **'{datum} · {kapitel, plural, one{1 Kapitel} other{{kapitel} Kapitel}} · {empfehlungen, plural, one{1 Empfehlung} other{{empfehlungen} Empfehlungen}}'**
+  String ergebnisKopf(String datum, int kapitel, int empfehlungen);
+
   /// No description provided for @ergebnisGesichtsform.
   ///
   /// In de, this message translates to:

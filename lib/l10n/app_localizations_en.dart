@@ -400,6 +400,23 @@ class LEn extends L {
   String get ergebnisTitel => 'Your analysis';
 
   @override
+  String ergebnisKopf(String datum, int kapitel, int empfehlungen) {
+    String _temp0 = intl.Intl.pluralLogic(
+      kapitel,
+      locale: localeName,
+      other: '$kapitel chapters',
+      one: '1 chapter',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      empfehlungen,
+      locale: localeName,
+      other: '$empfehlungen recommendations',
+      one: '1 recommendation',
+    );
+    return '$datum · $_temp0 · $_temp1';
+  }
+
+  @override
   String get ergebnisGesichtsform => 'Face shape';
 
   @override

@@ -119,10 +119,20 @@ class _Kopf extends StatelessWidget {
         Icon(Icons.event_outlined, size: 16, color: farben.textSekundaer),
         const SizedBox(width: 6),
         Expanded(
+          // Die ganze Zeile kommt aus einem einzigen uebersetzten Satz.
+          // Als drei Bausteine zusammengesetzt stand hier „today · 1 Kapitel
+          // · 4 Empfehlungen" – halb englisch, halb deutsch.
           child: MutedText(
-            '${Datum.relativ(ergebnis.erstelltAm, texte.localeName, heute: texte.datumHeute, gestern: texte.datumGestern)} · '
-            '${ergebnis.kapitel.length} Kapitel · '
-            '${ergebnis.anzahlEmpfehlungen} Empfehlungen',
+            texte.ergebnisKopf(
+              Datum.relativ(
+                ergebnis.erstelltAm,
+                texte.localeName,
+                heute: texte.datumHeute,
+                gestern: texte.datumGestern,
+              ),
+              ergebnis.kapitel.length,
+              ergebnis.anzahlEmpfehlungen,
+            ),
           ),
         ),
       ],

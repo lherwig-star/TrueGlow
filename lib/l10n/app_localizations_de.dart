@@ -401,6 +401,23 @@ class LDe extends L {
   String get ergebnisTitel => 'Deine Analyse';
 
   @override
+  String ergebnisKopf(String datum, int kapitel, int empfehlungen) {
+    String _temp0 = intl.Intl.pluralLogic(
+      kapitel,
+      locale: localeName,
+      other: '$kapitel Kapitel',
+      one: '1 Kapitel',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      empfehlungen,
+      locale: localeName,
+      other: '$empfehlungen Empfehlungen',
+      one: '1 Empfehlung',
+    );
+    return '$datum · $_temp0 · $_temp1';
+  }
+
+  @override
   String get ergebnisGesichtsform => 'Gesichtsform';
 
   @override
