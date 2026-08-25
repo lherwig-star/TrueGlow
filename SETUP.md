@@ -310,8 +310,9 @@ deiner App gerufen werden können — nicht per `curl` mit einem geklauten Token
 
 ☐ **4.2 iOS registrieren (App Attest)** — erst wenn iOS gebaut wird, siehe Abschnitt 7
 
-☑ **4.3 Debug-Token für die Entwicklung eintragen** — Token `Samsung A52`
-eingetragen (Gerät SM A525F)
+☑ **4.3 Debug-Token für die Entwicklung eintragen** — zuletzt am 25.08.2026
+neu eingetragen (Gerät SM A525F). Der ältere Eintrag `Samsung A52` galt nach
+einer Neuinstallation nicht mehr und kann weg.
 
 1. App im Debug-Modus einmal starten: `flutter run`
 2. In der Konsolenausgabe nach einer Zeile suchen, die so aussieht:
@@ -333,6 +334,21 @@ eingetragen (Gerät SM A525F)
 > Das Token gilt **pro Installation**: Nach `flutter run --uninstall-first`
 > oder einer Neuinstallation ist es ein anderes und muss neu eingetragen
 > werden.
+>
+> ## Woran ein abgelaufenes Token zu erkennen ist
+>
+> Seit 4.4 erzwungen wird, ist das kein Schönheitsfehler mehr: Ein nicht
+> eingetragenes Token sperrt die Cloud-Sicherung **und** die Analyse aus —
+> die Cloud Function setzt `enforceAppCheck: true`. Im Logcat steht dann:
+>
+> ```
+> Failed to exchange debug token (…)
+> Firestore: PERMISSION_DENIED – Missing or insufficient permissions
+> ```
+>
+> Der Fototeil läuft davon unberührt weiter, der ist rein lokal. Die
+> Verwechslungsgefahr ist also groß: Die App wirkt gesund, bis eine echte
+> Analyse gestartet wird.
 3. Firebase-Konsole → **App Check** → Reiter **Apps** → Android-App →
    Dreipunkt-Menü → **Debug-Tokens verwalten** → **Debug-Token hinzufügen**
 4. UUID einfügen, Name z. B. `Laptop Debug`, **Speichern**
