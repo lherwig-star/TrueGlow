@@ -473,6 +473,8 @@ Abschnitte 31–33.
 - [x] Geschlechtsabfrage im ersten Fragenblock, änderbar in den Einstellungen — **S** — *war entgegen der Annahme noch nirgends gebaut*
 - [x] Frauen-Modus: Modul „Make-up & Ausstrahlung", Basis ohne Bart, weibliche Silhouetten, angepasste Prompts — **L**
 - [x] Neutraler Modus für „divers" und „keine Angabe" — **S** — *alles wählbar, geschlechtsneutraler Prompt*
+- [x] Am Gerät nachgebessert, was erst dort auffiel — **M** — *Einleitung der Modulauswahl versprach im weiblichen Modus einen Bart; die Arme kreuzten durch die breitere Hüfte; der native Splash folgte dem System und sprang auf hell gestellten Geräten von Mocha nach Deep Teal; „Heute alles erledigt" und „in 7 Tagen" waren im englischen Betrieb deutsch geblieben*
+- [x] Wächter gegen fest verdrahtetes Deutsch — **S** — *`test/sprache_test.dart` liest alle Dateien unter `lib/` und meldet, was nach deutschem Anzeigetext aussieht; vier Dateien stehen mit Begründung auf der Ausnahmeliste*
 - [ ] Weibliche Silhouetten mit einer Frau vor der Kamera prüfen — **S** — *die Proportionen sind gemessen, das Verhalten des Auto-Auslösers nicht*
 - [ ] Ein echter Analyse-Durchlauf auf Englisch und einer im Frauen-Modus — **S** — *die Prompts sind getestet, die Antworten von Gemini nicht*
 
