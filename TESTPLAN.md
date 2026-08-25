@@ -215,6 +215,41 @@ auftreten, gibt es im Debug-Build nicht.
 
 ---
 
+## 6 · Nach dem Umbau auf Anmeldung, Sprachwahl und Frauen-Modus
+
+Diese sechs Punkte lassen sich nicht vom Rechner aus prüfen. Sie brauchen
+entweder eine Abmeldung, eine echte Person vor der Kamera oder einen Blick
+darauf, ob sich ein Satz gut liest.
+
+1. **Erster Start wie ein neuer Nutzer.** In den Einstellungen ganz unten
+   „Alle Daten löschen", dann App schließen und neu öffnen. Erwartet:
+   Zeichen blendet auf, Schriftzug darunter, nach knapp zwei Sekunden von
+   selbst der Anmelde-Bildschirm — kein Knopf zum Weitertippen. Oben rechts
+   stehen DE und EN.
+
+2. **Als Gast hinein.** „Erst mal umschauen" tippen. Erwartet: die
+   Erklärseiten kommen jetzt **nach** der Anmeldung, nicht davor, und die
+   letzte verlangt das Häkchen unter den Nutzungsbedingungen.
+
+3. **Sprache auf dem Anmelde-Bildschirm.** Vor dem Anmelden auf EN tippen.
+   Erwartet: Willkommenssatz, Knöpfe und Rechtstexte-Zeile wechseln sofort.
+   Zurück auf DE.
+
+4. **Geschlecht im Onboarding.** Im ersten Fragenblock „Weiblich" wählen und
+   bis zur Modulauswahl durchgehen. Erwartet: „Make-up & Ausstrahlung" steht
+   oben, „Bart" kommt nirgends vor.
+
+5. **Weibliche Silhouette mit einer Frau davor.** Ganzkörper frontal und
+   seitlich. Erwartet: Der Umriss passt zur Person, der Auto-Auslöser zählt
+   herunter und löst aus. Die Proportionen sind gemessen, das Zusammenspiel
+   mit einem echten Körper nicht.
+
+6. **Ein echter Analyse-Durchlauf auf Englisch.** Sprache auf English,
+   Analyse starten. Erwartet: Der ganze Report — Kapitel, Empfehlungen,
+   Farbbeschreibungen — ist englisch und liest sich wie von einem Menschen
+   geschrieben. Danach dasselbe im Frauen-Modus: Schnittempfehlungen nach
+   Figurtyp, Farbpalette auch für Make-up, kein Wort über Bart.
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |
