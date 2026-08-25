@@ -6,6 +6,7 @@ import '../../modules/models/analyse_modul.dart';
 import '../../modules/models/modul_eingaben.dart';
 import '../../onboarding/models/onboarding_profile.dart';
 import '../../../core/firebase/firebase_start.dart';
+import '../../../core/l10n/sprache.dart';
 import '../../../core/netz/wiederholung.dart';
 import '../models/analysis_result.dart';
 import 'analyse_anfrage.dart';
@@ -30,6 +31,7 @@ class FunctionsAnalysisService implements AnalysisService {
     required Set<AnalyseModul> module,
     required OnboardingProfile onboarding,
     required ModulEingaben eingaben,
+    required Sprache sprache,
     Richtung richtung = Richtung.leer,
     Abbruch? abbruch,
   }) async {
@@ -55,6 +57,7 @@ class FunctionsAnalysisService implements AnalysisService {
         module: module,
         onboarding: onboarding,
         eingaben: eingaben,
+        sprache: sprache,
         richtung: richtung,
       ),
       abbruch: abbruch,

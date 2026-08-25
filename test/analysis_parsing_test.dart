@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:trueglow/core/l10n/sprache.dart';
 import 'package:trueglow/features/analysis/logic/json_extractor.dart';
 import 'package:trueglow/features/analysis/logic/mock_analysis_service.dart';
 import 'package:trueglow/features/analysis/models/analysis_result.dart';
@@ -191,6 +192,7 @@ void main() {
         module: {AnalyseModul.basis},
         onboarding: const OnboardingProfile(),
         eingaben: const ModulEingaben(),
+        sprache: Sprache.deutsch,
       );
 
       expect(ergebnis.istVollstaendig, isTrue);

@@ -5,6 +5,17 @@ import 'package:trueglow/core/l10n/sprache.dart';
 import 'package:trueglow/core/l10n/texte.dart';
 import 'package:trueglow/core/router/app_router.dart';
 import 'package:trueglow/core/storage/key_value_store.dart';
+import 'package:trueglow/features/analysis/logic/analyse_anfrage.dart';
+import 'package:trueglow/features/analysis/logic/json_extractor.dart';
+import 'package:trueglow/features/analysis/logic/mock_analysis_service.dart';
+import 'package:trueglow/features/analysis/models/analysis_result.dart';
+import 'package:trueglow/features/capture/models/aufnahme_typ.dart';
+import 'package:trueglow/features/checkin/logic/checkin_anfrage.dart';
+import 'package:trueglow/features/checkin/logic/checkin_service.dart';
+import 'package:trueglow/features/checkin/models/checkin.dart';
+import 'package:trueglow/features/modules/models/analyse_modul.dart';
+import 'package:trueglow/features/modules/models/modul_eingaben.dart';
+import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
 
 import 'hilfen.dart';
 
@@ -104,6 +115,83 @@ void main() {
 
       expect(find.text(englisch.homeLeerTitel), findsOneWidget);
       expect(find.text(texte.homeLeerTitel), findsNothing);
+    });
+  });
+
+  group('Sprache des Reports', () {
+    test('die Analyse-Anfrage nimmt die Zielsprache mit', () {
+      // Der Prompt liegt auf dem Server. Vom Gerät geht deshalb nur der
+      // Sprachcode mit – der Server entscheidet daraus, in welcher Sprache
+      // Gemini antworten soll.
+      final deutsch = AnalyseAnfrage.bauen(
+        bilder: const {AufnahmeTyp.basisFrontal: 'AAAA'},
+        module: {AnalyseModul.basis},
+        onboarding: const OnboardingProfile(),
+        eingaben: const ModulEingaben(),
+        sprache: Sprache.deutsch,
+      );
+      final englisch = AnalyseAnfrage.bauen(
+        bilder: const {AufnahmeTyp.basisFrontal: 'AAAA'},
+        module: {AnalyseModul.basis},
+        onboarding: const OnboardingProfile(),
+        eingaben: const ModulEingaben(),
+        sprache: Sprache.englisch,
+      );
+
+      expect(deutsch['sprache'], 'de');
+      expect(englisch['sprache'], 'en');
+    });
+
+    test('die Check-in-Anfrage ebenso', () {
+      final anfrage = CheckinAnfrage.bauen(
+        checkin: Checkin(
+          id: 0,
+          typ: CheckinTyp.alltag,
+          faelligAm: DateTime(2026, 9, 1),
+        ),
+        analyse: AnalysisResult.vonApi(
+          JsonExtractor.extrahiere(
+            MockAnalysisService.antwortFuer({AnalyseModul.basis}),
+          )!,
+          id: 'a1',
+          erstelltAm: DateTime(2026, 8, 22),
+        ),
+        historie: const [],
+        sprache: Sprache.englisch,
+      );
+
+      expect(anfrage['sprache'], 'en');
+    });
+
+    test('die Attrappe antwortet in der gewählten Sprache', () async {
+      // Im Demo-Modus schreibt die Attrappe den Text selbst. Sie muss
+      // derselben Sprachwahl folgen wie der echte Dienst – sonst sähe ein
+      // Screenshot-Durchlauf auf Englisch plötzlich deutsch aus.
+      final analyse = AnalysisResult.vonApi(
+        JsonExtractor.extrahiere(
+          MockAnalysisService.antwortFuer({AnalyseModul.basis}),
+        )!,
+        id: 'a1',
+        erstelltAm: DateTime(2026, 8, 22),
+      );
+      final habit = analyse.kapitel.first.habits.first;
+      final checkin = Checkin(
+        id: 0,
+        typ: CheckinTyp.alltag,
+        faelligAm: DateTime(2026, 9, 1),
+      )
+          .mitBewertung(habit, HabitBewertung.passtNicht)
+          .mitGrund(habit, PasstNichtGrund.zeit);
+
+      final auf = await const MockCheckinService().auswerten(
+        checkin: checkin,
+        analyse: analyse,
+        historie: const [],
+        sprache: Sprache.englisch,
+      );
+
+      expect(auf.zusammenfassung, contains("didn't fit your day"));
+      expect(auf.anpassungen.single.neu, contains('30 seconds'));
     });
   });
 

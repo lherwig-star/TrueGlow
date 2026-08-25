@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import * as analyse from '../src/analyse_prompt';
 import * as checkin from '../src/checkin_prompt';
 import type { Modul } from '../src/labels';
+import type { Sprache } from '../src/sprache';
 
 /**
  * Die Zusicherungen, die frueher in `test/richtung_test.dart` und
@@ -13,8 +14,10 @@ import type { Modul } from '../src/labels';
 function analyseDaten(
   richtung: analyse.Richtungsangaben = { ziele: [], freitext: '' },
   module: Modul[] = ['basis'],
+  sprache: Sprache = 'de',
 ): analyse.AnalysePromptDaten {
   return {
+    sprache,
     module,
     profil: { fokus: [] },
     figur: {},
@@ -88,7 +91,10 @@ describe('Analyse-Prompt', () => {
   });
 
   it('nennt die Bilder in der Reihenfolge, in der sie angehaengt werden', () => {
-    const text = analyse.nutzerText(['basisFrontal', 'zaehneLaecheln']);
+    const text = analyse.nutzerText(
+      ['basisFrontal', 'zaehneLaecheln'],
+      'de',
+    );
 
     expect(text).toContain('1. Frontalfoto (Gesicht, Haare & Bart)');
     expect(text).toContain('2. Lächeln (Zähne & Lächeln)');
@@ -99,15 +105,61 @@ describe('Analyse-Prompt', () => {
     // hier aber je greift, muss sie die Position halten: Die Liste beschriftet
     // die Bilder in genau dieser Reihenfolge, ein ausgelassener Eintrag gaebe
     // jedem folgenden Bild die falsche Beschriftung.
-    const text = analyse.nutzerText([
-      'basisFrontal',
-      'hautNahaufnahme',
-      'zaehneLaecheln',
-    ]);
+    const text = analyse.nutzerText(
+      ['basisFrontal', 'hautNahaufnahme', 'zaehneLaecheln'],
+      'de',
+    );
 
     expect(text).toContain('1. Frontalfoto (Gesicht, Haare & Bart)');
     expect(text).toContain('2. Weiteres Foto');
     expect(text).toContain('3. Lächeln (Zähne & Lächeln)');
+  });
+
+  it('auf Englisch verlangt der Prompt englische Ausgabe', () => {
+    // Die Regeln selbst bleiben auf Deutsch – es gibt sie nur einmal, und
+    // zwei Uebersetzungen desselben Regelwerks laufen auseinander. Die
+    // Sprachvorgabe steht deshalb doppelt drin: bei den Regeln und noch
+    // einmal bei den Feldvorgaben.
+    const de = analyse.systemPrompt(analyseDaten(undefined, ['basis'], 'de'));
+    const en = analyse.systemPrompt(analyseDaten(undefined, ['basis'], 'en'));
+
+    expect(de).toContain('Formuliere auf Deutsch');
+    expect(de).toContain('Alle Textfelder auf Deutsch.');
+
+    expect(en).toContain('ENGLISH');
+    expect(en).toContain('Every text field in ENGLISH.');
+    expect(en).not.toContain('Formuliere auf Deutsch');
+
+    // Die Leitplanken stehen in beiden Faellen wortgleich da.
+    for (const regel of [
+      'Vergib KEINE Bewertungszahlen',
+      'Stelle KEINE medizinischen Diagnosen',
+      'Bewerte nicht die Attraktivität',
+    ]) {
+      expect(de).toContain(regel);
+      expect(en).toContain(regel);
+    }
+  });
+
+  it('die Angaben der Person stehen in der Zielsprache', () => {
+    const en = analyse.systemPrompt({
+      ...analyseDaten(
+        { ziele: ['markanter'], freitext: '' },
+        ['basis'],
+        'en',
+      ),
+      profil: { alter: 'a25bis34', budget: 'mittel', zeit: 'kurz', fokus: [] },
+    });
+
+    expect(en).toContain('more striking');
+    expect(en).toContain('Medium (€30–80 a month)');
+    expect(en).not.toContain('Mittel (30–80');
+  });
+
+  it('die Bildbeschriftung folgt der Zielsprache', () => {
+    const text = analyse.nutzerText(['basisFrontal'], 'en');
+
+    expect(text).toContain('1. Front photo (Face, hair & beard)');
   });
 
   it('das Haut-Kapitel verweist auf das Frontalfoto', () => {
@@ -124,6 +176,7 @@ function checkinDaten(
   ueberschreibung: Partial<checkin.CheckinPromptDaten> = {},
 ): checkin.CheckinPromptDaten {
   return {
+    sprache: 'de',
     typ: 'alltag',
     habits: [],
     wirkung: [],
@@ -189,10 +242,12 @@ describe('Check-in-Prompt', () => {
 
     expect(ohne).not.toContain('zwei Fotos vor');
     expect(mit).toContain('zwei Fotos vor');
-    expect(checkin.nutzerText('wirkung', true)).toContain(
+    expect(checkin.nutzerText('wirkung', true, 'de')).toContain(
       'das Foto der Erstanalyse',
     );
-    expect(checkin.nutzerText('wirkung', false)).not.toContain('Die Bilder sind');
+    expect(checkin.nutzerText('wirkung', false, 'de')).not.toContain(
+      'Die Bilder sind',
+    );
   });
 
   it('laesst unbekannte Bewertungen weg', () => {
@@ -207,5 +262,24 @@ describe('Check-in-Prompt', () => {
 
     expect(prompt).toContain('"Haare stylen": Läuft gut');
     expect(prompt).not.toContain('"Bart ölen": ');
+  });
+
+  it('die Auswertung folgt derselben Sprachvorgabe wie die Analyse', () => {
+    const en = checkin.systemPrompt(
+      checkinDaten({
+        sprache: 'en',
+        habits: [
+          { habit: 'Bart ölen', bewertung: 'passtNicht', grund: 'zeit', notiz: '' },
+        ],
+      }),
+    );
+
+    expect(en).toContain('ENGLISH');
+    expect(en).toContain('Every text field in ENGLISH.');
+    // Die Rueckmeldung der Person steht ebenfalls uebersetzt im Prompt.
+    expect(en).toContain('takes too long');
+    expect(en).not.toContain('Zu zeitaufwendig');
+    // Die Leitplanke bleibt wortgleich.
+    expect(en).toContain('Ändere NUR das, was der Nutzer bemängelt hat');
   });
 });

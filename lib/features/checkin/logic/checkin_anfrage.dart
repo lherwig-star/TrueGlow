@@ -1,3 +1,4 @@
+import '../../../core/l10n/sprache.dart';
 import '../../analysis/models/analysis_result.dart';
 import '../models/checkin.dart';
 
@@ -17,9 +18,11 @@ class CheckinAnfrage {
     required Checkin checkin,
     required AnalysisResult analyse,
     required List<Checkin> historie,
+    required Sprache sprache,
     List<String> bilder = const [],
   }) {
     return {
+      'sprache': sprache.code,
       'checkin': {
         'typ': checkin.typ.name,
         'habits': [

@@ -1,5 +1,6 @@
 import { fehler } from './fehler';
 import { AUFNAHMEN, MODULE, istModul, type Modul } from './labels';
+import { leseSprache } from './sprache';
 import type {
   AnalysePromptDaten,
   Figurangaben,
@@ -65,6 +66,7 @@ export function leseAnalyse(roh: unknown): AnalyseEingang {
 
   return {
     prompt: {
+      sprache: leseSprache(daten.sprache),
       module,
       profil: leseProfil(daten.profil),
       figur: leseFigur(daten.eingaben),
@@ -169,6 +171,7 @@ export function leseCheckin(roh: unknown): CheckinEingang {
 
   return {
     prompt: {
+      sprache: leseSprache(daten.sprache),
       typ,
       habits: leseHabits(checkin.habits),
       wirkung: leseWirkung(checkin.wirkung),

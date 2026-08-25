@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trueglow/core/router/app_router.dart';
 import 'package:trueglow/core/storage/key_value_store.dart';
+import 'package:trueglow/core/l10n/sprache.dart';
 import 'package:trueglow/features/analysis/logic/analyse_anfrage.dart';
 import 'package:trueglow/features/capture/models/aufnahme_typ.dart';
 import 'package:trueglow/features/analysis/models/analysis_result.dart';
@@ -134,6 +135,7 @@ void main() {
           module: {AnalyseModul.basis},
           onboarding: const OnboardingProfile(),
           eingaben: const ModulEingaben(),
+          sprache: Sprache.deutsch,
           richtung: richtung,
         );
 

@@ -1802,4 +1802,56 @@ class LEn extends L {
   @override
   String get erscheinungFest =>
       'Fixed choice — independent of your system setting.';
+
+  @override
+  String get mockGrundOhne => 'This doesn\'t fit your day as it stands.';
+
+  @override
+  String mockGrundMit(String grund) {
+    return '$grund — we\'ll make it easier.';
+  }
+
+  @override
+  String get mockKeineAenderung =>
+      'Your plan stays as it is — this is going well.';
+
+  @override
+  String mockAenderungen(int anzahl) {
+    String _temp0 = intl.Intl.pluralLogic(
+      anzahl,
+      locale: localeName,
+      other: 'We\'re adjusting $anzahl tasks that didn\'t fit your day.',
+      one: 'We\'re adjusting 1 task that didn\'t fit your day.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get mockFazit =>
+      'Compared with your first photo, your routine looks more consistent overall. Stick with the tasks that come easily — the two adjusted ones will save you time.';
+
+  @override
+  String mockVarianteZeit(String habit) {
+    return '$habit — just 30 seconds';
+  }
+
+  @override
+  String mockVarianteVergessen(String habit) {
+    return '$habit — right after brushing your teeth';
+  }
+
+  @override
+  String mockVarianteUnangenehm(String habit) {
+    return '$habit — the gentle version';
+  }
+
+  @override
+  String mockVarianteTeuer(String habit) {
+    return '$habit — with a cheaper alternative';
+  }
+
+  @override
+  String mockVarianteAnderer(String habit) {
+    return '$habit — every other day';
+  }
 }

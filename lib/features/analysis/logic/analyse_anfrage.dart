@@ -1,3 +1,4 @@
+import '../../../core/l10n/sprache.dart';
 import '../../capture/models/aufnahme_typ.dart';
 import '../../direction/models/richtung.dart';
 import '../../modules/models/analyse_modul.dart';
@@ -10,6 +11,7 @@ import '../../onboarding/models/onboarding_profile.dart';
 /// noch die Frage, *welche* Angaben ueberhaupt das Geraet verlassen – und das
 /// ist bewusst eine kurze Liste:
 ///
+/// - die Zielsprache des Reports,
 /// - Modulauswahl und Aufnahmetypen als stabile Namen,
 /// - die Antworten aus Onboarding, Modul-Fragebogen und Richtung,
 /// - die Bilder als base64.
@@ -24,6 +26,7 @@ class AnalyseAnfrage {
     required Set<AnalyseModul> module,
     required OnboardingProfile onboarding,
     required ModulEingaben eingaben,
+    required Sprache sprache,
     Richtung richtung = Richtung.leer,
   }) {
     // Feste Reihenfolge, damit die Beschriftung im Prompt zu den angehaengten
@@ -31,6 +34,10 @@ class AnalyseAnfrage {
     final reihenfolge = AufnahmeTyp.values.where(bilder.containsKey).toList();
 
     return {
+      // Die Sprache des Reports. Sie steckt nicht in den Profilangaben,
+      // weil sie keine Angabe ueber die Person ist, sondern eine ueber die
+      // Ausgabe – und weil der Server sie an genau einer Stelle prueft.
+      'sprache': sprache.code,
       'module': AnalyseModul.values
           .where(module.contains)
           .map((m) => m.name)

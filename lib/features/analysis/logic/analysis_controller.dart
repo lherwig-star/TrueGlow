@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/cloud/cloud_modell.dart';
+import '../../../core/l10n/sprache.dart';
 import '../../../core/diagnose/diagnose_dienst.dart';
 import '../../../core/netz/wiederholung.dart';
 import '../../../core/storage/hive_service.dart';
@@ -135,6 +136,7 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
             module: nurModul == null ? gewaehlteModule : {nurModul},
             onboarding: _ref.read(onboardingControllerProvider),
             eingaben: modulZustand.eingaben,
+            sprache: _ref.read(aktiveSpracheProvider),
             richtung: richtung,
             abbruch: abbruch,
           );

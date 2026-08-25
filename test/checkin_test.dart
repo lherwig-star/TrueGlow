@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:trueglow/core/router/app_router.dart';
 import 'package:trueglow/core/storage/key_value_store.dart';
 import 'package:trueglow/features/analysis/logic/analysis_service.dart';
+import 'package:trueglow/core/l10n/sprache.dart';
 import 'package:trueglow/features/analysis/models/analysis_result.dart';
 import 'package:trueglow/features/capture/logic/image_quality_service.dart';
 import 'package:trueglow/features/checkin/logic/checkin_controller.dart';
@@ -474,6 +475,7 @@ void main() {
         checkin: checkin,
         analyse: _analyse(),
         historie: const [],
+        sprache: Sprache.deutsch,
       );
 
       expect(auswertung.anpassungen, hasLength(1));
@@ -492,6 +494,7 @@ void main() {
         checkin: checkin,
         analyse: _analyse(),
         historie: const [],
+        sprache: Sprache.deutsch,
       );
 
       expect(auswertung.aendertPlan, isFalse);
@@ -526,6 +529,7 @@ void main() {
         checkin: checkin,
         analyse: _analyse(),
         historie: const [],
+        sprache: Sprache.deutsch,
       );
 
       expect(anfrage['plan'], [
@@ -555,6 +559,7 @@ void main() {
         checkin: _checkin(typ: CheckinTyp.zwischen, id: 1),
         analyse: _analyse(),
         historie: [alt],
+        sprache: Sprache.deutsch,
       );
 
       expect(anfrage['historie'], [
@@ -576,6 +581,7 @@ void main() {
         checkin: checkin,
         analyse: _analyse(),
         historie: const [],
+        sprache: Sprache.deutsch,
         bilder: const ['AAAA', 'BBBB'],
       );
 

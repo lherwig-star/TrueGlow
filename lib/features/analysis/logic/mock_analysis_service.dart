@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import '../../../core/l10n/sprache.dart';
 import '../../../core/netz/wiederholung.dart';
 import '../../capture/models/aufnahme_typ.dart';
 import '../../direction/models/richtung.dart';
@@ -22,6 +23,10 @@ class MockAnalysisService implements AnalysisService {
     required Set<AnalyseModul> module,
     required OnboardingProfile onboarding,
     required ModulEingaben eingaben,
+    // Die Beispielantwort liegt nur auf Deutsch vor. Die Sprache wird
+    // deshalb entgegengenommen und bewusst nicht benutzt – der Demo-Modus
+    // zeigt einen fertigen Beispiel-Report, keine erzeugte Antwort.
+    required Sprache sprache,
     // Die Beispielantwort ist fest hinterlegt und kann die Richtung nicht
     // beruecksichtigen; sie wird aber wie im Echtbetrieb ans Ergebnis
     // geheftet, damit der Report sie anzeigen kann.

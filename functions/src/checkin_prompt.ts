@@ -11,6 +11,11 @@ import {
   type Modul,
 } from './labels';
 import type { Richtungsangaben } from './analyse_prompt';
+import {
+  AUSGABESPRACHE,
+  AUSGABESPRACHE_KURZ,
+  type Sprache,
+} from './sprache';
 
 /**
  * Baut den Prompt, mit dem das Modell einen Check-in auswertet und den Plan
@@ -47,6 +52,8 @@ export interface Historieneintrag {
 }
 
 export interface CheckinPromptDaten {
+  /** In welcher Sprache die Auswertung geschrieben wird. */
+  sprache: Sprache;
   typ: string;
   habits: HabitRueckmeldung[];
   wirkung: WirkungsRueckmeldung[];
@@ -66,16 +73,17 @@ export const JSON_NACHFASSEN =
   'Codefences.';
 
 export function systemPrompt(daten: CheckinPromptDaten): string {
-  const titel = label(CHECKIN_TYP, daten.typ) ?? 'Check-in';
+  const sprache = daten.sprache;
+  const titel = label(CHECKIN_TYP, daten.typ, sprache) ?? 'Check-in';
   const mitFoto = mitFortschrittsfoto(daten.typ);
 
   return `Du bist derselbe Styling- und Grooming-Coach, der den Plan dieser Person
 erstellt hat. Sie meldet sich zum ${titel} zurück.
 
-${planUeberblick(daten.plan)}
-${richtungsText(daten.richtung)}
+${planUeberblick(daten.plan, sprache)}
+${richtungsText(daten.richtung, sprache)}
 ${antworten(daten)}
-${historieText(daten.historie)}
+${historieText(daten.historie, sprache)}
 ${daten.mitFotos ? fotoHinweis() : ''}
 Deine Aufgabe: den bestehenden Plan minimal-invasiv nachjustieren.
 
@@ -95,7 +103,7 @@ Verbindliche Regeln:
   die Person.
 - Keine medizinischen Diagnosen; bei Auffälligkeiten freundlich an eine
   Fachpraxis verweisen.
-- Deutsch, per Du, warm und sachlich.
+- ${AUSGABESPRACHE[sprache]}
 
 Antworte AUSSCHLIESSLICH mit einem JSON-Objekt nach diesem Schema. Kein
 Fließtext davor oder danach, keine Markdown-Codefences:
@@ -122,12 +130,17 @@ Vorgaben zum Inhalt:
   gehört inhaltlich zum selben Modul wie "alt".
 - Gibt es nichts zu ändern, ist "anpassungen" eine leere Liste und
   "zusammenfassung" sagt freundlich, dass der Plan so bleibt.
+- ${AUSGABESPRACHE_KURZ[sprache]}
 ${mitFoto ? '' : '- "fazit" bleibt ein leerer String.'}
 `;
 }
 
-export function nutzerText(typ: string, mitFotos: boolean): string {
-  const titel = label(CHECKIN_TYP, typ) ?? 'Check-in';
+export function nutzerText(
+  typ: string,
+  mitFotos: boolean,
+  sprache: Sprache,
+): string {
+  const titel = label(CHECKIN_TYP, typ, sprache) ?? 'Check-in';
   const bilder = mitFotos
     ? '\n\nDie Bilder sind: 1. das Foto der Erstanalyse, 2. das heutige ' +
       'Fortschrittsfoto. Vergleiche sie sachlich und ohne ' +
@@ -151,10 +164,12 @@ function fazitVorgabe(mitFoto: boolean): string {
  * Der aktuelle Plan, gegliedert nach Kapiteln – nur die Habits, denn nur die
  * werden angepasst.
  */
-function planUeberblick(plan: Kapitelplan[]): string {
+function planUeberblick(plan: Kapitelplan[], sprache: Sprache): string {
   const zeilen: string[] = [];
   for (const kapitel of plan) {
-    zeilen.push(`- Modul "${kapitel.modul}" (${MODUL_KAPITEL[kapitel.modul]}):`);
+    zeilen.push(
+      `- Modul "${kapitel.modul}" (${MODUL_KAPITEL[kapitel.modul][sprache]}):`,
+    );
     for (const habit of kapitel.habits) {
       zeilen.push(`  * ${habit}`);
     }
@@ -164,8 +179,11 @@ function planUeberblick(plan: Kapitelplan[]): string {
   return `Aktuelle Tagesaufgaben:\n${zeilen.join('\n')}`;
 }
 
-function richtungsText(richtung: Richtungsangaben): string {
-  const gewaehlt = labels(RICHTUNGSZIEL, richtung.ziele);
+function richtungsText(
+  richtung: Richtungsangaben,
+  sprache: Sprache,
+): string {
+  const gewaehlt = labels(RICHTUNGSZIEL, richtung.ziele, sprache);
   const freitext = richtung.freitext.trim();
   if (gewaehlt.length === 0 && freitext.length === 0) return '';
 
@@ -179,13 +197,16 @@ function richtungsText(richtung: Richtungsangaben): string {
 /** Die Antworten dieses Check-ins. */
 function antworten(daten: CheckinPromptDaten): string {
   const zeilen: string[] = [];
+  const sprache = daten.sprache;
 
   for (const feedback of daten.habits) {
-    const bewertung = label(HABIT_BEWERTUNG, feedback.bewertung);
+    const bewertung = label(HABIT_BEWERTUNG, feedback.bewertung, sprache);
     if (!bewertung) continue;
 
     const grund = feedback.grund ? PASST_NICHT_GRUND[feedback.grund] : undefined;
-    const zusatz = grund ? ` – Grund: ${grund.label} (${grund.anweisung})` : '';
+    const zusatz = grund
+      ? ` – Grund: ${grund.label[sprache]} (${grund.anweisung[sprache]})`
+      : '';
     const notiz =
       feedback.notiz.trim().length === 0
         ? ''
@@ -194,13 +215,15 @@ function antworten(daten: CheckinPromptDaten): string {
   }
 
   const wirkung = daten.wirkung.filter((w) =>
-    label(WIRKUNGS_ANTWORT, w.antwort),
+    label(WIRKUNGS_ANTWORT, w.antwort, sprache),
   );
   if (wirkung.length > 0) {
     zeilen.push('Wirkung aus Sicht der Person:');
     for (const w of wirkung) {
       const notiz = w.notiz.trim().length === 0 ? '' : ` – "${w.notiz.trim()}"`;
-      zeilen.push(`- ${w.frage} ${label(WIRKUNGS_ANTWORT, w.antwort)}${notiz}`);
+      zeilen.push(
+        `- ${w.frage} ${label(WIRKUNGS_ANTWORT, w.antwort, sprache)}${notiz}`,
+      );
     }
   }
 
@@ -212,19 +235,24 @@ function antworten(daten: CheckinPromptDaten): string {
  * Verdichtete Feedback-Historie: Was frueher schon bemaengelt wurde, darf
  * nicht erneut in derselben Form vorgeschlagen werden.
  */
-function historieText(historie: Historieneintrag[]): string {
+function historieText(
+  historie: Historieneintrag[],
+  sprache: Sprache,
+): string {
   if (historie.length === 0) return '';
 
   const zeilen: string[] = [];
   for (const eintrag of historie) {
     const probleme = eintrag.probleme
       .map((p) => {
-        const grund = p.grund ? PASST_NICHT_GRUND[p.grund]?.label : undefined;
+        const grund = p.grund
+          ? PASST_NICHT_GRUND[p.grund]?.label[sprache]
+          : undefined;
         return `"${p.habit}" (${grund ?? 'ohne Grund'})`;
       })
       .join(', ');
 
-    const typ = label(CHECKIN_TYP, eintrag.typ) ?? 'Check-in';
+    const typ = label(CHECKIN_TYP, eintrag.typ, sprache) ?? 'Check-in';
     zeilen.push(
       `- ${datum(eintrag.datum)}, ${typ}: ` +
         `${probleme.length === 0 ? 'nichts bemängelt' : `passte nicht: ${probleme}`}`,

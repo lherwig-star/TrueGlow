@@ -528,5 +528,15 @@
   "abzeichenNochModule": "{anzahl, plural, =1{1 module to go} other{{anzahl} modules to go}}",
   "abzeichenNochTage": "{anzahl, plural, =1{1 day to go} other{{anzahl} days to go}}",
   "erscheinungFolgtSystem": "TrueGlow follows your phone’s system setting.",
-  "erscheinungFest": "Fixed choice — independent of your system setting."
+  "erscheinungFest": "Fixed choice — independent of your system setting.",
+  "mockGrundOhne": "This doesn't fit your day as it stands.",
+  "mockGrundMit": "{grund} — we'll make it easier.",
+  "mockKeineAenderung": "Your plan stays as it is — this is going well.",
+  "mockAenderungen": "{anzahl, plural, =1{We're adjusting 1 task that didn't fit your day.} other{We're adjusting {anzahl} tasks that didn't fit your day.}}",
+  "mockFazit": "Compared with your first photo, your routine looks more consistent overall. Stick with the tasks that come easily — the two adjusted ones will save you time.",
+  "mockVarianteZeit": "{habit} — just 30 seconds",
+  "mockVarianteVergessen": "{habit} — right after brushing your teeth",
+  "mockVarianteUnangenehm": "{habit} — the gentle version",
+  "mockVarianteTeuer": "{habit} — with a cheaper alternative",
+  "mockVarianteAnderer": "{habit} — every other day"
 }

@@ -787,5 +787,66 @@
     }
   },
   "erscheinungFolgtSystem": "TrueGlow folgt der Systemeinstellung deines Handys.",
-  "erscheinungFest": "Feste Auswahl – unabhängig von der Systemeinstellung."
+  "erscheinungFest": "Feste Auswahl – unabhängig von der Systemeinstellung.",
+  "mockGrundOhne": "Passt so nicht in deinen Alltag.",
+  "mockGrundMit": "{grund} – wir machen es dir leichter.",
+  "@mockGrundMit": {
+    "description": "Begruendung einer Anpassung im Demo-Modus.",
+    "placeholders": {
+      "grund": {
+        "type": "String"
+      }
+    }
+  },
+  "mockKeineAenderung": "Dein Plan bleibt, wie er ist – das läuft gut so.",
+  "mockAenderungen": "{anzahl, plural, =1{Das passen wir an: 1 Aufgabe, die nicht in deinen Alltag gepasst hat.} other{Das passen wir an: {anzahl} Aufgaben, die nicht in deinen Alltag gepasst haben.}}",
+  "@mockAenderungen": {
+    "description": "Zusammenfassung der Anpassungen im Demo-Modus.",
+    "placeholders": {
+      "anzahl": {
+        "type": "int"
+      }
+    }
+  },
+  "mockFazit": "Im Vergleich zum Startfoto wirkt die Pflege insgesamt gleichmäßiger. Bleib bei den Aufgaben, die dir leichtfallen – die zwei angepassten Punkte nehmen dir Zeit ab.",
+  "mockVarianteZeit": "{habit} – nur 30 Sekunden",
+  "@mockVarianteZeit": {
+    "placeholders": {
+      "habit": {
+        "type": "String"
+      }
+    }
+  },
+  "mockVarianteVergessen": "{habit} – direkt nach dem Zähneputzen",
+  "@mockVarianteVergessen": {
+    "placeholders": {
+      "habit": {
+        "type": "String"
+      }
+    }
+  },
+  "mockVarianteUnangenehm": "{habit} – in der leichten Variante",
+  "@mockVarianteUnangenehm": {
+    "placeholders": {
+      "habit": {
+        "type": "String"
+      }
+    }
+  },
+  "mockVarianteTeuer": "{habit} – mit günstiger Alternative",
+  "@mockVarianteTeuer": {
+    "placeholders": {
+      "habit": {
+        "type": "String"
+      }
+    }
+  },
+  "mockVarianteAnderer": "{habit} – jeden zweiten Tag",
+  "@mockVarianteAnderer": {
+    "placeholders": {
+      "habit": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/firebase/firebase_start.dart';
+import '../../../core/l10n/sprache.dart';
+import '../../../core/l10n/texte.dart';
 import '../../../core/netz/wiederholung.dart';
 import '../../analysis/logic/analysis_service.dart';
 import '../../analysis/logic/functions_client.dart';
@@ -23,10 +25,13 @@ abstract interface class CheckinService {
   /// [abbruch] stoppt Warten und Wiederholen, wenn der Nutzer aufgibt.
   ///
   /// Wirft bei Problemen eine [AnalysisException].
+  /// [sprache] bestimmt die Sprache der Auswertung – siehe
+  /// [AnalysisService.analysiere].
   Future<CheckinAuswertung> auswerten({
     required Checkin checkin,
     required AnalysisResult analyse,
     required List<Checkin> historie,
+    required Sprache sprache,
     File? erstfoto,
     File? fortschrittsfoto,
     Abbruch? abbruch,
@@ -49,6 +54,7 @@ class FunctionsCheckinService implements CheckinService {
     required Checkin checkin,
     required AnalysisResult analyse,
     required List<Checkin> historie,
+    required Sprache sprache,
     File? erstfoto,
     File? fortschrittsfoto,
     Abbruch? abbruch,
@@ -70,6 +76,7 @@ class FunctionsCheckinService implements CheckinService {
         checkin: checkin,
         analyse: analyse,
         historie: historie,
+        sprache: sprache,
         bilder: bilder,
       ),
       abbruch: abbruch,
@@ -104,6 +111,7 @@ class MockCheckinService implements CheckinService {
     required Checkin checkin,
     required AnalysisResult analyse,
     required List<Checkin> historie,
+    required Sprache sprache,
     File? erstfoto,
     File? fortschrittsfoto,
     Abbruch? abbruch,
@@ -111,6 +119,10 @@ class MockCheckinService implements CheckinService {
     await Future<void>.delayed(AnalysisConfig.mockDauer);
     if (abbruch?.istAusgeloest ?? false) throw const AbbruchException();
 
+    // Die Attrappe schreibt selbst – also braucht sie die Texte in der
+    // gewaehlten Sprache. `lookupL` statt eines BuildContext: Der Dienst ist
+    // reine Logik und soll es bleiben.
+    final texte = lookupL(sprache.locale);
     final anpassungen = <HabitAnpassung>[];
 
     for (final feedback in checkin.problemHabits) {
@@ -121,28 +133,22 @@ class MockCheckinService implements CheckinService {
         HabitAnpassung(
           modul: modul,
           alt: feedback.habit,
-          neu: _leichtereVariante(feedback),
+          neu: _leichtereVariante(feedback, texte),
           grund: switch (feedback.grund) {
-            null => 'Passt so nicht in deinen Alltag.',
-            final grund => '${grund.label} – wir machen es dir leichter.',
+            null => texte.mockGrundOhne,
+            final grund => texte.mockGrundMit(grund.label(texte)),
           },
         ),
       );
     }
 
     final zusammenfassung = anpassungen.isEmpty
-        ? 'Dein Plan bleibt, wie er ist – das läuft gut so.'
-        : 'Das passen wir an: ${anpassungen.length} '
-            '${anpassungen.length == 1 ? 'Aufgabe' : 'Aufgaben'}, die nicht in '
-            'deinen Alltag gepasst haben.';
+        ? texte.mockKeineAenderung
+        : texte.mockAenderungen(anpassungen.length);
 
     return CheckinAuswertung(
       zusammenfassung: zusammenfassung,
-      fazit: checkin.typ.mitFortschrittsfoto
-          ? 'Im Vergleich zum Startfoto wirkt die Pflege insgesamt '
-              'gleichmäßiger. Bleib bei den Aufgaben, die dir leichtfallen – '
-              'die zwei angepassten Punkte nehmen dir Zeit ab.'
-          : '',
+      fazit: checkin.typ.mitFortschrittsfoto ? texte.mockFazit : '',
       anpassungen: anpassungen,
     );
   }
@@ -156,17 +162,17 @@ class MockCheckinService implements CheckinService {
   }
 
   /// Eine leichtere Fassung, passend zum genannten Grund.
-  static String _leichtereVariante(HabitFeedback feedback) {
+  static String _leichtereVariante(HabitFeedback feedback, L texte) {
     final kurz = feedback.habit.length > 34
         ? '${feedback.habit.substring(0, 34).trimRight()}…'
         : feedback.habit;
 
     return switch (feedback.grund) {
-      PasstNichtGrund.zeit => '$kurz – nur 30 Sekunden',
-      PasstNichtGrund.vergessen => '$kurz – direkt nach dem Zähneputzen',
-      PasstNichtGrund.unangenehm => '$kurz – in der leichten Variante',
-      PasstNichtGrund.teuer => '$kurz – mit günstiger Alternative',
-      PasstNichtGrund.anderer || null => '$kurz – jeden zweiten Tag',
+      PasstNichtGrund.zeit => texte.mockVarianteZeit(kurz),
+      PasstNichtGrund.vergessen => texte.mockVarianteVergessen(kurz),
+      PasstNichtGrund.unangenehm => texte.mockVarianteUnangenehm(kurz),
+      PasstNichtGrund.teuer => texte.mockVarianteTeuer(kurz),
+      PasstNichtGrund.anderer || null => texte.mockVarianteAnderer(kurz),
     };
   }
 }

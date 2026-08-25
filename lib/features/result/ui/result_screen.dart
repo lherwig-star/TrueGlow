@@ -334,26 +334,52 @@ class _SektionKarte extends StatelessWidget {
 
   /// Passendes Symbol zum Sektionstitel – faellt auf ein neutrales zurueck,
   /// falls das Modell einen unerwarteten Titel liefert.
+  ///
+  /// Die Stichwoerter stehen in beiden Sprachen nebeneinander: Der Titel
+  /// kommt vom Modell und ist in der Sprache geschrieben, in der der Report
+  /// entstanden ist. Ein deutsches Stichwortverzeichnis haette bei jedem
+  /// englischen Report auf das neutrale Symbol zurueckfallen lassen – nicht
+  /// falsch, aber jedes Mal.
+  ///
+  /// Bewusst Teilzeichenketten statt ganzer Woerter: Das Modell schreibt
+  /// „Frisur & Schnitt" ebenso wie „Haircut", und beides soll dieselbe
+  /// Schere bekommen.
+  static const _symbole = <(List<String>, IconData)>[
+    (['haut', 'skin', 'complexion'], Icons.spa_outlined),
+    (['haar', 'frisur', 'hair', 'haircut'], Icons.content_cut),
+    (['bart', 'beard', 'stubble'], Icons.face_2_outlined),
+    (
+      ['zahn', 'zähne', 'teeth', 'tooth', 'smile', 'lächeln'],
+      Icons.sentiment_satisfied_alt_outlined,
+    ),
+    (['farb', 'colour', 'color', 'palette'], Icons.palette_outlined),
+    (
+      ['haltung', 'figur', 'posture', 'body', 'figure'],
+      Icons.accessibility_new_outlined,
+    ),
+    (
+      [
+        'styl',
+        'kleid',
+        'schnitt',
+        'passform',
+        'wardrobe',
+        'outfit',
+        'fit',
+        'cut',
+      ],
+      Icons.checkroom_outlined,
+    ),
+    (
+      ['habit', 'gewohnheit', 'routine'],
+      Icons.self_improvement_outlined,
+    ),
+  ];
+
   IconData get _icon {
     final titel = sektion.titel.toLowerCase();
-    if (titel.contains('haut')) return Icons.spa_outlined;
-    if (titel.contains('haar') || titel.contains('frisur')) {
-      return Icons.content_cut;
-    }
-    if (titel.contains('bart')) return Icons.face_2_outlined;
-    if (titel.contains('zahn') || titel.contains('zähne')) {
-      return Icons.sentiment_satisfied_alt_outlined;
-    }
-    if (titel.contains('farb')) return Icons.palette_outlined;
-    if (titel.contains('haltung') || titel.contains('figur')) {
-      return Icons.accessibility_new_outlined;
-    }
-    if (titel.contains('styl') || titel.contains('kleid') ||
-        titel.contains('schnitt') || titel.contains('passform')) {
-      return Icons.checkroom_outlined;
-    }
-    if (titel.contains('habit') || titel.contains('gewohnheit')) {
-      return Icons.self_improvement_outlined;
+    for (final (woerter, symbol) in _symbole) {
+      if (woerter.any(titel.contains)) return symbol;
     }
     return Icons.auto_awesome_outlined;
   }

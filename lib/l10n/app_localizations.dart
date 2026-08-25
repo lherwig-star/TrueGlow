@@ -3276,6 +3276,66 @@ abstract class L {
   /// In de, this message translates to:
   /// **'Feste Auswahl – unabhängig von der Systemeinstellung.'**
   String get erscheinungFest;
+
+  /// No description provided for @mockGrundOhne.
+  ///
+  /// In de, this message translates to:
+  /// **'Passt so nicht in deinen Alltag.'**
+  String get mockGrundOhne;
+
+  /// Begruendung einer Anpassung im Demo-Modus.
+  ///
+  /// In de, this message translates to:
+  /// **'{grund} – wir machen es dir leichter.'**
+  String mockGrundMit(String grund);
+
+  /// No description provided for @mockKeineAenderung.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Plan bleibt, wie er ist – das läuft gut so.'**
+  String get mockKeineAenderung;
+
+  /// Zusammenfassung der Anpassungen im Demo-Modus.
+  ///
+  /// In de, this message translates to:
+  /// **'{anzahl, plural, =1{Das passen wir an: 1 Aufgabe, die nicht in deinen Alltag gepasst hat.} other{Das passen wir an: {anzahl} Aufgaben, die nicht in deinen Alltag gepasst haben.}}'**
+  String mockAenderungen(int anzahl);
+
+  /// No description provided for @mockFazit.
+  ///
+  /// In de, this message translates to:
+  /// **'Im Vergleich zum Startfoto wirkt die Pflege insgesamt gleichmäßiger. Bleib bei den Aufgaben, die dir leichtfallen – die zwei angepassten Punkte nehmen dir Zeit ab.'**
+  String get mockFazit;
+
+  /// No description provided for @mockVarianteZeit.
+  ///
+  /// In de, this message translates to:
+  /// **'{habit} – nur 30 Sekunden'**
+  String mockVarianteZeit(String habit);
+
+  /// No description provided for @mockVarianteVergessen.
+  ///
+  /// In de, this message translates to:
+  /// **'{habit} – direkt nach dem Zähneputzen'**
+  String mockVarianteVergessen(String habit);
+
+  /// No description provided for @mockVarianteUnangenehm.
+  ///
+  /// In de, this message translates to:
+  /// **'{habit} – in der leichten Variante'**
+  String mockVarianteUnangenehm(String habit);
+
+  /// No description provided for @mockVarianteTeuer.
+  ///
+  /// In de, this message translates to:
+  /// **'{habit} – mit günstiger Alternative'**
+  String mockVarianteTeuer(String habit);
+
+  /// No description provided for @mockVarianteAnderer.
+  ///
+  /// In de, this message translates to:
+  /// **'{habit} – jeden zweiten Tag'**
+  String mockVarianteAnderer(String habit);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/diagnose/diagnose_dienst.dart';
+import '../../../../core/l10n/sprache.dart';
 import '../../../../core/l10n/texte.dart';
 import '../../../../core/netz/wiederholung.dart';
 import '../../../../core/router/app_router.dart';
@@ -101,6 +102,7 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
                 checkin: widget.checkin,
                 analyse: widget.analyse,
                 historie: ref.read(checkinControllerProvider).historie,
+                sprache: ref.read(aktiveSpracheProvider),
                 erstfoto: erstfoto == null ? null : File(erstfoto.pfad),
                 fortschrittsfoto: neu == null ? null : File(neu),
                 abbruch: abbruch,

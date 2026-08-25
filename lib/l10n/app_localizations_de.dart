@@ -1811,4 +1811,57 @@ class LDe extends L {
   @override
   String get erscheinungFest =>
       'Feste Auswahl – unabhängig von der Systemeinstellung.';
+
+  @override
+  String get mockGrundOhne => 'Passt so nicht in deinen Alltag.';
+
+  @override
+  String mockGrundMit(String grund) {
+    return '$grund – wir machen es dir leichter.';
+  }
+
+  @override
+  String get mockKeineAenderung =>
+      'Dein Plan bleibt, wie er ist – das läuft gut so.';
+
+  @override
+  String mockAenderungen(int anzahl) {
+    String _temp0 = intl.Intl.pluralLogic(
+      anzahl,
+      locale: localeName,
+      other:
+          'Das passen wir an: $anzahl Aufgaben, die nicht in deinen Alltag gepasst haben.',
+      one: 'Das passen wir an: 1 Aufgabe, die nicht in deinen Alltag gepasst hat.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get mockFazit =>
+      'Im Vergleich zum Startfoto wirkt die Pflege insgesamt gleichmäßiger. Bleib bei den Aufgaben, die dir leichtfallen – die zwei angepassten Punkte nehmen dir Zeit ab.';
+
+  @override
+  String mockVarianteZeit(String habit) {
+    return '$habit – nur 30 Sekunden';
+  }
+
+  @override
+  String mockVarianteVergessen(String habit) {
+    return '$habit – direkt nach dem Zähneputzen';
+  }
+
+  @override
+  String mockVarianteUnangenehm(String habit) {
+    return '$habit – in der leichten Variante';
+  }
+
+  @override
+  String mockVarianteTeuer(String habit) {
+    return '$habit – mit günstiger Alternative';
+  }
+
+  @override
+  String mockVarianteAnderer(String habit) {
+    return '$habit – jeden zweiten Tag';
+  }
 }

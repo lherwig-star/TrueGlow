@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import '../../../core/l10n/sprache.dart';
 import '../../../core/netz/wiederholung.dart';
 import '../../capture/models/aufnahme_typ.dart';
 import '../../direction/models/richtung.dart';
@@ -102,11 +103,15 @@ abstract interface class AnalysisService {
   /// [abbruch] stoppt Warten und Wiederholen, wenn der Nutzer aufgibt.
   ///
   /// Wirft bei Problemen eine [AnalysisException].
+  /// [sprache] bestimmt, in welcher Sprache der Report geschrieben wird.
+  /// Sie geht mit an die Cloud Function; ein fertiger Report behaelt sie
+  /// danach, auch wenn der Nutzer die App spaeter umstellt.
   Future<AnalysisResult> analysiere({
     required Map<AufnahmeTyp, File> fotos,
     required Set<AnalyseModul> module,
     required OnboardingProfile onboarding,
     required ModulEingaben eingaben,
+    required Sprache sprache,
     Richtung richtung = Richtung.leer,
     Abbruch? abbruch,
   });

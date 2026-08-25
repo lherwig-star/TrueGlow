@@ -15,6 +15,11 @@ import {
   labels,
   type Modul,
 } from './labels';
+import {
+  AUSGABESPRACHE,
+  AUSGABESPRACHE_KURZ,
+  type Sprache,
+} from './sprache';
 
 /**
  * Der System-Prompt der Analyse.
@@ -52,6 +57,8 @@ export interface Richtungsangaben {
 }
 
 export interface AnalysePromptDaten {
+  /** In welcher Sprache der Report geschrieben wird. */
+  sprache: Sprache;
   module: Modul[];
   profil: Profilangaben;
   figur: Figurangaben;
@@ -68,12 +75,13 @@ export const JSON_NACHFASSEN =
 export function systemPrompt(daten: AnalysePromptDaten): string {
   // Reihenfolge der Deklaration, damit Prompt und Report gleich sortiert sind.
   const gewaehlt = MODULE.filter((m) => daten.module.includes(m));
+  const sprache = daten.sprache;
 
   return `Du bist ein erfahrener, freundlicher Styling- und Grooming-Coach. Du siehst
 mehrere Fotos derselben Person.
 
 ${kontext(daten, gewaehlt)}
-${ziele(daten.richtung)}
+${ziele(daten.richtung, sprache)}
 Deine Aufgabe: eine konstruktive, motivierende Einschätzung mit konkret
 umsetzbaren Empfehlungen – gegliedert in genau die unten genannten Kapitel.
 
@@ -88,9 +96,9 @@ Verbindliche Regeln:
 - Bleib bei dem, was auf den Fotos wirklich zu sehen ist. Rate nicht.
 - Richte Aufwand und Preisniveau der Empfehlungen am Budget und am Zeitbudget
   der Person aus.
-- Formuliere auf Deutsch, per Du, warm und sachlich.
+- ${AUSGABESPRACHE[sprache]}
 - Jede Empfehlung ist ein konkreter Schritt, keine Allgemeinplatitüde.
-${zielRegeln(daten.richtung)}
+${zielRegeln(daten.richtung, sprache)}
 Antworte AUSSCHLIESSLICH mit einem JSON-Objekt nach diesem Schema. Kein
 Fließtext davor oder danach, keine Markdown-Codefences:
 
@@ -141,7 +149,7 @@ Vorgaben zum Inhalt:
 - Formuliere die Habits über alle Kapitel hinweg unterschiedlich, damit sich
   kein Eintrag doppelt.
 - "plan" gilt für alle Kapitel zusammen und enthält KEINE Tagesaufgaben.
-- Alle Textfelder auf Deutsch.
+- ${AUSGABESPRACHE_KURZ[sprache]}
 `;
 }
 
@@ -149,7 +157,7 @@ Vorgaben zum Inhalt:
  * Nutzer-Nachricht, die die Bilder begleitet – benennt jedes Bild in der
  * Reihenfolge, in der es angehaengt wird.
  */
-export function nutzerText(reihenfolge: string[]): string {
+export function nutzerText(reihenfolge: string[], sprache: Sprache): string {
   const liste = reihenfolge
     .map((typ, i) => {
       const eintrag = AUFNAHMEN[typ];
@@ -159,7 +167,8 @@ export function nutzerText(reihenfolge: string[]): string {
       // genau dieser Reihenfolge beschriftet. Ein uebersprungener Eintrag
       // wuerde jedem folgenden Bild die falsche Beschriftung geben.
       return eintrag
-        ? `${i + 1}. ${eintrag.label} (${MODUL_KAPITEL[eintrag.modul]})`
+        ? `${i + 1}. ${eintrag.label[sprache]} ` +
+            `(${MODUL_KAPITEL[eintrag.modul][sprache]})`
         : `${i + 1}. Weiteres Foto`;
     })
     .join('\n');
@@ -178,8 +187,8 @@ export function nutzerText(reihenfolge: string[]): string {
  * Prompt kommt. Er wird deshalb ausdruecklich als Zitat und als Wunsch
  * eingerahmt: Er darf die Regeln oben nicht ausser Kraft setzen.
  */
-function ziele(richtung: Richtungsangaben): string {
-  const gewaehlt = labels(RICHTUNGSZIEL, richtung.ziele);
+function ziele(richtung: Richtungsangaben, sprache: Sprache): string {
+  const gewaehlt = labels(RICHTUNGSZIEL, richtung.ziele, sprache);
   const freitext = richtung.freitext.trim();
   if (gewaehlt.length === 0 && freitext.length === 0) return '';
 
@@ -198,9 +207,9 @@ function ziele(richtung: Richtungsangaben): string {
 }
 
 /** Zusatzregeln, die nur greifen, wenn eine Richtung vorliegt. */
-function zielRegeln(richtung: Richtungsangaben): string {
+function zielRegeln(richtung: Richtungsangaben, sprache: Sprache): string {
   const hatZiele =
-    labels(RICHTUNGSZIEL, richtung.ziele).length > 0 ||
+    labels(RICHTUNGSZIEL, richtung.ziele, sprache).length > 0 ||
     richtung.freitext.trim().length > 0;
   if (!hatZiele) return '';
 
@@ -263,17 +272,18 @@ function kapitelVorgabe(modul: Modul): string {
 /** Uebersetzt Onboarding-Antworten und Modul-Eingaben in Prompt-Kontext. */
 function kontext(daten: AnalysePromptDaten, module: readonly Modul[]): string {
   const zeilen: string[] = [];
+  const sprache = daten.sprache;
 
-  const alter = label(ALTER, daten.profil.alter);
+  const alter = label(ALTER, daten.profil.alter, sprache);
   if (alter) zeilen.push(`- Altersbereich: ${alter}`);
 
-  const budget = label(BUDGET, daten.profil.budget);
+  const budget = label(BUDGET, daten.profil.budget, sprache);
   if (budget) zeilen.push(`- Budget für Pflege und Styling: ${budget}`);
 
-  const zeit = label(ZEIT, daten.profil.zeit);
+  const zeit = label(ZEIT, daten.profil.zeit, sprache);
   if (zeit) zeilen.push(`- Zeit pro Tag: ${zeit}`);
 
-  const fokus = labels(FOKUS, daten.profil.fokus);
+  const fokus = labels(FOKUS, daten.profil.fokus, sprache);
   if (fokus.length > 0) {
     zeilen.push(`- Gewünschte Schwerpunkte: ${fokus.join(', ')}`);
   }
@@ -288,17 +298,17 @@ function kontext(daten: AnalysePromptDaten, module: readonly Modul[]): string {
   }
 
   if (module.includes('stilKleiderschrank')) {
-    const stilziele = labels(STILZIEL, daten.stil.ziele);
+    const stilziele = labels(STILZIEL, daten.stil.ziele, sprache);
     if (stilziele.length > 0) {
       zeilen.push(`- Stilziel: ${stilziele.join(', ')}`);
     }
-    const dresscode = label(DRESSCODE, daten.stil.dresscode);
+    const dresscode = label(DRESSCODE, daten.stil.dresscode, sprache);
     if (dresscode) zeilen.push(`- Alltag/Dresscode: ${dresscode}`);
 
-    const kleidung = label(KLEIDUNGSBUDGET, daten.stil.budget);
+    const kleidung = label(KLEIDUNGSBUDGET, daten.stil.budget, sprache);
     if (kleidung) zeilen.push(`- Budget pro Kleidungsstück: ${kleidung}`);
 
-    const pflege = label(PFLEGEAUFWAND, daten.stil.pflegeaufwand);
+    const pflege = label(PFLEGEAUFWAND, daten.stil.pflegeaufwand, sprache);
     if (pflege) zeilen.push(`- Bereitschaft zu Pflegeaufwand: ${pflege}`);
   }
 

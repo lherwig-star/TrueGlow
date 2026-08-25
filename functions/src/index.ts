@@ -60,7 +60,10 @@ export const analysiere = onCall(OPTIONEN, async (request) => {
   const eingang = leseAnalyse(request.data);
 
   const system = analysePrompt.systemPrompt(eingang.prompt);
-  const nutzer = analysePrompt.nutzerText(eingang.bildTypen);
+  const nutzer = analysePrompt.nutzerText(
+    eingang.bildTypen,
+    eingang.prompt.sprache,
+  );
 
   const ergebnis = await mitKontingent(uid, 'analyse', () =>
     frageMitNachfassen({
@@ -84,6 +87,7 @@ export const checkinAuswerten = onCall(OPTIONEN, async (request) => {
   const nutzer = checkinPrompt.nutzerText(
     eingang.prompt.typ,
     eingang.prompt.mitFotos,
+    eingang.prompt.sprache,
   );
 
   const auswertung = await mitKontingent(uid, 'checkin', () =>
