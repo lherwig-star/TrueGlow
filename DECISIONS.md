@@ -788,6 +788,49 @@ Die saubere Lösung wäre, die Theme-Wahl zusätzlich dorthin zu schreiben, wo
 die Android-Seite sie vor dem ersten Frame lesen kann. Das ist nativer Code in
 zwei Sprachen für eine halbe Sekunde Bildschirm — nicht jetzt.
 
+## 35 · Der Server lief eine Fassung hinterher — und was daraus folgt
+
+Der Frauen-Modus war fertig, zweisprachig war fertig, alle Tests grün. Am
+Gerät kam trotzdem ein deutscher Report zurück, mit Bart-Kapitel und ohne das
+gewählte Make-up-Kapitel, und die Kopfzeile zählte ein Kapitel statt zwei.
+
+**Die Ursache lag nicht im Code auf der Platte.** Die laufende Cloud Function
+war vom 24.08.2026, 22:12 UTC — nachlesbar an
+`source.storageSource.generation` in `firebase functions:list --json`. Die
+drei Commits, die Sprache, Ausrichtung und das Make-up-Modul auf den Server
+gebracht haben, sind vom 25.08. und waren nie ausgerollt.
+
+Damit erklärt sich jede einzelne Auffälligkeit aus derselben Quelle: Der alte
+Server kennt kein Feld `sprache` (Rückfall Deutsch), kein Feld `ausrichtung`
+(Rückfall männlich, also Basis mit Bart) und den Modulnamen
+`makeupAusstrahlung` nicht (fällt als unbekannt heraus, bleibt ein Kapitel).
+Der Client hatte alles korrekt mitgeschickt.
+
+**Was daraus folgt, ist nicht „besser aufpassen".** Ein Deploy, der vergessen
+wird, sieht aus wie ein Fehler in der App: Nichts stürzt ab, nichts wird
+protokolliert, die Rückfälle greifen genau so, wie sie sollen. Sie sind für
+alte *Clients* gedacht — dass sie auch einen alten *Server* verdecken, war
+nicht bedacht. Drei Dinge sind deshalb dazugekommen:
+
+1. `SETUP.md` 5.5 sagt jetzt, wie man nachsieht, was oben liegt, statt den
+   Schritt als einmalig erledigt zu führen.
+2. Die Nachbereitung meldet einen Report in der falschen Sprache als Fehler
+   ins Protokoll. Hätte es sie gegeben, wäre der erste englische Testlauf in
+   den Logs aufgeschlagen.
+3. Die Modulauswahl wird serverseitig gegen die Ausrichtung geprüft, statt
+   sich auf den Prompt zu verlassen.
+
+**Warum die Nachbereitung überhaupt siebt und nicht nur meldet:** Beim Bart
+ist der Schaden nicht kosmetisch. Ein Bart-Kapitel im weiblichen Modus ist
+genau die Art Fehler, die jemand als Aussage über sich liest. Ein Filter auf
+den Sektionstiteln ist grob, aber er kann nur zu viel entfernen, nie zu
+wenig — und was er entfernt, gehört in diesem Modus ohnehin nicht dorthin.
+
+**Warum die falsche Sprache trotzdem durchgeht:** Sie lässt sich nicht
+reparieren, nur neu erzeugen — und das kostet ein zweites Mal Kontingent.
+Drei Läufe pro Tag sind knapp. Lieber ein Report in der falschen Sprache und
+ein Eintrag im Protokoll als gar keiner.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

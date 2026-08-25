@@ -497,6 +497,26 @@ Ohne `gcloud` geht es auch per Klick über
 
 ☑ **5.5 Functions deployen** — erledigt
 
+> **Dieser Schritt ist nicht einmalig.** Alles unter `functions/src/` wirkt
+> erst, wenn es ausgerollt ist. Solange das fehlt, läuft auf dem Server
+> weiter die Fassung vom letzten Deploy — die App schickt dann Angaben mit,
+> die dort niemand liest, und niemand merkt es, weil nichts abstürzt.
+>
+> Genau das ist am 25.08.2026 passiert: Die Zweisprachigkeit und der
+> Frauen-Modus waren fertig und getestet, der Server lief noch in der
+> Fassung vom Vortag. Der Report kam auf Deutsch, mit Bart-Kapitel und ohne
+> Make-up. Ausführlich in `DECISIONS.md` 35.
+>
+> Was gerade oben liegt, sagt:
+>
+> ```bash
+> firebase functions:list --json
+> ```
+>
+> Das Feld `source.storageSource.generation` ist ein Zeitstempel in
+> Mikrosekunden. Ist er älter als der letzte Commit unter `functions/src/`,
+> fehlt ein Deploy.
+
 ```bash
 cd functions
 npm install
