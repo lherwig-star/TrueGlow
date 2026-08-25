@@ -86,6 +86,14 @@ class S {
       'Auf diesem Gerät konnte keine Kamera gestartet werden. Wähle ein Foto '
       'aus der Galerie.';
 
+  /// Die Aufnahme selbst ist gescheitert – nicht die Prüfung danach.
+  ///
+  /// Beim Auto-Auslöser ist das der einzige Hinweis darauf, dass etwas
+  /// schiefging: Wer mehrere Meter entfernt steht, sieht sonst nur einen
+  /// Countdown, auf den nichts folgt.
+  static const aufnahmeFehlgeschlagen =
+      'Das Foto hat nicht geklappt – bitte noch einmal';
+
   // --- Modul-Auswahl ---
   static const moduleTitel = 'Analyse zusammenstellen';
   static const moduleEyebrow = 'Deine Analyse';

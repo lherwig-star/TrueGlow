@@ -80,21 +80,30 @@ class AutoAusloeser {
 
     _schlechtSeit = null;
 
-    final begonnen = _begonnen ??= jetzt;
+    _begonnen ??= jetzt;
     if (_phase == AutoPhase.warten) _phase = AutoPhase.zaehlt;
 
-    // Aufrunden: Von 0 bis 999 ms nach dem Start sollen noch „3" stehen.
-    // Abgerundet spraenge die Anzeige sofort auf 2 und der Countdown fuehlte
-    // sich um eine Sekunde zu kurz an.
-    final vergangen = jetzt.difference(begonnen);
-    final verbleibend = sekunden - (vergangen.inMilliseconds / 1000).floor();
+    return _abgelaufen(jetzt) ?? AutoZustand(AutoPhase.zaehlt, _verbleibend(jetzt));
+  }
 
-    if (verbleibend <= 0) {
-      _phase = AutoPhase.ausgeloest;
-      return const AutoZustand(AutoPhase.ausgeloest);
-    }
+  /// Verbleibende volle Sekunden seit dem Start des Countdowns.
+  ///
+  /// Aufrunden: Von 0 bis 999 ms nach dem Start sollen noch „3" stehen.
+  /// Abgerundet spraenge die Anzeige sofort auf 2 und der Countdown fuehlte
+  /// sich um eine Sekunde zu kurz an.
+  int _verbleibend(DateTime jetzt) {
+    final vergangen = jetzt.difference(_begonnen!);
+    return sekunden - (vergangen.inMilliseconds / 1000).floor();
+  }
 
-    return AutoZustand(AutoPhase.zaehlt, verbleibend);
+  /// Loest aus, wenn die Zeit um ist – sonst `null`.
+  ///
+  /// Ein gemeinsamer Weg fuer beide Zweige: Ob die Haltung im letzten Frame
+  /// sass oder gerade flackerte, darf ueber das Ausloesen nicht entscheiden.
+  AutoZustand? _abgelaufen(DateTime jetzt) {
+    if (_verbleibend(jetzt) > 0) return null;
+    _phase = AutoPhase.ausgeloest;
+    return const AutoZustand(AutoPhase.ausgeloest);
   }
 
   AutoZustand _haltungVerloren(DateTime jetzt) {
@@ -105,11 +114,22 @@ class AutoAusloeser {
 
     final seit = _schlechtSeit ??= jetzt;
     if (jetzt.difference(seit) < nachsicht) {
-      // Noch in der Nachsicht: Countdown laeuft sichtbar weiter, damit das
-      // Flackern der Erkennung nicht als Zappeln beim Nutzer ankommt.
-      final vergangen = jetzt.difference(_begonnen!);
-      final verbleibend = sekunden - (vergangen.inMilliseconds / 1000).floor();
-      return AutoZustand(AutoPhase.zaehlt, verbleibend.clamp(1, sekunden));
+      // Noch in der Nachsicht: Countdown laeuft weiter, damit das Flackern der
+      // Erkennung nicht als Zappeln beim Nutzer ankommt.
+      //
+      // Und er laeuft wirklich weiter – bis zum Ausloesen. Hier stand zuvor
+      // ein `clamp(1, sekunden)`: Lief die Zeit waehrend eines Flackerns ab,
+      // blieb die Anzeige auf „1" stehen und es wurde nie ausgeloest. Nach
+      // 700 ms fiel alles auf „warten" zurueck und der Countdown begann von
+      // vorn. Am Geraet sah das aus wie „zaehlt 3-2-1 und macht dann nichts".
+      //
+      // Der Widerspruch war die Nachsicht selbst: Wer dem Nutzer zutraut,
+      // dass er trotz eines Aussetzers noch steht, muss ihm auch zutrauen,
+      // dass er im Bild steht, wenn die Zeit um ist. Ein leicht unsauberes
+      // Foto ist danach ueber „Nochmal" in zwei Sekunden erledigt – ein nie
+      // ausgeloestes kostet den Weg zurueck ans Handy.
+      return _abgelaufen(jetzt) ??
+          AutoZustand(AutoPhase.zaehlt, _verbleibend(jetzt));
     }
 
     _phase = AutoPhase.warten;

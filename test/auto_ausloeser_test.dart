@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:trueglow/features/capture/logic/auto_ausloeser.dart';
 import 'package:trueglow/features/capture/logic/live_face_guide.dart';
 import 'package:trueglow/features/capture/logic/live_koerper_guide.dart';
+import 'package:trueglow/features/capture/logic/signalton.dart';
+import 'package:trueglow/features/capture/ui/widgets/silhouette_overlay.dart';
 
 /// Der Auto-Ausloeser fuer die Ganzkoerperfotos.
 ///
@@ -135,6 +137,82 @@ void main() {
       );
     });
 
+    test('Aussetzer kurz vor Schluss verhindert die Aufnahme nicht', () {
+      // Der Fehler aus dem Geraete-Test: Der Countdown zaehlte 3-2-1 herunter
+      // und danach passierte nichts. Grund war die Nachsicht – lief die Zeit
+      // waehrend eines Aussetzers ab, blieb die Anzeige auf „1" stehen, statt
+      // auszuloesen, und nach 700 ms fing alles von vorn an.
+      //
+      // Genau so verhaelt sich die Posenerkennung aus drei Metern: Ein
+      // einzelner Frame ohne sichere Knoechel genuegt, und der faellt mit
+      // einiger Wahrscheinlichkeit auf die letzte Sekunde.
+      final ausloeser = AutoAusloeser();
+
+      ausloeser.melde(bereit: true, jetzt: t0);
+      expect(
+        ausloeser
+            .melde(
+              bereit: true,
+              jetzt: t0.add(const Duration(milliseconds: 2500)),
+            )
+            .verbleibend,
+        1,
+      );
+
+      // Ab hier zweifelt die Erkennung – die Person steht aber weiter.
+      expect(
+        ausloeser.melde(
+          bereit: false,
+          jetzt: t0.add(const Duration(milliseconds: 2750)),
+        ),
+        const AutoZustand(AutoPhase.zaehlt, 1),
+        reason: 'in der Nachsicht laeuft der Countdown sichtbar weiter',
+      );
+      expect(
+        ausloeser.melde(
+          bereit: false,
+          jetzt: t0.add(const Duration(milliseconds: 3050)),
+        ),
+        const AutoZustand(AutoPhase.ausgeloest),
+        reason: 'die drei Sekunden sind um – jetzt muss ein Foto entstehen',
+      );
+    });
+
+    test('ein voller Ablauf loest genau einmal aus – auch mit Flackern', () {
+      // Der Ablauf, wie er am Geraet stattfindet: vier ausgewertete Frames je
+      // Sekunde, dazwischen zweifelt die Erkennung gelegentlich. Am Ende muss
+      // genau ein Ausloesen stehen, nicht keines und nicht drei.
+      final ausloeser = AutoAusloeser();
+
+      // Jeder vierte Frame faellt aus – ein einzelner Aussetzer, nie zwei
+      // hintereinander, also immer innerhalb der Nachsicht.
+      var ausgeloest = 0;
+      var zaehlstaende = <int>[];
+
+      for (var i = 0; i <= 16; i++) {
+        final zustand = ausloeser.melde(
+          bereit: i % 4 != 3,
+          jetzt: t0.add(Duration(milliseconds: 250 * i)),
+        );
+        switch (zustand.phase) {
+          case AutoPhase.ausgeloest:
+            ausgeloest++;
+          case AutoPhase.zaehlt:
+            zaehlstaende.add(zustand.verbleibend);
+          case AutoPhase.warten:
+            fail('der Countdown darf bei einzelnen Aussetzern nicht abbrechen');
+        }
+      }
+
+      expect(zaehlstaende.toSet(), {3, 2, 1});
+      expect(ausgeloest, greaterThan(0), reason: 'es wurde nie ausgeloest');
+      expect(
+        ausloeser.phase,
+        AutoPhase.ausgeloest,
+        reason: 'nach dem Ausloesen bleibt es dabei',
+      );
+    });
+
     test('nach dem Ausloesen bleibt es dabei, bis zurueckgesetzt wird', () {
       // Sonst schiesst die Kamera waehrend der Vorschau munter weiter.
       final ausloeser = AutoAusloeser();
@@ -254,5 +332,121 @@ void main() {
         expect(hinweis.loestAus, hinweis == KoerperHinweis.bereit);
       }
     });
+  });
+
+  group('Signalton', () {
+    test('der Audio-Kontext laesst sich ueberhaupt bauen', () {
+      // Der eigentliche Fehler hinter „Countdown laeuft, kein Foto": Die
+      // Kombination `ambient` + `mixWithOthers` ist unzulaessig, und
+      // `AudioContextIOS` bricht deshalb schon beim Bauen mit einer
+      // Zusicherung ab. Der Ausloese-Ton steht eine Zeile vor der Aufnahme –
+      // die Ausnahme riss die Kette genau dort auseinander.
+      //
+      // Geprueft wird der Kontext und nicht das Abspielen: Die Zusicherung
+      // schlaegt vor jeder Tonausgabe zu, und ein Test braucht dafuer weder
+      // Lautsprecher noch Geraet.
+      expect(EchterSignalton.kontext, returnsNormally);
+    });
+  });
+
+  group('Ganzkoerper-Silhouette', () {
+    /// Vom sehr schmalen Handy bis zum Tablet. Der Galaxy A52 (20:9) ist das
+    /// Geraet, auf dem die gestreckte Figur aufgefallen ist.
+    const flaechen = <Size>[
+      Size(411, 914), // Galaxy A52, 20:9
+      Size(360, 640), // 16:9, das Format, fuer das die Figur entworfen ist
+      Size(430, 932), // grosses iPhone
+      Size(768, 1024), // Tablet, 3:4
+      Size(320, 800), // absichtlich extrem schmal
+    ];
+
+    /// Aussenmasse der Figur auf einer Flaeche dieser Groesse.
+    Rect umriss(Size flaeche, {required bool seitlich}) =>
+        SilhouetteOverlay.ganzkoerperUmriss(flaeche, seitlich: seitlich)
+            .getBounds();
+
+    for (final (name, seitlich) in [('frontal', false), ('seitlich', true)]) {
+      test('$name: Seitenverhaeltnis haengt nicht an der Bildschirmgroesse',
+          () {
+        // Der eigentliche Fehler: x-Werte hingen an der Bildschirmbreite,
+        // y-Werte an der Bildschirmhoehe. Auf einem 20:9-Handy wurde die
+        // Figur damit fast doppelt so schlank wie auf einem 16:9-Geraet.
+        final verhaeltnisse = [
+          for (final flaeche in flaechen)
+            umriss(flaeche, seitlich: seitlich).width /
+                umriss(flaeche, seitlich: seitlich).height,
+        ];
+
+        for (final v in verhaeltnisse) {
+          expect(
+            v,
+            closeTo(verhaeltnisse.first, 0.001),
+            reason: 'Figur wird je nach Bildschirmformat anders gestaucht',
+          );
+        }
+      });
+
+      test('$name: die Figur hat menschliche Proportionen', () {
+        for (final flaeche in flaechen) {
+          final grenzen = umriss(flaeche, seitlich: seitlich);
+          final schlankheit = grenzen.height / grenzen.width;
+
+          // Von vorn ist ein stehender Mensch grob viermal so hoch wie breit,
+          // im Profil rund sechsmal (Bauch bis Gesaess, Ferse bis Zehen).
+          // Achtmal so hoch wie breit ist ein Strich, kein Mensch.
+          expect(
+            schlankheit,
+            seitlich ? inInclusiveRange(5, 7.5) : inInclusiveRange(3.5, 5),
+            reason: '$flaeche: 1:${schlankheit.toStringAsFixed(1)}',
+          );
+        }
+      });
+
+      test('$name: die Figur liegt vollstaendig im Bild', () {
+        for (final flaeche in flaechen) {
+          final grenzen = umriss(flaeche, seitlich: seitlich);
+
+          expect(grenzen.left, greaterThanOrEqualTo(0), reason: '$flaeche');
+          expect(grenzen.right, lessThanOrEqualTo(flaeche.width),
+              reason: '$flaeche');
+          expect(grenzen.top, greaterThanOrEqualTo(0), reason: '$flaeche');
+
+          // Unten bleibt die Bedienleiste frei: Ausloeser, Galerie und
+          // Kamerawechsel brauchen rund ein Siebtel der Bildhoehe. Genau da
+          // liefen die Beine der alten Figur hinein.
+          expect(
+            grenzen.bottom,
+            lessThanOrEqualTo(flaeche.height * 0.85),
+            reason: '$flaeche: Fuesse ragen in die Bedienleiste',
+          );
+        }
+      });
+
+      test('$name: die Figur passt in das, was der Guide akzeptiert', () {
+        // Wer sich genau nach der Silhouette ausrichtet, muss den
+        // Auto-Ausloeser ausloesen koennen. Die Kameravorschau fuellt den
+        // Bildschirm in der Hoehe vollstaendig aus, deshalb ist der Anteil
+        // an der Bildhoehe direkt vergleichbar.
+        for (final flaeche in flaechen) {
+          final anteil = umriss(flaeche, seitlich: seitlich).height /
+              flaeche.height;
+
+          // Und zwar mit Abstand zu beiden Raendern: Die alte Figur fuellte
+          // 89 % der Bildhoehe, die Obergrenze liegt bei 94 %. Wer sich
+          // danach ausrichtete, stand am Rand des Erlaubten, und jedes
+          // Zittern der Posenerkennung kippte die Bewertung auf „zu nah".
+          const spanne = LiveKoerperGuide.maxHoehe - LiveKoerperGuide.minHoehe;
+          expect(
+            anteil,
+            inInclusiveRange(
+              LiveKoerperGuide.minHoehe + spanne * 0.25,
+              LiveKoerperGuide.maxHoehe - spanne * 0.25,
+            ),
+            reason: '$flaeche: Silhouette zielt auf den Rand dessen, was der '
+                'Guide akzeptiert',
+          );
+        }
+      });
+    }
   });
 }

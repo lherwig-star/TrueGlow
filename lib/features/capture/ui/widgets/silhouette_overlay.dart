@@ -25,6 +25,27 @@ class SilhouetteOverlay extends StatelessWidget {
 
   final double staerke;
 
+  /// Der Umriss der Ganzkoerper-Figur, wie er auf eine Flaeche dieser Groesse
+  /// gezeichnet wuerde.
+  ///
+  /// Oeffentlich allein fuer den Test: Ob die Figur menschliche Proportionen
+  /// behaelt, faellt am Bildschirm erst auf, wenn jemand mit dem Handy im
+  /// Wohnzimmer steht und drei Meter zuruecktritt. Im Test ist es eine
+  /// Rechnung ueber [Path.getBounds].
+  @visibleForTesting
+  static Path ganzkoerperUmriss(Size size, {required bool seitlich}) {
+    final maler = _SilhouettePainter(
+      overlay: seitlich
+          ? Overlaytyp.ganzkoerperSeitlich
+          : Overlaytyp.ganzkoerperFrontal,
+      farbe: const Color(0xFFFFFFFF),
+      staerke: 2,
+    );
+    return seitlich
+        ? maler._ganzkoerperSeitlichPfad(size)
+        : maler._ganzkoerperFrontalPfad(size);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (overlay == Overlaytyp.keins) return const SizedBox.shrink();
@@ -325,12 +346,62 @@ class _SilhouettePainter extends CustomPainter {
     );
   }
 
-  /// Halbe Kopfhoehe der Ganzkoerper-Figur, als Anteil der Bildhoehe.
+  /// Halbe Kopfhoehe der Ganzkoerper-Figur, als Anteil der **Feldhoehe**.
   ///
   /// Alles Uebrige haengt daran: Der Kopf sitzt bei [_figurKopfMitte], sein
   /// unterer Rand trifft den Halsansatz der Umrisse bei 0,15.
   static const double _figurKopfHalb = 0.052;
   static const double _figurKopfMitte = 0.098;
+
+  /// Seitenverhaeltnis (Breite zu Hoehe) des Feldes, in dem die
+  /// Ganzkoerper-Figur sitzt.
+  ///
+  /// Warum es dieses Feld gibt: Die Stuetzpunkte der Figur sind Anteile
+  /// *dieses Feldes*, nicht des Bildschirms. Ohne den Zwischenschritt haengt
+  /// die Breite der Figur an der Bildschirmbreite und ihre Hoehe an der
+  /// Bildschirmhoehe – auf einem 20:9-Handy wird dieselbe Figur damit ein
+  /// Drittel schlanker als auf einem 16:9-Geraet. Die Stuetzpunkte sind fuer
+  /// 16:9 entworfen, also ist genau das das Format des Feldes.
+  ///
+  /// Dasselbe Problem hatte zuvor schon das Gesichts-Oval, siehe [_kopffeld].
+  static const double _figurFormat = 9 / 16;
+
+  /// Anteil der Bildhoehe, den das Feld einnimmt.
+  ///
+  /// Nicht groesser: Oben liegt die Kopfzeile, unten Statustext und
+  /// Bedienleiste. Nicht kleiner: Der [LiveKoerperGuide] verlangt, dass die
+  /// Person zwischen 55 % und 94 % der Bildhoehe einnimmt, und die Figur soll
+  /// mitten in diese Spanne zielen statt an ihren Rand. Bei dieser
+  /// Feldhoehe steht die Figur selbst auf rund 73 % der Bildhoehe.
+  static const double _figurMaxHoehe = 0.82;
+
+  /// Halbe Breite der Figur, als Anteil der Feldbreite – der aeusserste
+  /// Punkt ist die Hand. Gebraucht wird sie nur fuer die Notbremse in
+  /// [_figurFeld]; das Feld selbst ist deutlich breiter als die Figur.
+  static const double _figurHalbeBreite = 0.185;
+
+  /// Vertikale Mitte des Feldes. Etwas oberhalb der Bildmitte: Unten liegen
+  /// Statuszeile und Bedienleiste, und die Fuesse der Figur sollen nicht
+  /// ueber dem Ausloeser stehen.
+  static const double _figurMitte = 0.46;
+
+  /// Das Feld, in dem die Ganzkoerper-Figur gezeichnet wird – immer im
+  /// Verhaeltnis [_figurFormat], egal wie schmal oder breit die Flaeche ist.
+  Rect _figurFeld(Size size) {
+    // Die Hoehe bestimmt alles. Die zweite Schranke greift nur auf breiten,
+    // flachen Flaechen – im Hochformat ist die Figur nie annaehernd so breit
+    // wie das Bild, und dort waere eine Breitenschranke nur ein Weg, die
+    // Figur unnoetig zu verkleinern.
+    final hoehe = math.min(
+      size.height * _figurMaxHoehe,
+      size.width * 0.9 / (2 * _figurHalbeBreite * _figurFormat),
+    );
+    return Rect.fromCenter(
+      center: Offset(size.width / 2, size.height * _figurMitte),
+      width: hoehe * _figurFormat,
+      height: hoehe,
+    );
+  }
 
   /// Stehende Figur von vorn.
   ///
@@ -343,8 +414,9 @@ class _SilhouettePainter extends CustomPainter {
   /// entsteht durch Spiegeln. Das haelt die Figur zwangslaeufig symmetrisch –
   /// von Hand gesetzte Gegenpunkte laufen beim Nachjustieren auseinander.
   Path _ganzkoerperFrontalPfad(Size size) {
+    final feld = _figurFeld(size);
     Offset p(double dx, double dy) =>
-        Offset(size.width * (0.5 + dx), size.height * dy);
+        Offset(feld.center.dx + dx * feld.width, feld.top + dy * feld.height);
 
     // Rumpf und Bein **ohne** den Arm: Wird der Arm in dieselbe Kontur
     // eingerechnet, zieht die Glaettung Schulter und Arm zu einem Ballon
@@ -385,7 +457,7 @@ class _SilhouettePainter extends CustomPainter {
       (0.130, 0.276), // Achsel, dicht am Brustkorb
     ];
 
-    final pfad = Path()..addOval(_figurKopf(size, versatz: 0));
+    final pfad = Path()..addOval(_figurKopf(feld, versatz: 0));
 
     pfad.addPath(
       _glattDurch(
@@ -419,8 +491,9 @@ class _SilhouettePainter extends CustomPainter {
   /// Seite). Deshalb sind Hohlkreuz und Gesaess ausgepraegt gezeichnet und
   /// nicht zu einer geraden Linie vereinfacht.
   Path _ganzkoerperSeitlichPfad(Size size) {
+    final feld = _figurFeld(size);
     Offset p(double dx, double dy) =>
-        Offset(size.width * (0.5 + dx), size.height * dy);
+        Offset(feld.center.dx + dx * feld.width, feld.top + dy * feld.height);
 
     // Ruecken hinunter, um den Fuss herum, Vorderseite wieder hinauf.
     //
@@ -464,7 +537,7 @@ class _SilhouettePainter extends CustomPainter {
     // Kontur verdeckt er die Rueckenlinie – und die ist der Grund, warum
     // dieses zweite Foto ueberhaupt verlangt wird.
     return Path()
-      ..addOval(_figurKopf(size, versatz: 0.014))
+      ..addOval(_figurKopf(feld, versatz: 0.014))
       ..addPath(
         _glattDurch([for (final (dx, dy) in umriss) p(dx, dy)],
             geschlossen: true),
@@ -472,15 +545,16 @@ class _SilhouettePainter extends CustomPainter {
       );
   }
 
-  /// Kopf der Ganzkoerper-Figur. [versatz] schiebt ihn im Profil leicht nach
-  /// vorn, weil der Hals dort nicht mittig sitzt.
-  Rect _figurKopf(Size size, {required double versatz}) => Rect.fromCenter(
+  /// Kopf der Ganzkoerper-Figur, bezogen auf das [_figurFeld]. [versatz]
+  /// schiebt ihn im Profil leicht nach vorn, weil der Hals dort nicht mittig
+  /// sitzt.
+  Rect _figurKopf(Rect feld, {required double versatz}) => Rect.fromCenter(
         center: Offset(
-          size.width * (0.5 + versatz),
-          size.height * _figurKopfMitte,
+          feld.center.dx + feld.width * versatz,
+          feld.top + feld.height * _figurKopfMitte,
         ),
-        width: size.height * _figurKopfHalb * 2 * _kopfVerhaeltnis,
-        height: size.height * _figurKopfHalb * 2,
+        width: feld.height * _figurKopfHalb * 2 * _kopfVerhaeltnis,
+        height: feld.height * _figurKopfHalb * 2,
       );
 
   /// Weicher Streckenzug durch die Punkte.

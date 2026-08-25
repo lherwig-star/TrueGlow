@@ -21,29 +21,39 @@ abstract interface class Signalton {
 /// Spielt die generierten WAVs aus `assets/toene/`.
 class EchterSignalton implements Signalton {
   EchterSignalton() {
-    // Ueber den Benachrichtigungs-Kanal statt ueber Medien: Damit gilt fuer
-    // den Ton dieselbe Regel wie fuer eine Nachricht – im Lautlos-Modus
-    // schweigt er, ohne dass die App den Klingelzustand abfragen muss. Eine
-    // eigene Abfrage braeuchte ein weiteres Plugin und waere auf jedem
-    // Hersteller-Android wieder anders falsch.
-    //
-    // `mixWithOthers`, damit laufende Musik nicht abgewuergt wird – drei
-    // kurze Toene rechtfertigen keinen Abbruch fremder Wiedergabe.
-    _spieler.setAudioContext(
-      AudioContext(
+    _spieler.setAudioContext(kontext());
+    _spieler.setReleaseMode(ReleaseMode.stop);
+  }
+
+  /// Wie die Toene ausgegeben werden.
+  ///
+  /// Ueber den Benachrichtigungs-Kanal statt ueber Medien: Damit gilt fuer den
+  /// Ton dieselbe Regel wie fuer eine Nachricht – im Lautlos-Modus schweigt er,
+  /// ohne dass die App den Klingelzustand abfragen muss. Eine eigene Abfrage
+  /// braeuchte ein weiteres Plugin und waere auf jedem Hersteller-Android
+  /// wieder anders falsch.
+  ///
+  /// Auf iOS `ambient`: Diese Kategorie mischt sich von sich aus unter
+  /// laufende Wiedergabe und folgt dem Klingelschalter – genau das, was drei
+  /// kurze Toene brauchen. Hier stand zuvor zusaetzlich `mixWithOthers`, und
+  /// **das war der Fehler hinter dem toten Auto-Ausloeser**: Die Option ist
+  /// nur zu `playback`, `playAndRecord` und `multiRoute` erlaubt, sonst
+  /// bricht `AudioContextIOS` mit einer Zusicherung ab. Der Ausloese-Ton
+  /// laeuft eine Zeile vor der Aufnahme – die Ausnahme riss die Kette genau
+  /// dort auseinander. Zu `ambient` gehoert das Mischen ohnehin dazu, die
+  /// Option war also nicht nur unerlaubt, sondern auch ueberfluessig.
+  ///
+  /// Eine eigene Funktion, damit sich genau das ohne Audio-Ausgabe pruefen
+  /// laesst – die Zusicherung schlaegt schon beim Bauen des Kontexts zu.
+  @visibleForTesting
+  static AudioContext kontext() => AudioContext(
         android: const AudioContextAndroid(
           contentType: AndroidContentType.sonification,
           usageType: AndroidUsageType.notification,
           audioFocus: AndroidAudioFocus.none,
         ),
-        iOS: AudioContextIOS(
-          category: AVAudioSessionCategory.ambient,
-          options: const {AVAudioSessionOptions.mixWithOthers},
-        ),
-      ),
-    );
-    _spieler.setReleaseMode(ReleaseMode.stop);
-  }
+        iOS: AudioContextIOS(category: AVAudioSessionCategory.ambient),
+      );
 
   final AudioPlayer _spieler = AudioPlayer();
 

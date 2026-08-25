@@ -11,6 +11,7 @@ import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../core/diagnose/diagnose_dienst.dart';
 import '../../../core/l10n/app_strings.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
@@ -123,10 +124,45 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
   /// einzige Moment, in dem das Ergebnis ueberhaupt zu beurteilen ist.
   File? _vorschau;
 
+  /// Steht hier ein Text, ist die letzte Aufnahme fehlgeschlagen.
+  ///
+  /// Ohne diese Anzeige endete ein Fehlschlag in einem `debugPrint` und sonst
+  /// nirgends: Wer drei Meter entfernt steht, sah den Countdown ablaufen und
+  /// danach nichts – nicht zu unterscheiden von einem Ausloeser, der gar
+  /// nicht erst angesprungen ist.
+  String? _fehlschlag;
+
   /// Verhindert, dass sich Frames stauen: waehrend eine Erkennung laeuft,
   /// werden neue Frames verworfen.
   bool _erkennungLaeuft = false;
   DateTime _letztePruefung = DateTime.fromMillisecondsSinceEpoch(0);
+
+  /// Praefix aller Protokollzeilen dieses Screens.
+  ///
+  /// Ein fester Text, damit sich der komplette Weg vom Countdown-Ende bis zur
+  /// fertigen Datei mit einem `adb logcat | grep` verfolgen laesst.
+  static const _marke = 'TrueGlow/Aufnahme';
+
+  void _protokoll(String text) => debugPrint('$_marke: $text');
+
+  /// Spielt einen Signalton – und laesst die Aufnahme davon unberuehrt.
+  ///
+  /// Der Ausloese-Ton steht eine Zeile vor der Aufnahme. Riss er ab, riss die
+  /// ganze Kette ab: Genau daran hing der tote Auto-Ausloeser. `Signalton`
+  /// faengt seine eigenen Abspielfehler zwar ab, aber schon das *Beschaffen*
+  /// des Dienstes kann scheitern – ein fehlerhaft gebauter Provider wirft bei
+  /// jedem `read` erneut.
+  ///
+  /// Ein Ton ist Zierde, das Foto ist der Zweck. Was hier schiefgeht, gehoert
+  /// ins Protokoll und sonst nirgendwohin.
+  void _ton(Future<void> Function(Signalton) welcher) {
+    try {
+      unawaited(welcher(ref.read(signaltonProvider)));
+    } catch (e, spur) {
+      _protokoll('Signalton uebersprungen: $e');
+      unawaited(ref.read(diagnoseDienstProvider).fehler(e, spur));
+    }
+  }
 
   @override
   void initState() {
@@ -300,6 +336,10 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
     final zustand = _auto!.melde(bereit: hinweis.loestAus, jetzt: jetzt);
 
     if (hinweis != _koerperHinweis || zustand != _autoZustand) {
+      // Nur bei Aenderung, sonst waeren es vier Zeilen je Sekunde. Damit ist
+      // im Protokoll ablesbar, ob der Countdown ueberhaupt bis zum Ende lief
+      // oder ob die Haltung kurz davor verloren ging.
+      _protokoll('Haltung ${hinweis.name}, Countdown $zustand');
       setState(() {
         _koerperHinweis = hinweis;
         _autoZustand = zustand;
@@ -310,13 +350,16 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
       case AutoPhase.zaehlt:
         if (zustand.verbleibend != _letzteVertonteSekunde) {
           _letzteVertonteSekunde = zustand.verbleibend;
-          unawaited(ref.read(signaltonProvider).zaehlen());
+          // Der neue Countdown ersetzt die Meldung des letzten Fehlschlags.
+          if (_fehlschlag != null) setState(() => _fehlschlag = null);
+          _ton((ton) => ton.zaehlen());
         }
       case AutoPhase.warten:
         _letzteVertonteSekunde = null;
       case AutoPhase.ausgeloest:
         _letzteVertonteSekunde = null;
-        unawaited(ref.read(signaltonProvider).ausloesen());
+        _protokoll('Countdown zu Ende – Auto-Ausloeser greift');
+        _ton((ton) => ton.ausloesen());
         await _ausloesen();
     }
   }
@@ -465,25 +508,43 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
     await _starten();
   }
 
+  /// Die komplette Kette vom Ausloesen bis zur stehenden Vorschau.
+  ///
+  /// Jeder Schritt landet im Protokoll. Der Grund steht bei [_fehlschlag]:
+  /// Beim Auto-Ausloeser sieht niemand zu, und ein hier verschluckter Fehler
+  /// ist von aussen nicht von einem nicht ausgeloesten Countdown zu
+  /// unterscheiden.
   Future<void> _ausloesen() async {
     final controller = _controller;
     if (controller == null ||
         !controller.value.isInitialized ||
         _loest ||
         _vorschau != null) {
+      _protokoll(
+        'Ausloesen uebersprungen – kamera=${controller != null}, '
+        'initialisiert=${controller?.value.isInitialized ?? false}, '
+        'laeuft=$_loest, vorschau=${_vorschau != null}',
+      );
       return;
     }
 
-    setState(() => _loest = true);
+    setState(() {
+      _loest = true;
+      _fehlschlag = null;
+    });
+    _protokoll('Ausloesen gestartet (${widget.typ.name})');
 
     try {
       // Der Stream muss vor der Aufnahme stehen, sonst streiten sich
       // Standbild und Vorschau um den Sensor.
       if (controller.value.isStreamingImages) {
         await controller.stopImageStream();
+        _protokoll('Bildstrom gestoppt');
       }
 
       final aufnahme = await controller.takePicture();
+      _protokoll('Datei geschrieben: ${aufnahme.path}');
+
       if (!mounted) return;
 
       // Noch nichts uebernehmen – erst zeigt die Vorschau das Bild.
@@ -491,14 +552,52 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
         _vorschau = File(aufnahme.path);
         _loest = false;
       });
-    } catch (e) {
-      debugPrint('Aufnahme fehlgeschlagen: $e');
-      if (!mounted) return;
-      setState(() => _loest = false);
-      // Vorschau wieder anwerfen, damit der Nutzer es erneut versuchen kann.
-      if (!(_controller?.value.isStreamingImages ?? true)) {
-        await _controller?.startImageStream(_frameVerarbeiten);
-      }
+      _protokoll('Vorschau steht');
+    } catch (e, spur) {
+      await _aufnahmeFehlgeschlagen(e, spur);
+    }
+  }
+
+  /// Nach einem Fehlschlag zurueck in den Sucher – und zwar so, dass ein
+  /// zweiter Versuch ueberhaupt zustande kommt.
+  Future<void> _aufnahmeFehlgeschlagen(Object fehler, StackTrace spur) async {
+    _protokoll('Aufnahme fehlgeschlagen: $fehler\n$spur');
+    unawaited(ref.read(diagnoseDienstProvider).fehler(fehler, spur));
+
+    if (!mounted) return;
+    setState(() {
+      _loest = false;
+      _fehlschlag = S.aufnahmeFehlgeschlagen;
+      // Ohne Zuruecksetzen bliebe der Auto-Ausloeser auf „ausgeloest" stehen:
+      // Der Countdown liefe kein zweites Mal an, und wer drei Meter entfernt
+      // steht, wartet vor einer Kamera, die nichts mehr tut.
+      _auto?.zuruecksetzen();
+      _autoZustand = const AutoZustand(AutoPhase.warten);
+      _letzteVertonteSekunde = null;
+    });
+
+    // Vorschau wieder anwerfen, damit der Nutzer es erneut versuchen kann.
+    await _bildstromStarten();
+  }
+
+  /// Startet den Bildstrom, falls er stehen sollte und gerade nicht laeuft.
+  Future<void> _bildstromStarten() async {
+    final controller = _controller;
+    if (!widget.typ.mitBildstrom ||
+        controller == null ||
+        !controller.value.isInitialized ||
+        controller.value.isStreamingImages) {
+      return;
+    }
+
+    try {
+      await controller.startImageStream(_frameVerarbeiten);
+      _protokoll('Bildstrom wieder gestartet');
+    } catch (e, spur) {
+      // Ohne Strom steht nur die Live-Hilfe still; der Ausloeser bleibt
+      // druckbar. Kein Grund, den Screen zu verlassen – aber sichtbar machen.
+      _protokoll('Bildstrom nicht startbar: $e\n$spur');
+      unawaited(ref.read(diagnoseDienstProvider).fehler(e, spur));
     }
   }
 
@@ -513,6 +612,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
       _autoZustand = const AutoZustand(AutoPhase.warten);
       _koerperHinweis = KoerperHinweis.niemand;
       _letzteVertonteSekunde = null;
+      _fehlschlag = null;
     });
 
     // Die Datei liegt im Cache-Verzeichnis der Kamera. Wegraeumen, sonst
@@ -525,13 +625,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
 
     // Der Bildstrom wurde vor dem Ausloesen gestoppt – ohne ihn steht die
     // Live-Hilfe still und der Ausloeser bliebe dauerhaft blass.
-    final controller = _controller;
-    if (widget.typ.mitBildstrom &&
-        controller != null &&
-        controller.value.isInitialized &&
-        !controller.value.isStreamingImages) {
-      await controller.startImageStream(_frameVerarbeiten);
-    }
+    await _bildstromStarten();
   }
 
   /// „Passt": jetzt erst durch den Qualitaetscheck und in den Index.
@@ -588,9 +682,10 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
       _ => true,
     };
 
-    final statustext = widget.typ.autoAusloeser
-        ? _koerperHinweis.text
-        : _hinweis.text;
+    // Ein Fehlschlag schlaegt die Positionierungshilfe: Wer gerade kein Foto
+    // bekommen hat, braucht diese Nachricht und nicht „Steht – nicht bewegen".
+    final statustext = _fehlschlag ??
+        (widget.typ.autoAusloeser ? _koerperHinweis.text : _hinweis.text);
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -633,8 +728,14 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
                     onSchliessen: () => Navigator.of(context).pop(false),
                   ),
                   const Spacer(),
-                  if (widget.typ.mitBildstrom)
-                    _Statustext(text: statustext, bereit: bereit)
+                  // Ein Fehlschlag geht auch der Anleitung vor: Bei den
+                  // Outfit-Aufnahmen laeuft keine Live-Hilfe, und ohne diesen
+                  // Zweig bliebe eine misslungene Aufnahme dort unsichtbar.
+                  if (widget.typ.mitBildstrom || _fehlschlag != null)
+                    _Statustext(
+                      text: statustext,
+                      bereit: bereit && _fehlschlag == null,
+                    )
                   else
                     _Anleitung(text: widget.typ.hinweis),
                   const SizedBox(height: AppTheme.gapM),
