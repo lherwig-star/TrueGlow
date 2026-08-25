@@ -1,11 +1,14 @@
 import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:trueglow/core/l10n/sprache.dart';
 import 'package:trueglow/core/router/app_router.dart';
+import 'package:trueglow/features/analysis/logic/analyse_anfrage.dart';
 import 'package:trueglow/core/storage/key_value_store.dart';
 import 'package:trueglow/features/capture/models/aufnahme_typ.dart';
 import 'package:trueglow/features/capture/ui/widgets/silhouette_overlay.dart';
 import 'package:trueglow/features/modules/models/analyse_modul.dart';
+import 'package:trueglow/features/modules/models/modul_eingaben.dart';
 import 'package:trueglow/features/onboarding/logic/onboarding_controller.dart';
 import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
 
@@ -312,6 +315,56 @@ void main() {
         ),
         findsNothing,
       );
+    });
+  });
+
+  group('Was die Analyse-Anfrage mitnimmt', () {
+    Map<String, dynamic> anfrage({
+      Geschlecht? geschlecht,
+      Set<AnalyseModul> module = const {AnalyseModul.basis},
+      Sprache sprache = Sprache.deutsch,
+    }) =>
+        AnalyseAnfrage.bauen(
+          bilder: const {AufnahmeTyp.basisFrontal: 'AAAA'},
+          module: module,
+          onboarding: OnboardingProfile(geschlecht: geschlecht),
+          eingaben: const ModulEingaben(),
+          sprache: sprache,
+        );
+
+    test('die Ausrichtung, nicht die Angabe', () {
+      // Ob jemand „divers" oder „keine Angabe" gewählt hat, bleibt auf dem
+      // Gerät. Der Prompt braucht die Entscheidung, nicht ihre Herkunft.
+      expect(anfrage(geschlecht: Geschlecht.weiblich)['ausrichtung'],
+          'weiblich');
+      expect(anfrage(geschlecht: Geschlecht.maennlich)['ausrichtung'],
+          'maennlich');
+      expect(anfrage(geschlecht: Geschlecht.divers)['ausrichtung'], 'neutral');
+      expect(anfrage(geschlecht: Geschlecht.keineAngabe)['ausrichtung'],
+          'neutral');
+      expect(anfrage()['ausrichtung'], 'maennlich');
+    });
+
+    test('genau die gewählten Module, in fester Reihenfolge', () {
+      // Am Gerät kam ein Report mit einem einzigen Kapitel zurück, obwohl
+      // zwei Module gewählt waren. Die Ursache lag auf dem Server – aber
+      // dass die Auswahl das Gerät vollständig verlässt, gehört geprüft.
+      final gewaehlt = anfrage(
+        geschlecht: Geschlecht.weiblich,
+        module: {AnalyseModul.makeupAusstrahlung, AnalyseModul.basis},
+      );
+
+      expect(gewaehlt['module'], ['basis', 'makeupAusstrahlung']);
+    });
+
+    test('Sprache und Ausrichtung stehen nebeneinander', () {
+      final englischWeiblich = anfrage(
+        geschlecht: Geschlecht.weiblich,
+        sprache: Sprache.englisch,
+      );
+
+      expect(englischWeiblich['sprache'], 'en');
+      expect(englischWeiblich['ausrichtung'], 'weiblich');
     });
   });
 }

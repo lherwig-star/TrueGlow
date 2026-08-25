@@ -8,6 +8,7 @@ import { fehler } from './fehler';
 import { frage } from './gemini';
 import { extrahiere } from './json_extractor';
 import { leseAnalyse, leseCheckin } from './eingang';
+import { melde, nachbereiten } from './nachbereitung';
 import {
   authKontoLoeschen,
   datenLoeschen,
@@ -66,7 +67,7 @@ export const analysiere = onCall(OPTIONEN, async (request) => {
     eingang.prompt.ausrichtung,
   );
 
-  const ergebnis = await mitKontingent(uid, 'analyse', () =>
+  const antwort = await mitKontingent(uid, 'analyse', () =>
     frageMitNachfassen({
       system,
       nutzer,
@@ -76,7 +77,13 @@ export const analysiere = onCall(OPTIONEN, async (request) => {
     }),
   );
 
-  return { ergebnis };
+  // Der Prompt sagt dem Modell, was es liefern soll – das ist eine Bitte,
+  // keine Zusicherung. Was trotzdem durchkommt, faellt hier heraus, und was
+  // sich nicht aussieben laesst, steht wenigstens im Protokoll.
+  const befund = nachbereiten(antwort, eingang.prompt);
+  melde(befund, eingang.prompt);
+
+  return { ergebnis: befund.ergebnis };
 });
 
 /** Wertet einen Check-in aus und liefert die Planaenderungen. */

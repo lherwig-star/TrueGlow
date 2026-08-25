@@ -1,7 +1,7 @@
 import { fehler } from './fehler';
-import { AUFNAHMEN, MODULE, istModul, type Modul } from './labels';
+import { AUFNAHMEN, istModul, moduleFuer, type Modul } from './labels';
 import { leseSprache } from './sprache';
-import { leseAusrichtung } from './ausrichtung';
+import { leseAusrichtung, type Ausrichtung } from './ausrichtung';
 import type {
   AnalysePromptDaten,
   Figurangaben,
@@ -62,13 +62,14 @@ export interface CheckinEingang {
 export function leseAnalyse(roh: unknown): AnalyseEingang {
   const daten = objekt(roh);
 
-  const module = leseModule(daten.module);
+  const ausrichtung = leseAusrichtung(daten.ausrichtung);
+  const module = leseModule(daten.module, ausrichtung);
   const { typen, bilder } = leseAnalyseBilder(daten.bilder);
 
   return {
     prompt: {
       sprache: leseSprache(daten.sprache),
-      ausrichtung: leseAusrichtung(daten.ausrichtung),
+      ausrichtung,
       module,
       profil: leseProfil(daten.profil),
       figur: leseFigur(daten.eingaben),
@@ -80,11 +81,14 @@ export function leseAnalyse(roh: unknown): AnalyseEingang {
   };
 }
 
-function leseModule(roh: unknown): Modul[] {
+function leseModule(roh: unknown, ausrichtung: Ausrichtung): Modul[] {
   const namen = Array.isArray(roh) ? roh.filter(istModul) : [];
   // Die Basis ist nicht verhandelbar – genau wie in AnalyseModul.ausNamen.
   const gewaehlt = new Set<Modul>(['basis', ...namen]);
-  return MODULE.filter((m) => gewaehlt.has(m));
+  // Und die Ausrichtung entscheidet, was es ueberhaupt geben kann. Ein
+  // Client, der im maennlichen Modus ein Make-up-Kapitel bestellt, bekommt
+  // keins – hier faellt es weg, nicht erst im Prompt.
+  return moduleFuer(ausrichtung).filter((m) => gewaehlt.has(m));
 }
 
 function leseAnalyseBilder(roh: unknown): { typen: string[]; bilder: string[] } {

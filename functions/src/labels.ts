@@ -1,4 +1,5 @@
 import { type Sprache, type Zweisprachig } from './sprache';
+import { type Ausrichtung } from './ausrichtung';
 
 /**
  * Beschriftungen zu den stabilen Enum-Namen der App – in beiden Sprachen.
@@ -58,6 +59,22 @@ export type Modul = (typeof MODULE)[number];
 
 export function istModul(name: unknown): name is Modul {
   return typeof name === 'string' && (MODULE as readonly string[]).includes(name);
+}
+
+/**
+ * Die Module, die es in dieser Ausrichtung ueberhaupt gibt.
+ *
+ * Spiegelt `AnalyseModul.waehlbareFuer` im Client. Es steht hier ein zweites
+ * Mal, weil der Client nicht vertrauenswuerdig ist: Eine alte oder
+ * manipulierte Fassung darf kein Kapitel bestellen koennen, das es in ihrem
+ * Modus nicht gibt.
+ *
+ * Bart ist bewusst nicht dabei – er ist kein Modul, sondern ein Abschnitt der
+ * Basis. Ihn haelt die Nachbereitung heraus, nicht diese Liste.
+ */
+export function moduleFuer(ausrichtung: Ausrichtung): readonly Modul[] {
+  if (ausrichtung !== 'maennlich') return MODULE;
+  return MODULE.filter((m) => m !== 'makeupAusstrahlung');
 }
 
 /** Ueberschrift des Report-Kapitels (AnalyseModul.kapitel). */

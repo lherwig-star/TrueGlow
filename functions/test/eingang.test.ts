@@ -31,6 +31,63 @@ describe('leseAnalyse', () => {
     expect(eingang.prompt.module).toEqual(['basis', 'zaehneLaecheln']);
   });
 
+  it('nimmt Sprache und Ausrichtung mit', () => {
+    const eingang = leseAnalyse(
+      analysePayload({ sprache: 'en', ausrichtung: 'weiblich' }),
+    );
+
+    expect(eingang.prompt.sprache).toBe('en');
+    expect(eingang.prompt.ausrichtung).toBe('weiblich');
+  });
+
+  it('faellt ohne beide Felder auf Deutsch und maennlich zurueck', () => {
+    // Ein alter Client kennt die Felder nicht. Er soll genau das bekommen,
+    // was er bisher bekommen hat – nicht Englisch.
+    const eingang = leseAnalyse(analysePayload());
+
+    expect(eingang.prompt.sprache).toBe('de');
+    expect(eingang.prompt.ausrichtung).toBe('maennlich');
+  });
+
+  it('reicht genau die gewaehlten Module durch', () => {
+    const eingang = leseAnalyse(
+      analysePayload({
+        ausrichtung: 'weiblich',
+        module: ['makeupAusstrahlung', 'figurPassform'],
+      }),
+    );
+
+    expect(eingang.prompt.module).toEqual([
+      'basis',
+      'makeupAusstrahlung',
+      'figurPassform',
+    ]);
+  });
+
+  it('streicht Make-up, wenn die Ausrichtung es nicht kennt', () => {
+    // Der Client bietet es im maennlichen Modus gar nicht an. Eine alte oder
+    // manipulierte Fassung soll es trotzdem nicht bestellen koennen.
+    const eingang = leseAnalyse(
+      analysePayload({
+        ausrichtung: 'maennlich',
+        module: ['makeupAusstrahlung', 'zaehneLaecheln'],
+      }),
+    );
+
+    expect(eingang.prompt.module).toEqual(['basis', 'zaehneLaecheln']);
+  });
+
+  it('im neutralen Modus steht Make-up zur Verfuegung', () => {
+    const eingang = leseAnalyse(
+      analysePayload({
+        ausrichtung: 'neutral',
+        module: ['makeupAusstrahlung'],
+      }),
+    );
+
+    expect(eingang.prompt.module).toEqual(['basis', 'makeupAusstrahlung']);
+  });
+
   it('wirft fotosFehlen ohne Bilder', () => {
     expect(() => leseAnalyse(analysePayload({ bilder: [] }))).toThrowError(
       /fotosFehlen/,
