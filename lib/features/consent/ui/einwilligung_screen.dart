@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/l10n/app_strings.dart';
+import '../../../core/l10n/texte.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_page.dart';
@@ -26,6 +26,7 @@ class EinwilligungScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final ausAlterZustimmung = ref.watch(ausAlterZustimmungProvider);
     final pflichtFehlt = ref.watch(pflichtEinwilligungFehltProvider);
 
@@ -44,7 +45,7 @@ class EinwilligungScreen extends ConsumerWidget {
                     .offeneAlsGefragtVermerken();
                 context.go(Routes.home);
               },
-        child: const Text(S.weiter),
+        child: Text(texte.weiter),
       ),
       children: [
         SectionCard(

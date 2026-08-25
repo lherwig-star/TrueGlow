@@ -1,9 +1,12 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
+import 'package:trueglow/core/l10n/sprache.dart';
+import 'package:trueglow/core/l10n/texte.dart';
 import 'package:trueglow/core/storage/hive_service.dart';
+import 'package:trueglow/core/theme/app_theme.dart';
 import 'package:trueglow/core/storage/key_value_store.dart';
 import 'package:trueglow/features/analysis/logic/analysis_controller.dart';
 import 'package:trueglow/features/analysis/logic/mock_analysis_service.dart';
@@ -19,6 +22,14 @@ import 'package:trueglow/features/onboarding/logic/onboarding_controller.dart';
 import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
 import 'package:trueglow/main.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
+/// Die deutschen Texte – dieselbe Quelle, aus der auch die App sie zieht.
+///
+/// Die Tests pruefen auf sichtbare Saetze. Waeren die hier von Hand
+/// abgeschrieben, wuerde eine geaenderte Formulierung in der ARB-Datei den
+/// Test nicht mehr erreichen: Er suchte weiter nach dem alten Satz und faende
+/// ihn nicht – als Fehler, der nach einem echten Fehler aussieht.
+final texte = lookupL(const Locale('de'));
 
 /// Richtet Hive fuer einen Test in einem temporaeren Verzeichnis ein und
 /// raeumt danach wieder auf. In jedem Test aufrufen, der Provider benutzt,
@@ -42,6 +53,19 @@ void hiveImTest() {
     }
   });
 }
+
+/// Rahmen fuer Tests, die ein einzelnes Widget pruefen statt der ganzen App.
+///
+/// Enthaelt genau das, was die Widgets von oben erwarten: die App-Themes –
+/// die Farben haengen an einer Theme-Extension und waeren sonst nicht da –
+/// und die Lokalisierung, festgenagelt auf Deutsch.
+Widget testHuelle(Widget kind) => MaterialApp(
+      theme: AppTheme.dark,
+      locale: const Locale('de'),
+      localizationsDelegates: L.localizationsDelegates,
+      supportedLocales: L.supportedLocales,
+      home: kind,
+    );
 
 /// Der Sucher und die Ergebnis-Karten sind hoch – im Standard-Testfenster
 /// (800x600) liegt vieles ausserhalb der ListView und wird nicht gebaut.
@@ -81,6 +105,14 @@ List<Override> dienstOverrides({AuthRepository? anmeldung}) => [
       // beides gibt es im Widget-Test nicht. Ohne diesen Override bleibt
       // etwa `fotosLoeschen()` haengen, weil der Plattformkanal nie antwortet.
       imageQualityServiceProvider.overrideWithValue(const BildpruefungOhneGeraet()),
+      // Widget-Tests laufen auf Deutsch. Ohne diese Festlegung entscheidet
+      // das Gebietsschema der Testumgebung – und das steht auf en_US. Die
+      // Tests suchten dann deutsche Saetze in einer englischen Oberflaeche.
+      sprachControllerProvider.overrideWith((ref) {
+        final ctrl = SprachController(MemoryStore());
+        ctrl.setzen(Sprache.deutsch);
+        return ctrl;
+      }),
     ];
 
 /// Speicher plus Dienste – der Standardsatz fuer Widget-Tests.

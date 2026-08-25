@@ -1,0 +1,21 @@
+# Erzeugung der Lokalisierungsklassen aus den ARB-Dateien.
+#
+# Deutsch ist die Vorlage: Die App wurde auf Deutsch geschrieben, dort stehen
+# also die Originaltexte samt Beschreibungen. Eine weitere Sprache braucht nur
+# eine zusaetzliche Datei `app_<code>.arb` neben den bestehenden – hier ist
+# nichts nachzutragen.
+arb-dir: lib/l10n
+template-arb-file: app_de.arb
+output-localization-file: app_localizations.dart
+
+# Kurzer Name, weil er an sehr vielen Stellen steht. Zugriff im Code ueber
+# `context.texte` (siehe lib/core/l10n/texte.dart).
+output-class: L
+
+# Nicht nullbar: Die Delegates sind in main.dart gesetzt, ein fehlender
+# Localizations-Vorfahr waere ein Programmierfehler und soll auffallen.
+nullable-getter: false
+
+# Fehlende Uebersetzungen sind ein Fehler, kein stiller Rueckfall auf Deutsch.
+# Sonst faellt erst am Geraet auf, dass eine englische Zeile fehlt.
+untranslated-messages-file: l10n_fehlend.txt

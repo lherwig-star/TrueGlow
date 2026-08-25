@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/diagnose/diagnose_dienst.dart';
-import '../../../../core/l10n/app_strings.dart';
+import '../../../../core/l10n/texte.dart';
 import '../../../../core/netz/wiederholung.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -166,13 +166,14 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
 
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text(S.checkinDankeText)),
+      SnackBar(content: Text(context.texte.checkinDankeText)),
     );
     context.go(Routes.home);
   }
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     if (_laeuft) return _Laden(onAbbrechen: _abbrechen);
     if (_fehler case final fehler?) {
       return _Fehler(
@@ -188,15 +189,15 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          S.checkinDankeTitel,
+        Text(
+          texte.checkinDankeTitel,
           style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppTheme.gapM),
 
         if (auswertung.fazit.isNotEmpty) ...[
           SectionCard(
-            title: S.checkinFazitTitel,
+            title: texte.checkinFazitTitel,
             icon: Icons.insights_outlined,
             child: Text(auswertung.fazit, style: const TextStyle(height: 1.5)),
           ),
@@ -204,7 +205,7 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
         ],
 
         SectionCard(
-          title: S.checkinAenderungenTitel,
+          title: texte.checkinAenderungenTitel,
           icon: Icons.tune,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,7 +216,7 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
                   style: const TextStyle(height: 1.5),
                 ),
               if (!auswertung.aendertPlan)
-                const MutedText(S.checkinKeineAenderung)
+                MutedText(texte.checkinKeineAenderung)
               else ...[
                 const SizedBox(height: AppTheme.gapS),
                 for (final anpassung in auswertung.anpassungen)
@@ -232,8 +233,8 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
           style: FilledButton.styleFrom(shape: const StadiumBorder()),
           child: Text(
             auswertung.aendertPlan
-                ? S.checkinBestaetigen
-                : S.checkinAbschliessen,
+                ? texte.checkinBestaetigen
+                : texte.checkinAbschliessen,
           ),
         ),
         if (auswertung.aendertPlan) ...[
@@ -322,6 +323,7 @@ class _Laden extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppTheme.gapXl),
       child: Column(
@@ -332,8 +334,8 @@ class _Laden extends StatelessWidget {
             child: CircularProgressIndicator(strokeWidth: 3),
           ),
           const SizedBox(height: AppTheme.gapM),
-          const Text(
-            S.checkinAuswertungLaeuft,
+          Text(
+            texte.checkinAuswertungLaeuft,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           ),
@@ -366,6 +368,7 @@ class _Fehler extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
 
     return Column(
@@ -394,7 +397,7 @@ class _Fehler extends StatelessWidget {
           onPressed: blockiert ? null : onErneut,
           style: FilledButton.styleFrom(shape: const StadiumBorder()),
           icon: const Icon(Icons.refresh),
-          label: const Text(S.erneutVersuchen),
+          label: Text(texte.erneutVersuchen),
         ),
         const SizedBox(height: AppTheme.gapS),
         // Der Check-in darf nicht am Netz haengen bleiben: Die Antworten sind

@@ -6,7 +6,11 @@ import 'package:trueglow/core/storage/key_value_store.dart';
 import 'package:trueglow/core/theme/app_colors.dart';
 import 'package:trueglow/core/theme/app_theme.dart';
 import 'package:trueglow/core/theme/theme_controller.dart';
+import 'package:trueglow/core/l10n/texte.dart';
 import 'package:trueglow/features/capture/logic/live_face_guide.dart';
+
+/// Die deutschen Texte, gegen die geprueft wird.
+final texte = lookupL(const Locale('de'));
 
 /// Bildgroesse eines aufgerichteten Vorschau-Frames im Hochformat.
 const _bild = Size(720, 1280);
@@ -92,7 +96,7 @@ void main() {
 
     test('jeder Hinweis hat einen Text, nur perfekt ist bereit', () {
       for (final hinweis in LiveHinweis.values) {
-        expect(hinweis.text, isNotEmpty);
+        expect(hinweis.text(texte), isNotEmpty);
         expect(hinweis.bereit, hinweis == LiveHinweis.perfekt);
       }
     });

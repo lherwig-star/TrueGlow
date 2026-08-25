@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/l10n/app_strings.dart';
+import '../../../core/l10n/texte.dart';
 import '../../../core/diagnose/diagnose_dienst.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
@@ -66,6 +66,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
     final anbieter = AuthAnbieter.values
         .where((a) => a.verfuegbarAuf(defaultTargetPlatform))
@@ -81,7 +82,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               Icon(Icons.auto_awesome, size: 48, color: farben.akzent),
               const SizedBox(height: AppTheme.gapM),
               Text(
-                S.appName,
+                texte.appName,
                 style: const TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.w800,

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/diagnose/diagnose_dienst.dart';
-import '../../../core/l10n/app_strings.dart';
+import '../../../core/l10n/texte.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
@@ -71,16 +71,16 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
     final weg = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text(S.checkinAbbrechenTitel),
-        content: const Text(S.checkinAbbrechenText),
+        title: Text(context.texte.checkinAbbrechenTitel),
+        content: Text(context.texte.checkinAbbrechenText),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text(S.checkinFortsetzen),
+            child: Text(context.texte.checkinFortsetzen),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text(S.checkinVerlassen),
+            child: Text(context.texte.checkinVerlassen),
           ),
         ],
       ),
@@ -91,13 +91,14 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final zustand = ref.watch(checkinControllerProvider);
     final analyse = ref.watch(aktuelleAnalyseProvider);
     final checkin = zustand.entwurf;
 
     if (analyse == null || checkin == null) {
-      return const AppPage(
-        title: S.checkinTitel,
+      return AppPage(
+        title: texte.checkinTitel,
         children: [
           SizedBox(height: AppTheme.gapXl),
           MutedText(
@@ -199,7 +200,7 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
 
   String _beschriftung(CheckinSchritt schritt) => switch (schritt) {
         IntroSchritt() => 'Los geht es',
-        _ => S.weiter,
+        _ => context.texte.weiter,
       };
 }
 
@@ -300,11 +301,12 @@ class _Erwartung extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          S.checkinHinweisTitel,
+        Text(
+          texte.checkinHinweisTitel,
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppTheme.gapM),

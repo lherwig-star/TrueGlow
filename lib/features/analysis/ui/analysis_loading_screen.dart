@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/l10n/app_strings.dart';
+import '../../../core/l10n/texte.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
@@ -128,6 +128,7 @@ class _Laden extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     // Scrollbar, damit der Inhalt auf kleinen Geraeten und bei grosser
     // Systemschrift nicht ueberlaeuft.
     return SingleChildScrollView(
@@ -151,14 +152,14 @@ class _Laden extends StatelessWidget {
           ),
           const SizedBox(height: AppTheme.gapS),
           Text(
-            S.analyseHinweis,
+            texte.analyseHinweis,
             textAlign: TextAlign.center,
             style: TextStyle(color: context.farben.textSekundaer, fontSize: 14),
           ),
           const SizedBox(height: AppTheme.gapXl),
           const _SkeletonBlock(),
           const SizedBox(height: AppTheme.gapS),
-          TextButton(onPressed: onAbbrechen, child: const Text(S.abbrechen)),
+          TextButton(onPressed: onAbbrechen, child: Text(texte.abbrechen)),
         ],
       ),
     );
@@ -228,6 +229,7 @@ class _Fehler extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
 
     return Column(
@@ -265,12 +267,12 @@ class _Fehler extends StatelessWidget {
         FilledButton.icon(
           onPressed: onErneut,
           icon: const Icon(Icons.refresh),
-          label: const Text(S.erneutVersuchen),
+          label: Text(texte.erneutVersuchen),
         ),
         const SizedBox(height: AppTheme.gapS),
         OutlinedButton(
           onPressed: onZurueck,
-          child: const Text(S.zurueck),
+          child: Text(texte.zurueck),
         ),
       ],
     );

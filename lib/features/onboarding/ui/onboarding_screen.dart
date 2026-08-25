@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/l10n/app_strings.dart';
+import '../../../core/l10n/texte.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
@@ -80,6 +80,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final profil = ref.watch(onboardingControllerProvider);
     final ctrl = ref.read(onboardingControllerProvider.notifier);
     final pflichtErteilt = !ref.watch(pflichtEinwilligungFehltProvider);
@@ -122,7 +123,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         width: 120,
                         child: OutlinedButton(
                           onPressed: _zurueck,
-                          child: const Text(S.zurueck),
+                          child: Text(texte.zurueck),
                         ),
                       ),
                     ),
@@ -132,7 +133,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           ? _weiter
                           : null,
                       child: Text(
-                        _seite == _anzahlSeiten - 1 ? 'Los geht es' : S.weiter,
+                        _seite == _anzahlSeiten - 1 ? 'Los geht es' : texte.weiter,
                       ),
                     ),
                   ),
@@ -226,9 +227,10 @@ class _WillkommenSeite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _Seite(
-      titel: S.onbWillkommenTitel,
-      text: S.onbWillkommenText,
+    final texte = context.texte;
+    return _Seite(
+      titel: texte.onbWillkommenTitel,
+      text: texte.onbWillkommenText,
       children: [
         SectionCard(
           child: Column(
@@ -293,9 +295,10 @@ class _AlterBudgetSeite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     return _Seite(
-      titel: S.onbAlterTitel,
-      text: S.onbAlterText,
+      titel: texte.onbAlterTitel,
+      text: texte.onbAlterText,
       children: [
         Wrap(
           spacing: AppTheme.gapS,
@@ -310,12 +313,12 @@ class _AlterBudgetSeite extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AppTheme.gapL),
-        const Text(
-          S.onbBudgetTitel,
+        Text(
+          texte.onbBudgetTitel,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppTheme.gapXs),
-        const MutedText(S.onbBudgetText),
+        MutedText(texte.onbBudgetText),
         const SizedBox(height: AppTheme.gapM),
         for (final b in Budget.values)
           Padding(
@@ -340,9 +343,10 @@ class _ZeitSeite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     return _Seite(
-      titel: S.onbZeitTitel,
-      text: S.onbZeitText,
+      titel: texte.onbZeitTitel,
+      text: texte.onbZeitText,
       children: [
         for (final z in Zeitbudget.values)
           Padding(
@@ -367,9 +371,10 @@ class _FokusSeite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     return _Seite(
-      titel: S.onbFokusTitel,
-      text: S.onbFokusText,
+      titel: texte.onbFokusTitel,
+      text: texte.onbFokusText,
       children: [
         for (final f in Fokusbereich.values)
           Padding(
@@ -396,20 +401,21 @@ class _DatenschutzSeite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     return _Seite(
-      titel: S.onbDatenschutzTitel,
+      titel: texte.onbDatenschutzTitel,
       text: 'Bitte lies die folgenden Hinweise, bevor es losgeht.',
-      children: const [
+      children: [
         SectionCard(
           title: 'Keine medizinische Beratung',
           icon: Icons.medical_information_outlined,
-          child: MutedText(S.disclaimerMedizin),
+          child: MutedText(texte.disclaimerMedizin),
         ),
         SizedBox(height: AppTheme.gapS),
         SectionCard(
           title: 'Umgang mit deinen Fotos',
           icon: Icons.lock_outline,
-          child: MutedText(S.disclaimerFotos),
+          child: MutedText(texte.disclaimerFotos),
         ),
         SizedBox(height: AppTheme.gapM),
         EinwilligungsAuswahl(kanal: Einwilligungskanal.onboarding),

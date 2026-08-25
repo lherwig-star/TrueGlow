@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/l10n/app_strings.dart';
+import '../../../../core/l10n/texte.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/auswahl_chip.dart';
@@ -15,14 +15,15 @@ class StilFragebogen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final stil = ref.watch(moduleControllerProvider).eingaben.stil;
     final ctrl = ref.read(moduleControllerProvider.notifier);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          S.stilFragebogenTitel,
+        Text(
+          texte.stilFragebogenTitel,
           style: TextStyle(
             fontSize: 26,
             fontWeight: FontWeight.w800,
@@ -30,11 +31,11 @@ class StilFragebogen extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppTheme.gapS),
-        const MutedText(S.stilFragebogenText),
+        MutedText(texte.stilFragebogenText),
         const SizedBox(height: AppTheme.gapM),
 
         // --- Stilziel: Mehrfachauswahl als Chips ---
-        const _Frage(titel: S.stilZiel, untertitel: S.stilZielText),
+        _Frage(titel: texte.stilZiel, untertitel: texte.stilZielText),
         Wrap(
           spacing: AppTheme.gapS,
           runSpacing: AppTheme.gapS,
@@ -54,7 +55,7 @@ class StilFragebogen extends ConsumerWidget {
         const SizedBox(height: AppTheme.gapL),
 
         // --- Dresscode ---
-        const _Frage(titel: S.stilDresscode),
+        _Frage(titel: texte.stilDresscode),
         for (final code in Dresscode.values)
           _Zeile(
             label: code.label,
@@ -64,7 +65,7 @@ class StilFragebogen extends ConsumerWidget {
         const SizedBox(height: AppTheme.gapL),
 
         // --- Budget ---
-        const _Frage(titel: S.stilBudget),
+        _Frage(titel: texte.stilBudget),
         for (final budget in Kleidungsbudget.values)
           _Zeile(
             label: budget.label,
@@ -74,7 +75,7 @@ class StilFragebogen extends ConsumerWidget {
         const SizedBox(height: AppTheme.gapL),
 
         // --- Pflegeaufwand ---
-        const _Frage(titel: S.stilPflege),
+        _Frage(titel: texte.stilPflege),
         for (final aufwand in Pflegeaufwand.values)
           _Zeile(
             label: aufwand.label,

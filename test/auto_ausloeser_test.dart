@@ -1,11 +1,15 @@
 import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:trueglow/core/l10n/texte.dart';
 import 'package:trueglow/features/capture/logic/auto_ausloeser.dart';
 import 'package:trueglow/features/capture/logic/live_face_guide.dart';
 import 'package:trueglow/features/capture/logic/live_koerper_guide.dart';
 import 'package:trueglow/features/capture/logic/signalton.dart';
 import 'package:trueglow/features/capture/ui/widgets/silhouette_overlay.dart';
+
+/// Die deutschen Texte, gegen die geprueft wird.
+final texte = lookupL(const Locale('de'));
 
 /// Der Auto-Ausloeser fuer die Ganzkoerperfotos.
 ///
@@ -328,7 +332,7 @@ void main() {
 
     test('nur „bereit" loest aus, und jeder Hinweis hat einen Text', () {
       for (final hinweis in KoerperHinweis.values) {
-        expect(hinweis.text, isNotEmpty, reason: '${hinweis.name} ohne Text');
+        expect(hinweis.text(texte), isNotEmpty, reason: '${hinweis.name} ohne Text');
         expect(hinweis.loestAus, hinweis == KoerperHinweis.bereit);
       }
     });

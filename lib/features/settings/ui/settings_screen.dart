@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/l10n/app_strings.dart';
+import '../../../core/l10n/sprache.dart';
+import '../../../core/l10n/texte.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/storage/hive_service.dart';
 import '../../../core/theme/app_colors.dart';
@@ -34,8 +35,9 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     return AppPage(
-      title: S.einstellungenTitel,
+      title: texte.einstellungenTitel,
       children: [
         const _KontoKarte(),
         const SizedBox(height: AppTheme.gapS),
@@ -45,20 +47,20 @@ class SettingsScreen extends ConsumerWidget {
             children: [
               _Eintrag(
                 icon: Icons.tune,
-                label: S.einstellungenAngaben,
+                label: texte.einstellungenAngaben,
                 onTap: () => _angabenAendern(context, ref),
               ),
               const Divider(indent: AppTheme.gapM, endIndent: AppTheme.gapM),
               _Eintrag(
                 icon: Icons.delete_outline,
-                label: S.einstellungenDatenLoeschen,
+                label: texte.einstellungenDatenLoeschen,
                 gefahr: true,
                 onTap: () => _loeschen(context, ref, Loeschmodus.nurDaten),
               ),
               const Divider(indent: AppTheme.gapM, endIndent: AppTheme.gapM),
               _Eintrag(
                 icon: Icons.no_accounts_outlined,
-                label: S.einstellungenKontoLoeschen,
+                label: texte.einstellungenKontoLoeschen,
                 gefahr: true,
                 onTap: () =>
                     _loeschen(context, ref, Loeschmodus.kontoKomplett),
@@ -71,7 +73,7 @@ class SettingsScreen extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(vertical: AppTheme.gapXs),
           child: _Eintrag(
             icon: Icons.gavel_outlined,
-            label: S.einstellungenRechtliches,
+            label: texte.einstellungenRechtliches,
             onTap: () => context.push(Routes.rechtliches),
           ),
         ),
@@ -80,11 +82,13 @@ class SettingsScreen extends ConsumerWidget {
         const SizedBox(height: AppTheme.gapS),
         const _ErscheinungsbildKarte(),
         const SizedBox(height: AppTheme.gapS),
+        const _SprachKarte(),
+        const SizedBox(height: AppTheme.gapS),
         const _ModusKarte(),
         const SizedBox(height: AppTheme.gapM),
-        const Padding(
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: AppTheme.gapXs),
-          child: MutedText(S.disclaimerMedizin),
+          child: MutedText(texte.disclaimerMedizin),
         ),
       ],
     );
@@ -128,7 +132,7 @@ class SettingsScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text(S.abbrechen),
+            child: Text(context.texte.abbrechen),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
@@ -440,7 +444,7 @@ class _KontoKarte extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text(S.abbrechen),
+            child: Text(context.texte.abbrechen),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
@@ -539,6 +543,50 @@ class _Eintrag extends StatelessWidget {
   }
 }
 
+/// Umschalter Deutsch / English.
+///
+/// Wirkt sofort und ueberall: Die `MaterialApp` haengt mit ihrer `locale` am
+/// selben Provider, ein Wechsel baut damit den ganzen Baum neu.
+class _SprachKarte extends ConsumerWidget {
+  const _SprachKarte();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
+    final gewaehlt = ref.watch(sprachControllerProvider);
+    final aktiv = ref.watch(aktiveSpracheProvider);
+
+    return SectionCard(
+      title: texte.einstellungenSprache,
+      icon: Icons.translate_outlined,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SegmentedButton<Sprache>(
+            segments: [
+              for (final sprache in Sprache.values)
+                ButtonSegment(value: sprache, label: Text(sprache.name)),
+            ],
+            // Auch ohne eigene Wahl ist eine Sprache markiert – die, in der
+            // die App gerade laeuft. Ein leerer Umschalter waere eine Frage,
+            // auf die der Bildschirm ringsum schon die Antwort zeigt.
+            selected: {aktiv},
+            showSelectedIcon: false,
+            onSelectionChanged: (auswahl) =>
+                ref.read(sprachControllerProvider.notifier).setzen(auswahl.first),
+          ),
+          const SizedBox(height: AppTheme.gapS),
+          MutedText(
+            gewaehlt == null ? texte.spracheFolgtGeraet : texte.spracheFest,
+          ),
+          const SizedBox(height: AppTheme.gapXs),
+          MutedText(texte.spracheReportHinweis),
+        ],
+      ),
+    );
+  }
+}
+
 /// Umschalter Hell / Dunkel / System. Die Auswahl wirkt sofort, weil das
 /// Theme im [MaterialApp] direkt am Provider haengt.
 class _ErscheinungsbildKarte extends ConsumerWidget {
@@ -546,10 +594,11 @@ class _ErscheinungsbildKarte extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final aktuell = ref.watch(themeControllerProvider);
 
     return SectionCard(
-      title: S.einstellungenErscheinungsbild,
+      title: texte.einstellungenErscheinungsbild,
       icon: Icons.palette_outlined,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

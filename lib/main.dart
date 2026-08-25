@@ -2,6 +2,7 @@ import 'dart:ui' show PlatformDispatcher;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/cloud/cloud_provider.dart';
@@ -9,7 +10,8 @@ import 'core/cloud/cloud_speicher.dart';
 import 'core/diagnose/diagnose_dienst.dart';
 import 'core/firebase/einrichtung_hinweis.dart';
 import 'core/firebase/firebase_start.dart';
-import 'core/l10n/app_strings.dart';
+import 'core/l10n/sprache.dart';
+import 'core/l10n/texte.dart';
 import 'core/netz/netz_zustand.dart';
 import 'core/router/app_router.dart';
 import 'core/storage/hive_service.dart';
@@ -137,6 +139,17 @@ class _TrueGlowAppState extends ConsumerState<TrueGlowApp> {
     }
   }
 
+  /// Welche Sprache das Geraet bekommt, wenn der Nutzer keine gewaehlt hat.
+  ///
+  /// Ohne diesen Rueckfall nimmt Flutter bei einer unbekannten Sprache den
+  /// **ersten** Eintrag aus `supportedLocales`, und das waere Deutsch – ein
+  /// franzoesisches Handy bekaeme also Deutsch statt Englisch.
+  static Locale _spracheAufloesen(
+    Locale? geraet,
+    Iterable<Locale> unterstuetzt,
+  ) =>
+      Sprache.fuerGeraet(geraet ?? const Locale('en')).locale;
+
   @override
   Widget build(BuildContext context) {
     // Nach jedem Wechsel des Kontos – Anmeldung, Abmeldung, Verknuepfung –
@@ -147,12 +160,28 @@ class _TrueGlowAppState extends ConsumerState<TrueGlowApp> {
     // `read`: Der Widerruf soll sofort wirken, nicht beim naechsten Start.
     ref.watch(diagnoseSchalterProvider);
 
+    // `null` heisst „der Nutzer hat nichts gewaehlt" – dann entscheidet
+    // [_spracheAufloesen] anhand des Geraets.
+    final gewaehlt = ref.watch(sprachControllerProvider);
+
     return MaterialApp.router(
-      title: S.appName,
+      onGenerateTitle: (context) => context.texte.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ref.watch(themeControllerProvider).modus,
+      locale: gewaehlt?.locale,
+      supportedLocales: L.supportedLocales,
+      localizationsDelegates: const [
+        L.delegate,
+        // Die drei bringen die uebersetzten Systemtexte mit – Datumsauswahl,
+        // Kontextmenue der Textfelder, Vorlesefunktion – und die Datums- und
+        // Zahlformate der jeweiligen Sprache.
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      localeResolutionCallback: _spracheAufloesen,
       routerConfig: ref.watch(routerProvider),
       // Statusbar und Navigationsleiste folgen dem tatsaechlich aufgeloesten
       // Schema – bei "System" also der Systemeinstellung des Handys.

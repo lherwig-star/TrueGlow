@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:trueglow/core/l10n/app_strings.dart';
 import 'package:trueglow/core/router/app_router.dart';
 import 'package:trueglow/core/storage/key_value_store.dart';
 import 'package:trueglow/features/analysis/logic/analyse_anfrage.dart';
@@ -242,11 +241,11 @@ void main() {
       container.read(routerProvider).push(Routes.module);
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text(S.moduleStartBasis));
+      await tester.tap(find.text(texte.moduleStartBasis));
       await tester.pumpAndSettle();
 
-      expect(find.text(S.richtungUeberschrift), findsOneWidget);
-      expect(find.text(S.flowUeberspringen), findsOneWidget);
+      expect(find.text(texte.richtungUeberschrift), findsOneWidget);
+      expect(find.text(texte.flowUeberspringen), findsOneWidget);
     });
 
     testWidgets('Chips und Freitext landen im Controller', (tester) async {
@@ -308,9 +307,9 @@ void main() {
       container.read(routerProvider).push('${Routes.result}/report1');
       await tester.pumpAndSettle();
 
-      expect(find.text(S.richtungTitel), findsOneWidget);
+      expect(find.text(texte.richtungTitel), findsOneWidget);
       expect(find.text(Richtungsziel.gepflegter.label), findsOneWidget);
-      expect(find.text(S.richtungAktualisieren), findsNothing);
+      expect(find.text(texte.richtungAktualisieren), findsNothing);
 
       // Richtung aendern -> der Report bietet die Neuberechnung an.
       container
@@ -318,7 +317,7 @@ void main() {
           .umschalten(Richtungsziel.sportlicher);
       await tester.pumpAndSettle();
 
-      expect(find.text(S.richtungAktualisieren), findsOneWidget);
+      expect(find.text(texte.richtungAktualisieren), findsOneWidget);
     });
   });
 }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/l10n/app_strings.dart';
+import '../../../../core/l10n/texte.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -24,6 +24,7 @@ class FortschrittsfotoSchritt extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final zustand = ref.watch(checkinControllerProvider);
     final farben = context.farben;
     final pfad = checkin.fortschrittsfoto;
@@ -31,12 +32,12 @@ class FortschrittsfotoSchritt extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          S.checkinFotoTitel,
+        Text(
+          texte.checkinFotoTitel,
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppTheme.gapS),
-        const MutedText(S.checkinFotoText),
+        MutedText(texte.checkinFotoText),
         const SizedBox(height: AppTheme.gapM),
 
         if (zustand.fotoProblem case final problem?) ...[
@@ -105,7 +106,7 @@ class FortschrittsfotoSchritt extends ConsumerWidget {
             onPressed: () => _aufnehmen(context),
             style: OutlinedButton.styleFrom(shape: const StadiumBorder()),
             icon: const Icon(Icons.photo_camera_outlined),
-            label: const Text(S.checkinFotoNeu),
+            label: Text(texte.checkinFotoNeu),
           ),
         ] else ...[
           SectionCard(
@@ -113,10 +114,10 @@ class FortschrittsfotoSchritt extends ConsumerWidget {
             icon: Icons.wb_sunny_outlined,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                MutedText(S.lichtTageslichtText),
+              children: [
+                MutedText(texte.lichtTageslichtText),
                 SizedBox(height: AppTheme.gapS),
-                MutedText(S.lichtKeinFilterText),
+                MutedText(texte.lichtKeinFilterText),
               ],
             ),
           ),
@@ -125,10 +126,10 @@ class FortschrittsfotoSchritt extends ConsumerWidget {
             onPressed: zustand.fotoLaeuft ? null : () => _aufnehmen(context),
             style: FilledButton.styleFrom(shape: const StadiumBorder()),
             icon: const Icon(Icons.photo_camera_outlined),
-            label: const Text(S.checkinFotoAufnehmen),
+            label: Text(texte.checkinFotoAufnehmen),
           ),
           const SizedBox(height: AppTheme.gapS),
-          const Center(child: MutedText(S.checkinFotoOhne)),
+          Center(child: MutedText(texte.checkinFotoOhne)),
         ],
       ],
     );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/l10n/app_strings.dart';
+import '../../../core/l10n/texte.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
@@ -101,6 +101,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final analyse = ref.watch(aktuelleAnalyseProvider);
 
     // Nach dem Frame pruefen: waehrend des Baus laesst sich kein Dialog
@@ -109,17 +110,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _pruefeJubel());
 
     return AppPage(
-      title: S.homeTitel,
+      title: texte.appName,
       showBackButton: false,
       actions: [
         IconButton(
           icon: const Icon(Icons.history),
-          tooltip: S.verlaufTitel,
+          tooltip: texte.verlaufTitel,
           onPressed: () => context.push(Routes.history),
         ),
         IconButton(
           icon: const Icon(Icons.settings_outlined),
-          tooltip: S.einstellungenTitel,
+          tooltip: texte.einstellungenTitel,
           onPressed: () => context.push(Routes.settings),
         ),
       ],
@@ -153,21 +154,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ),
         const SizedBox(height: AppTheme.gapM),
-        const Text(
-          S.homeLeerTitel,
+        Text(
+          context.texte.homeLeerTitel,
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppTheme.gapS),
-        const Padding(
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: AppTheme.gapM),
-          child: MutedText(S.homeLeerText, align: TextAlign.center),
+          child: MutedText(context.texte.homeLeerText, align: TextAlign.center),
         ),
         const SizedBox(height: AppTheme.gapL),
         FilledButton.icon(
           onPressed: () => _neueAnalyse(context, ref),
           icon: const Icon(Icons.photo_camera_outlined),
-          label: const Text(S.homeAnalyseStarten),
+          label: Text(context.texte.homeAnalyseStarten),
         ),
       ];
 
@@ -206,7 +207,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 Expanded(
                   child: FilledButton(
                     onPressed: () => context.push(Routes.plan),
-                    child: const Text(S.homePlanAnsehen),
+                    child: Text(context.texte.homePlanAnsehen),
                   ),
                 ),
                 const SizedBox(width: AppTheme.gapS),
@@ -235,7 +236,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       OutlinedButton.icon(
         onPressed: () => _neueAnalyse(context, ref),
         icon: const Icon(Icons.refresh),
-        label: const Text(S.homeNeueAnalyse),
+        label: Text(context.texte.homeNeueAnalyse),
       ),
     ];
   }

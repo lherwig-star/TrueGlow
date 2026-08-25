@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/l10n/app_strings.dart';
+import '../../../core/l10n/texte.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
@@ -276,6 +276,7 @@ class _Aktionen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     // Ein optionales Foto darf uebersprungen werden – das muss auch
     // beschriftet sein, sonst wirkt der Weiter-Button wie ein Fehler.
     final ueberspringbar = schritt is FotoSchritt &&
@@ -283,10 +284,10 @@ class _Aktionen extends StatelessWidget {
         !erfuellt;
 
     final beschriftung = switch (schritt) {
-      LichtCheckSchritt() => S.lichtStarten,
-      _ when ueberspringbar => S.flowUeberspringen,
-      _ when letzter => S.fotoAnalyseStarten,
-      _ => S.weiter,
+      LichtCheckSchritt() => texte.lichtStarten,
+      _ when ueberspringbar => texte.flowUeberspringen,
+      _ when letzter => texte.fotoAnalyseStarten,
+      _ => texte.weiter,
     };
 
     return Row(
@@ -299,7 +300,7 @@ class _Aktionen extends StatelessWidget {
             child: OutlinedButton(
               onPressed: onZurueck,
               style: OutlinedButton.styleFrom(shape: const StadiumBorder()),
-              child: const Text(S.zurueck),
+              child: Text(texte.zurueck),
             ),
           ),
           const SizedBox(width: AppTheme.gapS),

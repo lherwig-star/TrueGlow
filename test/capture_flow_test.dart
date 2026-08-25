@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:trueglow/core/l10n/app_strings.dart';
-import 'package:trueglow/core/theme/app_theme.dart';
 import 'package:trueglow/features/capture/logic/aufnahme_flow.dart';
 import 'package:trueglow/features/capture/logic/capture_controller.dart';
 import 'package:trueglow/features/capture/logic/image_quality_service.dart';
@@ -223,11 +221,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: testOverrides(),
-        child: MaterialApp(
-          // Die Widgets lesen ihre Farben aus der AppColors-Extension, die
-          // nur an den App-Themes haengt.
-          theme: AppTheme.dark,
-          home: const Scaffold(
+        child: testHuelle(
+          const Scaffold(
             body: SingleChildScrollView(
               child: FotoSchrittAnsicht(typ: AufnahmeTyp.basisFrontal),
             ),
@@ -239,8 +234,8 @@ void main() {
 
     expect(find.text(AufnahmeTyp.basisFrontal.label), findsOneWidget);
     expect(find.text(AufnahmeTyp.basisFrontal.hinweis), findsOneWidget);
-    expect(find.text(S.fotoKamera), findsOneWidget);
-    expect(find.text(S.fotoGalerie), findsOneWidget);
+    expect(find.text(texte.fotoKamera), findsOneWidget);
+    expect(find.text(texte.fotoGalerie), findsOneWidget);
   });
 
   testWidgets('Fehlermeldung erscheint mit Titel und Tipp', (tester) async {
@@ -248,9 +243,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: testOverrides(),
-        child: MaterialApp(
-          theme: AppTheme.dark,
-          home: const Scaffold(
+        child: testHuelle(
+          const Scaffold(
             body: SingleChildScrollView(
               child: FotoSchrittAnsicht(typ: AufnahmeTyp.basisFrontal),
             ),
@@ -282,10 +276,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: testOverrides(),
-        child: MaterialApp(
-          theme: AppTheme.dark,
-          home: const CaptureFlowScreen(),
-        ),
+        child: testHuelle(const CaptureFlowScreen()),
       ),
     );
     await tester.pumpAndSettle();
@@ -391,7 +382,7 @@ void main() {
 
     test('kein Hinweis ohne Text, und nur „perfekt" gibt frei', () {
       for (final hinweis in LiveHinweis.values) {
-        expect(hinweis.text, isNotEmpty, reason: '${hinweis.name} ohne Text');
+        expect(hinweis.text(texte), isNotEmpty, reason: '${hinweis.name} ohne Text');
       }
       expect(LiveHinweis.zuDunkel.bereit, isFalse);
     });
@@ -402,12 +393,7 @@ void main() {
       testWidgets('$overlay zeichnet ohne Fehler', (tester) async {
         handyGroesse(tester);
         await tester.pumpWidget(
-          MaterialApp(
-            theme: AppTheme.dark,
-            home: Scaffold(
-              body: SilhouetteOverlay(overlay: overlay),
-            ),
-          ),
+          testHuelle(Scaffold(body: SilhouetteOverlay(overlay: overlay))),
         );
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull);

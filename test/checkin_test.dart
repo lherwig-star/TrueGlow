@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:trueglow/core/l10n/app_strings.dart';
 import 'package:trueglow/core/router/app_router.dart';
 import 'package:trueglow/core/storage/key_value_store.dart';
 import 'package:trueglow/features/analysis/logic/analysis_service.dart';
@@ -619,17 +618,17 @@ void main() {
       await _jubelWegtippen(tester);
 
       // Die Karte steht auf der Startseite.
-      expect(find.text(S.checkinKarteTitel), findsOneWidget);
-      await tester.tap(find.text(S.checkinStarten));
+      expect(find.text(texte.checkinKarteTitel), findsOneWidget);
+      await tester.tap(find.text(texte.checkinStarten));
       await tester.pumpAndSettle();
 
       // Intro -> Ratings.
       await tester.tap(find.text('Los geht es'));
       await tester.pumpAndSettle();
 
-      expect(find.text(S.checkinHabitsTitel), findsOneWidget);
+      expect(find.text(texte.checkinHabitsTitel), findsOneWidget);
       // Ohne Bewertung bleibt "Weiter" gesperrt.
-      final weiter = find.widgetWithText(FilledButton, S.weiter);
+      final weiter = find.widgetWithText(FilledButton, texte.weiter);
       expect(tester.widget<FilledButton>(weiter).onPressed, isNull);
 
       await tester.tap(find.text(HabitBewertung.laeuftGut.label).first);
@@ -642,16 +641,16 @@ void main() {
       await tester.tap(find.text(PasstNichtGrund.zeit.label));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.widgetWithText(FilledButton, S.weiter));
+      await tester.tap(find.widgetWithText(FilledButton, texte.weiter));
       await tester.pumpAndSettle();
 
       // pumpAndSettle spult die Wartezeit des Mock-Service mit vor.
       await tester.pumpAndSettle(AnalysisConfig.mockDauer);
 
-      expect(find.text(S.checkinDankeTitel), findsOneWidget);
+      expect(find.text(texte.checkinDankeTitel), findsOneWidget);
       expect(find.textContaining('30 Sekunden'), findsWidgets);
 
-      await tester.tap(find.text(S.checkinBestaetigen));
+      await tester.tap(find.text(texte.checkinBestaetigen));
       await tester.pumpAndSettle();
 
       // Der Plan traegt die Anpassung, der Rest ist unveraendert.
@@ -707,8 +706,8 @@ void main() {
       await tester.pumpAndSettle();
       await _jubelWegtippen(tester);
 
-      expect(find.text(S.checkinKarteTitel), findsNothing);
-      expect(find.textContaining(S.checkinNaechster), findsOneWidget);
+      expect(find.text(texte.checkinKarteTitel), findsNothing);
+      expect(find.textContaining(texte.checkinNaechster), findsOneWidget);
       expect(find.textContaining('in 5 Tagen'), findsOneWidget);
     });
   });

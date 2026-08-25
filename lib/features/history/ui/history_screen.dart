@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/l10n/app_strings.dart';
+import '../../../core/l10n/texte.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
@@ -18,10 +18,11 @@ class HistoryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final analysen = ref.watch(analysenProvider);
 
     return AppPage(
-      title: S.verlaufTitel,
+      title: texte.verlaufTitel,
       children: [
         if (analysen.isEmpty)
           Padding(
@@ -34,7 +35,7 @@ class HistoryScreen extends ConsumerWidget {
                   color: context.farben.textSekundaer,
                 ),
                 const SizedBox(height: AppTheme.gapS),
-                const MutedText(S.verlaufLeer, align: TextAlign.center),
+                MutedText(texte.verlaufLeer, align: TextAlign.center),
               ],
             ),
           )
@@ -69,7 +70,7 @@ class HistoryScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text(S.abbrechen),
+            child: Text(context.texte.abbrechen),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),

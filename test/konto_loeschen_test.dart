@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:trueglow/core/l10n/app_strings.dart';
 import 'package:trueglow/core/router/app_router.dart';
 import 'package:trueglow/features/account/logic/konto_dienst.dart';
 import 'package:trueglow/features/auth/logic/auth_repository.dart';
@@ -79,8 +78,8 @@ void main() {
     handyGroesse(tester, hoehe: 3000);
     await _einstellungen(tester);
 
-    expect(find.text(S.einstellungenDatenLoeschen), findsOneWidget);
-    expect(find.text(S.einstellungenKontoLoeschen), findsOneWidget);
+    expect(find.text(texte.einstellungenDatenLoeschen), findsOneWidget);
+    expect(find.text(texte.einstellungenKontoLoeschen), findsOneWidget);
   });
 
   testWidgets('"Daten löschen" raeumt die Cloud und behaelt das Konto',
@@ -88,7 +87,7 @@ void main() {
     handyGroesse(tester, hoehe: 3000);
     final (_, dienst, anmeldung) = await _einstellungen(tester);
 
-    await tester.tap(find.text(S.einstellungenDatenLoeschen));
+    await tester.tap(find.text(texte.einstellungenDatenLoeschen));
     await tester.pumpAndSettle();
     await _bestaetigen(tester, 'Löschen');
 
@@ -100,7 +99,7 @@ void main() {
     handyGroesse(tester, hoehe: 3000);
     final (_, dienst, anmeldung) = await _einstellungen(tester);
 
-    await tester.tap(find.text(S.einstellungenKontoLoeschen));
+    await tester.tap(find.text(texte.einstellungenKontoLoeschen));
     await tester.pumpAndSettle();
     await _bestaetigen(tester, 'Konto löschen');
 
@@ -116,7 +115,7 @@ void main() {
       dienst: _DienstAttrappe(fehlerBisNeuAnmeldung: 1),
     );
 
-    await tester.tap(find.text(S.einstellungenKontoLoeschen));
+    await tester.tap(find.text(texte.einstellungenKontoLoeschen));
     await tester.pumpAndSettle();
     await _bestaetigen(tester, 'Konto löschen');
 
@@ -137,7 +136,7 @@ void main() {
       dienst: _DienstAttrappe(dauerhafterFehler: KontoFehler.keinInternet),
     );
 
-    await tester.tap(find.text(S.einstellungenDatenLoeschen));
+    await tester.tap(find.text(texte.einstellungenDatenLoeschen));
     await tester.pumpAndSettle();
     await _bestaetigen(tester, 'Löschen');
 
@@ -162,7 +161,7 @@ void main() {
     container.read(routerProvider).go(Routes.settings);
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text(S.einstellungenDatenLoeschen));
+    await tester.tap(find.text(texte.einstellungenDatenLoeschen));
     await tester.pumpAndSettle();
     await _bestaetigen(tester, 'Löschen');
 

@@ -1,24 +1,37 @@
 import 'dart:ui';
 
-import '../../../core/l10n/app_strings.dart';
+import '../../../core/l10n/texte.dart';
 import 'image_quality_service.dart';
 
 /// Rueckmeldung der Live-Vorschau: was der Nutzer gerade aendern soll.
 enum LiveHinweis {
-  keinGesicht(S.kameraKeinGesicht),
-  zuDunkel(S.kameraZuDunkel),
-  zuWeitWeg(S.kameraZuWeitWeg),
-  zuNah(S.kameraZuNah),
-  nichtMittig(S.kameraNichtMittig),
-  perfekt(S.kameraPerfekt);
-
-  const LiveHinweis(this.text);
-
-  final String text;
+  keinGesicht,
+  zuDunkel,
+  zuWeitWeg,
+  zuNah,
+  nichtMittig,
+  perfekt;
 
   /// Nur bei [perfekt] wird die Silhouette eingefaerbt und der Ausloeser
   /// hervorgehoben.
   bool get bereit => this == LiveHinweis.perfekt;
+}
+
+/// Der Satz, der im Sucher steht.
+///
+/// Als Erweiterung und nicht als Feld des Enums: Ein Enum-Wert ist konstant,
+/// ein uebersetzter Text haengt an der gewaehlten Sprache. Die Zuordnung steht
+/// trotzdem hier, direkt neben der Liste – so faellt beim Ergaenzen eines
+/// Hinweises sofort auf, dass auch ein Text dazugehoert.
+extension LiveHinweisText on LiveHinweis {
+  String text(L texte) => switch (this) {
+        LiveHinweis.keinGesicht => texte.kameraKeinGesicht,
+        LiveHinweis.zuDunkel => texte.kameraZuDunkel,
+        LiveHinweis.zuWeitWeg => texte.kameraZuWeitWeg,
+        LiveHinweis.zuNah => texte.kameraZuNah,
+        LiveHinweis.nichtMittig => texte.kameraNichtMittig,
+        LiveHinweis.perfekt => texte.kameraPerfekt,
+      };
 }
 
 /// Bewertet einen Vorschau-Frame und leitet daraus den Hinweistext ab.

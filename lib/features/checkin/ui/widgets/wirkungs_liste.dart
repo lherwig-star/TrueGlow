@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/l10n/app_strings.dart';
+import '../../../../core/l10n/texte.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/section_card.dart';
@@ -24,6 +24,7 @@ class WirkungsListe extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final ctrl = ref.read(checkinControllerProvider.notifier);
     final spaet = checkin.typ == CheckinTyp.wirkung;
 
@@ -31,12 +32,12 @@ class WirkungsListe extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          spaet ? S.checkinWirkungTitelSpaet : S.checkinWirkungTitelFrueh,
+          spaet ? texte.checkinWirkungTitelSpaet : texte.checkinWirkungTitelFrueh,
           style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppTheme.gapS),
         MutedText(
-          spaet ? S.checkinWirkungTextSpaet : S.checkinWirkungTextFrueh,
+          spaet ? texte.checkinWirkungTextSpaet : texte.checkinWirkungTextFrueh,
         ),
         const SizedBox(height: AppTheme.gapM),
         for (final frage in fragen) ...[
@@ -199,6 +200,7 @@ class _NotizfeldState extends State<_Notizfeld> {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
 
     return TextField(
@@ -212,7 +214,7 @@ class _NotizfeldState extends State<_Notizfeld> {
       buildCounter: (_, {required currentLength, required isFocused, maxLength}) =>
           const SizedBox.shrink(),
       decoration: InputDecoration(
-        hintText: S.checkinWirkungNotiz,
+        hintText: texte.checkinWirkungNotiz,
         hintStyle: TextStyle(color: farben.textSekundaer),
         filled: true,
         fillColor: farben.flaecheHoch,

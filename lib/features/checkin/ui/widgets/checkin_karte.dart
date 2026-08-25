@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/l10n/app_strings.dart';
+import '../../../../core/l10n/texte.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -20,6 +20,7 @@ class CheckinKarte extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final zustand = ref.watch(checkinControllerProvider);
     if (!zustand.faellig()) return const SizedBox.shrink();
 
@@ -54,7 +55,7 @@ class CheckinKarte extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        S.checkinKarteTitel,
+                        texte.checkinKarteTitel,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w800,
@@ -75,14 +76,14 @@ class CheckinKarte extends ConsumerWidget {
             ),
             const SizedBox(height: AppTheme.gapS),
             MutedText(
-              begonnen ? S.checkinKarteFortsetzen : S.checkinKarteText,
+              begonnen ? texte.checkinKarteFortsetzen : texte.checkinKarteText,
             ),
             const SizedBox(height: AppTheme.gapM),
             FilledButton(
               onPressed: () => context.push(Routes.checkin),
               style: FilledButton.styleFrom(shape: const StadiumBorder()),
               child: Text(
-                begonnen ? S.checkinFortsetzen : S.checkinStarten,
+                begonnen ? texte.checkinFortsetzen : texte.checkinStarten,
               ),
             ),
           ],
@@ -99,6 +100,7 @@ class CheckinVorschau extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final zustand = ref.watch(checkinControllerProvider);
     final tage = zustand.tageBis;
     if (zustand.faellig() || tage == null || tage <= 0) {
@@ -119,7 +121,7 @@ class CheckinVorschau extends ConsumerWidget {
           const SizedBox(width: 6),
           Expanded(
             child: MutedText(
-              '${S.checkinNaechster} in $tage ${tage == 1 ? 'Tag' : 'Tagen'}',
+              '${texte.checkinNaechster} in $tage ${tage == 1 ? 'Tag' : 'Tagen'}',
             ),
           ),
         ],

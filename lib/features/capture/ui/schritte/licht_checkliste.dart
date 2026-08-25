@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/l10n/app_strings.dart';
+import '../../../../core/l10n/texte.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/section_card.dart';
@@ -12,11 +12,12 @@ class LichtCheckliste extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          S.lichtTitel,
+        Text(
+          texte.lichtTitel,
           style: TextStyle(
             fontSize: 26,
             fontWeight: FontWeight.w800,
@@ -24,24 +25,24 @@ class LichtCheckliste extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppTheme.gapS),
-        const MutedText(S.lichtText),
+        MutedText(texte.lichtText),
         const SizedBox(height: AppTheme.gapM),
-        const _Punkt(
+        _Punkt(
           icon: Icons.wb_sunny_outlined,
-          titel: S.lichtTageslicht,
-          text: S.lichtTageslichtText,
+          titel: texte.lichtTageslicht,
+          text: texte.lichtTageslichtText,
         ),
         const SizedBox(height: AppTheme.gapS),
-        const _Punkt(
+        _Punkt(
           icon: Icons.auto_fix_off_outlined,
-          titel: S.lichtKeinFilter,
-          text: S.lichtKeinFilterText,
+          titel: texte.lichtKeinFilter,
+          text: texte.lichtKeinFilterText,
         ),
         const SizedBox(height: AppTheme.gapS),
-        const _Punkt(
+        _Punkt(
           icon: Icons.back_hand_outlined,
-          titel: S.lichtRuhigeHand,
-          text: S.lichtRuhigeHandText,
+          titel: texte.lichtRuhigeHand,
+          text: texte.lichtRuhigeHandText,
         ),
       ],
     );

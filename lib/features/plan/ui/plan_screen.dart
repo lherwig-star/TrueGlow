@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/diagnose/diagnose_dienst.dart';
-import '../../../core/l10n/app_strings.dart';
+import '../../../core/l10n/texte.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
@@ -40,6 +40,7 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final analyse = ref.watch(aktuelleAnalyseProvider);
     final fortschritt = ref.watch(planFortschrittProvider);
     final farben = context.farben;
@@ -52,11 +53,11 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
         if (!didPop) context.go(Routes.home);
       },
       child: AppPage(
-        title: S.planTitel,
+        title: texte.planTitel,
         bottomBar: FilledButton.icon(
           onPressed: () => context.go(Routes.home),
           icon: const Icon(Icons.home_outlined),
-          label: const Text(S.planFertigZurStartseite),
+          label: Text(texte.planFertigZurStartseite),
         ),
         children: analyse == null
             ? [
@@ -95,7 +96,7 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
       ],
       if (plan.sofort.isNotEmpty) ...[
         _PhaseKarte(
-          titel: S.planSofort,
+          titel: context.texte.planSofort,
           icon: Icons.bolt_outlined,
           schritte: plan.sofort,
         ),
@@ -103,7 +104,7 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
       ],
       if (plan.dreissigTage.isNotEmpty) ...[
         _PhaseKarte(
-          titel: S.planDreissigTage,
+          titel: context.texte.planDreissigTage,
           icon: Icons.calendar_month_outlined,
           schritte: plan.dreissigTage,
         ),
@@ -111,7 +112,7 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
       ],
       if (plan.langfristig.isNotEmpty)
         _PhaseKarte(
-          titel: S.planLangfristig,
+          titel: context.texte.planLangfristig,
           icon: Icons.trending_up,
           schritte: plan.langfristig,
         ),

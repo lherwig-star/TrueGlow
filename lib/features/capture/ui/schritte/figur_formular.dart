@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/l10n/app_strings.dart';
+import '../../../../core/l10n/texte.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/section_card.dart';
@@ -60,13 +60,14 @@ class _FigurFormularState extends ConsumerState<FigurFormular> {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final angaben = ref.watch(moduleControllerProvider).eingaben.figur;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          S.figurFormularTitel,
+        Text(
+          texte.figurFormularTitel,
           style: TextStyle(
             fontSize: 26,
             fontWeight: FontWeight.w800,
@@ -74,27 +75,27 @@ class _FigurFormularState extends ConsumerState<FigurFormular> {
           ),
         ),
         const SizedBox(height: AppTheme.gapS),
-        const MutedText(S.figurFormularText),
+        MutedText(texte.figurFormularText),
         const SizedBox(height: AppTheme.gapM),
         _Feld(
           controller: _groesse,
-          label: S.figurGroesse,
+          label: texte.figurGroesse,
           einheit: 'cm',
           icon: Icons.straighten,
           fehler: _groesse.text.trim().isEmpty || angaben.groesseCm != null
               ? null
-              : S.figurGroesseFehler,
+              : texte.figurGroesseFehler,
           onChanged: (_) => setState(_uebernehmen),
         ),
         const SizedBox(height: AppTheme.gapS),
         _Feld(
           controller: _gewicht,
-          label: S.figurGewicht,
+          label: texte.figurGewicht,
           einheit: 'kg',
           icon: Icons.monitor_weight_outlined,
           fehler: _gewicht.text.trim().isEmpty || angaben.gewichtKg != null
               ? null
-              : S.figurGewichtFehler,
+              : texte.figurGewichtFehler,
           onChanged: (_) => setState(_uebernehmen),
         ),
         const SizedBox(height: AppTheme.gapS),

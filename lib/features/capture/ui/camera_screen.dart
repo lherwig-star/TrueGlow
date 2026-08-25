@@ -12,7 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/diagnose/diagnose_dienst.dart';
-import '../../../core/l10n/app_strings.dart';
+import '../../../core/l10n/texte.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../checkin/logic/checkin_controller.dart';
@@ -567,7 +567,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
     if (!mounted) return;
     setState(() {
       _loest = false;
-      _fehlschlag = S.aufnahmeFehlgeschlagen;
+      _fehlschlag = context.texte.aufnahmeFehlgeschlagen;
       // Ohne Zuruecksetzen bliebe der Auto-Ausloeser auf „ausgeloest" stehen:
       // Der Countdown liefe kein zweites Mal an, und wer drei Meter entfernt
       // steht, wartet vor einer Kamera, die nichts mehr tut.
@@ -672,6 +672,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
   @override
   Widget build(BuildContext context) {
     final farben = context.farben;
+    final texte = context.texte;
     final controller = _controller;
 
     // Ohne Erkennung gibt es nichts zu treffen – dann ist der Ausloeser
@@ -685,7 +686,9 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
     // Ein Fehlschlag schlaegt die Positionierungshilfe: Wer gerade kein Foto
     // bekommen hat, braucht diese Nachricht und nicht „Steht – nicht bewegen".
     final statustext = _fehlschlag ??
-        (widget.typ.autoAusloeser ? _koerperHinweis.text : _hinweis.text);
+        (widget.typ.autoAusloeser
+            ? _koerperHinweis.text(texte)
+            : _hinweis.text(texte));
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -852,6 +855,7 @@ class _Vorschaupruefung extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
 
     return ColoredBox(
@@ -880,8 +884,8 @@ class _Vorschaupruefung extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: AppTheme.gapM),
-                const Text(
-                  S.vorschauTitel,
+                Text(
+                  texte.vorschauTitel,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 22,
@@ -890,7 +894,7 @@ class _Vorschaupruefung extends StatelessWidget {
                 ),
                 const SizedBox(height: AppTheme.gapXs),
                 Text(
-                  S.vorschauHinweis,
+                  texte.vorschauHinweis,
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.white.withValues(alpha: 0.75)),
                 ),
@@ -905,7 +909,7 @@ class _Vorschaupruefung extends StatelessWidget {
                         child: OutlinedButton.icon(
                           onPressed: laeuft ? null : onWiederholen,
                           icon: const Icon(Icons.refresh),
-                          label: const Text(S.vorschauWiederholen),
+                          label: Text(texte.vorschauWiederholen),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.white,
                             side: const BorderSide(color: Colors.white54),
@@ -920,7 +924,7 @@ class _Vorschaupruefung extends StatelessWidget {
                         child: FilledButton.icon(
                           onPressed: laeuft ? null : onUebernehmen,
                           icon: const Icon(Icons.check),
-                          label: const Text(S.vorschauUebernehmen),
+                          label: Text(texte.vorschauUebernehmen),
                           style: FilledButton.styleFrom(
                             backgroundColor: farben.akzent,
                             foregroundColor: farben.aufAkzent,
@@ -973,7 +977,8 @@ class _Startet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ColoredBox(
+    final texte = context.texte;
+    return ColoredBox(
       color: Colors.black,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -985,7 +990,7 @@ class _Startet extends StatelessWidget {
           ),
           SizedBox(height: AppTheme.gapS),
           Text(
-            S.kameraStartet,
+            texte.kameraStartet,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
           ),
         ],
@@ -1002,6 +1007,7 @@ class _Kopfzeile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppTheme.gapS,
@@ -1013,7 +1019,7 @@ class _Kopfzeile extends StatelessWidget {
             onPressed: onSchliessen,
             icon: const Icon(Icons.close),
             color: Colors.white,
-            tooltip: S.kameraSchliessen,
+            tooltip: texte.kameraSchliessen,
           ),
           const SizedBox(width: AppTheme.gapXs),
           Expanded(
@@ -1107,6 +1113,7 @@ class _Bedienleiste extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
 
     return Padding(
@@ -1116,13 +1123,13 @@ class _Bedienleiste extends StatelessWidget {
         children: [
           _RunderKnopf(
             icon: Icons.image_outlined,
-            tooltip: S.fotoGalerie,
+            tooltip: texte.fotoGalerie,
             onTap: laeuft ? null : onGalerie,
           ),
           // Immer druckbar – der Ring markiert nur, dass die Haltung passt.
           Semantics(
             button: true,
-            label: S.kameraAusloesen,
+            label: texte.kameraAusloesen,
             child: GestureDetector(
               onTap: laeuft ? null : onAusloesen,
               child: AnimatedContainer(
@@ -1151,7 +1158,7 @@ class _Bedienleiste extends StatelessWidget {
           ),
           _RunderKnopf(
             icon: Icons.cameraswitch_outlined,
-            tooltip: S.kameraWechseln,
+            tooltip: texte.kameraWechseln,
             onTap: kannWechseln && !laeuft ? onWechseln : null,
           ),
         ],
@@ -1229,6 +1236,7 @@ class _Fehlerhinweis extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
     final berechtigung = fehler == _Kamerafehler.berechtigung;
 
@@ -1256,8 +1264,8 @@ class _Fehlerhinweis extends StatelessWidget {
               const SizedBox(height: AppTheme.gapM),
               Text(
                 berechtigung
-                    ? S.kameraKeineBerechtigungTitel
-                    : S.kameraNichtVerfuegbarTitel,
+                    ? texte.kameraKeineBerechtigungTitel
+                    : texte.kameraNichtVerfuegbarTitel,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 22,
@@ -1267,8 +1275,8 @@ class _Fehlerhinweis extends StatelessWidget {
               const SizedBox(height: AppTheme.gapS),
               Text(
                 berechtigung
-                    ? S.kameraKeineBerechtigungText
-                    : S.kameraNichtVerfuegbarText,
+                    ? texte.kameraKeineBerechtigungText
+                    : texte.kameraNichtVerfuegbarText,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: farben.textSekundaer, height: 1.5),
               ),
@@ -1277,19 +1285,19 @@ class _Fehlerhinweis extends StatelessWidget {
                 FilledButton.icon(
                   onPressed: openAppSettings,
                   icon: const Icon(Icons.settings_outlined),
-                  label: const Text(S.kameraEinstellungenOeffnen),
+                  label: Text(texte.kameraEinstellungenOeffnen),
                 ),
                 const SizedBox(height: AppTheme.gapS),
               ],
               OutlinedButton.icon(
                 onPressed: onGalerie,
                 icon: const Icon(Icons.image_outlined),
-                label: const Text(S.fotoGalerie),
+                label: Text(texte.fotoGalerie),
               ),
               const SizedBox(height: AppTheme.gapS),
               TextButton(
                 onPressed: onSchliessen,
-                child: const Text(S.zurueck),
+                child: Text(texte.zurueck),
               ),
             ],
           ),

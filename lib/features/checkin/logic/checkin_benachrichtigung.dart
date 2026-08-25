@@ -5,7 +5,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-import '../../../core/l10n/app_strings.dart';
+import '../../../core/l10n/sprache.dart';
+import '../../../core/l10n/texte.dart';
 
 /// Erinnerung an einen faelligen Check-in.
 ///
@@ -14,19 +15,26 @@ import '../../../core/l10n/app_strings.dart';
 /// alles defensiv – schlaegt das Planen fehl (keine Berechtigung, kein
 /// Plugin, Test-Umgebung), laeuft die App unveraendert weiter.
 class CheckinBenachrichtigung {
-  CheckinBenachrichtigung([FlutterLocalNotificationsPlugin? plugin])
-      : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
+  CheckinBenachrichtigung({
+    required this.texte,
+    FlutterLocalNotificationsPlugin? plugin,
+  }) : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
 
   final FlutterLocalNotificationsPlugin _plugin;
+
+  /// Die Texte in der Sprache, die gerade gilt.
+  ///
+  /// Absichtlich eine Funktion und kein fester Wert: Zwischen dem Bau dieses
+  /// Dienstes und dem Planen einer Erinnerung kann der Nutzer die Sprache
+  /// umgestellt haben. Gefragt wird deshalb erst, wenn der Text gebraucht
+  /// wird.
+  final L Function() texte;
 
   /// Feste ID: Es gibt immer nur eine offene Erinnerung, eine neue ersetzt
   /// die alte.
   static const _id = 1;
 
   static const _kanalId = 'checkins';
-  static const _kanalName = 'Check-in-Erinnerungen';
-  static const _kanalBeschreibung =
-      'Erinnert dich, wenn ein kurzer Check-in ansteht.';
 
   /// Uhrzeit der Erinnerung am faelligen Tag.
   static const _stunde = 10;
@@ -95,24 +103,26 @@ class CheckinBenachrichtigung {
     );
     if (!zeitpunkt.isAfter(DateTime.now())) return;
 
+    final t = texte();
+
     try {
       await _plugin.zonedSchedule(
         id: _id,
-        title: S.checkinPushTitel,
-        body: '${S.checkinKarteTitel} — ${S.checkinPushText}',
+        title: t.checkinPushTitel,
+        body: '${t.checkinKarteTitel} — ${t.checkinPushText}',
         // Geplant wird der absolute Zeitpunkt. Eine Zeitumstellung dazwischen
         // kann die Uhrzeit um eine Stunde verschieben – fuer eine Erinnerung
         // ohne feste Uhrzeit ist das unerheblich.
         scheduledDate: tz.TZDateTime.from(zeitpunkt, tz.UTC),
-        notificationDetails: const NotificationDetails(
+        notificationDetails: NotificationDetails(
           android: AndroidNotificationDetails(
             _kanalId,
-            _kanalName,
-            channelDescription: _kanalBeschreibung,
+            t.pushKanalName,
+            channelDescription: t.pushKanalBeschreibung,
             importance: Importance.defaultImportance,
             priority: Priority.defaultPriority,
           ),
-          iOS: DarwinNotificationDetails(),
+          iOS: const DarwinNotificationDetails(),
         ),
         // Ungenaue Planung reicht und braucht keine Sonderberechtigung.
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
@@ -133,5 +143,17 @@ class CheckinBenachrichtigung {
 }
 
 final checkinBenachrichtigungProvider = Provider<CheckinBenachrichtigung>(
-  (ref) => CheckinBenachrichtigung(),
+  (ref) => CheckinBenachrichtigung(
+    // Die Texte kommen aus der aktiven Sprache. Der Weg ueber `lookupL` statt
+    // ueber einen BuildContext ist hier der richtige: Eine Erinnerung wird
+    // geplant, wenn ein Check-in abgeschlossen wird – der Screen dahinter ist
+    // im Moment der Zustellung laengst weg.
+    //
+    // Der Name des Benachrichtigungs-Kanals in den Android-Einstellungen
+    // bleibt allerdings in der Sprache stehen, in der er angelegt wurde:
+    // Android benennt einen bestehenden Kanal nicht um. Ihn bei jedem
+    // Sprachwechsel neu anzulegen wuerde die Einstellungen des Nutzers
+    // (stumm, Wichtigkeit) verwerfen – das waere der schlechtere Tausch.
+    texte: () => lookupL(ref.read(aktiveSpracheProvider).locale),
+  ),
 );

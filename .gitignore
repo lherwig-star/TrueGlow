@@ -85,3 +85,6 @@ node_modules/
 # Echte Analysetexte und die vom Geraet gezogene Hive-Box. Personenbezogen,
 # gehoert nicht ins Repo. Erzeugt von tool/analysen_exportieren.dart.
 tool/stichprobe/
+
+# Bericht des Lokalisierungs-Generators: leer, solange alles uebersetzt ist.
+/l10n_fehlend.txt

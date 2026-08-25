@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/l10n/app_strings.dart';
+import '../../../core/l10n/texte.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
@@ -50,31 +50,32 @@ class _DirectionScreenState extends ConsumerState<DirectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final richtung = ref.watch(directionControllerProvider);
     final ctrl = ref.read(directionControllerProvider.notifier);
     final farben = context.farben;
 
     return AppPage(
-      title: S.richtungTitel,
+      title: texte.richtungTitel,
       bottomFade: true,
       actions: widget.bearbeiten
           ? null
           : [
               TextButton(
                 onPressed: _weiter,
-                child: const Text(S.flowUeberspringen),
+                child: Text(texte.flowUeberspringen),
               ),
             ],
       bottomBar: FilledButton(
         onPressed: _weiter,
         style: FilledButton.styleFrom(shape: const StadiumBorder()),
         child: Text(
-          widget.bearbeiten ? S.richtungSpeichern : S.richtungWeiter,
+          widget.bearbeiten ? texte.richtungSpeichern : texte.richtungWeiter,
         ),
       ),
       children: [
         Text(
-          S.richtungEyebrow.toUpperCase(),
+          texte.richtungEyebrow.toUpperCase(),
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w800,
@@ -83,8 +84,8 @@ class _DirectionScreenState extends ConsumerState<DirectionScreen> {
           ),
         ),
         const SizedBox(height: AppTheme.gapXs),
-        const Text(
-          S.richtungUeberschrift,
+        Text(
+          texte.richtungUeberschrift,
           style: TextStyle(
             fontSize: 26,
             fontWeight: FontWeight.w800,
@@ -92,16 +93,16 @@ class _DirectionScreenState extends ConsumerState<DirectionScreen> {
           ),
         ),
         const SizedBox(height: AppTheme.gapS),
-        const MutedText(S.richtungEinleitung),
+        MutedText(texte.richtungEinleitung),
         const SizedBox(height: AppTheme.gapL),
 
         // --- Teil A: gefuehrte Auswahl ---
-        const Text(
-          S.richtungChipsTitel,
+        Text(
+          texte.richtungChipsTitel,
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: 2),
-        const MutedText(S.richtungChipsText),
+        MutedText(texte.richtungChipsText),
         const SizedBox(height: AppTheme.gapS),
         Wrap(
           spacing: AppTheme.gapS,
@@ -118,8 +119,8 @@ class _DirectionScreenState extends ConsumerState<DirectionScreen> {
         const SizedBox(height: AppTheme.gapL),
 
         // --- Teil B: Freitext ---
-        const Text(
-          S.richtungFreitextTitel,
+        Text(
+          texte.richtungFreitextTitel,
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppTheme.gapS),
@@ -128,7 +129,7 @@ class _DirectionScreenState extends ConsumerState<DirectionScreen> {
         SectionCard(
           title: 'Bleibt auf dem Gerät',
           icon: Icons.lock_outline,
-          child: const MutedText(S.richtungFreitextHinweis),
+          child: MutedText(texte.richtungFreitextHinweis),
         ),
       ],
     );
@@ -145,6 +146,7 @@ class _Nachrichtenfeld extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
 
     return Column(
@@ -187,7 +189,7 @@ class _Nachrichtenfeld extends StatelessWidget {
             style: TextStyle(fontSize: 12, color: farben.textSekundaer),
           ),
           decoration: InputDecoration(
-            hintText: S.richtungFreitextPlatzhalter,
+            hintText: texte.richtungFreitextPlatzhalter,
             hintStyle: TextStyle(color: farben.textSekundaer, height: 1.5),
             filled: true,
             fillColor: farben.flaeche,

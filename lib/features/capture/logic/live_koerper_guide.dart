@@ -1,24 +1,34 @@
 import 'dart:ui';
 
-import '../../../core/l10n/app_strings.dart';
+import '../../../core/l10n/texte.dart';
 import 'live_face_guide.dart';
 
 /// Rueckmeldung des Suchers bei Ganzkoerper-Aufnahmen.
 enum KoerperHinweis {
-  niemand(S.koerperNiemand),
-  zuDunkel(S.kameraZuDunkel),
-  nichtGanz(S.koerperNichtGanz),
-  zuWeitWeg(S.koerperZuWeitWeg),
-  zuNah(S.koerperZuNah),
-  nichtMittig(S.koerperNichtMittig),
-  bereit(S.koerperBereit);
-
-  const KoerperHinweis(this.text);
-
-  final String text;
+  niemand,
+  zuDunkel,
+  nichtGanz,
+  zuWeitWeg,
+  zuNah,
+  nichtMittig,
+  bereit;
 
   /// Nur hier laeuft der Auto-Ausloeser an.
   bool get loestAus => this == KoerperHinweis.bereit;
+}
+
+/// Der Satz, der im Sucher steht – aus demselben Grund eine Erweiterung wie
+/// bei [LiveHinweisText].
+extension KoerperHinweisText on KoerperHinweis {
+  String text(L texte) => switch (this) {
+        KoerperHinweis.niemand => texte.koerperNiemand,
+        KoerperHinweis.zuDunkel => texte.kameraZuDunkel,
+        KoerperHinweis.nichtGanz => texte.koerperNichtGanz,
+        KoerperHinweis.zuWeitWeg => texte.koerperZuWeitWeg,
+        KoerperHinweis.zuNah => texte.koerperZuNah,
+        KoerperHinweis.nichtMittig => texte.koerperNichtMittig,
+        KoerperHinweis.bereit => texte.koerperBereit,
+      };
 }
 
 /// Was die Posenerkennung von einer Person geliefert hat.

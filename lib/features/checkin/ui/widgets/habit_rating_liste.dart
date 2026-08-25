@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/l10n/app_strings.dart';
+import '../../../../core/l10n/texte.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/auswahl_chip.dart';
@@ -31,18 +31,19 @@ class HabitRatingListe extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final ctrl = ref.read(checkinControllerProvider.notifier);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          S.checkinHabitsTitel,
+        Text(
+          texte.checkinHabitsTitel,
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppTheme.gapS),
         MutedText(
-          nurNachzufragen ? S.checkinHabitsErneut : S.checkinHabitsText,
+          nurNachzufragen ? texte.checkinHabitsErneut : texte.checkinHabitsText,
         ),
         const SizedBox(height: AppTheme.gapM),
         for (final habit in habits) ...[
@@ -85,6 +86,7 @@ class _HabitKarte extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final gewaehlt = feedback?.bewertung;
 
     return SectionCard(
@@ -114,8 +116,8 @@ class _HabitKarte extends StatelessWidget {
           ),
           if (gewaehlt?.brauchtGrund ?? false) ...[
             const SizedBox(height: AppTheme.gapM),
-            const Text(
-              S.checkinGrundTitel,
+            Text(
+              texte.checkinGrundTitel,
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: AppTheme.gapS),
@@ -233,6 +235,7 @@ class _FreitextState extends State<_Freitext> {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
 
     return TextField(
@@ -246,7 +249,7 @@ class _FreitextState extends State<_Freitext> {
       buildCounter: (_, {required currentLength, required isFocused, maxLength}) =>
           const SizedBox.shrink(),
       decoration: InputDecoration(
-        hintText: S.checkinGrundFreitext,
+        hintText: texte.checkinGrundFreitext,
         hintStyle: TextStyle(color: farben.textSekundaer),
         filled: true,
         fillColor: farben.flaecheHoch,

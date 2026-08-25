@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/l10n/app_strings.dart';
+import '../../../../core/l10n/texte.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/datum.dart';
@@ -25,6 +25,7 @@ class VergleichAnsicht extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final erstfoto = ref
         .watch(captureControllerProvider)
         .foto(CheckinController.fortschrittsTyp);
@@ -34,8 +35,8 @@ class VergleichAnsicht extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          S.checkinVergleichTitel,
+        Text(
+          texte.checkinVergleichTitel,
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppTheme.gapS),
@@ -49,7 +50,7 @@ class VergleichAnsicht extends ConsumerWidget {
           children: [
             Expanded(
               child: _Seite(
-                titel: S.checkinVergleichVorher,
+                titel: texte.checkinVergleichVorher,
                 datum: analyse?.erstelltAm,
                 pfad: erstfoto?.pfad,
               ),
@@ -57,7 +58,7 @@ class VergleichAnsicht extends ConsumerWidget {
             const SizedBox(width: AppTheme.gapS),
             Expanded(
               child: _Seite(
-                titel: S.checkinVergleichNachher,
+                titel: texte.checkinVergleichNachher,
                 datum: DateTime.now(),
                 pfad: neu,
               ),
@@ -87,6 +88,7 @@ class _Seite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     final farben = context.farben;
     final datei = pfad == null ? null : File(pfad!);
     final vorhanden = datei != null && datei.existsSync();
@@ -126,7 +128,7 @@ class _Seite extends StatelessWidget {
                           ),
                           const SizedBox(height: AppTheme.gapXs),
                           Text(
-                            S.fotoNichtAufDiesemGeraet,
+                            texte.fotoNichtAufDiesemGeraet,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 12,

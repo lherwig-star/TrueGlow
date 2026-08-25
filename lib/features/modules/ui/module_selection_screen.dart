@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/l10n/app_strings.dart';
+import '../../../core/l10n/texte.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
@@ -22,6 +22,7 @@ class ModuleSelectionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final zustand = ref.watch(moduleControllerProvider);
     final farben = context.farben;
     final anzahl = zustand.anzahlZusatzModule;
@@ -33,7 +34,7 @@ class ModuleSelectionScreen extends ConsumerWidget {
     final gesperrt = kontingent?.erschoepft ?? false;
 
     return AppPage(
-      title: S.moduleTitel,
+      title: texte.moduleTitel,
       bottomFade: true,
       bottomBar: FilledButton(
         // Naechster Schritt ist "Deine Richtung"; von dort geht es – mit oder
@@ -42,13 +43,13 @@ class ModuleSelectionScreen extends ConsumerWidget {
         style: FilledButton.styleFrom(shape: const StadiumBorder()),
         child: Text(
           anzahl == 0
-              ? S.moduleStartBasis
-              : '${S.moduleStartBasis} + $anzahl ${anzahl == 1 ? 'Modul' : 'Module'}',
+              ? texte.moduleStartBasis
+              : '${texte.moduleStartBasis} + $anzahl ${anzahl == 1 ? 'Modul' : 'Module'}',
         ),
       ),
       children: [
         Text(
-          S.moduleEyebrow.toUpperCase(),
+          texte.moduleEyebrow.toUpperCase(),
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w800,
@@ -57,8 +58,8 @@ class ModuleSelectionScreen extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppTheme.gapXs),
-        const Text(
-          S.moduleUeberschrift,
+        Text(
+          texte.moduleUeberschrift,
           style: TextStyle(
             fontSize: 26,
             fontWeight: FontWeight.w800,
@@ -66,24 +67,24 @@ class ModuleSelectionScreen extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppTheme.gapS),
-        const MutedText(S.moduleEinleitung),
+        MutedText(texte.moduleEinleitung),
         if (kontingent != null) ...[
           const SizedBox(height: AppTheme.gapM),
           if (kontingent.erschoepft)
             SectionCard(
               icon: Icons.hourglass_empty,
               title: kontingent.monatsgrenzeErreicht
-                  ? S.kontingentMonatsgrenze
-                  : S.kontingentTagesgrenze,
+                  ? texte.kontingentMonatsgrenze
+                  : texte.kontingentTagesgrenze,
               child: MutedText(
                 kontingent.monatsgrenzeErreicht
-                    ? S.kontingentMonatsgrenzeText
-                    : S.kontingentTagesgrenzeText,
+                    ? texte.kontingentMonatsgrenzeText
+                    : texte.kontingentTagesgrenzeText,
               ),
             )
           else
             MutedText(
-              S.kontingentUebrig(
+              texte.kontingentUebrig(
                 kontingent.tagUebrig,
                 KontingentStand.proTag,
               ),
@@ -94,7 +95,7 @@ class ModuleSelectionScreen extends ConsumerWidget {
           modul: AnalyseModul.basis,
           ausgewaehlt: true,
           mitCheckbox: false,
-          badge: S.moduleBasisBadge,
+          badge: texte.moduleBasisBadge,
           onTap: null,
         ),
         const SizedBox(height: AppTheme.gapS),

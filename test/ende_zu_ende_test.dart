@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:trueglow/core/l10n/app_strings.dart';
 import 'package:trueglow/core/router/app_router.dart';
 import 'package:trueglow/features/analysis/logic/analysis_controller.dart';
 import 'package:trueglow/features/analysis/logic/analysis_service.dart';
@@ -61,7 +60,7 @@ void main() {
     container.read(routerProvider).go(Routes.home);
     await tester.pumpAndSettle();
 
-    expect(find.text(S.homeLeerTitel), findsOneWidget);
+    expect(find.text(texte.homeLeerTitel), findsOneWidget);
 
     // Fotos setzen und die Analyse ueber den Controller starten – das ist
     // derselbe Weg, den der Analyse-Screen nimmt.
@@ -92,7 +91,7 @@ void main() {
     );
 
     // Dashboard zeigt jetzt den Plan statt des leeren Zustands.
-    expect(find.text(S.homeLeerTitel), findsNothing);
+    expect(find.text(texte.homeLeerTitel), findsNothing);
     expect(find.text('Dein Plan'), findsOneWidget);
     // Eine Checkliste pro Kapitel – bei reiner Basis-Analyse genau eine.
     expect(find.text(AnalyseModul.basis.checkliste), findsOneWidget);

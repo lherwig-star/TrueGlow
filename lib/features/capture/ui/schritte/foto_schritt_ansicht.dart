@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/l10n/app_strings.dart';
+import '../../../../core/l10n/texte.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -25,6 +25,7 @@ class FotoSchrittAnsicht extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final zustand = ref.watch(captureControllerProvider);
     final foto = zustand.foto(typ);
     final module = ref.watch(moduleControllerProvider).module;
@@ -73,10 +74,10 @@ class FotoSchrittAnsicht extends ConsumerWidget {
         ),
         if (typ.autoAusloeser) ...[
           const SizedBox(height: AppTheme.gapS),
-          const SectionCard(
+          SectionCard(
             title: 'Die App löst selbst aus',
             icon: Icons.timer_outlined,
-            child: MutedText(S.koerperAutoHinweis),
+            child: MutedText(texte.koerperAutoHinweis),
           ),
         ],
       ],
@@ -163,11 +164,12 @@ class _Quellen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     if (hatFoto) {
       return OutlinedButton.icon(
         onPressed: laeuft ? null : onNeu,
         icon: const Icon(Icons.refresh),
-        label: const Text(S.fotoNeuAufnehmen),
+        label: Text(texte.fotoNeuAufnehmen),
       );
     }
 
@@ -177,7 +179,7 @@ class _Quellen extends StatelessWidget {
           child: FilledButton.icon(
             onPressed: laeuft ? null : onKamera,
             icon: const Icon(Icons.photo_camera_outlined),
-            label: const Text(S.fotoKamera),
+            label: Text(texte.fotoKamera),
           ),
         ),
         const SizedBox(width: AppTheme.gapS),
@@ -185,7 +187,7 @@ class _Quellen extends StatelessWidget {
           child: OutlinedButton.icon(
             onPressed: laeuft ? null : onGalerie,
             icon: const Icon(Icons.image_outlined),
-            label: const Text(S.fotoGalerie),
+            label: Text(texte.fotoGalerie),
           ),
         ),
       ],

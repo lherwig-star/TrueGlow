@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/l10n/app_strings.dart';
+import '../../../core/l10n/texte.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
@@ -26,13 +26,14 @@ class ResultScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     // Neuladen, sobald sich der Bestand aendert.
     ref.watch(analysenProvider);
     final ergebnis = ref.watch(analysisRepositoryProvider).laden(analyseId);
 
     if (ergebnis == null) {
       return AppPage(
-        title: S.ergebnisTitel,
+        title: texte.ergebnisTitel,
         children: [
           const SizedBox(height: AppTheme.gapXl),
           Icon(
@@ -54,7 +55,7 @@ class ResultScreen extends ConsumerWidget {
         .toList();
 
     return AppPage(
-      title: S.ergebnisTitel,
+      title: texte.ergebnisTitel,
       bottomFade: true,
       bottomBar: Column(
         mainAxisSize: MainAxisSize.min,
@@ -63,14 +64,14 @@ class ResultScreen extends ConsumerWidget {
             onPressed: () => context.push(Routes.plan),
             style: FilledButton.styleFrom(shape: const StadiumBorder()),
             icon: const Icon(Icons.checklist_rtl),
-            label: const Text(S.ergebnisPlanErstellen),
+            label: Text(texte.ergebnisPlanErstellen),
           ),
           const SizedBox(height: AppTheme.gapS),
           OutlinedButton.icon(
             onPressed: () => context.go(Routes.home),
             style: OutlinedButton.styleFrom(shape: const StadiumBorder()),
             icon: const Icon(Icons.home_outlined),
-            label: const Text(S.zurStartseite),
+            label: Text(texte.zurStartseite),
           ),
         ],
       ),
@@ -87,9 +88,9 @@ class ResultScreen extends ConsumerWidget {
           _Erweitern(module: offene),
           const SizedBox(height: AppTheme.gapM),
         ],
-        const Padding(
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: AppTheme.gapXs),
-          child: MutedText(S.disclaimerMedizin),
+          child: MutedText(texte.disclaimerMedizin),
         ),
       ],
     );
@@ -134,25 +135,26 @@ class _RichtungKarte extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final farben = context.farben;
     final aktuell = ref.watch(directionControllerProvider);
     final verwendet = ergebnis.richtung;
     final geaendert = aktuell != verwendet;
 
     return SectionCard(
-      title: S.richtungTitel,
+      title: texte.richtungTitel,
       icon: Icons.explore_outlined,
       trailing: TextButton(
         onPressed: () => context.push(Routes.richtungBearbeiten),
         child: Text(
-          verwendet.istLeer ? S.richtungAngeben : S.richtungAendern,
+          verwendet.istLeer ? texte.richtungAngeben : texte.richtungAendern,
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (verwendet.istLeer)
-            const MutedText(S.richtungLeerText)
+            MutedText(texte.richtungLeerText)
           else ...[
             if (verwendet.ziele.isNotEmpty)
               Wrap(
@@ -186,14 +188,14 @@ class _RichtungKarte extends ConsumerWidget {
           ],
           if (geaendert) ...[
             const SizedBox(height: AppTheme.gapM),
-            const MutedText(S.richtungAktualisierenText),
+            MutedText(texte.richtungAktualisierenText),
             const SizedBox(height: AppTheme.gapS),
             FilledButton.icon(
               onPressed: () =>
                   context.push(Routes.analyseNeu(ergebnis.module)),
               style: FilledButton.styleFrom(shape: const StadiumBorder()),
               icon: const Icon(Icons.refresh),
-              label: const Text(S.richtungAktualisieren),
+              label: Text(texte.richtungAktualisieren),
             ),
           ],
         ],
@@ -290,17 +292,18 @@ class _Erweitern extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texte = context.texte;
     final farben = context.farben;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          S.moduleErweitern,
+          texte.moduleErweitern,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppTheme.gapXs),
-        const MutedText(S.moduleErweiternText),
+        MutedText(texte.moduleErweiternText),
         const SizedBox(height: AppTheme.gapS),
         for (final modul in module) ...[
           ModulKarte(
@@ -354,6 +357,7 @@ class _SektionKarte extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texte = context.texte;
     return SectionCard(
       title: sektion.titel,
       icon: _icon,
@@ -367,14 +371,14 @@ class _SektionKarte extends StatelessWidget {
             ),
           if (sektion.empfehlungen.isNotEmpty) ...[
             const SizedBox(height: AppTheme.gapM),
-            const _Untertitel(S.ergebnisEmpfehlungen),
+            _Untertitel(texte.ergebnisEmpfehlungen),
             const SizedBox(height: AppTheme.gapXs),
             for (final empfehlung in sektion.empfehlungen)
               _Empfehlung(empfehlung),
           ],
           if (sektion.produkte.isNotEmpty) ...[
             const SizedBox(height: AppTheme.gapM),
-            const _Untertitel(S.ergebnisProdukte),
+            _Untertitel(texte.ergebnisProdukte),
             const SizedBox(height: AppTheme.gapXs),
             for (final produkt in sektion.produkte) _ProduktZeile(produkt),
           ],
