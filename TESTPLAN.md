@@ -250,6 +250,45 @@ darauf, ob sich ein Satz gut liest.
    geschrieben. Danach dasselbe im Frauen-Modus: Schnittempfehlungen nach
    Figurtyp, Farbpalette auch für Make-up, kein Wort über Bart.
 
+## 7 · Der Report in beiden Sprachen und beiden Modi
+
+**Voraussetzung: Die Cloud Functions müssen ausgerollt sein.** Ohne das läuft
+auf dem Server die alte Fassung, und der Report kommt wieder auf Deutsch mit
+Bart-Kapitel (siehe `DECISIONS.md` 35). Nachsehen mit:
+
+```bash
+firebase functions:list --json
+```
+
+Das Feld `source.storageSource.generation` ist ein Zeitstempel in
+Mikrosekunden und muss jünger sein als der letzte Commit unter
+`functions/src/`.
+
+**Das Kontingent sind drei Analysen pro Tag** — genau so viele, wie dieser
+Abschnitt braucht. Zurücksetzen geht in der Firebase-Konsole:
+
+1. Authentication → Users → die eigene UID kopieren
+2. Firestore → `users` → diese UID → `kontingent` → Dokument `analyse` löschen
+
+Die Zähler stehen dort und werden nur serverseitig geschrieben; ein gelöschtes
+Dokument zählt wieder bei null.
+
+| # | Lauf | Worauf achten |
+|---|---|---|
+| 1 | **Englisch, männlicher Modus.** Sprache auf English, Personalisierung auf Männlich, Basis plus ein weiteres Modul. | Jedes Wort im Report englisch — Kapitel, Empfehlungen, Produktnamen und Produktbeschreibungen. Kopfzeile ganz englisch („today · 2 chapters · N recommendations"), Kapitelzahl passt zur Modulauswahl. Bart darf vorkommen. |
+| 2 | **Englisch, weiblicher Modus, mit Make-up.** Personalisierung auf Weiblich, Module Gesicht & Haare plus Make-up & Ausstrahlung. | Das Make-up-Kapitel ist da. **Kein Bart**, keine Rasur, kein Barttrimmer — weder als Abschnitt noch in den Tagesaufgaben noch im Plan. Kapitelüberschrift heißt „Face & hair", nicht „Face, hair & beard". Alles englisch. |
+| 3 | **Deutsch, Gegenprobe.** Sprache auf Deutsch, sonst wie Lauf 2. | Alles deutsch, Kopfzeile „heute · 2 Kapitel · N Empfehlungen". Sonst derselbe Inhalt wie in Lauf 2. |
+
+Kommt in Lauf 1 oder 2 trotzdem etwas Deutsches, steht das ab jetzt auch in
+den Server-Logs:
+
+```bash
+firebase functions:log --only analysiere
+```
+
+Zeilen, die mit `Nachbereitung:` anfangen, sagen, was das Modell falsch
+geliefert hat und was der Server herausgefiltert hat.
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |
