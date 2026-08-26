@@ -935,6 +935,93 @@ Häkchen — nimm dir die Zeit dafür.
 > („Design: …"). Der Splash-Umbau steckt in einem eigenen davor und bleibt
 > stehen, wenn das Design zurückgedreht wird.
 
+## 21 · Der Start und die Farben auf den Unterseiten
+
+Kein Kontingent, kein Analyse-Lauf. Zwei getrennte Teile, passend zu den
+zwei Commits.
+
+### A · Die Farben auf den Unterseiten
+
+1. **Analyse zusammenstellen.** Startseite → „Neue Analyse". Erwartet: Die
+   Modul-Karten sehen aus wie die Karten der Startseite — leicht
+   durchscheinend, weich gerundet, mit einer sehr dünnen hellen Linie am
+   Rand. Kein kräftiger Rahmen, kein Schatten.
+
+2. **Ein Modul antippen.** Erwartet: Der Rahmen der Karte und das Häkchen
+   rechts werden **golden**, die Karte hinterlegt sich ganz leicht golden.
+   Vorher war beides sandfarben.
+
+3. **Der Knopf unten.** Erwartet: „Basis + 2 Module" ist weiterhin
+   sandfarben — er ist ein Angebot, kein Erreichtes. Seine Ecken sind aber
+   etwas weicher als vorher, damit er unter den runden Karten nicht kantig
+   wirkt.
+
+4. **Deine Richtung.** Erwartet: Die anklickbaren Punkte werden im
+   ausgewählten Zustand golden (Rahmen und Schrift), nicht ausgewählt bleiben
+   sie ruhig.
+
+5. **Der Foto-Flow.** Erwartet: Die Punktereihe oben färbt die
+   zurückgelegten Schritte golden. Ein bereits aufgenommenes Foto bekommt
+   einen goldenen Rahmen und den goldenen Haken „Foto geprüft"; der gerade
+   offene Schritt bleibt sandfarben.
+
+6. **Der Check-in.** Erwartet: Die Antwortknöpfe („Läuft gut" / „Geht so" /
+   „Passt nicht") werden im gewählten Zustand golden, ebenso die
+   Wirkungsfragen und die Schritt-Punkte oben.
+
+7. **Das Foto-Album.** Erwartet: Das gewählte Bild in der Zeitleiste hat
+   einen goldenen Rahmen und ein goldenes Datum.
+
+8. **Einstellungen.** Erwartet: Der Umschalter „Hell / Dunkel / System"
+   hinterlegt die aktive Wahl golden. Schalter und Checkboxen ebenfalls.
+
+9. **Onboarding.** (Nur wenn du alle Daten löschst.) Erwartet: gewählte
+   Antworten golden, die Punktereihe unten ebenso.
+
+10. **Nichts anderes ist golden.** Geh die Bildschirme noch einmal durch.
+    Erwartet: Überschriften, die kleinen Icons in den Kartentiteln, Knöpfe
+    und Hinweistexte sind **nicht** golden. Findest du Gold an einer Stelle,
+    die weder „ausgewählt" noch „erledigt" bedeutet, ist das ein Fund.
+
+11. **Helles Schema.** Einstellungen → Hell, dann Punkte 1 bis 9 im
+    Schnelldurchlauf. Erwartet: dasselbe Bild in dunklem Amber statt hellem
+    Gold, alle Texte lesbar.
+
+### B · Der Start
+
+12. **Kaltstart.** App über den Task-Manager schließen, vom Startbildschirm
+    öffnen. Erwartet: **Ein** durchgehender Start. Das Zeichen erscheint,
+    bleibt an genau derselben Stelle und in genau derselben Größe stehen, und
+    der Schriftzug „TrueGlow" kommt darunter dazu. Kein Springen, kein
+    Größenwechsel, kein zweites Aufblenden.
+
+13. **Die Farbe.** Erwartet: Der Start ist von Anfang an dunkel — nicht das
+    frühere flache Türkis. Sobald der eigene Startbildschirm übernimmt,
+    bekommt der Hintergrund seine Tiefe (oben etwas heller, unten dunkler).
+    Am Zeichen selbst ändert sich die Farbe nicht.
+
+14. **Der Wechsel auf die Startseite.** Erwartet: **Kein** Farbsprung. Der
+    Hintergrund ist derselbe, es kommen nur die Karten dazu.
+
+15. **Mehrfach hintereinander.** Punkt 12 fünfmal wiederholen. Erwartet:
+    jedes Mal gleich.
+
+16. **Mit Gesten-Navigation.** In den Android-Einstellungen von den drei
+    Tasten auf Wischgesten umstellen und Punkt 12 wiederholen. Erwartet:
+    Das Zeichen steht weiterhin still. (Der Ausgleich rechnet mit der
+    tatsächlichen Höhe der Navigationsleiste; bei Gesten ist sie kleiner.)
+
+17. **Im hellen Systemschema.** Handy auf helles Design stellen, Punkt 12.
+    Erwartet: Der Start bleibt dunkel — das ist Absicht, die App startet in
+    ihrem eigenen dunklen Schema.
+
+18. **Flugmodus.** Erwartet: Der Start dauert länger, sieht aber genauso
+    aus, und bleibt nicht hängen.
+
+> **Wenn etwas nicht stimmt:** Beide Teile hängen an je einem Commit
+> („Design auf den Unterseiten…" und „Start: gemessen statt geschätzt"). Jeder
+> lässt sich einzeln zurückdrehen, ohne den anderen mitzunehmen.
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

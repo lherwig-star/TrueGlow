@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/l10n/texte.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/marke.dart';
 import '../../../core/widgets/marken_logo.dart';
 
 /// Der erste Bildschirm nach dem Start: Zeichen und Name, dann weiter.
@@ -40,15 +41,14 @@ class SplashScreen extends ConsumerStatefulWidget {
 
   /// Kantenlänge des Zeichens – dieselbe wie beim nativen Splash.
   ///
-  /// Ab Android 12 zeichnet das System das Symbol in eine Fläche von 240 dp;
-  /// unser Motiv füllt davon 52 % (`motivAnteil` in
-  /// `tool/marke_erzeugen.dart`), also rund 125 dp. Wer diese Zahl ändert,
-  /// muss dort nachsehen — sonst springt das Zeichen beim Start.
+  /// Kommt aus [Marke] und wird dort aus derselben Zahl gerechnet, mit der
+  /// `tool/marke_erzeugen.dart` das Splash-PNG erzeugt. Wer hier eine eigene
+  /// Zahl hinschreibt, baut denselben Fehler wieder ein, der in
+  /// DECISIONS 52 steht: Das Zeichen sprang beim Übergang um ein Fünftel.
   ///
-  /// Auf Geräten vor Android 12 ist das Motiv etwas kleiner (rund 102 dp);
-  /// dort wächst es beim Übergang leicht. Das ist eine weiche Bewegung, kein
-  /// Bruch, und betrifft nur noch alte Geräte.
-  static const zeichenGroesse = 125.0;
+  /// Auf Geräten vor Android 12 ist das Motiv etwas kleiner; dort wächst es
+  /// beim Übergang leicht. Das ist eine weiche Bewegung, kein Bruch.
+  static const zeichenGroesse = Marke.splashZeichenDp;
 
   /// Abstand zwischen Zeichen und Schriftzug.
   static const _abstand = 28.0;
@@ -90,42 +90,93 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     final ohneBewegung = MediaQuery.disableAnimationsOf(context);
 
     return Scaffold(
-      backgroundColor: farben.hintergrund,
-      body: Center(
-        // Das Zeichen bleibt in der Mitte stehen, der Schriftzug wird
-        // darunter eingeblendet. Ein `Column` haette beide zusammen
-        // zentriert und das Zeichen dabei nach oben geschoben – sichtbar als
-        // Ruck genau in dem Moment, in dem der native Splash verschwindet.
-        child: SizedBox.square(
-          dimension: SplashScreen.zeichenGroesse,
-          child: Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.center,
-            children: [
-              MarkenLogo(
-                groesse: SplashScreen.zeichenGroesse,
-                farbe: farben.akzent,
-              ),
-              Positioned(
-                top: SplashScreen.zeichenGroesse + SplashScreen._abstand,
-                child: _Schriftzug(
-                  ohneBewegung: ohneBewegung,
-                  child: Text(
-                    texte.appName,
-                    style: TextStyle(
-                      fontSize: 34,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.5,
-                      color: farben.textPrimaer,
+      backgroundColor: Colors.transparent,
+      // Derselbe Verlauf wie auf jeder Seite der App. Ohne ihn wäre der
+      // Start flaches Petrol und der Sprung käme eine Sekunde später – beim
+      // Wechsel auf die Startseite (DECISIONS 52).
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [farben.hintergrund, farben.hintergrundTief],
+          ),
+        ),
+        child: Center(
+          child: Transform.translate(
+            offset: Offset(0, _ausgleich(context)),
+            // Das Zeichen bleibt in der Mitte stehen, der Schriftzug wird
+            // darunter eingeblendet. Ein `Column` hätte beide zusammen
+            // zentriert und das Zeichen dabei nach oben geschoben – sichtbar
+            // als Ruck genau in dem Moment, in dem der native Splash
+            // verschwindet.
+            child: SizedBox.square(
+              dimension: SplashScreen.zeichenGroesse,
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: [
+                  MarkenLogo(
+                    groesse: SplashScreen.zeichenGroesse,
+                    farbe: farben.akzent,
+                  ),
+                  Positioned(
+                    top: SplashScreen.zeichenGroesse + SplashScreen._abstand,
+                    child: _Schriftzug(
+                      ohneBewegung: ohneBewegung,
+                      child: Text(
+                        texte.appName,
+                        style: TextStyle(
+                          fontSize: 34,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.5,
+                          color: farben.textPrimaer,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  /// Wie weit das Zeichen nach unten muss, um in der **Bildschirmmitte** zu
+  /// stehen.
+  ///
+  /// Der native Splash gehört dem System und wird über den ganzen Bildschirm
+  /// gezeichnet – sein Symbol sitzt exakt in dessen Mitte. Das Fenster der
+  /// App ist kleiner: Es endet über der Navigationsleiste, weil
+  /// `windowDrawsSystemBarBackgrounds` aus ist. Alles, was die App
+  /// zentriert, sitzt deshalb um deren halbe Höhe zu hoch.
+  ///
+  /// Am Testgerät waren das 24 dp, und genau so weit sprang das Zeichen beim
+  /// Übergang nach oben (DECISIONS 52).
+  ///
+  /// **Warum nicht über MediaQuery.** `MediaQuery.size` ist die Größe des
+  /// *Fensters*, und die Navigationsleiste liegt außerhalb davon –
+  /// `viewPadding.bottom` ist hier 0. Die App kann den Unterschied nur über
+  /// den Bildschirm selbst sehen: [Display.size] ist das ganze Panel,
+  /// `physicalSize` das Stück, das die App davon bekommt.
+  ///
+  /// Die Obergrenze ist ein Sicherheitsnetz. Bekäme die App aus einem
+  /// anderen Grund viel weniger als den Bildschirm – geteilter Bildschirm,
+  /// schwebendes Fenster –, wanderte das Zeichen sonst aus dem Bild.
+  static double _ausgleich(BuildContext context) {
+    final sicht = View.of(context);
+    final dichte = sicht.devicePixelRatio;
+    if (dichte <= 0) return 0;
+
+    final bildschirm = sicht.display.size.height;
+    final fenster = sicht.physicalSize.height;
+    if (!bildschirm.isFinite || !fenster.isFinite) return 0;
+
+    // Der ungenutzte Streifen liegt unten: Oben zeichnet die App hinter die
+    // Statusleiste, unten nicht hinter die Navigationsleiste.
+    return ((bildschirm - fenster) / dichte / 2).clamp(0.0, 40.0);
   }
 }
 

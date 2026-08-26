@@ -89,13 +89,28 @@ void main(List<String> argumente) {
 
   // Android 12+: Das System zeigt eine 1152×1152-Grafik, von der nur die
   // inneren 768×768 sichtbar sind – das Motiv muss also klein bleiben.
+  //
+  // Der Anteil steht in `Marke`, nicht hier: Der eigene Startbildschirm
+  // rechnet daraus die Größe seines Zeichens, damit beim Übergang nichts
+  // springt (DECISIONS 52). Zwei Zahlen wären zwei Zahlen, die auseinander
+  // laufen.
   _schreibe(
     '${ziel.path}/splash_android12_dunkel.png',
-    _icon(1152, mitHintergrund: false, farbe: _sand, motivAnteil: 0.52),
+    _icon(
+      1152,
+      mitHintergrund: false,
+      farbe: _sand,
+      motivAnteil: Marke.splashMotivAnteil,
+    ),
   );
   _schreibe(
     '${ziel.path}/splash_android12_hell.png',
-    _icon(1152, mitHintergrund: false, farbe: _mochaAkzent, motivAnteil: 0.52),
+    _icon(
+      1152,
+      mitHintergrund: false,
+      farbe: _mochaAkzent,
+      motivAnteil: Marke.splashMotivAnteil,
+    ),
   );
 
   stdout.writeln('Fertig. Weiter mit:');

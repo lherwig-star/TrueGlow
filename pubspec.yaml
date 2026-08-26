@@ -170,32 +170,43 @@ flutter_launcher_icons:
   remove_alpha_ios: true
 
 flutter_native_splash:
-  # Immer Deep Teal – auch dann, wenn das Handy im hellen Schema steht.
+  # #122C31 ist die Mitte des Seitenverlaufs – genau der Ton, den die App an
+  # der Stelle traegt, an der das Zeichen steht. Ein flaches Petrol (#173C3B)
+  # stand hier bis zum 26.08.2026 und sah neben dem neuen dunklen Design alt
+  # aus; Begruendung in DECISIONS 52.
   #
+  # Ein Verlauf ginge hier nicht: `windowSplashScreenBackground` nimmt ab
+  # Android 12 nur eine einzelne Farbe. Die Mitte ist deshalb der beste
+  # Kompromiss – dort, wo der Blick liegt, stimmt sie auf den Punkt.
+  #
+  # Immer derselbe Ton – auch dann, wenn das Handy im hellen Schema steht.
   # Der native Splash kann nur dem System folgen; die App richtet sich aber
   # nach ihrer eigenen Einstellung, und die steht standardmaessig auf dunkel
   # (`ThemeController.standard`). Ein Splash, der dem System folgt, hiesse auf
-  # jedem hell gestellten Handy: Mocha-Grund, dann ein Sprung nach Deep Teal,
-  # bei jedem Kaltstart. Deshalb hier eine Farbe fuer beide Schemata.
+  # jedem hell gestellten Handy: Mocha-Grund, dann ein Sprung ins Dunkle, bei
+  # jedem Kaltstart. Deshalb hier eine Farbe fuer beide Schemata.
   #
   # Wer in den Einstellungen auf "Hell" umstellt, sieht den Sprung dafuer
   # andersherum – das ist die kleinere Gruppe und eine bewusste Wahl. Die
   # saubere Loesung waere, die Theme-Wahl fuer die Android-Seite lesbar
   # abzulegen; das ist Nativ-Code fuer eine halbe Sekunde Bildschirm.
-  color: "#173C3B"
+  color: "#122C31"
   image: assets/branding/splash_dunkel.png
-  color_dark: "#173C3B"
+  color_dark: "#122C31"
   image_dark: assets/branding/splash_dunkel.png
 
   # Ab Android 12 zeichnet das System den Splash selbst und zeigt nur die
   # inneren zwei Drittel der Grafik – dafuer gibt es eigene Dateien.
+  # Bewusst OHNE `icon_background_color`: Mit gesetztem Symbol-Hintergrund
+  # zeichnet Android das Startsymbol in eine Flaeche von 240 dp, ohne ihn in
+  # 288 dp. Am Geraet nachgemessen wurden 288 dp – der Eintrag stand also
+  # frueher da, ohne zu wirken, und haette beim naechsten Lesen in die Irre
+  # gefuehrt. `Marke.splashFlaecheDp` rechnet mit 288.
   android_12:
-    color: "#173C3B"
+    color: "#122C31"
     image: assets/branding/splash_android12_dunkel.png
-    icon_background_color: "#173C3B"
-    color_dark: "#173C3B"
+    color_dark: "#122C31"
     image_dark: assets/branding/splash_android12_dunkel.png
-    icon_background_color_dark: "#173C3B"
 
   android: true
   ios: true

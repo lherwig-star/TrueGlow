@@ -38,4 +38,37 @@ class Marke {
   /// Unterhalb dieser Höhe wird der Schulterbogen abgeschnitten – sonst wirkt
   /// er wie ein abgeschnittener Kreis statt wie Schultern.
   static const schulterUnterkante = 0.895;
+
+  // --- Der native Splash -------------------------------------------------
+  //
+  // Diese beiden Zahlen entscheiden, wie groß das Zeichen beim Start
+  // erscheint – und zwar zweimal: einmal im PNG, das Android zeichnet, und
+  // einmal im eigenen Startbildschirm, der nahtlos daran anschließt. Standen
+  // sie an zwei Stellen, sprang das Zeichen beim Übergang. Genau das ist
+  // passiert (DECISIONS 52).
+
+  /// Die Fläche, in die Android ab Version 12 das Startsymbol zeichnet.
+  ///
+  /// 288 dp – der dokumentierte Wert für ein Symbol ohne eigenen
+  /// Hintergrund. Am Gerät nachgemessen: Das Motiv erschien 116 dp hoch,
+  /// was bei [splashMotivAnteil] genau auf diese Fläche führt.
+  static const splashFlaecheDp = 288.0;
+
+  /// Wie viel dieser Fläche das Motiv einnimmt.
+  ///
+  /// Die äußeren Ränder bleiben frei: Android beschneidet ein Startsymbol
+  /// auf die inneren zwei Drittel, was dort liegt, kann weg sein.
+  static const splashMotivAnteil = 0.52;
+
+  /// Kantenlänge des Zeichens im eigenen Startbildschirm, in dp.
+  ///
+  /// Rechnung statt Schätzung: genau die Größe, in der Android das Motiv
+  /// zeichnet. Damit steht es beim Übergang still.
+  static const splashZeichenDp = splashFlaecheDp * splashMotivAnteil;
+
+  /// Anteil der Fläche, den die sichtbare Zeichnung senkrecht einnimmt.
+  ///
+  /// Vom oberen Rand des Ovals bis zur Schulter-Unterkante. Gebraucht, um
+  /// die gemessene Höhe am Gerät gegen die Vorgabe halten zu können.
+  static const tinteHoehe = schulterUnterkante - (ovalY - ovalRy - strich / 2);
 }

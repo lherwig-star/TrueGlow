@@ -1632,6 +1632,88 @@ Themefarbe wäre dort nicht konsequenter, sondern nur unlesbarer.
 **Preis:** Eine Farbrolle mehr und ein Test, der bei jeder neuen Farbe
 anspringt. Genau das ist der Sinn.
 
+## 52 · Woran der Start-Übergang wirklich lag
+
+DECISIONS 49 hat den Übergang für behoben erklärt. Am Gerät war er es nicht.
+Diesmal wurde nicht gerechnet, sondern gemessen: Kaltstart mit
+`adb shell screenrecord`, Einzelbilder mit ffmpeg, und dann das Zeichen in
+beiden Phasen ausgemessen. Samsung SM A525F, 1080 × 2400 bei 420 dpi, also
+2,625 px je dp.
+
+**Befund vorher:**
+
+| | Zeichen breit | Zeichen hoch | Mitte (y) |
+|---|---|---|---|
+| System-Splash | 255 px | 304 px | 1203 |
+| eigener Splash | 214 px | 253 px | 1138 |
+
+Zwei Fehler, beide sichtbar, beide von mir:
+
+**1. Das Zeichen war ein Fünftel zu klein.** DECISIONS 49 rechnete mit einer
+Symbolfläche von 240 dp — dem Wert für ein Startsymbol **mit** eigenem
+Hintergrund. Die Messung ergibt 288 dp, den Wert **ohne**. Der Eintrag
+`icon_background_color` stand zwar in der Konfiguration, wirkte aber nicht.
+Er ist jetzt raus, und die Fläche steht als `Marke.splashFlaecheDp = 288`
+neben dem Motivanteil, aus dem `tool/marke_erzeugen.dart` das PNG rechnet.
+Der Startbildschirm leitet seine Größe daraus ab, statt eine eigene Zahl zu
+führen. 288 × 0,52 = 149,8 dp.
+
+**2. Das Zeichen saß 24 dp zu hoch** — die halbe Höhe der Navigationsleiste.
+Der System-Splash gehört dem System und wird über den **ganzen Bildschirm**
+gezeichnet. Das Fenster der App ist kleiner: Es endet über der
+Navigationsleiste, weil `windowDrawsSystemBarBackgrounds` aus ist. Alles,
+was die App zentriert, sitzt deshalb um deren halbe Höhe zu hoch.
+
+Der Ausgleich kann **nicht** über `MediaQuery` kommen: `MediaQuery.size` ist
+die Größe des Fensters, und die Navigationsleiste liegt außerhalb davon —
+`viewPadding.bottom` ist hier 0. Die App sieht den Unterschied nur über den
+Bildschirm selbst: `View.of(context).display.size` ist das ganze Panel,
+`physicalSize` das Stück, das die App bekommt. Die halbe Differenz ist der
+Ausgleich.
+
+**Befund nachher:** System-Splash 1051–1355, eigener Splash 1051–1354. Ein
+Pixel Unterschied auf 2400 — das Zeichen steht still.
+
+**3. Die Farbe war das alte flache Petrol.** Auch hier hatte der Bericht
+recht und ich unrecht: Der eigene Startbildschirm setzte
+`backgroundColor: farben.hintergrund` und bekam den neuen Verlauf nie. Der
+Start war also zweimal flaches `#173C3B`, und der Farbsprung kam eine
+Sekunde später — beim Wechsel auf die Startseite.
+
+Jetzt trägt der eigene Startbildschirm **denselben Verlauf wie jede Seite**.
+Der System-Splash kann keinen: `windowSplashScreenBackground` nimmt ab
+Android 12 nur eine einzelne Farbe. Er bekommt deshalb `#122C31` — die
+**Mitte** des Verlaufs, also genau den Ton, den die App an der Stelle trägt,
+an der das Zeichen steht.
+
+Gemessen am Gerät, jeweils am linken Seitenrand:
+
+| | oben | Mitte | unten |
+|---|---|---|---|
+| System-Splash | (17, 41, 49) | (15, 42, 48) | (16, 41, 48) |
+| eigener Splash | (22, 55, 56) | (14, 40, 46) | (12, 28, 39) |
+| Startseite | (21, 55, 56) | (14, 40, 46) | (12, 28, 39) |
+
+Der Übergang vom eigenen Splash auf die Startseite ist **exakt** farbgleich —
+das war die Anforderung. Beim System-Splash bleibt ein Rest: Er ist flach,
+wo die App einen Verlauf hat. In der Bildmitte stimmt er auf zwei Einheiten
+genau, zum Rand hin weicht er ab. Mehr gibt die Android-Splash-API nicht her,
+und die Mitte ist die Stelle, auf die man schaut.
+
+**Was der Generator überschreiben darf — und was ein Test darüber sagt.**
+`dart run flutter_native_splash:create` schreibt alle vier `styles.xml` neu.
+Die Handanpassung darin (`NormalTheme` zeigt `@color/splashHintergrund`
+statt Weiß oder Schwarz) ist genau die Sorte Änderung, die still verloren
+geht — und ihr Verlust sähe aus wie ein kurzes weißes Aufblitzen beim Start.
+`splash_test.dart` besteht deshalb darauf: auf der Handanpassung in allen
+vier Dateien, auf der Farbe in Konfiguration, Styles und `colors.xml`, auf
+der Abwesenheit von `icon_background_color` und auf der gerechneten
+Zeichengröße samt der Messung, aus der sie stammt.
+
+**Preis:** Der Startbildschirm rechnet jetzt mit `View.of(context)` statt mit
+`MediaQuery`. Das ist die ungewohntere Stelle, aber die einzige, die den
+Bildschirm sieht statt nur das Fenster.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

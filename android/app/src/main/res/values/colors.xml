@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ic_launcher_background">#173C3B</color>
-    <!-- Deep Teal, und zwar in jedem Schema – kein Gegenstueck unter
-         values-night/. Der native Splash kann nur dem System folgen, die App
-         richtet sich aber nach ihrer eigenen Einstellung, und die steht
-         standardmaessig auf dunkel. Faellt diese Farbe mit dem System um,
-         startet jedes hell gestellte Handy auf Mocha und springt dann nach
-         Deep Teal. Begruendung ausfuehrlich in pubspec.yaml. -->
-    <color name="splashHintergrund">#173C3B</color>
+    <!-- Die Mitte des Seitenverlaufs, und zwar in jedem Schema – kein
+         Gegenstueck unter values-night/. Der native Splash kann nur dem
+         System folgen, die App richtet sich aber nach ihrer eigenen
+         Einstellung, und die steht standardmaessig auf dunkel. Faellt diese
+         Farbe mit dem System um, startet jedes hell gestellte Handy auf
+         Mocha und springt dann ins Dunkle.
+
+         Muss demselben Wert entsprechen wie `windowSplashScreenBackground`
+         in values-v31/styles.xml und wie `color:` in der
+         flutter_native_splash-Konfiguration. `splash_test.dart` besteht
+         darauf. -->
+    <color name="splashHintergrund">#122C31</color>
 </resources>
