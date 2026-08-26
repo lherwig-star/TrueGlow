@@ -75,13 +75,13 @@ void main() {
           tag: '2026-08-23',
           tagZaehler: 3,
           monat: '2026-08',
-          monatZaehler: 12,
+          monatZaehler: 4,
         ),
         jetzt: heute,
       );
 
       expect(stand.tagVerbraucht, 0);
-      expect(stand.monatVerbraucht, 12);
+      expect(stand.monatVerbraucht, 4);
       expect(stand.erschoepft, isFalse);
     });
 
@@ -93,7 +93,7 @@ void main() {
           tag: '2026-08-24',
           tagZaehler: 0,
           monat: '2026-08',
-          monatZaehler: 30,
+          monatZaehler: KontingentStand.proMonat,
         ),
         jetzt: heute,
       );
@@ -109,7 +109,7 @@ void main() {
           tag: '2026-07-31',
           tagZaehler: 3,
           monat: '2026-07',
-          monatZaehler: 30,
+          monatZaehler: KontingentStand.proMonat,
         ),
         jetzt: heute,
       );
@@ -141,6 +141,29 @@ void main() {
       );
 
       expect(stand.tagVerbraucht, 2);
+    });
+
+    test('zehn Analysen im Monat, drei am Tag', () {
+      // Die Zahlen spiegeln GRENZEN.analyse in `functions/src/limit.ts`.
+      // Laufen sie auseinander, zeigt die App etwas anderes an, als der
+      // Server entscheidet.
+      expect(KontingentStand.proTag, 3);
+      expect(KontingentStand.proMonat, 10);
+    });
+
+    test('die neunte Analyse im Monat ist noch frei', () {
+      final stand = KontingentStand.ausDaten(
+        zaehler(
+          tag: '2026-08-24',
+          tagZaehler: 1,
+          monat: '2026-08',
+          monatZaehler: 9,
+        ),
+        jetzt: heute,
+      );
+
+      expect(stand.monatUebrig, 1);
+      expect(stand.erschoepft, isFalse);
     });
 
     test('mehr als die Grenze ergibt nie eine negative Restzahl', () {

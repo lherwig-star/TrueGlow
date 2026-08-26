@@ -233,7 +233,7 @@ class LEn extends L {
 
   @override
   String get kontingentMonatsgrenzeText =>
-      'Thirty analyses a month — you have used them all. Your allowance resets at the start of next month.';
+      'Ten analyses a month — you have used them all. Your allowance goes back to ten on the first of next month. Your plan, your checklist and the check-ins the app invites you to keep working — those do not count towards it.';
 
   @override
   String kontingentUebrig(int uebrig, int gesamt) {

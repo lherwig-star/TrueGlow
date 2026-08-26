@@ -27,15 +27,18 @@ class AnalysisConfig {
   /// Das verwendete Vision-Modell – nur noch zur Anzeige in den
   /// Einstellungen. Massgeblich ist `MODELL` in `functions/src/gemini.ts`:
   /// Das Modell wird seit dem Umbau ausschliesslich serverseitig gewaehlt.
-  static const String modell = 'gemini-3.5-flash-lite';
+  static const String modell = 'gemini-3.7-flash';
 
   /// Maximale Wartezeit auf die Cloud Function.
   ///
-  /// Die Function raeumt sich selbst 180 s ein (zwei Gemini-Versuche à 60 s
+  /// Die Function raeumt sich selbst 300 s ein (zwei Gemini-Versuche à 120 s
   /// plus Aufschlag). Der Client wartet etwas kuerzer, damit er den Abbruch
   /// als Zeitueberschreitung anzeigt statt in einer offenen Verbindung zu
   /// haengen.
-  static const Duration zeitlimit = Duration(seconds: 150);
+  ///
+  /// Warum so lange: Das Modell denkt vor der Antwort. Bei elf Bildern
+  /// dauert das spuerbar laenger als frueher – siehe DECISIONS 41.
+  static const Duration zeitlimit = Duration(seconds: 280);
 
   /// Wartezeit im Mock-Modus, damit der Ladezustand realistisch wirkt.
   static const Duration mockDauer = Duration(seconds: 2);
@@ -47,6 +50,11 @@ enum AnalysisFehler {
   zeitueberschreitung,
   apiFehler,
   kontingent,
+
+  /// Die Monatsgrenze, nicht die Tagesgrenze. Eigener Fall, weil „morgen
+  /// wieder" hier nicht stimmt und der Check-in weiterhin geht.
+  kontingentMonat,
+
   ungueltigeAntwort,
   keinApiKey,
   fotosFehlen,
@@ -60,6 +68,7 @@ extension AnalysisFehlerText on AnalysisFehler {
         AnalysisFehler.zeitueberschreitung => texte.analyseZeitTitel,
         AnalysisFehler.apiFehler => texte.analyseApiTitel,
         AnalysisFehler.kontingent => texte.analyseKontingentTitel,
+        AnalysisFehler.kontingentMonat => texte.kontingentMonatsgrenze,
         AnalysisFehler.ungueltigeAntwort => texte.analyseAntwortTitel,
         AnalysisFehler.keinApiKey => texte.analyseKeinSchluesselTitel,
         AnalysisFehler.fotosFehlen => texte.analyseFotosFehlenTitel,
@@ -71,6 +80,7 @@ extension AnalysisFehlerText on AnalysisFehler {
         AnalysisFehler.zeitueberschreitung => texte.analyseZeitTipp,
         AnalysisFehler.apiFehler => texte.analyseApiTipp,
         AnalysisFehler.kontingent => texte.analyseKontingentTipp,
+        AnalysisFehler.kontingentMonat => texte.kontingentMonatsgrenzeText,
         AnalysisFehler.ungueltigeAntwort => texte.analyseAntwortTipp,
         AnalysisFehler.keinApiKey => texte.analyseKeinSchluesselTipp,
         AnalysisFehler.fotosFehlen => texte.analyseFotosFehlenTipp,

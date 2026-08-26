@@ -1054,6 +1054,115 @@ lockern wäre — die Länge des Reports hängt allein am Prompt.
 jedem Aufruf entsprechend mehr Eingabe-Token. Bei 0,30 $ je Million liegt
 das im Bereich von Bruchteilen eines Cents.
 
+## 41 · Der Wechsel auf `gemini-3.7-flash`
+
+Der neue Prompt (DECISIONS 40) allein hat die Antworten nicht tief genug
+gemacht — geprüft am Gerät, Befund: immer noch zu flach. Also das stärkere
+Modell obendrauf, nicht stattdessen: Sämtliche Qualitätsregeln bleiben
+unverändert aktiv, und die Gemeinplatz-Zählung im Protokoll bleibt drin.
+Erst damit lässt sich später sagen, ob das Modell wirklich weniger Floskeln
+liefert oder nur andere.
+
+**Was der Wechsel technisch nach sich zieht.** Der Aufruf selbst bleibt
+gleich — dieselbe URL, dieselben `inline_data`-Bilder, dasselbe
+`responseMimeType: application/json`. Zwei Eigenschaften des neuen Modells
+sind trotzdem relevant:
+
+- **Es denkt vor der Antwort**, ab Werk auf Stufe „medium", und bei Gemini 3
+  lässt sich das nicht abschalten. Das ist gewollt — es ist der Grund für
+  den Wechsel. Es kostet aber Zeit: Das Zeitlimit je Gemini-Aufruf steigt
+  von 60 s auf 120 s, die Function von 180 s auf 300 s, der Client von 150 s
+  auf 280 s. Die drei Zahlen hängen zusammen (zwei Versuche müssen in die
+  Function passen, der Client wartet knapp kürzer) und stehen deshalb im Test
+  nebeneinander.
+- **Seine Gedanken stehen nicht in der Antwort**, solange man sie nicht
+  ausdrücklich anfordert. `textAusAntwort` siebt sie trotzdem aus: Ein
+  Gedankenabschnitt im Antworttext würde das JSON unlesbar machen, und das
+  fiele erst beim Nutzer auf. Dazu kommt eine Protokollzeile, wenn das Modell
+  die Antwort mit etwas anderem als `STOP` beendet — dann weiß man beim
+  nächsten „nicht lesbar", woran es lag.
+
+**Was es wirklich kostet — Korrektur zu DECISIONS 40.** Dort stand „rund 2,9
+Cent je Analyse". Diese Zahl war zu niedrig: Denk-Tokens werden wie
+Ausgabe-Tokens abgerechnet, und ein Modell auf Stufe „medium" erzeugt davon
+einige tausend. Realistischer sind bei elf Bildern:
+
+| | Eingabe | Ausgabe inkl. Denken | je Analyse |
+|---|---|---|---|
+| bisher, `gemini-3.5-flash-lite` | 0,30 $/Mio. | 2,50 $/Mio. | rund 1,7 Cent |
+| jetzt, `gemini-3.7-flash` | 0,75 $/Mio. | 3,75 $/Mio. | **rund 3 bis 5 Cent** |
+| ab 01.01.2027 | 1,50 $/Mio. | 7,50 $/Mio. | rund 6 bis 10 Cent |
+
+Die Spanne kommt daher, dass niemand vorher weiß, wie lange das Modell
+nachdenkt. Genauer wird die Zahl erst mit ein paar echten Läufen; wo man sie
+abliest, steht im Testplan.
+
+**Preis:** Eine Analyse kostet das Zwei- bis Dreifache. Das ist die
+Entscheidung, die getroffen wurde — die Analyse ist das Produkt. Die
+Konsequenz daraus ist DECISIONS 42.
+
+## 42 · Zehn Analysen im Monat, Check-ins zählen nicht mit
+
+Mit dem teureren Modell sind dreißig Analysen im Monat kein sinnvoller
+Deckel mehr. Neu: **zehn** pro Nutzer und Monat, die drei pro Tag bleiben
+daneben stehen.
+
+**Warum Kalendermonat und nicht rollierend.** Der Zähler steht ohnehin schon
+auf einem Monatsschlüssel `jjjj-mm` in deutscher Zeit; ein rollierendes
+Fenster hätte jeden einzelnen Zeitpunkt speichern müssen. Wichtiger ist aber
+die Erklärbarkeit: „Am Ersten sind wieder zehn da" versteht jeder. Bei einem
+rollierenden Fenster lautet die ehrliche Auskunft „in drei Tagen wird eine
+frei, in sechs die nächste" — das kann niemand im Kopf mitführen, und ein
+Nutzer, der am 12. seine zehnte verbraucht hat, weiß nicht, woran er ist.
+Der Preis ist bekannt: Wer am 30. anfängt, hat zwei Tage später wieder zehn.
+Das ist großzügig in eine Richtung und für niemanden nachteilig.
+
+**Warum die Check-ins nicht mitzählen.** Die App lädt selbst an Tag 7, 14, 30
+und dann alle 30 Tage zum Check-in ein. Zählte jeder davon gegen die zehn,
+verbrauchte die App im ersten Monat vier bis fünf davon — der Nutzer bezahlt
+dann mit seinem Kontingent dafür, dass die App ihn erinnert. Die zehn
+gehören ihm ganz. Der Check-in hat weiterhin seinen eigenen Zähler; er ist
+ohnehin ein viel kleinerer Aufruf (zwei Bilder statt bis zu elf).
+
+**Warum die Ausnahme serverseitig hängt und nicht am Client.** Sonst wäre sie
+ein Schlupfloch: Ein manipulierter Client meldet einfach jeden Aufruf als
+Check-in und hat unbegrenzt Analysen. Der Server entscheidet deshalb selbst,
+ob ein Check-in fällig ist — höchstens einer alle sieben Tage, festgehalten
+in `users/{uid}/kontingent/checkin` im Feld `freiZuletzt`.
+
+**Warum sieben Tage und nicht der echte Terminplan.** Der Server könnte den
+Plan des Clients nachbauen (Tag 7, 14, 30, dann alle 30). Er tut es
+ausdrücklich nicht: Zwei Terminkalender driften auseinander — bei einer
+Neuinstallation, bei einem Gerätewechsel, bei einer Analyse, die den Plan
+verschiebt —, und dann sperrt der Server einen Check-in aus, den die App
+gerade anbietet. Sieben Tage sind der dichteste Takt, den die App je
+verlangt. Diese untere Schranke weist nie einen echten Check-in ab und lässt
+trotzdem kein Schlupfloch.
+
+**Was mit einem Check-in außerhalb des Takts passiert:** Er wird nicht
+abgewiesen, sondern auf das Analyse-Kontingent gebucht. Das ist die ehrliche
+Einordnung — außerhalb des Rhythmus ist es etwas, das der Nutzer selbst
+startet. Wer noch Kontingent hat, kommt also durch; wer keines mehr hat,
+bekommt dieselbe Meldung wie bei einer Analyse.
+
+**Die Freistellung wird im Voraus gebucht**, genau wie die Reservierung
+selbst — sonst könnten mehrere gleichzeitige Aufrufe alle „fällig" sehen.
+Zurückgenommen wird sie nur, wenn nachweislich kein Modellaufruf stattfand:
+kein Schlüssel, ein Netzfehler vor der Antwort, oder ein Kontingent, das
+schon vorher abgelehnt hat. Bei einer Zeitüberschreitung nicht — dort hat
+das Modell gerechnet.
+
+**Die Meldung in der App** unterscheidet jetzt Tages- und Monatsgrenze auch
+im Fehlerfall, nicht nur im Hinweis vor der Aufnahme: Der Server schickt
+`kontingentMonat` statt `kontingent`. Beide teilen sich denselben gRPC-Code,
+damit ein Client, der den neuen Namen nicht kennt, weiterhin die allgemeine
+Kontingentmeldung zeigt statt eines Serverfehlers. Der Text sagt, wann es
+wieder losgeht und dass die Check-ins weiterlaufen.
+
+**Preis:** Ein Feld mehr im Kontingent-Dokument und ein Zweig mehr im
+Check-in-Pfad. Zum Zurücksetzen beim Testen reicht weiterhin die
+Firebase-Konsole — wie, steht in `SETUP.md` 6.6.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

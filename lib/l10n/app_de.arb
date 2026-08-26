@@ -76,7 +76,7 @@
   "kontingentTagesgrenze": "Heute keine Analyse mehr frei",
   "kontingentTagesgrenzeText": "Drei Analysen pro Tag – das Kontingent ist aufgebraucht. Ab morgen früh geht es weiter. Dein Plan, deine Checkliste und der Check-in bleiben in der Zwischenzeit nutzbar.",
   "kontingentMonatsgrenze": "Diesen Monat keine Analyse mehr frei",
-  "kontingentMonatsgrenzeText": "Dreißig Analysen pro Monat – das Kontingent ist aufgebraucht. Zum Monatswechsel füllt es sich wieder auf.",
+  "kontingentMonatsgrenzeText": "Zehn Analysen pro Monat – das Kontingent ist aufgebraucht. Am Ersten des nächsten Monats füllt es sich wieder auf zehn. Dein Plan, deine Checkliste und die Check-ins, zu denen die App dich einlädt, gehen weiter – die zählen nicht mit.",
   "kontingentUebrig": "{uebrig, plural, =1{Noch 1 von {gesamt} Analysen heute} other{Noch {uebrig} von {gesamt} Analysen heute}}",
   "@kontingentUebrig": {
     "description": "Verbleibende Analysen des Tages.",

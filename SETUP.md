@@ -716,6 +716,37 @@ Gewichtsurteile. Findet es etwas, gehört der Prompt nachgeschärft
 (`functions/src/analyse_prompt.ts`) und das Ergebnis in `DECISIONS.md`,
 Abschnitt 21.
 
+☐ **6.6 Kontingent zum Testen zurücksetzen**
+
+Seit dem 26.08.2026 gilt: **3 Analysen pro Tag, 10 pro Monat**, und ein
+fälliger Check-in ist frei (`DECISIONS.md` 42). Beim Testen ist das schnell
+aufgebraucht. Zurücksetzen geht in der Firebase-Konsole, ohne Kommandozeile:
+
+<https://console.firebase.google.com/project/trueglow-b2c1c/firestore>
+
+1. In der Sammlung `users` das eigene Konto suchen. Welche uid das ist, sagt
+   die Function-Warnung im Log: `Tagesgrenze analyse erreicht (<uid>)`.
+2. Darin die Untersammlung `kontingent` öffnen.
+3. **Analysen freigeben:** Das Dokument `analyse` löschen (Dreipunktmenü →
+   „Dokument löschen"). Tages- **und** Monatszähler stehen beide darin — ein
+   Löschen setzt also beides zurück. Ein fehlendes Dokument heißt für den
+   Server „noch nie eine Analyse gelaufen", das ist kein Fehler.
+4. **Freien Check-in wieder freigeben:** Im Dokument `checkin` das Feld
+   `freiZuletzt` löschen. Ohne dieses Feld gilt der nächste Check-in sofort
+   als fällig. Wer das ganze Dokument löscht, setzt zusätzlich den
+   Check-in-Zähler zurück — auch das schadet nichts.
+
+> Statt zu löschen kann man die Zahlen auch einzeln ändern (`tagZaehler`,
+> `monatZaehler` auf 0). Löschen ist weniger fehleranfällig: Die Felder
+> `tag` und `monat` müssten sonst zum heutigen Datum passen, sonst zählt der
+> Server sie ohnehin als 0 — und dann wundert man sich, warum das Ändern
+> „nichts gebracht" hat.
+
+Der Client liest denselben Zähler nur als Hinweis (`kontingentProvider`).
+Nach dem Zurücksetzen kann es sein, dass die Modul-Seite noch die alte Zahl
+zeigt, bis sie neu gebaut wird — die Sperre selbst sitzt serverseitig und ist
+sofort weg.
+
 ---
 
 ## 7 · iOS (kommt fest, Vorbereitung jetzt)

@@ -13,16 +13,25 @@ export type Fehlerfall =
   | 'zeitueberschreitung'
   | 'apiFehler'
   | 'kontingent'
+  | 'kontingentMonat'
   | 'ungueltigeAntwort'
   | 'keinApiKey'
   | 'fotosFehlen';
 
-/** Welcher gRPC-Code zu welchem Fehlerfall gehoert. */
+/**
+ * Welcher gRPC-Code zu welchem Fehlerfall gehoert.
+ *
+ * `kontingentMonat` teilt sich den Code mit `kontingent`. Das ist Absicht:
+ * Ein Client, der den neuen Namen nicht kennt, faellt auf den Code zurueck
+ * und zeigt weiterhin die allgemeine Kontingentmeldung statt eines
+ * Serverfehlers.
+ */
 const CODES: Record<Fehlerfall, FunctionsErrorCode> = {
   keinInternet: 'unavailable',
   zeitueberschreitung: 'deadline-exceeded',
   apiFehler: 'internal',
   kontingent: 'resource-exhausted',
+  kontingentMonat: 'resource-exhausted',
   ungueltigeAntwort: 'internal',
   keinApiKey: 'failed-precondition',
   fotosFehlen: 'invalid-argument',

@@ -70,7 +70,7 @@
   "kontingentTagesgrenze": "No analyses left today",
   "kontingentTagesgrenzeText": "Three analyses a day — you have used them all. You can pick up again tomorrow morning. Your plan, checklist and check-in stay available in the meantime.",
   "kontingentMonatsgrenze": "No analyses left this month",
-  "kontingentMonatsgrenzeText": "Thirty analyses a month — you have used them all. Your allowance resets at the start of next month.",
+  "kontingentMonatsgrenzeText": "Ten analyses a month — you have used them all. Your allowance goes back to ten on the first of next month. Your plan, your checklist and the check-ins the app invites you to keep working — those do not count towards it.",
   "kontingentUebrig": "{uebrig, plural, =1{1 of {gesamt} analyses left today} other{{uebrig} of {gesamt} analyses left today}}",
   "richtungTitel": "Your direction",
   "richtungEyebrow": "Optional",

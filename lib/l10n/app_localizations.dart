@@ -520,7 +520,7 @@ abstract class L {
   /// No description provided for @kontingentMonatsgrenzeText.
   ///
   /// In de, this message translates to:
-  /// **'Dreißig Analysen pro Monat – das Kontingent ist aufgebraucht. Zum Monatswechsel füllt es sich wieder auf.'**
+  /// **'Zehn Analysen pro Monat – das Kontingent ist aufgebraucht. Am Ersten des nächsten Monats füllt es sich wieder auf zehn. Dein Plan, deine Checkliste und die Check-ins, zu denen die App dich einlädt, gehen weiter – die zählen nicht mit.'**
   String get kontingentMonatsgrenzeText;
 
   /// Verbleibende Analysen des Tages.

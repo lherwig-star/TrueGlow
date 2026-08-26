@@ -1,12 +1,36 @@
 import { fehler } from './fehler';
 
-/** Das verwendete Vision-Modell – Gegenstueck zu `AnalysisConfig.modell`. */
-export const MODELL = 'gemini-3.5-flash-lite';
+/**
+ * Das verwendete Vision-Modell – Gegenstueck zu `AnalysisConfig.modell`.
+ *
+ * Seit dem 26.08.2026 `gemini-3.7-flash` statt `gemini-3.5-flash-lite`. Der
+ * neue Prompt allein hat die Antworten nicht tief genug gemacht; die Kosten
+ * sind bekannt und abgewogen (DECISIONS 41).
+ *
+ * Zwei Eigenschaften des neuen Modells sind fuer diese Datei wichtig:
+ *
+ *  - Es **denkt** vor der Antwort, ab Werk auf Stufe "medium". Das kostet
+ *    Zeit (deshalb das groessere Zeitlimit) und Tokens, die wie
+ *    Ausgabe-Tokens abgerechnet werden. Abschalten laesst es sich bei
+ *    Gemini 3 nicht, und wir wollen es auch nicht – es ist der Grund fuer
+ *    den Wechsel.
+ *  - Seine Gedanken stehen **nicht** in der Antwort, solange man sie nicht
+ *    ausdruecklich anfordert. `textAusAntwort` siebt sie trotzdem aus: Ein
+ *    Gedankenabschnitt im Antworttext wuerde das JSON unlesbar machen, und
+ *    das faellt erst beim Nutzer auf.
+ */
+export const MODELL = 'gemini-3.7-flash';
 
 const BASIS_URL = 'https://generativelanguage.googleapis.com/v1beta';
 
-/** Maximale Wartezeit pro Aufruf. Muss unter der Function-Zeitgrenze liegen. */
-export const ZEITLIMIT_MS = 60_000;
+/**
+ * Maximale Wartezeit pro Aufruf. Muss unter der Function-Zeitgrenze liegen.
+ *
+ * 120 s statt der frueheren 60 s: Ein denkendes Modell antwortet auf elf
+ * Bilder spuerbar langsamer. Die Rechnung dahinter steht in `index.ts` bei
+ * `timeoutSeconds` – zwei Versuche muessen hineinpassen.
+ */
+export const ZEITLIMIT_MS = 120_000;
 
 /**
  * Ein Aufruf gegen die Gemini-API. Liefert den reinen Antworttext des Modells.
@@ -110,7 +134,17 @@ function textAusAntwort(rohtext: string): string {
     throw fehler('ungueltigeAntwort', 'Gemini liefert keine Kandidaten');
   }
 
-  const inhalt = (kandidaten[0] as Record<string, unknown>).content;
+  const kandidat = kandidaten[0] as Record<string, unknown>;
+
+  // Ein abgeschnittener Report kommt als unlesbares JSON zurueck und kostet
+  // dann einen zweiten Versuch. Der Grund steht nur hier – ohne diese Zeile
+  // sieht man im Protokoll bloss "nicht lesbar".
+  const ende = kandidat.finishReason;
+  if (typeof ende === 'string' && ende !== 'STOP') {
+    console.warn(`Gemini beendet die Antwort mit "${ende}"`);
+  }
+
+  const inhalt = kandidat.content;
   const teile =
     inhalt && typeof inhalt === 'object'
       ? (inhalt as Record<string, unknown>).parts
@@ -118,6 +152,13 @@ function textAusAntwort(rohtext: string): string {
   if (!Array.isArray(teile)) return '';
 
   return teile
+    .filter((teil) => {
+      // Gedankenabschnitte sind kein Antworttext. Sie kommen nur, wenn man
+      // sie anfordert – wir tun es nicht, und falls sich das je aendert,
+      // soll das JSON trotzdem lesbar bleiben.
+      const t = teil as Record<string, unknown> | null;
+      return !(t && typeof t === 'object' && t.thought === true);
+    })
     .map((teil) =>
       teil && typeof teil === 'object'
         ? (teil as Record<string, unknown>).text

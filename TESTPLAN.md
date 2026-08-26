@@ -451,9 +451,76 @@ entscheidet, sondern am Lesen. Nimm dir dafür fünf Minuten.
    Aufgaben; „Kapitel persoenlicheZiele fehlt" hieße, dass der Freitext
    nirgends angekommen ist.
 
-Bleibt das Ergebnis nach diesen beiden Abschnitten dünn, ist der nächste
-Hebel ein stärkeres Modell. Was das kostet, steht in `DECISIONS.md` 40 —
-kurz: rund 1,7 Cent je Analyse heute, rund 2,9 Cent mit `gemini-3.7-flash`.
+> **Nachtrag vom 26.08.2026:** Das Ergebnis war dünn — deshalb läuft die
+> Analyse seitdem auf `gemini-3.7-flash`. Die Prüfungen oben bleiben genau
+> so gültig; sie sind jetzt der Maßstab für das neue Modell. Wie du es
+> zusammen mit dem Monatskontingent prüfst, steht in Abschnitt 13.
+
+## 13 · Das neue Modell und das Monatskontingent
+
+Dieser Abschnitt kostet **zwei** Analyse-Läufe, mehr nicht. Alles Übrige
+prüfst du am Zähler und an der Uhr.
+
+**Vorbereitung:** Kontingent zurücksetzen, damit du sauber zählen kannst —
+wie das geht, steht in `SETUP.md` 6.6. Kurz: In der Firebase-Konsole unter
+`users/<deine uid>/kontingent` das Dokument `analyse` löschen und im
+Dokument `checkin` das Feld `freiZuletzt` löschen.
+
+1. **Läuft das neue Modell überhaupt?** Eine ganz normale Analyse starten.
+   Erwartet: Sie kommt durch. Sie darf spürbar länger dauern als bisher —
+   das Modell denkt vor der Antwort. Bricht sie mit „Zeitüberschreitung" ab,
+   ist das ein Blocker; notier dann, wie lange du gewartet hast.
+
+2. **Steht das Modell in den Einstellungen?** Einstellungen aufrufen.
+   Erwartet: `gemini-3.7-flash`. Steht dort noch `gemini-3.5-flash-lite`,
+   läuft eine alte App-Fassung.
+
+3. **Ist der Report besser geworden?** Denselben Report mit Abschnitt 12
+   durchgehen — Bart-Test, Suchmaschinen-Test, Wiederholungs-Test. Das ist
+   der eigentliche Zweck des Wechsels. Notier, was durchgerutscht ist.
+
+4. **Was hat der Lauf gekostet?** Optional, am Rechner. In der
+   Google-Cloud-Konsole unter „Vertex AI" bzw. im Abrechnungsbericht des
+   Projekts steht der Verbrauch. Interessant ist die Zahl der Denk-Tokens —
+   davon hängt ab, ob wir bei 3 oder bei 5 Cent je Analyse liegen
+   (`DECISIONS.md` 41).
+
+5. **Der Zähler in der App.** Modul-Auswahl öffnen. Erwartet: „Noch 2 von 3
+   Analysen heute". Der Monatszähler steht dort nicht — er meldet sich erst,
+   wenn er greift.
+
+6. **Die Monatsgrenze.** Ohne zehn Analysen zu verbrauchen: In der
+   Firebase-Konsole im Dokument `users/<uid>/kontingent/analyse` das Feld
+   `monatZaehler` auf **10** setzen und sicherstellen, dass `monat` auf dem
+   laufenden Monat steht (`2026-08`). Dann die App neu öffnen und die
+   Modul-Auswahl aufrufen. Erwartet: Die Karte **„Diesen Monat keine Analyse
+   mehr frei"** mit dem Hinweis, dass am Ersten wieder zehn da sind und dass
+   die Check-ins weiterlaufen. Der Startknopf ist grau.
+
+7. **Dasselbe auf Englisch.** Einstellungen → English, zurück zur
+   Modul-Auswahl. Erwartet: „No analyses left this month", derselbe Sinn,
+   kein deutsches Wort darin.
+
+8. **Der Check-in geht trotzdem.** Mit weiterhin vollem Monatszähler (also
+   gesperrter Analyse) einen fälligen Check-in durchführen. Erwartet: Er
+   läuft durch und ändert den Plan. Genau das ist der Punkt der ganzen
+   Änderung — die App darf dich nicht mit deinem eigenen Kontingent
+   erinnern.
+
+   Ist gerade keiner fällig, lässt er sich vorziehen: Im Dokument
+   `users/<uid>/kontingent/checkin` das Feld `freiZuletzt` löschen und in der
+   App den Check-in aus der Karte auf der Startseite starten.
+
+9. **Der zweite Check-in am selben Tag ist nicht frei.** Direkt nach Punkt 8
+   noch einen Check-in starten, ohne irgendetwas zurückzusetzen. Erwartet:
+   Er läuft ebenfalls durch — geht aber diesmal auf das Analyse-Kontingent.
+   Nachzusehen im Dokument `analyse`: `monatZaehler` ist um eins gestiegen.
+   Bei gesperrtem Monat (Punkt 6) kommt stattdessen die Kontingent-Meldung.
+   Beides ist richtig: Der freie Check-in gilt einmal pro Woche, nicht
+   beliebig oft.
+
+10. **Zurücksetzen nicht vergessen.** Nach dem Test das Dokument `analyse`
+    wieder löschen, sonst bleibt dein Zähler auf 10 stehen.
 
 ## Was mit Funden passiert
 

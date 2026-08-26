@@ -15,7 +15,13 @@ import {
   leseModus,
   pruefeFrischeAnmeldung,
 } from './konto';
-import { freigeben, reservieren, type Kontingentart } from './limit';
+import {
+  checkinFreiReservieren,
+  checkinFreiZurueck,
+  freigeben,
+  reservieren,
+  type Kontingentart,
+} from './limit';
 
 /**
  * Der Gemini-Proxy.
@@ -49,9 +55,12 @@ const OPTIONEN = {
   secrets: [geminiKey],
   enforceAppCheck: true,
   memory: '1GiB' as const,
-  // Muss ueber dem Gemini-Zeitlimit von 60 s liegen – zwei Versuche plus
-  // Aufschlag.
-  timeoutSeconds: 180,
+  // Muss ueber dem Gemini-Zeitlimit liegen – zwei Versuche plus Aufschlag.
+  // Bei 120 s je Aufruf sind das 240 s; 300 lassen Luft fuer Auf- und
+  // Abbau. Der Client wartet etwas kuerzer (`AnalysisConfig.zeitlimit`),
+  // damit er die Zeitueberschreitung selbst meldet, statt in einen
+  // abgebrochenen Aufruf zu laufen.
+  timeoutSeconds: 300,
   maxInstances: 10,
 };
 
@@ -98,17 +107,39 @@ export const checkinAuswerten = onCall(OPTIONEN, async (request) => {
     eingang.prompt.sprache,
   );
 
-  const auswertung = await mitKontingent(uid, 'checkin', () =>
-    frageMitNachfassen({
-      system,
-      nutzer,
-      bilder: eingang.bilder,
-      nachfassen: checkinPrompt.JSON_NACHFASSEN,
-      brauchbar: istAuswertungBrauchbar,
-    }),
-  );
+  // Ein faelliger Check-in ist frei – er zaehlt gegen den eigenen
+  // Check-in-Zaehler und nicht gegen die zehn Analysen des Nutzers. Ob er
+  // faellig ist, entscheidet der Server (siehe `checkinFreiReservieren`).
+  // Ein zusaetzlicher Check-in ausserhalb des Takts ist etwas, das der
+  // Nutzer selbst startet, und geht deshalb auf sein Analyse-Kontingent.
+  const freigabe = await checkinFreiReservieren(uid);
+  const art: Kontingentart = freigabe.frei ? 'checkin' : 'analyse';
+  if (!freigabe.frei) {
+    console.info('Check-in ausserhalb des Takts – zaehlt als Analyse.');
+  }
 
-  return { auswertung };
+  try {
+    const auswertung = await mitKontingent(uid, art, () =>
+      frageMitNachfassen({
+        system,
+        nutzer,
+        bilder: eingang.bilder,
+        nachfassen: checkinPrompt.JSON_NACHFASSEN,
+        brauchbar: istAuswertungBrauchbar,
+      }),
+    );
+
+    return { auswertung };
+  } catch (e) {
+    // Dieselbe Regel wie beim Kontingent: Nur wenn nachweislich kein
+    // Modellaufruf stattfand, gibt es die Freistellung zurueck. Das gilt
+    // auch, wenn schon das Kontingent abgelehnt hat – dann ist gar nichts
+    // passiert.
+    if (ohneVerbrauch(e) || istKontingentfehler(e)) {
+      await checkinFreiZurueck(uid, freigabe);
+    }
+    throw e;
+  }
 });
 
 /**
@@ -182,6 +213,12 @@ async function mitKontingent<T>(
 function ohneVerbrauch(e: unknown): boolean {
   const details = (e as { details?: { fehler?: string } })?.details;
   return details?.fehler === 'keinApiKey' || details?.fehler === 'apiFehler';
+}
+
+/** Ob der Aufruf schon am Kontingent gescheitert ist. */
+function istKontingentfehler(e: unknown): boolean {
+  const fall = (e as { details?: { fehler?: string } })?.details?.fehler;
+  return fall === 'kontingent' || fall === 'kontingentMonat';
 }
 
 /**

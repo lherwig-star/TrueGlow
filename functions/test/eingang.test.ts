@@ -176,7 +176,9 @@ describe('leseCheckin', () => {
 
 describe('Kontingent', () => {
   it('kennt die Grenzen aus der Roadmap', () => {
-    expect(GRENZEN.analyse).toEqual({ proTag: 3, proMonat: 30 });
+    // Seit dem Modellwechsel zehn statt dreissig im Monat, siehe
+    // DECISIONS 42. Die uebrigen Regeln stehen in `limit.test.ts`.
+    expect(GRENZEN.analyse).toEqual({ proTag: 3, proMonat: 10 });
   });
 
   it('bildet Tages- und Monatsschluessel', () => {

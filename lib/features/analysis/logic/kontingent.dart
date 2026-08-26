@@ -31,7 +31,7 @@ class KontingentStand {
   /// Hinweis nicht mehr – die Sperre aber schon, weil sie serverseitig
   /// entschieden wird.
   static const int proTag = 3;
-  static const int proMonat = 30;
+  static const int proMonat = 10;
 
   final int tagVerbraucht;
   final int monatVerbraucht;

@@ -25,11 +25,29 @@ interface Grenze {
  * Bilder statt bis zu elf) und faellt planmaessig hoechstens alle sieben Tage
  * an. Wuerde er aus demselben Topf zaehlen, koennten drei Analysen an einem
  * Tag den faelligen Check-in blockieren.
+ *
+ * Zehn Analysen im Monat statt dreissig: Seit dem Wechsel auf
+ * `gemini-3.7-flash` kostet eine Analyse ein Vielfaches. Die zehn gehoeren
+ * dem Nutzer ganz – die Check-ins, zu denen die App selbst auffordert,
+ * zaehlen nicht dagegen. Begruendung in DECISIONS 42.
  */
 export const GRENZEN: Record<Kontingentart, Grenze> = {
-  analyse: { proTag: 3, proMonat: 30 },
+  analyse: { proTag: 3, proMonat: 10 },
   checkin: { proTag: 5, proMonat: 40 },
 };
+
+/**
+ * Mindestabstand zwischen zwei **freien** Check-ins, in Tagen.
+ *
+ * Die App fordert nach Plan an Tag 7, 14, 30 und dann alle 30 Tage zum
+ * Check-in auf (`CheckinZeitplan` im Client). Der dichteste Takt, den sie je
+ * verlangt, sind sieben Tage – und genau das prueft der Server nach. Er
+ * bildet den Plan bewusst **nicht** nach: Ein zweiter Terminkalender auf dem
+ * Server wuerde vom Client abdriften und dann faelschlich sperren. Sieben
+ * Tage sind die untere Schranke, die nie einen echten Check-in abweist und
+ * trotzdem kein Schlupfloch laesst.
+ */
+export const CHECKIN_ABSTAND_TAGE = 7;
 
 /** Tages- und Monatsschluessel in deutscher Zeit. */
 export function schluessel(jetzt: Date = new Date()): {
@@ -95,7 +113,9 @@ export async function reservieren(
       throw fehler('kontingent', `Tagesgrenze ${art} erreicht (${uid})`);
     }
     if (aktuell.monatZaehler >= grenze.proMonat) {
-      throw fehler('kontingent', `Monatsgrenze ${art} erreicht (${uid})`);
+      // Eigener Fall, damit die App sagen kann, wann es wieder losgeht:
+      // „morgen früh" stimmt bei der Monatsgrenze nicht.
+      throw fehler('kontingentMonat', `Monatsgrenze ${art} erreicht (${uid})`);
     }
 
     transaktion.set(referenz, {
@@ -106,6 +126,100 @@ export async function reservieren(
       aktualisiertAm: FieldValue.serverTimestamp(),
     });
   });
+}
+
+/** Ergebnis von [checkinFreiReservieren]. */
+export interface Checkinfreigabe {
+  /** Ob dieser Check-in als faellig gilt und deshalb frei ist. */
+  frei: boolean;
+  /** Der vorherige Stand, fuer [checkinFreiZurueck]. */
+  vorher?: string;
+}
+
+/**
+ * Prueft und bucht die Freistellung eines faelligen Check-ins.
+ *
+ * Der Check-in, zu dem die App selbst auffordert, zaehlt nicht gegen das
+ * Monatskontingent des Nutzers – sonst verbraucht die App vier bis fuenf
+ * seiner zehn Analysen, und das waere ihm gegenueber unfair.
+ *
+ * Damit daraus kein Schlupfloch wird, entscheidet der **Server**, ob ein
+ * Check-in faellig ist, und nicht der Client: hoechstens einer alle
+ * [CHECKIN_ABSTAND_TAGE] Tage. Ein manipulierter Client, der stuendlich
+ * ruft, bekommt genau einen davon frei; alles Weitere geht auf sein
+ * Analyse-Kontingent.
+ *
+ * Reserviert wird im Voraus, wie bei [reservieren]: Wer abbricht, hat den
+ * freien Check-in verbraucht. Nur wenn nachweislich kein Modellaufruf
+ * zustande kam, nimmt [checkinFreiZurueck] die Buchung zurueck.
+ */
+export async function checkinFreiReservieren(
+  uid: string,
+  jetzt: Date = new Date(),
+): Promise<Checkinfreigabe> {
+  const referenz = getFirestore()
+    .collection('users')
+    .doc(uid)
+    .collection('kontingent')
+    .doc('checkin');
+
+  const { tag } = schluessel(jetzt);
+
+  return getFirestore().runTransaction(async (transaktion) => {
+    const doc = await transaktion.get(referenz);
+    const vorher = doc.data()?.freiZuletzt;
+    const letzter = typeof vorher === 'string' ? vorher : undefined;
+
+    if (letzter !== undefined && tageZwischen(letzter, tag) < CHECKIN_ABSTAND_TAGE) {
+      return { frei: false };
+    }
+
+    transaktion.set(
+      referenz,
+      { freiZuletzt: tag, aktualisiertAm: FieldValue.serverTimestamp() },
+      { merge: true },
+    );
+    return { frei: true, vorher: letzter };
+  });
+}
+
+/** Nimmt eine Freistellung zurueck, wenn gar kein Modellaufruf stattfand. */
+export async function checkinFreiZurueck(
+  uid: string,
+  freigabe: Checkinfreigabe,
+): Promise<void> {
+  if (!freigabe.frei) return;
+
+  const referenz = getFirestore()
+    .collection('users')
+    .doc(uid)
+    .collection('kontingent')
+    .doc('checkin');
+
+  try {
+    await referenz.set(
+      {
+        // Ohne Vorgaenger wird das Feld geloescht statt auf einen Platzhalter
+        // gesetzt – sonst waere der naechste Check-in erst in sieben Tagen
+        // frei, obwohl nie einer stattgefunden hat.
+        freiZuletzt: freigabe.vorher ?? FieldValue.delete(),
+        aktualisiertAm: FieldValue.serverTimestamp(),
+      },
+      { merge: true },
+    );
+  } catch (e) {
+    console.warn(`Check-in-Freistellung nicht zurueckgenommen: ${e}`);
+  }
+}
+
+/** Abstand zweier Tagesschluessel `jjjj-mm-tt` in Tagen. */
+export function tageZwischen(von: string, bis: string): number {
+  const a = Date.parse(`${von}T00:00:00Z`);
+  const b = Date.parse(`${bis}T00:00:00Z`);
+  // Ein unlesbarer Stand darf niemanden aussperren: Dann gilt der Check-in
+  // als faellig.
+  if (!Number.isFinite(a) || !Number.isFinite(b)) return Number.MAX_SAFE_INTEGER;
+  return Math.round((b - a) / 86_400_000);
 }
 
 /**
