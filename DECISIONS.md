@@ -1859,6 +1859,88 @@ Begründung auf der Ausnahmeliste in `design_werte_test.dart`.
 spürbar länger — die Glut wird für jedes Pixel gerechnet, das 1152er-Bild hat
 1,3 Millionen davon.
 
+## 55 · Warum das Zeichen blinkte — und wer die Überblendung macht
+
+Zwei Beschwerden aus derselben Aufnahme: Das Zeichen **blinkt** bei der
+Übergabe, und der eigene Startbildschirm läuft **in Stufen** an. Beides ist
+dieselbe Ursache, und die lag nicht in der App.
+
+**Der Befund.** Kaltstart am Samsung SM A525F, Bildschirmaufnahme, mit
+`ffmpeg -vsync 0` in Einzelbilder zerlegt, jedes Bild ausgemessen (Tinte des
+Zeichens, Verlaufsstärke von oben nach unten):
+
+| Bild | t | Zeichen | Schriftzug | Verlauf |
+|---|---|---|---|---|
+| 137 | 11,211 s | 6683 | 0 | 0,0 |
+| 138 | 11,228 s | **0** | 0 | 0,0 |
+| 139 | 11,244 s | **0** | 0 | 0,0 |
+| 140 | 11,262 s | **0** | 0 | 0,0 |
+| 141 | 11,281 s | 6659 | 2345 | 18,3 |
+
+Drei Einzelbilder — rund 50 ms — mit **gar keinem Zeichen**, danach in einem
+Schritt der fertige Endzustand. Das ist das Blinken, und im selben Sprung
+steckt die zweite Beschwerde: Die 300-ms-Blende, die in Dart lief, ist in
+Bild 141 schon fertig.
+
+**Die Ursache.** Ab Android 12 gehört der Start-Bildschirm dem System. Es
+nimmt ihn weg, sobald die App gezeichnet hat — aber der Inhalt der App wird
+erst *nach* dieser Wegnahme sichtbar. In den drei Bildern dazwischen liegt
+nur die leere Fläche: das Zeichen des Systems ist schon weg, das der App noch
+nicht da.
+
+Und weil die Dart-Blende startet, sobald der Startbildschirm gebaut ist —
+also lange bevor er auf dem Schirm ankommt —, lief sie hinter diesem Vorhang
+ab. Zweimal gemessen, zweimal war das erste sichtbare Bild der Endzustand.
+Eine Animation in Flutter kann diesen Übergang grundsätzlich nicht zeigen.
+
+**Was es nicht war:** `FlutterNativeSplash.preserve()`. Der Verdacht lag nahe
+— die Funktion hält das erste gezeichnete Bild zurück —, war aber falsch:
+Ohne sie blieb das Blinken, es wurde nur kürzer (drei leere Bilder statt
+mehr). Sie ist trotzdem draußen, weil Android genau auf dieses Bild wartet,
+um seinen Start-Bildschirm wegzunehmen. `flutter_native_splash` ist wieder
+reiner Generator in `dev_dependencies`.
+
+**Die Lösung: Die Überblendung liegt im Vorhang, nicht dahinter.**
+`MainActivity` setzt einen Exit-Listener. Damit wartet das System darauf,
+dass wir seinen Start-Bildschirm selbst wegnehmen — und wir blenden ihn in
+300 ms weg, über dem fertigen Bild der App, das darunter schon steht. Hier
+ist die Reihenfolge zwingend, und man sieht genau eine Überblendung: von der
+flachen Farbe des Systems auf Verlauf, Zeichen und Schriftzug.
+
+Der eigene Startbildschirm animiert deshalb **gar nichts** mehr. Er zeigt ab
+dem ersten Bild den Endzustand. Ein Test besteht darauf, dass dort kein
+`AnimationController` wieder auftaucht.
+
+**Warum das Zeichen dabei nicht dunkler wird.** Beide Lagen zeigen dasselbe
+Zeichen, gleich groß, an derselben Stelle (DECISIONS 52). Beim Überblenden
+ergibt das an jeder Stelle wieder genau dieses Zeichen — es kann nicht
+flackern. Das ist keine Theorie, sondern der Grund, warum die Maßarbeit aus
+52 überhaupt nötig war.
+
+**Der Nachweis** (Aufnahme vom 27.08.2026, Bilder 33–73). Gemessen wurde die
+mittlere Helligkeit genau der 22.138 Pixel, die das Zeichen ausmachen:
+
+| Abschnitt | Bilder | Tinte | Bildwechsel |
+|---|---|---|---|
+| System-Splash steht | 33–54 | 203,11 — unverändert | ≤ 0,04 |
+| Überblendung | 55–72, 283 ms | 203,05 → 205,11, steigend | 0,40 bis 1,12 |
+| eigener Schirm steht | 72–73 | 205,11 | 0,02 |
+
+Kein Einzelbild mit dunklerem Zeichen als davor (die −0,06 in Bild 55/56 sind
+0,03 % und liegen unter einer Helligkeitsstufe), kein leeres Bild, und der
+größte Bildwechsel während der Blende ist 1,12 — zum Vergleich: der Wechsel
+auf die Anmeldung eine Sekunde später misst 22,8.
+
+**Grenzen.** Vor Android 12 gibt es diesen Mechanismus nicht; dort ist der
+Start-Bildschirm der Fensterhintergrund und verschwindet, sobald Flutter
+malt. Steht die System-Einstellung „Animationen entfernen" an, macht Android
+aus der Blende einen Schnitt — genau darum bittet diese Einstellung.
+
+**Nicht Teil der Aufgabe** und deshalb unverändert: die ersten Sekunden
+flacher Farbe, bevor überhaupt etwas erscheint. Das ist Android beim Starten
+des Prozesses, nicht die App. In dieser Aufnahme waren es 7,2 Sekunden
+(Debug-Build).
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

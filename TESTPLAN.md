@@ -1101,6 +1101,63 @@ dem Splash steht. Halt es neben deine Vorlage.
    fällt dort weg — ein Monochrom-Icon hat nur eine Farbe, das ist so
    vorgesehen.
 
+## 24 · Der Start ohne Stufen
+
+Prüft die eine Stelle, an der Android und die App sich abwechseln. Der
+Hintergrund steht in DECISIONS 55.
+
+**Vorbereitung.** Die App muss wirklich kalt starten, sonst ist der
+Start-Bildschirm gar nicht zu sehen: Aus den letzten Apps wischen, ein paar
+Sekunden warten, dann vom Homescreen öffnen. Nicht aus den Einstellungen
+heraus, nicht über einen Link.
+
+1. **Der Start blinkt nicht.** App kalt starten und die Übergabe genau
+   ansehen — den Moment, in dem der Bildschirm Tiefe bekommt und „TrueGlow"
+   erscheint. Erwartet: Das Zeichen steht die ganze Zeit unverändert da. Es
+   wird nicht kurz blasser, es verschwindet nicht für einen Wimpernschlag,
+   und es springt nicht.
+
+2. **Es gibt genau einen Übergang.** Erwartet: Hintergrund und Schriftzug
+   kommen **zusammen**, in einer knappen Drittelsekunde. Kein Vorlauf, in dem
+   das Bild erst steht; nicht erst der Verlauf und dann der Name.
+
+3. **Das Zeichen bleibt an seinem Platz.** Erwartet: Es wächst nicht, es
+   schrumpft nicht, es rutscht nicht nach oben. Wer unsicher ist: Fingerkuppe
+   an den Bildschirmrand auf Höhe der Kopfoberkante halten und starten.
+
+4. **Der Name steht danach ruhig.** Erwartet: Nach dem Übergang steht das
+   fertige Bild rund eine Sekunde still, bevor es zur Anmeldung oder zum
+   Dashboard weitergeht.
+
+5. **Zweimal hintereinander.** Schritt 1 noch einmal, direkt im Anschluss.
+   Erwartet: Genau derselbe Ablauf. Ein Start, der nur beim ersten Mal
+   stimmt, ist nicht in Ordnung.
+
+6. **Mit „Animationen entfernen".** Einstellungen → Bedienungshilfen →
+   Sichtbarkeit → „Animationen entfernen" einschalten, dann kalt starten.
+   Erwartet: Der Übergang ist ein Schnitt statt einer Blende — und auch dabei
+   kein leeres Bild und kein blasses Zeichen. Danach wieder ausschalten.
+
+7. **Hell und dunkel.** Systemweit auf helles Design stellen, kalt starten.
+   Erwartet: Derselbe Ablauf, dieselbe Farbe wie vorher. Danach zurückstellen.
+
+8. **Was hier ausdrücklich nicht geprüft wird:** die Sekunden flacher Farbe
+   ganz am Anfang, bevor überhaupt etwas erscheint. Das ist Android beim
+   Starten der App. Im Debug-Build dauert es spürbar länger als in der
+   fertigen Fassung.
+
+**Gegenprobe für Entwickler.** Der Nachweis lässt sich nachstellen, ohne aufs
+Auge zu vertrauen:
+
+```bash
+adb shell screenrecord --time-limit 16 --bit-rate 16000000 /sdcard/start.mp4
+```
+
+Während der Aufnahme kalt starten, danach herunterladen, mit
+`ffmpeg -vsync 0 -i start.mp4 -q:v 2 b_%04d.png` in Einzelbilder zerlegen und
+die Helligkeit der Zeichen-Pixel Bild für Bild vergleichen. Erwartet: kein
+Bild dunkler als das davor. **Aufnahmen danach vom Gerät löschen.**
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

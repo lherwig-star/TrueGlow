@@ -19,14 +19,9 @@ void main() {
 
     expect(find.byType(SplashScreen), findsOneWidget);
 
-    // Das erste Bild ist noch ohne Namen: Es soll vom letzten Bild des
-    // nativen Splash nicht zu unterscheiden sein (DECISIONS 53).
-    expect(find.text(texte.appName), findsNothing);
-
-    // Zwei Schritte, weil es zwei sind: Erst laeuft der Vorlauf ab und die
-    // Blende startet, dann laeuft sie.
-    await tester.pump(SplashScreen.vorlauf);
-    await tester.pump(SplashScreen.blende);
+    // Schon das erste Bild ist der Endzustand – Zeichen und Name zusammen.
+    // Es gibt hier nichts mehr, das anlaeuft: Die eine Ueberblendung macht
+    // Android ueber diesem fertigen Bild (DECISIONS 55).
     expect(find.text(texte.appName), findsOneWidget);
 
     // Sie geht von selbst weiter – ohne Knopf, wie ein Startbildschirm es

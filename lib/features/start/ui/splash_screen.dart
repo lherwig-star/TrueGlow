@@ -18,17 +18,19 @@ import '../../../core/widgets/marken_logo.dart';
 /// wäre das eine leere Fläche in Markenfarbe – mit ihm ist es der Moment, in
 /// dem die App sich vorstellt.
 ///
-/// **Sein erstes Bild ist das letzte Bild des nativen Splash** (DECISIONS 53):
-/// dieselbe flache Farbe, dasselbe Zeichen an derselben Stelle, noch kein
-/// Schriftzug. Die Übergabe ist damit nichts, was man sehen könnte. Erst
-/// danach blendet der Hintergrund weich in den Verlauf über und der Name
-/// glüht auf.
+/// **Er zeigt vom ersten Bild an den Endzustand** (DECISIONS 55): Verlauf,
+/// Zeichen und Schriftzug gleichzeitig. Hier läuft nichts an, hier wartet
+/// nichts, hier blendet nichts ein.
 ///
-/// Vorher lag genau hier der Bruch: Das erste Flutter-Bild trug bereits den
-/// Verlauf **und** den fertigen Schriftzug. Am Gerät gemessen wechselte
-/// beides innerhalb von zwei Bildern – ein harter Schnitt.
+/// **Die eine Überblendung macht Android**, nicht dieser Schirm – siehe
+/// `MainActivity.kt`. Der Grund steht dort ausführlich und kurz hier: Eine
+/// Blende in Dart startet, sobald der Schirm gebaut ist. Bis sein Inhalt aber
+/// tatsächlich auf dem Bildschirm ankommt, ist sie vorbei. Zweimal am Gerät
+/// gemessen, zweimal war das erste sichtbare Bild schon der Endzustand – die
+/// Blende lief hinter dem Vorhang. Deshalb liegt sie jetzt im Vorhang selbst:
+/// Android blendet seinen Start-Bildschirm über diesem fertigen Bild weg.
 ///
-/// Er entscheidet nichts selbst. Nach der Animation geht es auf [Routes.home];
+/// Er entscheidet nichts selbst. Nach [dauer] geht es auf [Routes.home];
 /// wohin es von dort tatsächlich weitergeht – Anmeldung, Onboarding oder
 /// Dashboard – entscheiden die Weichen im Router. Sonst gäbe es zwei Stellen,
 /// die dieselbe Frage beantworten.
@@ -37,21 +39,16 @@ class SplashScreen extends ConsumerStatefulWidget {
 
   /// Wie lange der Schirm mindestens steht.
   ///
-  /// Kurz genug, dass niemand wartet, lang genug, dass die Blende nicht
-  /// abgeschnitten wirkt: Warten, Blende und eine Standzeit, in der der Name
+  /// Kurz genug, dass niemand wartet, lang genug, dass der Name danach noch
   /// ruhig dasteht.
-  static const dauer = Duration(milliseconds: 1800);
+  static const dauer = Duration(milliseconds: 1600);
 
-  /// Wie lange die weiche Blende dauert.
-  static const blende = Duration(milliseconds: 600);
-
-  /// Wie lange das erste Bild unverändert stehen bleibt.
+  /// Die eine Überblendung – vom flachen Bild des System-Splash auf dieses.
   ///
-  /// Android zieht seinen eigenen Splash mit einer kurzen Animation weg,
-  /// nachdem die App gezeichnet hat. Solange die läuft, liegen zwei fast
-  /// gleiche Bilder übereinander – begänne die Blende schon dort, sähe man
-  /// beides gleichzeitig. Die Wartezeit deckt das ab.
-  static const vorlauf = Duration(milliseconds: 200);
+  /// Ausgeführt wird sie in `MainActivity.kt`; die Zahl steht hier, weil hier
+  /// jeder nachsieht, der den Start versteht will. `splash_test.dart` hält
+  /// beide Stellen auf demselben Wert.
+  static const blende = Duration(milliseconds: 300);
 
   /// Kantenlänge des Zeichens – dieselbe wie beim nativen Splash.
   ///
@@ -59,6 +56,10 @@ class SplashScreen extends ConsumerStatefulWidget {
   /// `tool/marke_erzeugen.dart` das Splash-PNG erzeugt. Wer hier eine eigene
   /// Zahl hinschreibt, baut denselben Fehler wieder ein, der in
   /// DECISIONS 52 steht: Das Zeichen sprang beim Übergang um ein Fünftel.
+  ///
+  /// Es ist zugleich die Bedingung dafür, dass die Überblendung sauber
+  /// aussieht: Weil oben und unten dasselbe Zeichen an derselben Stelle
+  /// liegt, bleibt es beim Überblenden unverändert stehen.
   ///
   /// Auf Geräten vor Android 12 ist das Motiv etwas kleiner; dort wächst es
   /// beim Übergang leicht. Das ist eine weiche Bewegung, kein Bruch.
@@ -71,8 +72,7 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen>
-    with SingleTickerProviderStateMixin {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   /// Ein abbrechbarer Timer und kein `Future.delayed`.
   ///
   /// Der Unterschied zeigt sich, wenn der Schirm vorzeitig verlassen wird –
@@ -80,13 +80,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   /// laufendes `Future` liesse sich dann nicht mehr stoppen; es liefe ins
   /// Leere und wuerde in Widget-Tests als „Timer is still pending" gemeldet.
   Timer? _uhr;
-  Timer? _start;
-
-  /// 0 = wie der native Splash, 1 = fertiger Startbildschirm.
-  late final AnimationController _blende = AnimationController(
-    vsync: this,
-    duration: SplashScreen.blende,
-  );
 
   @override
   void initState() {
@@ -95,27 +88,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     _uhr = Timer(SplashScreen.dauer, () {
       if (mounted) context.go(Routes.home);
     });
-
-    // Erst nach dem ersten gezeichneten Bild: Bis dahin muss auf dem Schirm
-    // exakt das stehen, was der native Splash hinterlassen hat.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-
-      if (MediaQuery.disableAnimationsOf(context)) {
-        _blende.value = 1;
-        return;
-      }
-      _start = Timer(SplashScreen.vorlauf, () {
-        if (mounted) _blende.forward();
-      });
-    });
   }
 
   @override
   void dispose() {
     _uhr?.cancel();
-    _start?.cancel();
-    _blende.dispose();
     super.dispose();
   }
 
@@ -124,56 +101,40 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final farben = context.farben;
     final texte = context.texte;
 
-    return AnimatedBuilder(
-      animation: _blende,
-      builder: (context, _) {
-        final t = Curves.easeInOut.transform(_blende.value);
-
-        // Bei t = 0 sind beide Enden dieselbe flache Farbe – das Bild ist
-        // dann nicht von einer einfarbigen Fläche zu unterscheiden, und
-        // genau die zeigt der native Splash.
-        final oben = Color.lerp(farben.startFlaeche, farben.hintergrund, t)!;
-        final unten =
-            Color.lerp(farben.startFlaeche, farben.hintergrundTief, t)!;
-
-        return Scaffold(
-          backgroundColor: Colors.transparent,
-          body: DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [oben, unten],
-              ),
-            ),
-            child: Center(
-              child: Transform.translate(
-                offset: Offset(0, _ausgleich(context)),
-                // Das Zeichen bleibt in der Mitte stehen, der Schriftzug wird
-                // darunter eingeblendet. Ein `Column` hätte beide zusammen
-                // zentriert und das Zeichen dabei nach oben geschoben –
-                // sichtbar als Ruck genau in dem Moment, in dem der native
-                // Splash verschwindet.
-                child: SizedBox.square(
-                  dimension: SplashScreen.zeichenGroesse,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.center,
-                    children: [
-                      MarkenLogo(groesse: SplashScreen.zeichenGroesse),
-                      Positioned(
-                        top: SplashScreen.zeichenGroesse +
-                            SplashScreen._abstand,
-                        child: _Schriftzug(anteil: t, text: texte.appName),
-                      ),
-                    ],
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [farben.hintergrund, farben.hintergrundTief],
+          ),
+        ),
+        child: Center(
+          child: Transform.translate(
+            offset: Offset(0, _ausgleich(context)),
+            // Das Zeichen bleibt in der Mitte stehen, der Schriftzug hängt
+            // darunter. Ein `Column` hätte beide zusammen zentriert und das
+            // Zeichen dabei nach oben geschoben – und damit genau die Stelle
+            // verschoben, an der der System-Splash sein Zeichen hat.
+            child: SizedBox.square(
+              dimension: SplashScreen.zeichenGroesse,
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: [
+                  MarkenLogo(groesse: SplashScreen.zeichenGroesse),
+                  Positioned(
+                    top: SplashScreen.zeichenGroesse + SplashScreen._abstand,
+                    child: _Schriftzug(text: texte.appName),
                   ),
-                ),
+                ],
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -213,47 +174,28 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 }
 
-/// Der Name glüht auf, statt aufzublenden.
+/// Der Name, fertig da.
 ///
-/// Er kommt aus dem Nichts, wird dabei erst warm (der Sand-Ton des Zeichens)
-/// und dann hell (die Textfarbe) und steigt ein Stück. Das ist der
-/// Unterschied zwischen „erscheint" und „glüht auf" – und es passt zum
-/// Namen, ohne dass ein Schein unter dem Text läge.
-///
-/// Ganz zum Schluss, damit nichts vor der Zeit lesbar wird: Die Schrift setzt
-/// erst bei einem Drittel der Blende ein. Vorher ist das Bild identisch mit
-/// dem nativen Splash.
+/// Keine Animation, kein Einsatzpunkt: Er gehört zum Endzustand, und den
+/// zeigt dieser Schirm ab dem ersten Bild (DECISIONS 55). Sichtbar wird er
+/// zusammen mit dem Verlauf – dann nämlich, wenn Android seinen
+/// Start-Bildschirm darüber wegblendet.
 class _Schriftzug extends StatelessWidget {
-  const _Schriftzug({required this.anteil, required this.text});
+  const _Schriftzug({required this.text});
 
-  /// Fortschritt der Blende, 0 bis 1.
-  final double anteil;
   final String text;
-
-  /// Ab hier setzt die Schrift ein.
-  static const _einsatz = 0.34;
 
   @override
   Widget build(BuildContext context) {
     final farben = context.farben;
-    if (anteil <= _einsatz) return const SizedBox.shrink();
 
-    final t = ((anteil - _einsatz) / (1 - _einsatz)).clamp(0.0, 1.0);
-
-    return Opacity(
-      opacity: t,
-      child: Transform.translate(
-        offset: Offset(0, 6 * (1 - t)),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 34,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 0.5,
-            // Von warm nach hell: das Aufglühen.
-            color: Color.lerp(farben.akzent, farben.textPrimaer, t),
-          ),
-        ),
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 34,
+        fontWeight: FontWeight.w800,
+        letterSpacing: 0.5,
+        color: farben.textPrimaer,
       ),
     );
   }

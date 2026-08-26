@@ -127,27 +127,65 @@ void main() {
 
     test('die Blende läuft, bevor der Schirm weitergeht', () {
       // Sonst schnitte der Wechsel auf die Startseite die Blende ab.
-      final gesamt = SplashScreen.vorlauf + SplashScreen.blende;
-      expect(gesamt, lessThan(SplashScreen.dauer));
+      expect(SplashScreen.blende, lessThan(SplashScreen.dauer));
 
-      // Und danach bleibt noch Zeit, in der der Name ruhig dasteht.
-      expect(SplashScreen.dauer - gesamt, greaterThanOrEqualTo(
-        const Duration(milliseconds: 800),
-      ));
+      // Und danach bleibt Zeit, in der der Name ruhig dasteht.
+      expect(
+        SplashScreen.dauer - SplashScreen.blende,
+        greaterThanOrEqualTo(const Duration(milliseconds: 1000)),
+      );
     });
 
-    test('der Vorlauf deckt die Ausblendung des System-Splash ab', () {
-      // Android zieht seinen Splash mit einer kurzen Animation weg. Beginnt
-      // die eigene Blende währenddessen, sieht man beides gleichzeitig.
-      expect(SplashScreen.vorlauf.inMilliseconds, greaterThanOrEqualTo(150));
-      // Zu lang darf er auch nicht sein – sonst steht das Bild still.
-      expect(SplashScreen.vorlauf.inMilliseconds, lessThanOrEqualTo(400));
+    test('sie ist kurz und weich – eine, nicht mehrere', () {
+      // Unter einer Fünftelsekunde ist von einem Schnitt kaum zu
+      // unterscheiden, über einer halben wirkt sie wie ein zweiter Start.
+      // Beides war am Gerät zu sehen (DECISIONS 53 und 55).
+      expect(SplashScreen.blende.inMilliseconds, greaterThanOrEqualTo(250));
+      expect(SplashScreen.blende.inMilliseconds, lessThanOrEqualTo(350));
     });
 
-    test('die Blende ist weich, nicht schnell', () {
-      // Eine Blende unter einer Viertelsekunde ist von einem Schnitt kaum
-      // zu unterscheiden – genau der Befund vom Gerät.
-      expect(SplashScreen.blende.inMilliseconds, greaterThanOrEqualTo(400));
+    test('der eigene Schirm zeigt sofort den Endzustand', () {
+      // Kein Vorlauf, keine Stufen – und ueberhaupt keine Animation. Was
+      // hier anliefe, liefe unsichtbar: Bis der Inhalt dieses Schirms auf
+      // dem Bildschirm ankommt, waere es vorbei. Am Geraet zweimal
+      // gemessen (DECISIONS 55).
+      final quelle = lies('lib/features/start/ui/splash_screen.dart');
+      expect(quelle, isNot(contains('vorlauf')));
+      expect(quelle, isNot(contains('_einsatz')));
+      expect(quelle, isNot(contains('AnimationController')));
+      expect(quelle, isNot(contains('TickerProvider')));
+    });
+
+    test('die Ueberblendung macht Android, nicht Flutter', () {
+      // Nur dort ist die Reihenfolge zwingend: Der Inhalt der App liegt
+      // fertig darunter, und darueber wird die Flaeche des Systems
+      // weggeblendet. Ohne eigenen Exit-Listener nimmt Android sie selbst
+      // weg – und zeigt dabei drei Bilder lang gar nichts. Genau das war
+      // das Blinken (DECISIONS 55).
+      final activity = lies(
+        'android/app/src/main/kotlin/com/trueglow/app/MainActivity.kt',
+      );
+      expect(activity, contains('setOnExitAnimationListener'));
+
+      // Und beide Stellen nennen dieselbe Zahl.
+      final treffer =
+          RegExp(r'BLENDE_MS\s*=\s*(\d+)').firstMatch(activity);
+      expect(treffer, isNotNull, reason: 'keine Dauer in MainActivity.kt');
+      expect(
+        int.parse(treffer!.group(1)!),
+        SplashScreen.blende.inMilliseconds,
+      );
+    });
+
+    test('nichts haelt den ersten Frame zurueck', () {
+      // `FlutterNativeSplash.preserve` haelt das erste gezeichnete Bild
+      // zurueck. Es war nicht die Ursache des Blinkens – die lag im System –,
+      // aber es verlaengert die Luecke: Android wartet auf dieses Bild, um
+      // seinen Start-Bildschirm wegzunehmen. Mit `preserve` waren es drei
+      // leere Einzelbilder statt einem (DECISIONS 55).
+      final start = lies('lib/main.dart');
+      expect(start, isNot(contains('FlutterNativeSplash')));
+      expect(start, isNot(contains('deferFirstFrame')));
     });
   });
 
