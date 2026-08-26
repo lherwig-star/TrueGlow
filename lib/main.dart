@@ -3,6 +3,7 @@ import 'dart:ui' show PlatformDispatcher;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/cloud/cloud_provider.dart';
@@ -26,7 +27,13 @@ import 'features/auth/logic/firebase_auth_repository.dart';
 import 'features/legal/logic/rechtstexte.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  final bindung = WidgetsFlutterBinding.ensureInitialized();
+
+  // Der native Splash bleibt stehen, bis die App ihren eigenen gezeichnet
+  // hat. Ohne das verschwindet er, sobald Flutter den ersten Frame malt –
+  // und das ist ein leerer Frame. Sichtbar war das als kurzes Aufblitzen
+  // zwischen zwei Startbildschirmen (DECISIONS 49).
+  FlutterNativeSplash.preserve(widgetsBinding: bindung);
 
   // Meldet im Debug-Build, wenn noch Rechtstexte fehlen – als Assertion, nicht
   // als Absturz. Den harten Riegel vor dem Release zieht
@@ -53,7 +60,7 @@ Future<void> main() async {
   } else {
     final firebase = await FirebaseStart.init();
     if (!firebase.bereit) {
-      runApp(EinrichtungHinweisApp(ergebnis: firebase));
+      _starten(EinrichtungHinweisApp(ergebnis: firebase));
       return;
     }
     // Erst warten, bis Firebase eine gespeicherte Sitzung wiederhergestellt
@@ -90,7 +97,7 @@ Future<void> main() async {
   // Hochformat erzwingen – der Foto-Flow ist auf Portrait ausgelegt.
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  runApp(
+  _starten(
     ProviderScope(
       overrides: [
         authRepositoryProvider.overrideWithValue(anmeldung),
@@ -105,6 +112,20 @@ Future<void> main() async {
       child: const TrueGlowApp(),
     ),
   );
+}
+
+/// Startet die App und gibt den nativen Splash frei, sobald der erste Frame
+/// steht.
+///
+/// Ueber diese eine Stelle laufen **alle** Startwege. Das ist wichtiger, als
+/// es aussieht: Ein `runApp`, das die Freigabe vergisst – etwa der
+/// Einrichtungs-Hinweis –, liesse den nativen Splash fuer immer ueber der
+/// App stehen.
+void _starten(Widget app) {
+  runApp(app);
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    FlutterNativeSplash.remove();
+  });
 }
 
 class TrueGlowApp extends ConsumerStatefulWidget {

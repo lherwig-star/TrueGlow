@@ -1456,6 +1456,53 @@ wie die angenehme.
 weiterhin zwei Bilder an Eingabe-Tokens — dafür steht sein Fazit auf etwas
 Sichtbarem statt nur auf Ankreuzfeldern.
 
+## 49 · Ein Start statt zwei
+
+Beim Öffnen kamen zwei Bildschirme nacheinander: der native Android-Splash
+mit dem Zeichen, danach der eigene mit Zeichen **und** Schriftzug. Beide
+blendeten auf, und das Zeichen sprang dabei von der Bildschirmmitte ein Stück
+nach oben. Es sah aus wie zweimal starten.
+
+Zwei Ursachen, zwei Handgriffe:
+
+**1. Die Lücke dazwischen.** Der native Splash verschwindet, sobald Flutter
+den ersten Frame malt — und das ist ein leerer Frame, bevor der eigene
+Startbildschirm steht. `FlutterNativeSplash.preserve()` hält ihn fest, bis
+die App gezeichnet hat; freigegeben wird er im ersten `postFrameCallback`.
+
+Die Freigabe läuft über **eine** Funktion (`_starten`), durch die alle
+Startwege gehen. Das ist wichtiger, als es aussieht: Ein `runApp`, das sie
+vergisst — etwa der Einrichtungs-Hinweis ohne Firebase —, ließe den nativen
+Splash für immer über der App stehen. Ein Startbildschirm, der nie weggeht,
+ist der unangenehmste Fehler dieser Art, weil er wie ein Absturz aussieht.
+
+**2. Der Sprung.** Der eigene Schirm zeigte Zeichen und Schriftzug in einer
+`Column`, und die zentriert **beides zusammen** — das Zeichen saß also rund
+34 dp höher als beim nativen Splash. Dazu blendete es von 0 auf 1 ein,
+obwohl es längst zu sehen war.
+
+Jetzt steht das Zeichen exakt in der Bildschirmmitte, in derselben Größe wie
+zuvor, und **bewegt sich nicht**. Der Schriftzug liegt in einem `Stack`
+darunter und kommt allein — eine halbe Sekunde, acht Pixel von unten.
+
+**Die Größe ist eine gerechnete Zahl, keine geschätzte.** Ab Android 12
+zeichnet das System das Symbol in eine Fläche von 240 dp; unser Motiv füllt
+davon 52 % (`motivAnteil` in `tool/marke_erzeugen.dart`), also rund 125 dp.
+Genau diese Zahl steht jetzt im Startbildschirm, mit dem Verweis darauf, wo
+sie herkommt. Vorher stand dort 132 — nah dran, aber eben nicht gleich.
+
+**Was auf Geräten vor Android 12 bleibt:** Dort ist das Motiv im nativen
+Splash kleiner (rund 102 dp), und das Zeichen wächst beim Übergang leicht.
+Das ist eine weiche Bewegung, kein Bruch. Es gleichzuziehen hieße, die
+Markengrafiken neu zu erzeugen und `flutter_native_splash:create` laufen zu
+lassen — das schreibt `styles.xml` neu und macht drei sorgfältig
+kommentierte Dateien kaputt, für ein Detail auf Geräten, die es kaum noch
+gibt.
+
+**Preis:** `flutter_native_splash` ist von einer dev_dependency zu einer
+echten Abhängigkeit geworden — es ist jetzt nicht mehr nur Generator,
+sondern auch Laufzeit.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`
