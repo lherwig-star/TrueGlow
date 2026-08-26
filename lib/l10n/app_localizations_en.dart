@@ -1804,6 +1804,59 @@ class LEn extends L {
       'Fresh start — your longest streak stays with you.';
 
   @override
+  String get rueckblickTitel => 'Your week';
+
+  @override
+  String rueckblickZeitraum(String von, String bis) {
+    return '$von to $bis';
+  }
+
+  @override
+  String rueckblickAktiveTage(int tage) {
+    String _temp0 = intl.Intl.pluralLogic(
+      tage,
+      locale: localeName,
+      other: 'active on $tage of 7 days',
+      one: 'active on 1 of 7 days',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rueckblickAufgaben(int anzahl) {
+    String _temp0 = intl.Intl.pluralLogic(
+      anzahl,
+      locale: localeName,
+      other: '$anzahl tasks ticked off',
+      one: '1 task ticked off',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rueckblickStaerkster(String bereich) {
+    return 'Your strongest area: $bereich';
+  }
+
+  @override
+  String get rueckblickTonStark =>
+      'Strong week. That is how intention turns into routine.';
+
+  @override
+  String get rueckblickTonSolide => 'Solid week. The groundwork is there.';
+
+  @override
+  String get rueckblickTonKlein =>
+      'Two days are two more than none. That counts.';
+
+  @override
+  String get rueckblickTonLeer =>
+      'New week, fresh chance — one tick is enough to start.';
+
+  @override
+  String get rueckblickSchliessen => 'Close the review';
+
+  @override
   String get streakTagGesichert => 'Day secured!';
 
   @override

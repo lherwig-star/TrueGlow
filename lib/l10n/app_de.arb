@@ -719,6 +719,31 @@
     "placeholders": { "tage": { "type": "int" } }
   },
   "streakNeustart": "Neustart – dein längster Streak bleibt dir erhalten.",
+  "rueckblickTitel": "Deine Woche",
+  "@rueckblickTitel": {
+    "description": "Wochen-Rückblick auf der Startseite, Sonntagabend bis Montag."
+  },
+  "rueckblickZeitraum": "{von} bis {bis}",
+  "@rueckblickZeitraum": {
+    "placeholders": { "von": { "type": "String" }, "bis": { "type": "String" } }
+  },
+  "rueckblickAktiveTage": "{tage, plural, =1{1 von 7 Tagen aktiv} other{{tage} von 7 Tagen aktiv}}",
+  "@rueckblickAktiveTage": {
+    "placeholders": { "tage": { "type": "int" } }
+  },
+  "rueckblickAufgaben": "{anzahl, plural, =1{1 Aufgabe abgehakt} other{{anzahl} Aufgaben abgehakt}}",
+  "@rueckblickAufgaben": {
+    "placeholders": { "anzahl": { "type": "int" } }
+  },
+  "rueckblickStaerkster": "Dein stärkster Bereich: {bereich}",
+  "@rueckblickStaerkster": {
+    "placeholders": { "bereich": { "type": "String" } }
+  },
+  "rueckblickTonStark": "Starke Woche. Genau so wird aus Vorsatz Routine.",
+  "rueckblickTonSolide": "Solide Woche. Der Grundstock steht.",
+  "rueckblickTonKlein": "Zwei Tage sind zwei mehr als keiner. Das zählt.",
+  "rueckblickTonLeer": "Neue Woche, neue Chance – ein Haken reicht für den Anfang.",
+  "rueckblickSchliessen": "Rückblick schließen",
   "streakTagGesichert": "Tag gesichert!",
   "@streakTagGesichert": {
     "description": "Kurzer Moment nach dem ersten Haken des Tages. Steht in der Serien-Karte und blendet sich von selbst aus."

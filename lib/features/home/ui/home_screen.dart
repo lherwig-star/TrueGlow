@@ -19,6 +19,7 @@ import '../../checkin/ui/widgets/checkin_karte.dart';
 import '../../modules/logic/module_controller.dart';
 import '../../history/logic/analysis_repository.dart';
 import '../../plan/ui/widgets/checkliste_karte.dart';
+import '../../plan/ui/widgets/wochen_rueckblick_karte.dart';
 import '../../streak/logic/erinnerung_planer.dart';
 import '../../streak/logic/streak_repository.dart';
 import '../../streak/ui/jubel_overlay.dart';
@@ -199,6 +200,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return [
       const CheckinKarte(),
+      // Sonntagabend bis Montagabend, danach von selbst wieder weg.
+      const WochenRueckblickKarte(),
       const StreakKarte(),
       const SizedBox(height: AppTheme.gapS),
       SectionCard(

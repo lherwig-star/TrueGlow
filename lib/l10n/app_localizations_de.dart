@@ -1813,6 +1813,59 @@ class LDe extends L {
       'Neustart – dein längster Streak bleibt dir erhalten.';
 
   @override
+  String get rueckblickTitel => 'Deine Woche';
+
+  @override
+  String rueckblickZeitraum(String von, String bis) {
+    return '$von bis $bis';
+  }
+
+  @override
+  String rueckblickAktiveTage(int tage) {
+    String _temp0 = intl.Intl.pluralLogic(
+      tage,
+      locale: localeName,
+      other: '$tage von 7 Tagen aktiv',
+      one: '1 von 7 Tagen aktiv',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rueckblickAufgaben(int anzahl) {
+    String _temp0 = intl.Intl.pluralLogic(
+      anzahl,
+      locale: localeName,
+      other: '$anzahl Aufgaben abgehakt',
+      one: '1 Aufgabe abgehakt',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rueckblickStaerkster(String bereich) {
+    return 'Dein stärkster Bereich: $bereich';
+  }
+
+  @override
+  String get rueckblickTonStark =>
+      'Starke Woche. Genau so wird aus Vorsatz Routine.';
+
+  @override
+  String get rueckblickTonSolide => 'Solide Woche. Der Grundstock steht.';
+
+  @override
+  String get rueckblickTonKlein =>
+      'Zwei Tage sind zwei mehr als keiner. Das zählt.';
+
+  @override
+  String get rueckblickTonLeer =>
+      'Neue Woche, neue Chance – ein Haken reicht für den Anfang.';
+
+  @override
+  String get rueckblickSchliessen => 'Rückblick schließen';
+
+  @override
   String get streakTagGesichert => 'Tag gesichert!';
 
   @override

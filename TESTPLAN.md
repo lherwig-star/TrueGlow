@@ -660,6 +660,51 @@ Kein Kontingent, kein Analyse-Lauf. Im Demo-Modus in einer Minute geprüft.
 
 9. **Englisch.** Erwartet: „Day secured!" und „That makes 2 days in a row."
 
+## 17 · Der Wochen-Rückblick
+
+Kein Kontingent, kein Analyse-Lauf. Braucht aber das Verstellen des Datums.
+
+1. **Vorbereitung: eine Woche füllen.** Im Demo-Modus an drei bis vier Tagen
+   der laufenden Woche Haken setzen — Datum jeweils einen Tag vorstellen,
+   abhaken, weiterstellen. Merk dir, in welchem Kapitel du am meisten
+   abgehakt hast.
+
+2. **Vor Sonntagabend.** Datum auf einen Samstag stellen, App öffnen.
+   Erwartet: **Keine** Rückblick-Karte.
+
+3. **Sonntag, 17 Uhr.** Erwartet: Immer noch keine Karte.
+
+4. **Sonntag, 19 Uhr.** Erwartet: Zwischen Check-in-Karte und Serie steht
+   **„Deine Woche"** mit dem Zeitraum Montag bis Sonntag, den aktiven Tagen
+   („4 von 7 Tagen aktiv"), der Zahl der Aufgaben und „Dein stärkster
+   Bereich: …". Der Bereich muss zu dem passen, den du dir gemerkt hast.
+
+5. **Der Ton passt zur Woche.** Bei 5 bis 7 aktiven Tagen: „Starke Woche…".
+   Bei 3 bis 4: „Solide Woche…". Bei 2: „Zwei Tage sind zwei mehr als
+   keiner." Bei 0 oder 1: „Neue Woche, neue Chance – ein Haken reicht für den
+   Anfang." Erwartet in **allen** Fällen: kein „leider", kein Vorwurf, keine
+   Prozentzahl.
+
+6. **Die leere Woche.** In den Einstellungen alle Daten löschen, neue
+   Analyse im Demo-Modus, Datum auf Sonntagabend. Erwartet: „0 von 7 Tagen
+   aktiv", „0 Aufgaben abgehakt", **keine** Zeile „Dein stärkster Bereich",
+   und der Einladungs-Ton.
+
+7. **Montag.** Datum auf Montag stellen. Erwartet: Die Karte steht noch da
+   und zeigt **dieselbe** Woche wie am Sonntag — nicht die neue.
+
+8. **Dienstag.** Erwartet: Die Karte ist weg.
+
+9. **Wegklicken.** Zurück auf Sonntagabend, Karte über das X schließen.
+   Erwartet: Sie ist weg und kommt auch nach einem Neustart der App nicht
+   wieder. Erst der nächste Sonntag bringt den nächsten Rückblick.
+
+10. **Keine Benachrichtigung.** Erwartet: Zum Rückblick kommt **keine**
+    Push. Das ist Absicht — Begründung in `DECISIONS.md` 46.
+
+11. **Englisch.** Erwartet: „Your week", „active on 4 of 7 days", „Your
+    strongest area: …", „Solid week. The groundwork is there."
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

@@ -3271,6 +3271,66 @@ abstract class L {
   /// **'Neustart – dein längster Streak bleibt dir erhalten.'**
   String get streakNeustart;
 
+  /// Wochen-Rückblick auf der Startseite, Sonntagabend bis Montag.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Woche'**
+  String get rueckblickTitel;
+
+  /// No description provided for @rueckblickZeitraum.
+  ///
+  /// In de, this message translates to:
+  /// **'{von} bis {bis}'**
+  String rueckblickZeitraum(String von, String bis);
+
+  /// No description provided for @rueckblickAktiveTage.
+  ///
+  /// In de, this message translates to:
+  /// **'{tage, plural, =1{1 von 7 Tagen aktiv} other{{tage} von 7 Tagen aktiv}}'**
+  String rueckblickAktiveTage(int tage);
+
+  /// No description provided for @rueckblickAufgaben.
+  ///
+  /// In de, this message translates to:
+  /// **'{anzahl, plural, =1{1 Aufgabe abgehakt} other{{anzahl} Aufgaben abgehakt}}'**
+  String rueckblickAufgaben(int anzahl);
+
+  /// No description provided for @rueckblickStaerkster.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein stärkster Bereich: {bereich}'**
+  String rueckblickStaerkster(String bereich);
+
+  /// No description provided for @rueckblickTonStark.
+  ///
+  /// In de, this message translates to:
+  /// **'Starke Woche. Genau so wird aus Vorsatz Routine.'**
+  String get rueckblickTonStark;
+
+  /// No description provided for @rueckblickTonSolide.
+  ///
+  /// In de, this message translates to:
+  /// **'Solide Woche. Der Grundstock steht.'**
+  String get rueckblickTonSolide;
+
+  /// No description provided for @rueckblickTonKlein.
+  ///
+  /// In de, this message translates to:
+  /// **'Zwei Tage sind zwei mehr als keiner. Das zählt.'**
+  String get rueckblickTonKlein;
+
+  /// No description provided for @rueckblickTonLeer.
+  ///
+  /// In de, this message translates to:
+  /// **'Neue Woche, neue Chance – ein Haken reicht für den Anfang.'**
+  String get rueckblickTonLeer;
+
+  /// No description provided for @rueckblickSchliessen.
+  ///
+  /// In de, this message translates to:
+  /// **'Rückblick schließen'**
+  String get rueckblickSchliessen;
+
   /// Kurzer Moment nach dem ersten Haken des Tages. Steht in der Serien-Karte und blendet sich von selbst aus.
   ///
   /// In de, this message translates to:

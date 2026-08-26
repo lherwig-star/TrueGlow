@@ -1282,6 +1282,54 @@ ohne Animation, aber sie erscheint.
 kleine Widgets gewachsen, dafür ist die Serien-Zeile jetzt ein eigenes Widget
 und nicht mehr eine `build`-Methode über hundert Zeilen.
 
+## 46 · Der Wochen-Rückblick — und warum er nicht klingelt
+
+Sonntagabend zeigt die Startseite eine kleine Bilanz der Woche: aktive Tage,
+abgehakte Aufgaben, das Kapitel mit den meisten Haken als „dein stärkster
+Bereich". Alles aus den Haken gerechnet, die ohnehin lokal und in Firestore
+liegen — kein Modellaufruf, keine Kosten.
+
+**Warum ein Fenster von Sonntag 18 Uhr bis Montagnacht.** „Sonntagabend"
+trifft nur, wer am Sonntagabend hineinsieht. Der Montag hängt mit dran, damit
+der Rückblick nicht ausgerechnet an denen vorbeiläuft, die ihn am ehesten
+brauchen: an denen, die das Wochenende über nicht in der App waren. Ab
+Dienstag ist er weg — eine Bilanz, die vier Tage alt ist, interessiert
+niemanden mehr.
+
+**Warum es keine Benachrichtigung dazu gibt.** Das war ausdrücklich zur
+Entscheidung gestellt, und die Antwort ist nein. Es gibt bereits zwei Kanäle:
+die tägliche Erinnerung ans Abhaken und die Check-in-Erinnerung. Ein dritter
+für etwas, das keine Handlung verlangt, ist Lärm — der Rückblick ist eine
+Information, kein Termin. Wer die App am Sonntagabend oder Montag öffnet,
+sieht ihn; wer sie nicht öffnet, hat nichts verpasst. Eine Push dafür wäre
+die erste, die man abschaltet, und sie würde die Aufmerksamkeit für die
+beiden Kanäle mitnehmen, die etwas wert sind.
+
+**Der Ton ist die halbe Funktion.** Vier Stufen, alle anerkennend: ab fünf
+Tagen „starke Woche", bei drei bis vier „solide", bei zwei „zwei Tage sind
+zwei mehr als keiner", bei null oder eins „neue Woche, neue Chance — ein
+Haken reicht für den Anfang". Kein „leider", keine Prozentzahl, kein
+Vergleich mit der Vorwoche. Wer nach einer schlechten Woche eine Rechnung
+präsentiert bekommt, macht die App nicht wieder auf.
+
+**Was nicht gezeigt wird:** Ohne einen einzigen Haken fehlt die Zeile
+„stärkster Bereich" ganz. „Dein stärkster Bereich: —" wäre Hohn.
+
+**Warum der Check-in-Marker nicht als Aufgabe zählt.** Er liegt im selben
+Topf wie die Haken, damit der Streak ihn ohne Sonderweg mitzählt (das war
+schon so). In der Aufgabenzahl der Woche hätte er nichts zu suchen — er ist
+ein gesicherter Tag, keine erledigte Tagesaufgabe.
+
+**Warum unbekannte Aufgaben in die Summe zählen, aber auf keinen Bereich.**
+Nach einer neuen Analyse steht in den zurückliegenden Tagen Text, den es im
+aktuellen Report nicht mehr gibt. Diese Haken sind trotzdem passiert und
+gehören in die Zahl. Sie einem Kapitel zuzuordnen ginge nur mit Raten, und
+das würde den stärksten Bereich stillschweigend verschieben.
+
+**Preis:** Ein Schlüssel mehr im Fortschritts-Speicher (welche Woche
+weggeklickt wurde) und eine Karte, die an zwei von sieben Tagen auf der
+Startseite steht.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`
