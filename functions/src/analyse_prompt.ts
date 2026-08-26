@@ -6,6 +6,7 @@ import {
   FOKUS,
   KLEIDUNGSBUDGET,
   MODULE,
+  ankerListe,
   kapitelUeberschrift,
   PFLEGEAUFWAND,
   PRODUKTKATEGORIEN,
@@ -117,6 +118,7 @@ Verbindliche Regeln:
 - Jede Empfehlung ist ein konkreter Schritt, keine Allgemeinplatitüde.
 ${zielRegeln(daten.richtung, sprache)}
 ${QUALITAET}
+${ankerRegeln(sprache)}
 Antworte AUSSCHLIESSLICH mit einem JSON-Objekt nach diesem Schema. Kein
 Fließtext davor oder danach, keine Markdown-Codefences:
 
@@ -162,7 +164,7 @@ Vorgaben zum Inhalt:
 - "sektionen": 2 bis 4 pro Kapitel.
 - "empfehlungen": 2 bis 4 pro Sektion.
 - "produkte": 0 bis 3 pro Sektion, "affiliateUrl" immer null.
-- "habits": 4 bis 7 pro Kapitel, jeder unter 60 Zeichen. Jeder Eintrag ist eine
+- "habits": 4 bis 7 pro Kapitel, jeder unter 80 Zeichen. Jeder Eintrag ist eine
   konkrete Alltagsaufgabe, die sich täglich abhaken lässt, und gehört
   inhaltlich AUSSCHLIESSLICH zu diesem Kapitel. Eine Haltungsübung gehört zu
   "figurPassform", Zahnseide zu "zaehneLaecheln", Sonnenschutz zu
@@ -248,6 +250,40 @@ const QUALITAET = `Qualität der Empfehlungen – daran wird dieser Report gemes
   wie ein Ratgebertext, der für alle gilt.
 - Keine Empfehlung und keine Tagesaufgabe wiederholt eine andere, auch nicht
   in anderer Formulierung oder in einem anderen Kapitel.`;
+
+/**
+ * Der Wenn-dann-Anker an jeder Tagesaufgabe.
+ *
+ * Begruendung in DECISIONS 44: Eine Aufgabe wird eher zur Gewohnheit, wenn
+ * sie an etwas haengt, das ohnehin jeden Tag passiert. "Gesicht eincremen"
+ * ist ein Vorsatz, "Nach dem Zaehneputzen: Gesicht eincremen" ist ein
+ * Ablauf.
+ *
+ * Sprachabhaengig, deshalb eine Funktion und kein fester Text: Die Anker
+ * schreibt das Modell woertlich ab (DECISIONS 36). Stuenden sie nur auf
+ * Deutsch im Prompt, begaenne jede Aufgabe im englischen Report mit "Nach
+ * dem Zaehneputzen".
+ */
+function ankerRegeln(sprache: Sprache): string {
+  return `Wenn-dann-Anker – gilt für JEDE Aufgabe in "habits", in jedem Kapitel:
+- Jede Aufgabe nennt zuerst den Auslöser, an den sie gekoppelt ist, dann
+  einen Doppelpunkt, dann die Handlung. Der Auslöser ist eine feste Routine,
+  die praktisch jeder Alltag hergibt. Nimm eine aus dieser Liste und schreib
+  sie WÖRTLICH so, wie sie hier steht: ${ankerListe(sprache)}.
+- Passt keine davon, nimm eine andere Alltagsroutine, die aus den Angaben
+  dieser Person hervorgeht. Niemals eine Uhrzeit ("um 7 Uhr"), niemals etwas
+  Vages ("regelmäßig", "täglich", "wenn du Zeit hast").
+- Bei einer Aufgabe aus dem Freitext darf der Auslöser stattdessen die
+  Situation sein, in der der Wunsch auftritt – das Verlangen, der Stress,
+  die Pause. Die Form bleibt dieselbe: Auslöser, Doppelpunkt, Handlung.
+- Derselbe Anker steht höchstens zweimal im ganzen Report. Sieben Aufgaben
+  am selben Auslöser sind keine Routine, sondern ein Stau.
+- Das ersetzt die Zeitpunkt-Regel nicht, es erfüllt sie: Der Anker sagt,
+  wann die Handlung passiert, und er muss zu ihrem Zweck passen. Was über
+  Nacht wirken soll, hängt an einem Anker am Abend.
+- Der Anker ist Anzeigetext und steht deshalb in der Zielsprache.
+  ${AUSGABESPRACHE_KURZ[sprache]}`;
+}
 
 /** Ob im Freitextfeld ueberhaupt etwas steht. */
 function hatFreitext(richtung: Richtungsangaben): boolean {
@@ -460,7 +496,8 @@ function kapitelVorgabe(
         '  "habits": ein bis drei Aufgaben je Wunsch aus dem Freitext, sonst ' +
           'nichts. Jede ist heute abhakbar, dauert wenige Minuten und ' +
           'benennt eine konkrete Handlung – nicht "weniger rauchen", sondern ' +
-          'was genau zu tun ist, wenn das Verlangen kommt.',
+          'was genau zu tun ist, wenn das Verlangen kommt. Der Wenn-dann-' +
+          'Anker gilt auch hier; der Auslöser darf die Situation sein.',
         '  "sektionen": eine je Wunsch, höchstens drei. Geht es um eine ' +
           'Gewohnheit, die die Person sich ab- oder angewöhnen möchte, ' +
           `lautet der "titel" dieser Sektion GENAU "${s('ziel')}". Ihre ` +

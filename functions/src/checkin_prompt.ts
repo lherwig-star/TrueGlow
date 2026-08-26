@@ -119,7 +119,7 @@ Fließtext davor oder danach, keine Markdown-Codefences:
     {
       "modul": "basis",
       "alt": "der bisherige Habit im exakten Wortlaut",
-      "neu": "der neue Habit, unter 60 Zeichen",
+      "neu": "der neue Habit, mit Anker und unter 80 Zeichen",
       "grund": "ein kurzer Satz für den Nutzer"
     }
   ]
@@ -130,7 +130,7 @@ Vorgaben zum Inhalt:
 - "alt" muss WORTGLEICH einem bestehenden Habit entsprechen, sonst greift die
   Änderung nicht. Für einen zusätzlichen Habit "alt" leer lassen, für eine
   Streichung "neu" leer lassen.
-- "neu" ist eine konkrete, täglich abhakbare Aufgabe unter 60 Zeichen und
+- "neu" ist eine konkrete, täglich abhakbare Aufgabe unter 80 Zeichen und
   gehört inhaltlich zum selben Modul wie "alt".
 - Gibt es nichts zu ändern, ist "anpassungen" eine leere Liste und
   "zusammenfassung" sagt freundlich, dass der Plan so bleibt.

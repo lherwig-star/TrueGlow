@@ -1203,6 +1203,52 @@ wird jetzt auch angezeigt, sobald er von der laufenden Serie abweicht.
 nicht mehr in drei Zeilen liest. Dafür liegt sie jetzt als freie Funktion
 ohne Speicher da und lässt sich vollständig durchspielen.
 
+## 44 · Wenn-dann-Anker an jeder Tagesaufgabe
+
+„Gesicht eincremen" ist ein Vorsatz. „Nach dem Zähneputzen: Gesicht
+eincremen" ist ein Ablauf. Der Unterschied ist die am besten belegte Technik,
+mit der aus Aufgaben Gewohnheiten werden: Die neue Handlung hängt an etwas,
+das ohnehin jeden Tag passiert, und braucht deshalb keine eigene Erinnerung.
+
+Der Prompt verlangt das jetzt für **jede** Aufgabe in `habits`, in jedem
+Kapitel: erst der Auslöser, dann ein Doppelpunkt, dann die Handlung.
+
+**Warum eine feste Liste von Ankern.** Ein Modell, das sich den Auslöser
+selbst ausdenkt, landet bei „wenn du Zeit hast" oder „um 7 Uhr". Das erste
+ist kein Anker, das zweite ist eine Uhrzeit, die für die Hälfte der Nutzer
+falsch ist. Die Liste in `labels.ts` nennt sieben Routinen, die praktisch
+jeder Alltag hergibt — und der Prompt verbietet Uhrzeiten und vage Angaben
+ausdrücklich.
+
+**Warum die Anker zweisprachig sind.** DECISIONS 36: Was der Prompt wörtlich
+nennt, schreibt das Modell wörtlich ab. Stünde die Liste nur auf Deutsch,
+begänne im englischen Report jede Aufgabe mit „Nach dem Zähneputzen". Ein
+Test geht deshalb jeden Anker durch und besteht darauf, dass im englischen
+Prompt keine einzige deutsche Fassung auftaucht. Beim Schreiben ist genau das
+einmal passiert — ein Beispielsatz in der Regel selbst nannte einen deutschen
+Anker.
+
+**Warum Aufgaben aus dem Freitext eine Sonderform bekommen.** Für „aufhören
+zu rauchen" ist die passende Kopplung nicht das Zähneputzen, sondern das
+Verlangen. Die Form bleibt gleich (Auslöser, Doppelpunkt, Handlung), der
+Auslöser darf dort eine Situation sein statt einer Routine. Das ist derselbe
+Mechanismus, nur mit einem anderen Wenn.
+
+**Warum derselbe Anker höchstens zweimal vorkommt.** Sonst hängen sieben
+Aufgaben am selben Moment. Das ist keine Routine mehr, sondern ein Stau — und
+der erste Tag, an dem es eng wird, kippt gleich sieben Haken.
+
+**Die Zeichengrenze steigt von 60 auf 80.** Ein Anker vorn kostet Platz. Bei
+60 Zeichen hätte das Modell entweder den Anker oder die Handlung
+zusammengestrichen; beides wäre schlechter als eine Zeile, die einmal
+umbricht. Die Checklisten-Zeile bricht ohnehin um. Dieselbe Zahl steht auch
+im Check-in-Prompt, damit ein nachgebesserter Habit nicht plötzlich kürzer
+sein muss als der, den er ersetzt.
+
+**Preis:** Der System-Prompt wird noch einmal etwa 15 Zeilen länger, und die
+Aufgaben in der Tagesliste sind länger als vorher. Das ist der Punkt der
+Übung.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

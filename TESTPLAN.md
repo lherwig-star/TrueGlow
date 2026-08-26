@@ -581,6 +581,50 @@ ein Plan mit Tagesaufgaben dasteht.
 > aus dem Test bleiben gespeichert; wenn dich das stört, in den Einstellungen
 > „Alle Daten löschen".
 
+## 15 · Wenn-dann-Anker in den Tagesaufgaben
+
+**Der einzige Abschnitt in diesem Paket, der einen Analyse-Lauf kostet.** Ein
+Lauf reicht für alles hier.
+
+**Vorbereitung:** Eine normale Analyse starten. Am aussagekräftigsten mit
+mehreren Modulen und einem Freitext bei „Deine Richtung" — dann lässt sich
+Punkt 4 gleich mitprüfen.
+
+1. **Die Form.** Tagesliste auf der Startseite öffnen. Erwartet: **Jede**
+   Aufgabe nennt zuerst einen Auslöser, dann einen Doppelpunkt, dann die
+   Handlung — etwa „Nach dem Zähneputzen: …" oder „Vor dem Schlafengehen:
+   …". Eine Aufgabe ohne Doppelpunkt ist ein Fund.
+
+2. **Die Auslöser sind Routinen, keine Uhrzeiten.** Erwartet: Kein „um 7
+   Uhr", kein „regelmäßig", kein „täglich", kein „wenn du Zeit hast". Solche
+   Formulierungen sind der Fund, den diese Änderung verhindern soll.
+
+3. **Kein Stau an einem Anker.** Alle Aufgaben durchzählen. Erwartet:
+   Derselbe Auslöser steht höchstens zweimal im ganzen Plan. Fünf Aufgaben
+   nach dem Zähneputzen wären ein Fund.
+
+4. **Der Auslöser passt zum Zweck.** Erwartet: Was über Nacht wirken soll
+   (Pflege mit Einwirkzeit), hängt an einem Abend-Anker; was den Tag über
+   halten soll (Styling), an einem Morgen-Anker. Das ist der Bart-Test aus
+   Abschnitt 12 in neuer Form.
+
+5. **Auch die persönlichen Ziele haben einen Anker.** Nur wenn du einen
+   Freitext geschrieben hast. Erwartet: In der Karte „Deine Ziele" steht der
+   Auslöser als Situation — „Bei Rauchverlangen: …", „Nach dem Essen: …" —
+   und nicht als Alltagsroutine. Beides ist richtig, solange die Form stimmt.
+
+6. **Englisch, ohne neuen Lauf.** Das geht **nicht** ohne zweiten Lauf: Die
+   Aufgabentexte sind die Worte des Modells und werden nicht nachträglich
+   übersetzt (Abschnitt 7, Punkt 2). Wenn du noch Kontingent übrig hast:
+   Sprache auf English stellen, eine neue Analyse laufen lassen. Erwartet:
+   „After brushing your teeth: …", „Before bed: …" — **kein** deutscher Anker
+   im englischen Plan. Das ist der teuerste Fehler dieser Änderung; wenn du
+   nur einen Lauf übrig hast, mach ihn auf Englisch.
+
+7. **Die Zeilen laufen nicht über.** Erwartet: Längere Aufgaben brechen in
+   der Checkliste sauber auf zwei Zeilen um, nichts ist abgeschnitten. Prüf
+   das auch mit großer Systemschrift (Abschnitt 4).
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

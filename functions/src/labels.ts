@@ -127,6 +127,34 @@ export function sektion(
 }
 
 /**
+ * Alltagsroutinen, an die sich eine Tagesaufgabe haengen laesst.
+ *
+ * Der Grund steht in DECISIONS 44: Eine Aufgabe wird eher zur Gewohnheit,
+ * wenn sie an etwas gekoppelt ist, das ohnehin jeden Tag passiert. Der
+ * Prompt verlangt diese Kopplung, und er nennt dem Modell dafuer eine
+ * Auswahl, die praktisch jeder Alltag hergibt.
+ *
+ * Zweisprachig aus demselben Grund wie die Sektionsnamen (DECISIONS 36):
+ * Was der Prompt woertlich nennt, schreibt das Modell woertlich ab. Stuende
+ * hier nur Deutsch, begaenne jede Aufgabe im englischen Report mit „Nach dem
+ * Zaehneputzen".
+ */
+export const ANKER: readonly Zweisprachig[] = [
+  { de: 'nach dem Aufstehen', en: 'after getting up' },
+  { de: 'nach dem Zähneputzen', en: 'after brushing your teeth' },
+  { de: 'beim Duschen', en: 'in the shower' },
+  { de: 'nach dem Duschen', en: 'after your shower' },
+  { de: 'nach dem Frühstück', en: 'after breakfast' },
+  { de: 'nach dem Abendessen', en: 'after dinner' },
+  { de: 'vor dem Schlafengehen', en: 'before bed' },
+];
+
+/** Die Anker als Aufzaehlung fuer den Prompt. */
+export function ankerListe(sprache: Sprache): string {
+  return ANKER.map((a) => `"${a[sprache]}"`).join(', ');
+}
+
+/**
  * Die Kategorie eines Produkts – als Kennung, nicht als Wort.
  *
  * Frueher standen im Prompt deutsche Beispiele ("z.B. Reinigung, Pflege,
