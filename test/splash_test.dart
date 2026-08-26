@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trueglow/core/theme/app_colors.dart';
 import 'package:trueglow/core/theme/marke.dart';
@@ -26,16 +27,16 @@ void main() {
     'android/app/src/main/res/values-night-v31/styles.xml',
   ];
 
-  /// Der Ton, den der Seitenverlauf auf halber Höhe trägt – dort steht das
-  /// Zeichen. Der native Splash kann keinen Verlauf, nur eine Farbe.
-  String mitteDesVerlaufs() {
-    final oben = AppColors.dunkel.hintergrund;
-    final unten = AppColors.dunkel.hintergrundTief;
-    int misch(double a, double b) => (((a + b) / 2) * 255).round();
-    return '#'
-        '${misch(oben.r, unten.r).toRadixString(16).padLeft(2, '0')}'
-        '${misch(oben.g, unten.g).toRadixString(16).padLeft(2, '0')}'
-        '${misch(oben.b, unten.b).toRadixString(16).padLeft(2, '0')}';
+  /// Der Ton, mit dem der Start beginnt – als Hex, wie ihn Android braucht.
+  ///
+  /// Er kommt aus [AppColors.startFlaeche], damit hier keine zweite Rechnung
+  /// steht: Genau diese Farbe zeichnet auch der eigene Startbildschirm im
+  /// ersten Bild.
+  String startfarbe() {
+    final f = AppColors.dunkel.startFlaeche;
+    String teil(double wert) =>
+        (wert * 255).round().toRadixString(16).padLeft(2, '0');
+    return '#${teil(f.r)}${teil(f.g)}${teil(f.b)}';
   }
 
   group('Das Zeichen steht beim Übergang still', () {
@@ -76,7 +77,7 @@ void main() {
   });
 
   group('Die Farbe ist in beiden Phasen dieselbe', () {
-    final farbe = mitteDesVerlaufs();
+    final farbe = startfarbe();
 
     test('sie kommt aus dem Seitenverlauf', () {
       // Die Mitte zwischen #173C3B und #0C1C26. Steht hier als Zahl,
@@ -109,6 +110,44 @@ void main() {
         lies('android/app/src/main/res/values/colors.xml').toLowerCase(),
         contains('<color name="splashhintergrund">$farbe</color>'),
       );
+    });
+  });
+
+  group('Die Übergabe ist nichts, was man sehen kann', () {
+    test('das erste Bild ist flach, nicht der Verlauf', () {
+      // Bei t = 0 sind beide Enden des Verlaufs dieselbe Farbe – dieselbe,
+      // die der System-Splash trägt. Genau das macht die Übergabe unsichtbar
+      // (DECISIONS 53).
+      final farben = AppColors.dunkel;
+      expect(
+        farben.startFlaeche,
+        Color.lerp(farben.hintergrund, farben.hintergrundTief, 0.5),
+      );
+    });
+
+    test('die Blende läuft, bevor der Schirm weitergeht', () {
+      // Sonst schnitte der Wechsel auf die Startseite die Blende ab.
+      final gesamt = SplashScreen.vorlauf + SplashScreen.blende;
+      expect(gesamt, lessThan(SplashScreen.dauer));
+
+      // Und danach bleibt noch Zeit, in der der Name ruhig dasteht.
+      expect(SplashScreen.dauer - gesamt, greaterThanOrEqualTo(
+        const Duration(milliseconds: 800),
+      ));
+    });
+
+    test('der Vorlauf deckt die Ausblendung des System-Splash ab', () {
+      // Android zieht seinen Splash mit einer kurzen Animation weg. Beginnt
+      // die eigene Blende währenddessen, sieht man beides gleichzeitig.
+      expect(SplashScreen.vorlauf.inMilliseconds, greaterThanOrEqualTo(150));
+      // Zu lang darf er auch nicht sein – sonst steht das Bild still.
+      expect(SplashScreen.vorlauf.inMilliseconds, lessThanOrEqualTo(400));
+    });
+
+    test('die Blende ist weich, nicht schnell', () {
+      // Eine Blende unter einer Viertelsekunde ist von einem Schnitt kaum
+      // zu unterscheiden – genau der Befund vom Gerät.
+      expect(SplashScreen.blende.inMilliseconds, greaterThanOrEqualTo(400));
     });
   });
 

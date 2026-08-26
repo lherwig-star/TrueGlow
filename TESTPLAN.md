@@ -1022,6 +1022,47 @@ zwei Commits.
 > („Design auf den Unterseiten…" und „Start: gemessen statt geschätzt"). Jeder
 > lässt sich einzeln zurückdrehen, ohne den anderen mitzunehmen.
 
+## 22 · Der Start ohne Schnitt
+
+Kein Kontingent, kein Analyse-Lauf. Am besten mit einer Bildschirmaufnahme —
+was hier zu sehen sein soll, dauert eine halbe Sekunde.
+
+1. **Kaltstart.** App über den Task-Manager schließen, vom Startbildschirm
+   öffnen. Erwartet, in dieser Reihenfolge:
+   - Zuerst steht das Zeichen auf einer **gleichmäßig dunklen** Fläche.
+   - Dann **bleibt es stehen**, während der Hintergrund weich Tiefe bekommt:
+     oben etwas heller, unten dunkler.
+   - Kurz danach **glüht der Name auf** — er kommt warm herein und wird hell.
+   - Kein Bild, in dem sich mehrere Dinge gleichzeitig schlagartig ändern.
+
+2. **Der frühere Fund.** Erwartet: **Nicht** mehr der harte Schnitt, bei dem
+   Hintergrund und Schriftzug in einem Bild zusammen umspringen.
+
+3. **Der Wechsel auf die Startseite.** Erwartet: kein Farbsprung. Der
+   Hintergrund ist derselbe, es kommen nur die Karten dazu.
+
+4. **Mehrfach hintereinander.** Punkt 1 fünfmal wiederholen. Erwartet: jedes
+   Mal gleich, auch beim allerersten Start nach dem Update.
+
+5. **Mit „Bewegung reduzieren".** Android-Einstellungen → Bedienungshilfen →
+   „Animationen entfernen". Erwartet: Das Bild steht sofort fertig da,
+   inklusive Name. Der Wechsel ist dann hart — das ist genau die Einstellung,
+   die darum bittet.
+
+6. **Mit Gesten-Navigation statt drei Tasten.** Erwartet: Das Zeichen steht
+   weiterhin still; die App rechnet die Höhe der Navigationsleiste selbst aus.
+
+7. **Flugmodus.** Erwartet: Der Start dauert länger — er wartet auf
+   Firebase —, sieht aber genauso aus und bleibt nicht hängen.
+
+> **Wenn du selbst nachmessen willst:** Bildschirmaufnahme machen, dann
+> Einzelbilder herausziehen. Zwischen zwei aufeinanderfolgenden Bildern darf
+> kein Sprung liegen.
+>
+> ```bash
+> ffmpeg -i aufnahme.mp4 -q:v 2 bild_%04d.png
+> ```
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

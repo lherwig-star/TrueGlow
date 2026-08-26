@@ -18,6 +18,15 @@ void main() {
     await tester.pump();
 
     expect(find.byType(SplashScreen), findsOneWidget);
+
+    // Das erste Bild ist noch ohne Namen: Es soll vom letzten Bild des
+    // nativen Splash nicht zu unterscheiden sein (DECISIONS 53).
+    expect(find.text(texte.appName), findsNothing);
+
+    // Zwei Schritte, weil es zwei sind: Erst laeuft der Vorlauf ab und die
+    // Blende startet, dann laeuft sie.
+    await tester.pump(SplashScreen.vorlauf);
+    await tester.pump(SplashScreen.blende);
     expect(find.text(texte.appName), findsOneWidget);
 
     // Sie geht von selbst weiter – ohne Knopf, wie ein Startbildschirm es

@@ -1714,6 +1714,82 @@ Zeichengröße samt der Messung, aus der sie stammt.
 `MediaQuery`. Das ist die ungewohntere Stelle, aber die einzige, die den
 Bildschirm sieht statt nur das Fenster.
 
+## 53 · Der harte Schnitt beim Start — Befund aus dem Video
+
+Zum Start gab es einen zweiten Bericht vom Gerät, diesmal mit einer
+Videoaufnahme. Ausgewertet wurde sie Bild für Bild (ffmpeg, 30 Bilder je
+Sekunde, Farbwerte in drei Streifen über die Bildschirmhöhe).
+
+**Was das Video zeigt.** Die Aufnahme ist mit einer zweiten Kamera vom
+Bildschirm abgefilmt, nicht vom Gerät aufgezeichnet. Deshalb erscheint dort
+*alles* als helles Türkis — auch die Startseite mit ihren Karten. Das
+gemeldete „flache, helle Türkis" ist die Wiedergabe der Kamera, nicht die
+Farbe der App.
+
+Die konfigurierte Splash-Farbe **kommt** auf dem Gerät an. Der Beweis steckt
+in denselben Bildern:
+
+| | oben | Mitte | unten |
+|---|---|---|---|
+| Bild 173 (System-Splash) | (0, 130, 151) | (20, 145, 159) | (0, 139, 158) |
+| Bild 177 (eigener Splash) | (0, 158, 163) | (21, 138, 152) | (0, 101, 139) |
+
+Vorher ist die Fläche **flach**, nachher ein **Verlauf** — und die *Mitte*
+bleibt dabei fast gleich (145 → 138), während oben +22 % heller und unten
+−27 % dunkler wird. Genau das ist die Konstruktion aus DECISIONS 52: Der
+System-Splash trägt die Mitte des Verlaufs. Läge dort noch das alte
+`#173C3B`, wäre der obere Rand beim Wechsel unverändert geblieben.
+
+**Was wirklich falsch war.** Der Wechsel selbst:
+
+| Bild | oben/unten | Schriftzug |
+|---|---|---|
+| 173 | 0,90 | nichts |
+| 174 | 0,94 | ansteigend |
+| 175 | 1,20 | fast voll |
+| 176 | 1,30 | voll |
+
+Innerhalb von **zwei bis drei Bildern, also unter 100 ms**, springt der
+Hintergrund vom flachen Ton in den Verlauf **und** der Schriftzug steht
+vollständig da. Ein harter Schnitt, in dem sich zwei Dinge gleichzeitig
+ändern — genau wie gemeldet.
+
+**Warum die Einblendung des Schriftzugs unsichtbar blieb.** Sie lief, aber zur
+falschen Zeit. `TweenAnimationBuilder` startet, sobald das Widget gebaut
+wird — und gebaut wird es, während der native Splash noch auf dem Bildschirm
+liegt. Bis der weg war, waren die 500 ms längst vorbei. Eine Animation, die
+hinter einem Vorhang abläuft, hat nicht stattgefunden.
+
+**Was jetzt passiert, in dieser Reihenfolge:**
+
+1. **Phase 1** — der System-Splash: flacher dunkler Ton, Zeichen in der
+   Mitte.
+2. **Übergabe** — das erste Bild des eigenen Startbildschirms ist dasselbe
+   Bild: `AppColors.startFlaeche` an beiden Enden des Verlaufs, dasselbe
+   Zeichen an derselben Stelle, **kein** Schriftzug. Es gibt nichts zu sehen.
+3. **Blende** — nach 200 ms Vorlauf blendet der Hintergrund über 600 ms in
+   den Verlauf, und ab einem Drittel dieser Zeit glüht der Name auf: von
+   durchsichtig nach deckend, von warm (dem Sand des Zeichens) nach hell (der
+   Textfarbe), dabei sechs Pixel aufwärts.
+
+**Warum 200 ms Vorlauf.** Android zieht seinen Splash mit einer eigenen
+Animation weg, nachdem die App gezeichnet hat. Begänne die Blende schon dort,
+lägen zwei sich verändernde Bilder übereinander. Der Vorlauf deckt das ab —
+und weil beide Bilder in dieser Zeit identisch sind, verlängert er nichts,
+was man wahrnimmt.
+
+**Warum „aufglühen" und kein Schein.** Ein weicher Schatten unter dem Text
+wäre ein Glow-Effekt, und die schließt der Auftrag aus. Der Eindruck entsteht
+stattdessen aus der Farbe: Der Name kommt warm herein und wird hell. Das ist
+eine Blende, kein Effekt — und es passt zum Namen.
+
+**Bei „Bewegung reduzieren"** steht sofort der Endzustand. Dann ist der
+Wechsel wieder hart; das ist die Einstellung, um die es geht.
+
+**Preis:** Der Startbildschirm hat jetzt einen Animationscontroller und zwei
+Timer. Und die Standzeit ist um 100 ms gewachsen, damit die Blende nicht vom
+Wechsel auf die Startseite abgeschnitten wird.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

@@ -151,6 +151,18 @@ class AppColors extends ThemeExtension<AppColors> {
     kartenrand: Color(0x122B241C),
   );
 
+  /// Die flache Fläche, mit der der Start beginnt.
+  ///
+  /// Genau die Mitte des Seitenverlaufs – und genau der Ton, den der native
+  /// Splash trägt. Der kann nämlich keinen Verlauf: `windowSplashScreenBack-
+  /// ground` nimmt ab Android 12 nur eine einzelne Farbe.
+  ///
+  /// Damit ist das erste Bild der eigenen Startanimation vom letzten Bild
+  /// des nativen Splash nicht zu unterscheiden, und die Übergabe ist nichts,
+  /// was man sehen könnte (DECISIONS 53).
+  Color get startFlaeche =>
+      Color.lerp(hintergrund, hintergrundTief, 0.5)!;
+
   @override
   AppColors copyWith({
     Color? hintergrund,
