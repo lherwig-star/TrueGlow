@@ -745,6 +745,68 @@ Kein Kontingent, kein Analyse-Lauf. Braucht das Verstellen des Datums.
    Erwartet: Ohne Analyse gibt es keine Startseite mit Karten — die Challenge
    erscheint erst mit dem ersten Plan.
 
+## 19 · Fortschritts-Fotos
+
+Kein Kontingent. Braucht einen fälligen Check-in — der lässt sich über das
+Datum herbeiführen (Handy um acht Tage vorstellen, App öffnen).
+
+1. **Das Foto kommt bei jedem Check-in.** Den ersten Check-in (Tag 7,
+   „Alltags-Check") durchlaufen. Erwartet: Nach den Bewertungen kommt ein
+   Schritt **„Fortschrittsfoto"** mit dem Knopf zum Aufnehmen und darunter
+   „Ohne Foto weiter". Früher gab es diesen Schritt erst am
+   Tag 30.
+
+2. **Überspringen geht.** Ohne Foto auf „Weiter". Erwartet: Der Check-in
+   läuft normal zu Ende.
+
+3. **Ein Foto aufnehmen.** Nächsten Check-in fällig machen, diesmal ein Foto
+   aufnehmen. Erwartet: Beim **ersten** Foto überhaupt erscheint einmalig
+   ein Hinweis-Dialog **„Diese Fotos bleiben auf diesem Gerät"**. Er nennt
+   ausdrücklich: nicht in der Galerie, nicht im Google-Backup, nicht auf dem
+   Server, nicht für die Analyse — und dass sie beim Handywechsel weg sind.
+
+4. **Nicht in der Galerie.** Die Galerie-App öffnen und nachsehen. Erwartet:
+   Das Foto taucht dort **nicht** auf. Das ist der wichtigste Punkt dieses
+   Abschnitts.
+
+5. **Der Einstieg.** Auf den Plan-Bildschirm gehen. Erwartet: Unter der
+   Serien-Karte steht **„Deine Fortschritts-Fotos"** mit einer Miniatur und
+   der Zahl der Fotos. Antippen führt ins Album.
+
+6. **Mit einem Foto.** Erwartet: Das Bild groß, darunter „Der Anfang steht —
+   ab dem zweiten Foto siehst du hier den Vergleich."
+
+7. **Ab dem zweiten Foto.** Noch einen Check-in mit Foto machen. Erwartet:
+   Oben ein **Schieberegler**; links das ältere, rechts das neuere Bild, in
+   den Ecken „VORHER" und „NACHHER", darunter beide Daten. Der Regler
+   schiebt die Trennlinie sauber durch.
+
+8. **Die Zeitleiste.** Erwartet: Darunter eine waagerechte Reihe aller Fotos
+   mit Datum, ältestes links, das erste beschriftet mit **„Start"**. Ein
+   Antippen wählt aus, welches rechts im Vergleich steht — der Rahmen wird
+   farbig.
+
+9. **Löschen.** Ein Foto in der Zeitleiste **lange drücken**. Erwartet: Die
+   Rückfrage „Foto löschen?" mit dem Hinweis, dass die Check-in-Antworten
+   bleiben. Nach dem Bestätigen ist das Bild weg — aus der Zeitleiste und
+   von der Platte.
+
+10. **Das Startfoto ist geschützt.** Das erste Foto lange drücken. Erwartet:
+    **Keine** Rückfrage, es passiert nichts. Es gehört zur Analyse.
+
+11. **Nichts geht an die Analyse.** Beim Wirkungs-Check (Tag 30): Erwartet:
+    Das Zwischenfazit ist weiterhin da, spricht aber **nicht** mehr vom
+    Vergleich der Fotos, sondern von deinen Antworten. Das ist gewollt —
+    Begründung in `DECISIONS.md` 48.
+
+12. **Englisch.** Erwartet: „Your progress photos", „Before"/„After", „Drag
+    the slider to compare.", „These photos stay on this device", „Delete
+    photo?".
+
+> **Was dieser Abschnitt nicht prüfen kann:** dass die Bilder nicht in
+> Googles Backup wandern. Das entscheidet sich im Manifest, und dort besteht
+> seit diesem Paket ein Test darauf (`fortschritts_fotos_test.dart`).
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

@@ -10,8 +10,10 @@ import '../models/checkin.dart';
 ///
 /// Der Pfad des Fortschrittsfotos gehoert ausdruecklich **nicht** dazu. Er
 /// steht im [Checkin]-Modell und wuerde ueber `toJson()` mitfahren – deshalb
-/// wird die Nutzlast hier Feld fuer Feld gebaut statt durchgereicht. Das Bild
-/// selbst geht getrennt als base64 mit und wird serverseitig verworfen.
+/// wird die Nutzlast hier Feld fuer Feld gebaut statt durchgereicht.
+///
+/// Das Bild selbst geht seit DECISIONS 48 gar nicht mehr mit: Es bleibt auf
+/// dem Geraet. Der Server nimmt auch keins mehr entgegen.
 class CheckinAnfrage {
   CheckinAnfrage._();
 
@@ -21,7 +23,6 @@ class CheckinAnfrage {
     required List<Checkin> historie,
     required Sprache sprache,
     required Ausrichtung ausrichtung,
-    List<String> bilder = const [],
   }) {
     return {
       'sprache': sprache.code,
@@ -59,7 +60,11 @@ class CheckinAnfrage {
             ],
           },
       ],
-      'bilder': bilder,
+      // Ausdruecklich leer und ausdruecklich vorhanden: Das
+      // Fortschrittsfoto bleibt seit DECISIONS 48 auf dem Geraet. Das Feld
+      // steht hier, damit beim Lesen dieser Datei auffaellt, dass es kein
+      // Versehen ist.
+      'bilder': const <String>[],
     };
   }
 }

@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:go_router/go_router.dart';
+
 import '../../../../core/l10n/texte.dart';
+import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/datum.dart';
@@ -61,6 +64,13 @@ class VergleichAnsicht extends ConsumerWidget {
               ),
             ),
           ],
+        ),
+        const SizedBox(height: AppTheme.gapM),
+        OutlinedButton.icon(
+          onPressed: () => context.push(Routes.fortschritt),
+          style: OutlinedButton.styleFrom(shape: const StadiumBorder()),
+          icon: const Icon(Icons.photo_library_outlined),
+          label: Text(texte.fotosAlleAnsehen),
         ),
         const SizedBox(height: AppTheme.gapM),
         SectionCard(

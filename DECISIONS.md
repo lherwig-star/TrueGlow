@@ -1376,6 +1376,68 @@ auf der Startseite. Die Startseite wird länger; das ist der Punkt, an dem
 irgendwann zu überlegen ist, ob Serie, Challenge und Rückblick
 zusammenrücken.
 
+## 48 · Fortschritts-Fotos bleiben auf dem Gerät
+
+Bisher gab es ein Fortschrittsfoto nur beim Wirkungs-Check alle dreißig Tage,
+und es ging zusammen mit dem Startfoto an das Modell, damit dieses ein
+Zwischenfazit aus dem Vergleich schreiben konnte.
+
+Beides ändert sich: Das Foto wird bei **jedem** Check-in angeboten
+(freiwillig, überspringbar), und es verlässt das Gerät **nie**.
+
+**Warum bei jedem Check-in.** Ein Tagebuch mit einem Eintrag alle dreißig
+Tage ist keins. Wer alle sieben bis vierzehn Tage ein Bild hat, sieht eine
+Entwicklung; wer drei Bilder im Jahr hat, sieht drei Bilder.
+
+**Was der Verzicht auf den Bildvergleich kostet — und was nicht.** Das
+Zwischenfazit des Wirkungs-Checks bleibt. Es entsteht jetzt aus den Antworten
+und der Feedback-Historie statt aus den Fotos. Verloren geht damit die
+Aussage „im Vergleich zu deinem Startfoto wirkt X" — die konnte das Modell
+ohnehin nur vorsichtig treffen, weil zwei Handyfotos unter verschiedenem
+Licht wenig hergeben. Gewonnen sind zwei Bilder weniger pro Check-in-Aufruf,
+also weniger Kosten, und ein Versprechen, das man ohne Fußnote geben kann.
+
+**Warum der Server keine Bilder mehr annimmt.** Ein Versprechen, das nur der
+Client hält, ist keins. `leseCheckin` verwirft Bilder jetzt, statt sie
+durchzureichen — ein alter oder manipulierter Client kann kein Foto mehr ins
+Modell schmuggeln. Abgewiesen wird er dabei nicht: Er bekommt seinen
+Check-in, nur eben ohne Bilder.
+
+**Wo die Bilder liegen.** Im privaten Dokumentverzeichnis der App
+(`glowup_fotos`), wie schon vorher. Nicht in der Galerie — dafür bräuchte es
+`WRITE_EXTERNAL_STORAGE`, und genau die wird im Manifest ausdrücklich
+entfernt (DECISIONS 23). Nicht in Googles Backup: `allowBackup="false"`,
+`fullBackupContent="false"` und vollständige Ausschlüsse in
+`datenausnahmen.xml` für Cloud-Backup **und** Gerätewechsel. Das war schon
+so; neu ist, dass ein Test darauf besteht — es ist die Art Zusicherung, die
+still bricht.
+
+**Was doch in die Cloud geht: der Dateiname.** Der Check-in wird
+synchronisiert, und in ihm steht der Pfad des Fotos. Das ist kein Bild,
+sondern eine Zeichenkette wie `.../fortschritt3_basisFrontal_17…jpg`. Auf
+einem zweiten Gerät zeigt das Album dort einen Platzhalter „nicht auf diesem
+Gerät". Den Pfad ebenfalls herauszuhalten hätte einen zweiten, lokalen
+Speicher für dieselben Daten bedeutet — das ist der schlechtere Tausch.
+
+**Warum ein Schieberegler und nicht zwei Bilder nebeneinander.** Bei einem
+Gesicht zählen Details, und nebeneinander ist jedes Bild nur halb so breit.
+Der Regler lässt beide in voller Größe und legt sie exakt übereinander. Der
+Vergleich im Check-in selbst bleibt daneben bestehen — dort geht es um genau
+zwei Bilder, hier um die ganze Reihe.
+
+**Was sich löschen lässt.** Jedes Foto einzeln, mit Rückfrage. Der Check-in
+dahinter bleibt stehen: Seine Antworten haben den Plan geformt und gehören
+zur Geschichte. Nur das Startfoto ist nicht löschbar — es gehört zur Analyse.
+
+**Der Hinweis kommt einmal.** Beim ersten Besuch des Albums als Dialog, danach
+als Karte am Fuß des Bildschirms. Er sagt ausdrücklich, dass die Bilder bei
+einem Handywechsel oder einer Neuinstallation weg sind. Das ist die
+unangenehme Hälfte der Zusicherung, und sie gehört genauso deutlich dazu wie
+die angenehme.
+
+**Preis:** Der Wirkungs-Check verliert den Fotovergleich als Grundlage seines
+Fazits. Ein Bildschirm und zwei Einstiege mehr.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

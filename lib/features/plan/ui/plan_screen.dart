@@ -13,6 +13,7 @@ import '../../analysis/models/analysis_result.dart';
 import '../../history/logic/analysis_repository.dart';
 import '../logic/plan_progress_repository.dart';
 import '../../streak/ui/widgets/streak_karte.dart';
+import '../../checkin/ui/widgets/fortschritt_karte.dart';
 import 'widgets/checkliste_karte.dart';
 
 /// Step-by-Step-Plan plus taegliche Checkliste. Der Fortschritt liegt lokal
@@ -89,6 +90,8 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
     return [
       const StreakKarte(),
       const SizedBox(height: AppTheme.gapS),
+      // Nur da, wenn es ueberhaupt ein Foto auf diesem Geraet gibt.
+      const FortschrittKarte(),
       // Eine Checkliste pro Kapitel, in Kapitel-Reihenfolge.
       for (final kapitel in analyse.checklisten) ...[
         ChecklisteKarte(kapitel: kapitel),

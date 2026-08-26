@@ -1804,6 +1804,76 @@ class LEn extends L {
       'Fresh start — your longest streak stays with you.';
 
   @override
+  String get fotosTitel => 'Your progress photos';
+
+  @override
+  String get fotosLeerTitel => 'No photo yet';
+
+  @override
+  String get fotosLeerText =>
+      'You can take one at your next check-in — entirely optional, and you can skip it.';
+
+  @override
+  String get fotosEinsTitel => 'The starting point';
+
+  @override
+  String get fotosEinsText =>
+      'From your second photo on, you will see the comparison here.';
+
+  @override
+  String get fotosNurHierTitel => 'These photos stay on this device';
+
+  @override
+  String get fotosNurHierText =>
+      'They live in the app\'s protected storage: not in your gallery, not in Google\'s backup, not on our server. They are never used for the analysis. If you change phones or reinstall, they are gone.';
+
+  @override
+  String get fotosVerstanden => 'Got it';
+
+  @override
+  String get fotosVorher => 'Before';
+
+  @override
+  String get fotosNachher => 'After';
+
+  @override
+  String get fotosReglerHinweis => 'Drag the slider to compare.';
+
+  @override
+  String fotosZeitleiste(int anzahl) {
+    String _temp0 = intl.Intl.pluralLogic(
+      anzahl,
+      locale: localeName,
+      other: '$anzahl photos',
+      one: '1 photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fotosStart => 'Start';
+
+  @override
+  String get fotosLoeschen => 'Delete this photo';
+
+  @override
+  String get fotosLoeschenFrage => 'Delete photo?';
+
+  @override
+  String get fotosLoeschenText =>
+      'The image is removed from your device and cannot be restored. Your check-in answers stay.';
+
+  @override
+  String get fotosStartNichtLoeschbar =>
+      'The starting photo belongs to your analysis.';
+
+  @override
+  String get fotosOeffnen => 'View progress photos';
+
+  @override
+  String get fotosAlleAnsehen => 'See all photos';
+
+  @override
   String get challengeTitel => 'This week\'s challenge';
 
   @override
@@ -2090,7 +2160,7 @@ class LEn extends L {
 
   @override
   String get mockFazit =>
-      'Compared with your first photo, your routine looks more consistent overall. Stick with the tasks that come easily — the two adjusted ones will save you time.';
+      'After four weeks, what carries you is what comes easily. Stick with those tasks — the two adjusted ones will save you time.';
 
   @override
   String mockVarianteZeit(String habit) {

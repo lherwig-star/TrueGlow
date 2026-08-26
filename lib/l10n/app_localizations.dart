@@ -3271,6 +3271,120 @@ abstract class L {
   /// **'Neustart – dein längster Streak bleibt dir erhalten.'**
   String get streakNeustart;
 
+  /// Bildschirm mit Vorher-Nachher-Vergleich und Zeitleiste der Fortschrittsfotos.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Fortschritts-Fotos'**
+  String get fotosTitel;
+
+  /// No description provided for @fotosLeerTitel.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch kein Foto'**
+  String get fotosLeerTitel;
+
+  /// No description provided for @fotosLeerText.
+  ///
+  /// In de, this message translates to:
+  /// **'Beim nächsten Check-in kannst du eins aufnehmen – freiwillig und jederzeit überspringbar.'**
+  String get fotosLeerText;
+
+  /// No description provided for @fotosEinsTitel.
+  ///
+  /// In de, this message translates to:
+  /// **'Der Anfang steht'**
+  String get fotosEinsTitel;
+
+  /// No description provided for @fotosEinsText.
+  ///
+  /// In de, this message translates to:
+  /// **'Ab dem zweiten Foto siehst du hier den Vergleich.'**
+  String get fotosEinsText;
+
+  /// No description provided for @fotosNurHierTitel.
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Fotos bleiben auf diesem Gerät'**
+  String get fotosNurHierTitel;
+
+  /// No description provided for @fotosNurHierText.
+  ///
+  /// In de, this message translates to:
+  /// **'Sie liegen im geschützten Speicher der App: nicht in deiner Galerie, nicht im Google-Backup, nicht auf unserem Server. Für die Analyse werden sie nicht verwendet. Beim Handywechsel oder einer Neuinstallation sind sie weg.'**
+  String get fotosNurHierText;
+
+  /// No description provided for @fotosVerstanden.
+  ///
+  /// In de, this message translates to:
+  /// **'Verstanden'**
+  String get fotosVerstanden;
+
+  /// No description provided for @fotosVorher.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorher'**
+  String get fotosVorher;
+
+  /// No description provided for @fotosNachher.
+  ///
+  /// In de, this message translates to:
+  /// **'Nachher'**
+  String get fotosNachher;
+
+  /// No description provided for @fotosReglerHinweis.
+  ///
+  /// In de, this message translates to:
+  /// **'Zieh den Regler, um zu vergleichen.'**
+  String get fotosReglerHinweis;
+
+  /// No description provided for @fotosZeitleiste.
+  ///
+  /// In de, this message translates to:
+  /// **'{anzahl, plural, =1{1 Foto} other{{anzahl} Fotos}}'**
+  String fotosZeitleiste(int anzahl);
+
+  /// No description provided for @fotosStart.
+  ///
+  /// In de, this message translates to:
+  /// **'Start'**
+  String get fotosStart;
+
+  /// No description provided for @fotosLoeschen.
+  ///
+  /// In de, this message translates to:
+  /// **'Dieses Foto löschen'**
+  String get fotosLoeschen;
+
+  /// No description provided for @fotosLoeschenFrage.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto löschen?'**
+  String get fotosLoeschenFrage;
+
+  /// No description provided for @fotosLoeschenText.
+  ///
+  /// In de, this message translates to:
+  /// **'Das Bild wird vom Gerät entfernt und lässt sich nicht wiederherstellen. Deine Antworten aus dem Check-in bleiben.'**
+  String get fotosLoeschenText;
+
+  /// No description provided for @fotosStartNichtLoeschbar.
+  ///
+  /// In de, this message translates to:
+  /// **'Das Startfoto gehört zu deiner Analyse.'**
+  String get fotosStartNichtLoeschbar;
+
+  /// No description provided for @fotosOeffnen.
+  ///
+  /// In de, this message translates to:
+  /// **'Fortschritts-Fotos ansehen'**
+  String get fotosOeffnen;
+
+  /// No description provided for @fotosAlleAnsehen.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Fotos ansehen'**
+  String get fotosAlleAnsehen;
+
   /// Wöchentliche Extra-Aufgabe auf der Startseite. Rotiert aus einem festen Vorrat.
   ///
   /// In de, this message translates to:
@@ -3616,7 +3730,7 @@ abstract class L {
   /// No description provided for @mockFazit.
   ///
   /// In de, this message translates to:
-  /// **'Im Vergleich zum Startfoto wirkt die Pflege insgesamt gleichmäßiger. Bleib bei den Aufgaben, die dir leichtfallen – die zwei angepassten Punkte nehmen dir Zeit ab.'**
+  /// **'Nach vier Wochen trägt vor allem, was dir leichtfällt. Bleib bei diesen Aufgaben – die zwei angepassten Punkte nehmen dir Zeit ab.'**
   String get mockFazit;
 
   /// No description provided for @mockVarianteZeit.

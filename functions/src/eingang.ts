@@ -33,8 +33,20 @@ export const MAX_BILD_BYTES = 8 * 1024 * 1024;
 /** So viele Aufnahmetypen gibt es insgesamt. */
 const MAX_BILDER_ANALYSE = Object.keys(AUFNAHMEN).length;
 
-/** Erstfoto plus Fortschrittsfoto. */
-const MAX_BILDER_CHECKIN = 2;
+/**
+ * Der Check-in nimmt **keine** Bilder mehr an.
+ *
+ * Fruehner gingen Erstfoto und Fortschrittsfoto an das Modell, damit es ein
+ * Zwischenfazit aus dem Vergleich schreiben konnte. Seit DECISIONS 48 bleibt
+ * das Fortschrittsfoto auf dem Geraet: Es ist ein Tagebuch fuer den Nutzer,
+ * kein Material fuer die Auswertung.
+ *
+ * Der Server verlaesst sich dafuer nicht auf den Client. Was hier ankommt,
+ * faellt heraus – ein alter oder manipulierter Client kann kein Bild mehr
+ * ins Modell schmuggeln. Das Zwischenfazit gibt es weiterhin; es entsteht
+ * jetzt aus den Antworten und der Historie.
+ */
+export const MAX_BILDER_CHECKIN = 0;
 
 /** Grosszuegige Obergrenzen gegen aufgeblaehte Prompts. */
 const MAX_FREITEXT = 1000;
@@ -185,8 +197,9 @@ export function leseCheckin(roh: unknown): CheckinEingang {
       plan: lesePlan(daten.plan),
       richtung: leseRichtung(daten.richtung),
       historie: leseHistorie(daten.historie),
-      // Der Prompt spricht nur dann von Fotos, wenn auch wirklich zwei da sind.
-      mitFotos: bilder.length === MAX_BILDER_CHECKIN,
+      // Es gibt keine Fotos mehr im Check-in – der Prompt spricht deshalb
+      // auch nicht mehr von welchen.
+      mitFotos: false,
     },
     bilder,
   };
@@ -194,25 +207,14 @@ export function leseCheckin(roh: unknown): CheckinEingang {
 
 function leseCheckinBilder(roh: unknown): string[] {
   if (!Array.isArray(roh) || roh.length === 0) return [];
-  if (roh.length !== MAX_BILDER_CHECKIN) {
-    // Der Vergleich braucht genau zwei Bilder; alles andere waere ein
-    // Programmierfehler im Client.
-    throw fehler('apiFehler', `Check-in mit ${roh.length} Bildern`);
-  }
 
-  let bytes = 0;
-  const bilder: string[] = [];
-  for (const eintrag of roh) {
-    if (typeof eintrag !== 'string' || eintrag.length === 0) {
-      throw fehler('apiFehler', 'Leeres Bild im Check-in');
-    }
-    bytes += eintrag.length;
-    if (bytes > MAX_BILD_BYTES) {
-      throw fehler('apiFehler', 'Bilddaten ueberschreiten die Obergrenze');
-    }
-    bilder.push(eintrag);
-  }
-  return bilder;
+  // Abgewiesen wird nicht, verworfen schon: Ein Client, der noch Bilder
+  // mitschickt, soll seinen Check-in bekommen – nur eben ohne sie.
+  console.warn(
+    `Check-in mit ${roh.length} Bildern aufgerufen. Fortschrittsfotos ` +
+      'gehen nicht mehr an das Modell und werden verworfen.',
+  );
+  return [];
 }
 
 function leseHabits(roh: unknown): HabitRueckmeldung[] {

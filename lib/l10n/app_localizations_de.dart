@@ -1813,6 +1813,76 @@ class LDe extends L {
       'Neustart – dein längster Streak bleibt dir erhalten.';
 
   @override
+  String get fotosTitel => 'Deine Fortschritts-Fotos';
+
+  @override
+  String get fotosLeerTitel => 'Noch kein Foto';
+
+  @override
+  String get fotosLeerText =>
+      'Beim nächsten Check-in kannst du eins aufnehmen – freiwillig und jederzeit überspringbar.';
+
+  @override
+  String get fotosEinsTitel => 'Der Anfang steht';
+
+  @override
+  String get fotosEinsText =>
+      'Ab dem zweiten Foto siehst du hier den Vergleich.';
+
+  @override
+  String get fotosNurHierTitel => 'Diese Fotos bleiben auf diesem Gerät';
+
+  @override
+  String get fotosNurHierText =>
+      'Sie liegen im geschützten Speicher der App: nicht in deiner Galerie, nicht im Google-Backup, nicht auf unserem Server. Für die Analyse werden sie nicht verwendet. Beim Handywechsel oder einer Neuinstallation sind sie weg.';
+
+  @override
+  String get fotosVerstanden => 'Verstanden';
+
+  @override
+  String get fotosVorher => 'Vorher';
+
+  @override
+  String get fotosNachher => 'Nachher';
+
+  @override
+  String get fotosReglerHinweis => 'Zieh den Regler, um zu vergleichen.';
+
+  @override
+  String fotosZeitleiste(int anzahl) {
+    String _temp0 = intl.Intl.pluralLogic(
+      anzahl,
+      locale: localeName,
+      other: '$anzahl Fotos',
+      one: '1 Foto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fotosStart => 'Start';
+
+  @override
+  String get fotosLoeschen => 'Dieses Foto löschen';
+
+  @override
+  String get fotosLoeschenFrage => 'Foto löschen?';
+
+  @override
+  String get fotosLoeschenText =>
+      'Das Bild wird vom Gerät entfernt und lässt sich nicht wiederherstellen. Deine Antworten aus dem Check-in bleiben.';
+
+  @override
+  String get fotosStartNichtLoeschbar =>
+      'Das Startfoto gehört zu deiner Analyse.';
+
+  @override
+  String get fotosOeffnen => 'Fortschritts-Fotos ansehen';
+
+  @override
+  String get fotosAlleAnsehen => 'Alle Fotos ansehen';
+
+  @override
   String get challengeTitel => 'Challenge der Woche';
 
   @override
@@ -2100,7 +2170,7 @@ class LDe extends L {
 
   @override
   String get mockFazit =>
-      'Im Vergleich zum Startfoto wirkt die Pflege insgesamt gleichmäßiger. Bleib bei den Aufgaben, die dir leichtfallen – die zwei angepassten Punkte nehmen dir Zeit ab.';
+      'Nach vier Wochen trägt vor allem, was dir leichtfällt. Bleib bei diesen Aufgaben – die zwei angepassten Punkte nehmen dir Zeit ab.';
 
   @override
   String mockVarianteZeit(String habit) {

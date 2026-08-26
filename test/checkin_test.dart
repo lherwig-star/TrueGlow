@@ -577,7 +577,10 @@ void main() {
       ]);
     });
 
-    test('der Pfad des Fortschrittsfotos bleibt auf dem Geraet', () {
+    test('weder Foto noch Pfad verlassen das Geraet', () {
+      // Frueher ging das Bild als base64 mit, damit das Modell ein
+      // Zwischenfazit aus dem Vergleich schreiben konnte. Seit DECISIONS 48
+      // bleibt es hier – das Fazit entsteht aus den Antworten.
       final checkin = _checkin(typ: CheckinTyp.wirkung)
           .copyWith(fortschrittsfoto: '/daten/glowup_fotos/fortschritt0.jpg');
 
@@ -587,12 +590,10 @@ void main() {
         historie: const [],
         sprache: Sprache.deutsch,
         ausrichtung: Ausrichtung.maennlich,
-        bilder: const ['AAAA', 'BBBB'],
       );
 
-      // Das Bild geht als base64 mit, sein Speicherort nicht.
       expect(jsonEncode(anfrage), isNot(contains('glowup_fotos')));
-      expect(anfrage['bilder'], ['AAAA', 'BBBB']);
+      expect(anfrage['bilder'], isEmpty);
     });
   });
 
@@ -653,6 +654,13 @@ void main() {
       await tester.tap(find.text(PasstNichtGrund.zeit.label(texte)));
       await tester.pumpAndSettle();
 
+      await tester.tap(find.widgetWithText(FilledButton, texte.weiter));
+      await tester.pumpAndSettle();
+
+      // Der Foto-Schritt kommt seit DECISIONS 48 bei jedem Check-in. Er ist
+      // ausdruecklich optional – hier wird er uebersprungen.
+      expect(find.text(texte.checkinFotoTitel), findsOneWidget);
+      expect(find.text(texte.checkinFotoOhne), findsOneWidget);
       await tester.tap(find.widgetWithText(FilledButton, texte.weiter));
       await tester.pumpAndSettle();
 

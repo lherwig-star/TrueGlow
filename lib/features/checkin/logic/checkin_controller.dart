@@ -124,6 +124,9 @@ class CheckinController extends StateNotifier<CheckinZustand> {
   static const _kHistorie = 'historie';
   static const _kNeueHabits = 'neueHabits';
 
+  /// Ob der Hinweis „das Foto bleibt auf diesem Geraet" schon kam.
+  static const _kFotohinweis = 'fotohinweisGesehen';
+
   static CheckinZustand _lade(KeyValueStore box) {
     DateTime? datum(String schluessel) {
       final roh = box.get(schluessel);
@@ -255,6 +258,28 @@ class CheckinController extends StateNotifier<CheckinZustand> {
 
   void fotoProblemVerwerfen() =>
       state = state.copyWith(fotoProblemLoeschen: true);
+
+  /// Ob der Nutzer den Hinweis zum Verbleib der Fotos schon gesehen hat.
+  bool get fotohinweisGesehen => _box.get(_kFotohinweis) == true;
+
+  Future<void> fotohinweisGesehenMerken() => _box.put(_kFotohinweis, true);
+
+  /// Nimmt das Fortschrittsfoto aus einem abgeschlossenen Check-in.
+  ///
+  /// Der Check-in selbst bleibt stehen – seine Antworten haben den Plan
+  /// geformt und gehoeren zur Geschichte. Nur das Bild geht.
+  Future<void> fortschrittsfotoEntfernen(int checkinId) async {
+    final historie = [
+      for (final eintrag in state.historie)
+        eintrag.id == checkinId ? eintrag.ohneFortschrittsfoto() : eintrag,
+    ];
+
+    state = state.copyWith(historie: historie);
+    await _box.put(
+      _kHistorie,
+      jsonEncode(historie.map((c) => c.toJson()).toList()),
+    );
+  }
 
   void entwurfVerwerfen() {
     state = state.copyWith(entwurfLoeschen: true);

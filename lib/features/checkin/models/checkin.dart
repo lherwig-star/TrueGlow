@@ -25,7 +25,12 @@ enum CheckinTyp {
   bool get fragtNachWirkung => this != CheckinTyp.alltag;
 
   /// Ob ein Fortschrittsfoto angeboten wird.
-  bool get mitFortschrittsfoto => this == CheckinTyp.wirkung;
+  ///
+  /// Seit DECISIONS 48 bei jedem Check-in, nicht nur beim Wirkungs-Check.
+  /// Die Fotos sind kein Material fuer die Auswertung mehr, sondern ein
+  /// Tagebuch fuer den Nutzer selbst – und ein Tagebuch mit einem Eintrag
+  /// alle dreissig Tage ist keins.
+  bool get mitFortschrittsfoto => true;
 }
 
 // Anzeigetexte als Erweiterung – Begruendung in `features/onboarding/models/onboarding_profile.dart`.
@@ -327,6 +332,12 @@ class Checkin {
       zusammenfassung: zusammenfassung ?? this.zusammenfassung,
     );
   }
+
+  /// Derselbe Check-in ohne sein Fortschrittsfoto.
+  ///
+  /// Gebraucht, wenn der Nutzer ein einzelnes Bild aus seinem Tagebuch
+  /// loescht. Die Antworten bleiben – sie haben den Plan geformt.
+  Checkin ohneFortschrittsfoto() => copyWith(fotoLoeschen: true);
 
   /// Setzt die Bewertung eines Habits, ohne die Reihenfolge zu veraendern.
   Checkin mitBewertung(String habit, HabitBewertung bewertung) {

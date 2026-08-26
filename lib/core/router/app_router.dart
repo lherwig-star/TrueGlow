@@ -19,6 +19,7 @@ import '../../features/direction/ui/direction_screen.dart';
 import '../../features/modules/models/analyse_modul.dart';
 import '../../features/modules/ui/module_selection_screen.dart';
 import '../../features/history/ui/history_screen.dart';
+import '../../features/checkin/ui/fortschritt_screen.dart';
 import '../../features/home/ui/home_screen.dart';
 import '../../features/onboarding/logic/onboarding_controller.dart';
 import '../../features/onboarding/ui/onboarding_screen.dart';
@@ -92,6 +93,9 @@ class Routes {
   static const result = '/result';
   static const plan = '/plan';
   static const history = '/history';
+
+  /// Das Fortschritts-Tagebuch. Die Fotos darin verlassen das Geraet nie.
+  static const fortschritt = '/fortschritt';
   static const settings = '/settings';
 
   /// Uebersicht der Rechtstexte.
@@ -234,6 +238,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: Routes.plan, builder: (context, state) => const PlanScreen()),
       GoRoute(path: Routes.history, builder: (context, state) => const HistoryScreen()),
+      GoRoute(
+        path: Routes.fortschritt,
+        builder: (context, state) => const FortschrittScreen(),
+      ),
       GoRoute(path: Routes.settings, builder: (context, state) => const SettingsScreen()),
       GoRoute(
         path: Routes.rechtliches,

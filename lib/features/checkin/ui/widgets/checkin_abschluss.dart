@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,11 +14,9 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/section_card.dart';
 import '../../../analysis/logic/analysis_service.dart';
 import '../../../analysis/models/analysis_result.dart';
-import '../../../capture/logic/capture_controller.dart';
 import '../../../history/logic/analysis_repository.dart';
 import '../../../plan/logic/plan_progress_repository.dart';
 import '../../logic/checkin_benachrichtigung.dart';
-import '../../../consent/logic/einwilligung_controller.dart';
 import '../../logic/checkin_controller.dart';
 import '../../logic/checkin_service.dart';
 import '../../logic/plan_anpassung.dart';
@@ -85,18 +82,8 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
       _fehler = null;
     });
 
-    // Ohne Foto-Einwilligung laeuft der Check-in ohne Bilder weiter, statt zu
-    // scheitern: Die Rueckmeldung zum Plan ist das Wesentliche, der
-    // Bildvergleich die Zugabe.
-    final mitFotos = ref.read(analyseErlaubtProvider);
-
-    final erstfoto = mitFotos
-        ? ref
-            .read(captureControllerProvider)
-            .foto(CheckinController.fortschrittsTyp)
-        : null;
-    final neu = mitFotos ? widget.checkin.fortschrittsfoto : null;
-
+    // Fotos gehen hier ausdruecklich nicht mit: Das Fortschrittsfoto bleibt
+    // auf dem Geraet (DECISIONS 48). Ausgewertet werden die Antworten.
     try {
       final auswertung =
           await ref.read(checkinServiceProvider).auswerten(
@@ -105,8 +92,6 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
                 historie: ref.read(checkinControllerProvider).historie,
                 sprache: ref.read(aktiveSpracheProvider),
                 ausrichtung: ref.read(ausrichtungProvider),
-                erstfoto: erstfoto == null ? null : File(erstfoto.pfad),
-                fortschrittsfoto: neu == null ? null : File(neu),
                 abbruch: abbruch,
               );
 

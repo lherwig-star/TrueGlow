@@ -719,6 +719,31 @@
     "placeholders": { "tage": { "type": "int" } }
   },
   "streakNeustart": "Neustart – dein längster Streak bleibt dir erhalten.",
+  "fotosTitel": "Deine Fortschritts-Fotos",
+  "@fotosTitel": {
+    "description": "Bildschirm mit Vorher-Nachher-Vergleich und Zeitleiste der Fortschrittsfotos."
+  },
+  "fotosLeerTitel": "Noch kein Foto",
+  "fotosLeerText": "Beim nächsten Check-in kannst du eins aufnehmen – freiwillig und jederzeit überspringbar.",
+  "fotosEinsTitel": "Der Anfang steht",
+  "fotosEinsText": "Ab dem zweiten Foto siehst du hier den Vergleich.",
+  "fotosNurHierTitel": "Diese Fotos bleiben auf diesem Gerät",
+  "fotosNurHierText": "Sie liegen im geschützten Speicher der App: nicht in deiner Galerie, nicht im Google-Backup, nicht auf unserem Server. Für die Analyse werden sie nicht verwendet. Beim Handywechsel oder einer Neuinstallation sind sie weg.",
+  "fotosVerstanden": "Verstanden",
+  "fotosVorher": "Vorher",
+  "fotosNachher": "Nachher",
+  "fotosReglerHinweis": "Zieh den Regler, um zu vergleichen.",
+  "fotosZeitleiste": "{anzahl, plural, =1{1 Foto} other{{anzahl} Fotos}}",
+  "@fotosZeitleiste": {
+    "placeholders": { "anzahl": { "type": "int" } }
+  },
+  "fotosStart": "Start",
+  "fotosLoeschen": "Dieses Foto löschen",
+  "fotosLoeschenFrage": "Foto löschen?",
+  "fotosLoeschenText": "Das Bild wird vom Gerät entfernt und lässt sich nicht wiederherstellen. Deine Antworten aus dem Check-in bleiben.",
+  "fotosStartNichtLoeschbar": "Das Startfoto gehört zu deiner Analyse.",
+  "fotosOeffnen": "Fortschritts-Fotos ansehen",
+  "fotosAlleAnsehen": "Alle Fotos ansehen",
   "challengeTitel": "Challenge der Woche",
   "@challengeTitel": {
     "description": "Wöchentliche Extra-Aufgabe auf der Startseite. Rotiert aus einem festen Vorrat."
@@ -944,7 +969,7 @@
       }
     }
   },
-  "mockFazit": "Im Vergleich zum Startfoto wirkt die Pflege insgesamt gleichmäßiger. Bleib bei den Aufgaben, die dir leichtfallen – die zwei angepassten Punkte nehmen dir Zeit ab.",
+  "mockFazit": "Nach vier Wochen trägt vor allem, was dir leichtfällt. Bleib bei diesen Aufgaben – die zwei angepassten Punkte nehmen dir Zeit ab.",
   "mockVarianteZeit": "{habit} – nur 30 Sekunden",
   "@mockVarianteZeit": {
     "placeholders": {
