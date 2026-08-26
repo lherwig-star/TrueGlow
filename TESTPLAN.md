@@ -307,6 +307,11 @@ die sich das abbilden ließe.
 
 ## 9 · Gewohnheits-Ziele im Report
 
+> **Erledigt und überholt.** Dieser Abschnitt war der erste Durchgang. Er
+> hat funktioniert, aber am falschen Ort: Die Aufgaben landeten unter
+> „Haare & Bart". Gültig ist jetzt **Abschnitt 11** — dort steht dieselbe
+> Prüfung mit dem eigenen Kapitel. Abschnitt 9 bleibt nur als Beleg stehen.
+
 Ein Analyse-Lauf reicht für beide Punkte — er kostet nur einmal Kontingent.
 
 **Vorbereitung:** Bei „Deine Richtung" die anklickbaren Punkte wie gewohnt
@@ -364,6 +369,91 @@ Wenn Punkt 1 ausbleibt, weil du die Berechtigung früher schon abgelehnt
 hattest: In den Einstellungen den Schalter aus- und wieder einschalten — dann
 fragt die App erneut. Blockiert das System weiterhin, steht ein Hinweis unter
 der Karte.
+
+## 11 · Persönliche Ziele als eigenes Kapitel
+
+Ein einziger Analyse-Lauf reicht für den ganzen Abschnitt. Die Punkte 2 bis 6
+kosten kein weiteres Kontingent.
+
+**Vorbereitung:** Bei „Deine Richtung" die anklickbaren Punkte wie gewohnt
+wählen und ins Freitextfeld **zwei** Sätze schreiben, einen von jeder Sorte —
+zum Beispiel: *„Ich will aufhören zu rauchen und hätte gern gepflegtere
+Hände."* Wichtig ist, dass mindestens ein Look-Modul dabei ist, bei dem der
+Fehler vorher auftrat (Basis genügt).
+
+1. **Die Tagesliste auf der Startseite.** Erwartet: Eine eigene Karte
+   **„Deine Ziele"**, ganz unten, mit einem Fähnchen als Symbol. Darin
+   stehen die Aufgaben aus deinem Freitext — je eine bis drei pro Wunsch,
+   heute abhakbar. Beide Wünsche müssen vorkommen, auch der nach den Händen.
+
+2. **Die Look-Karten darüber.** Erwartet: In **keiner** anderen Karte steht
+   noch eine Aufgabe aus deinem Freitext. Unter „Haare & Bart" darf nichts
+   mehr vom Rauchen stehen — genau das war der Fund. Auch nicht als
+   Auffangposten in der Basis.
+
+3. **Der Report.** Erwartet: Ein Kapitel **„Persönliche Ziele"** hinter den
+   Look-Kapiteln, mit einer Einleitung in deinen eigenen Worten und einem
+   Abschnitt **„Dein Ziel"** mit Auslöser-Strategien (Feierabend, Kaffee,
+   Stress und für jede Situation eine Alternative). Der Wunsch nach
+   gepflegteren Händen bekommt einen eigenen Abschnitt mit eigener
+   Überschrift. Ton unterstützend, keine Heilaussagen, keine Zahlen zu
+   Krankheitsrisiken, kein erhobener Zeigefinger.
+
+4. **Sprache umstellen, ohne neue Analyse.** Einstellungen → English, dann
+   denselben Report und dieselbe Startseite wieder öffnen. Erwartet: Die
+   Karte heißt **„Your goals"**, das Kapitel **„Personal goals"**. Die Texte
+   darin bleiben in der Sprache, in der sie erzeugt wurden — das ist so
+   gewollt (Abschnitt 7, Punkt 2).
+
+5. **Gegenprobe ohne Kontingent.** Eine ältere Analyse aus dem Verlauf
+   öffnen. Erwartet: unverändert — kein Kapitel „Persönliche Ziele", keine
+   neuen Aufgaben, keine neue Karte.
+
+6. **Gegenprobe ohne Freitext.** Falls noch Kontingent übrig ist: eine
+   Analyse mit leerem Freitextfeld. Erwartet: gar keine Ziel-Karte und kein
+   Ziel-Kapitel, alles wie vor dem Update. Wenn kein Kontingent mehr da ist,
+   reicht Punkt 5 — die Aussage ist dieselbe.
+
+## 12 · Sind die Empfehlungen besser geworden?
+
+Kein eigener Analyse-Lauf nötig: Das ist derselbe Report aus Abschnitt 11.
+Diese Prüfung ist die einzige im Plan, die sich nicht an einem Häkchen
+entscheidet, sondern am Lesen. Nimm dir dafür fünf Minuten.
+
+1. **Der Bart-Test.** Geh die Tagesliste durch und such nach Aufgaben, deren
+   Zeitpunkt keinen Sinn ergibt — etwas abends tun, das über Nacht wieder
+   verschwindet, oder morgens etwas, das erst über Nacht wirken soll.
+   Erwartet: keine einzige. Das war der Auslöser für die Änderung.
+
+2. **Der Suchmaschinen-Test.** Nimm dir pro Kapitel die Empfehlungen vor und
+   frag bei jeder: *Hätte das auch dann dagestanden, wenn er meine Fotos nie
+   gesehen hätte?* Erwartet: In jedem Kapitel steht mindestens **eine**
+   Empfehlung, bei der die Antwort klar Nein ist — weil sie ein Merkmal
+   benennt (Wuchsrichtung der Haare, eine Stelle, an der der Bart dünner
+   ist, die Form des Gesichts) oder einen Handgriff erklärt, den man nicht
+   auf der ersten Suchergebnisseite findet.
+
+3. **Der Wiederholungs-Test.** Erwartet: Keine Empfehlung und keine Aufgabe
+   taucht in zwei Kapiteln in anderer Formulierung wieder auf.
+
+4. **Notieren, was durchgerutscht ist.** Schreib die Zeilen auf, die den
+   Test nicht bestehen, mit dem Kapitel dazu. Der Server zählt flache
+   Aufgaben selbst mit und schreibt sie ins Protokoll — deine Notiz und das
+   Protokoll zusammen sagen, ob es am Prompt liegt oder am Modell.
+
+   Ins Protokoll sehen (optional, am Rechner):
+
+   ```bash
+   firebase functions:log --only analysiere --project trueglow-b2c1c
+   ```
+
+   Zeilen mit „ohne Bezug zu den Fotos" sind die gezählten flachen
+   Aufgaben; „Kapitel persoenlicheZiele fehlt" hieße, dass der Freitext
+   nirgends angekommen ist.
+
+Bleibt das Ergebnis nach diesen beiden Abschnitten dünn, ist der nächste
+Hebel ein stärkeres Modell. Was das kostet, steht in `DECISIONS.md` 40 —
+kurz: rund 1,7 Cent je Analyse heute, rund 2,9 Cent mit `gemini-3.7-flash`.
 
 ## Was mit Funden passiert
 

@@ -172,7 +172,11 @@ List<AbzeichenStand> abzeichenStaende({
   required AnalysisResult? analyse,
 }) {
   final module = analyse?.module ?? const <AnalyseModul>{};
-  final alleModule = module.length == AnalyseModul.values.length;
+  // Gezaehlt wird nur, was sich bestellen laesst. Das Zielkapitel entsteht
+  // aus dem Freitext und waere sonst ein Abzeichen fuer einen Satz Text.
+  final bestellbar = AnalyseModul.bestellbar;
+  final erreichte = module.where(bestellbar.contains).length;
+  final alleModule = erreichte == bestellbar.length;
 
   return [
     for (final abzeichen in Abzeichen.values)
@@ -185,7 +189,7 @@ List<AbzeichenStand> abzeichenStaende({
         Abzeichen.alleModule => AbzeichenStand(
             abzeichen: abzeichen,
             erreicht: alleModule,
-            fehlend: AnalyseModul.values.length - module.length,
+            fehlend: bestellbar.length - erreichte,
           ),
         _ => AbzeichenStand(
             abzeichen: abzeichen,

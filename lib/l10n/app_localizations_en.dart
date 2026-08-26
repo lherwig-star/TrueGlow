@@ -819,6 +819,19 @@ class LEn extends L {
   String get modulStilCheckliste => 'Style';
 
   @override
+  String get modulZieleTitel => 'Personal goals';
+
+  @override
+  String get modulZieleText =>
+      'What you set out to do in your own words under “Your direction”.';
+
+  @override
+  String get modulZieleCheckliste => 'Your goals';
+
+  @override
+  String get modulBenoetigtZiele => 'What you wrote under “Your direction”';
+
+  @override
   String get stilzielKlassisch => 'Classic';
 
   @override

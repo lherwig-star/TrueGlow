@@ -18,7 +18,22 @@ enum AnalyseModul {
 
   zaehneLaecheln(icon: Icons.sentiment_satisfied_alt_outlined),
   figurPassform(icon: Icons.accessibility_new_outlined),
-  stilKleiderschrank(icon: Icons.checkroom_outlined);
+  stilKleiderschrank(icon: Icons.checkroom_outlined),
+
+  /// Das Kapitel, das aus dem Freitext bei „Deine Richtung" entsteht – und
+  /// nur daraus.
+  ///
+  /// Es ist ein Kapitel wie jedes andere: Der Report zeigt es, die Tagesliste
+  /// bekommt eine eigene Karte dafuer, der Check-in passt seine Aufgaben an.
+  /// Waehlen kann es niemand – es steht deshalb in keiner der Listen unten
+  /// und faellt in [ausNamen] heraus. Ob es das Kapitel gibt, entscheidet
+  /// allein der Server anhand des Freitextfelds.
+  ///
+  /// Warum ueberhaupt: Vorher landeten die Aufgaben aus dem Freitext im
+  /// „inhaltlich am besten passenden" Kapitel. Fuer „aufhoeren zu rauchen"
+  /// gibt es keins – am Geraet stand es unter „Haare & Bart". Siehe
+  /// DECISIONS 39.
+  persoenlicheZiele(icon: Icons.flag_outlined);
 
   const AnalyseModul({required this.icon});
 
@@ -26,14 +41,21 @@ enum AnalyseModul {
 
   bool get istBasis => this == AnalyseModul.basis;
 
-  /// Alle Module ausser der Basis – die vollstaendige Liste, unabhaengig von
-  /// der Ausrichtung.
+  /// Die Module, die eine Analyse ueberhaupt bestellen kann.
+  ///
+  /// Alles ausser dem Zielkapitel: Das haengt am Freitext und nicht an einem
+  /// Haken im Modul-Bildschirm.
+  static List<AnalyseModul> get bestellbar =>
+      values.where((m) => m != AnalyseModul.persoenlicheZiele).toList();
+
+  /// Alle bestellbaren Module ausser der Basis – die vollstaendige Liste,
+  /// unabhaengig von der Ausrichtung.
   ///
   /// Gebraucht ueberall dort, wo es um *gespeicherte* Auswahl geht: Ein
   /// Report, der Make-up enthaelt, bleibt vollstaendig, auch wenn jemand
   /// spaeter auf den maennlichen Modus umstellt.
   static List<AnalyseModul> get waehlbare =>
-      values.where((m) => !m.istBasis).toList();
+      bestellbar.where((m) => !m.istBasis).toList();
 
   /// Was zur Auswahl steht.
   ///
@@ -54,10 +76,14 @@ enum AnalyseModul {
       };
 
   /// Stabile Namen fuer die lokale Speicherung.
+  ///
+  /// Das Zielkapitel faellt hier heraus: Diese Liste ist eine *Auswahl*, und
+  /// ausgewaehlt wird es nie. Ein alter oder manipulierter Aufruf, der es
+  /// mitschickt, bestellt damit trotzdem kein Kapitel.
   static Set<AnalyseModul> ausNamen(Iterable<Object?> namen) {
     final gefunden = <AnalyseModul>{};
     for (final name in namen) {
-      for (final modul in values) {
+      for (final modul in bestellbar) {
         if (modul.name == name) gefunden.add(modul);
       }
     }
@@ -89,6 +115,7 @@ extension AnalyseModulText on AnalyseModul {
         AnalyseModul.zaehneLaecheln => texte.modulZaehneTitel,
         AnalyseModul.figurPassform => texte.modulFigurTitel,
         AnalyseModul.stilKleiderschrank => texte.modulStilTitel,
+        AnalyseModul.persoenlicheZiele => texte.modulZieleTitel,
       };
 
   String beschreibung(L texte, Ausrichtung ausrichtung) => switch (this) {
@@ -100,6 +127,7 @@ extension AnalyseModulText on AnalyseModul {
         AnalyseModul.zaehneLaecheln => texte.modulZaehneText,
         AnalyseModul.figurPassform => texte.modulFigurText,
         AnalyseModul.stilKleiderschrank => texte.modulStilText,
+        AnalyseModul.persoenlicheZiele => texte.modulZieleText,
       };
 
   /// Ueberschrift des zugehoerigen Report-Kapitels.
@@ -116,5 +144,6 @@ extension AnalyseModulText on AnalyseModul {
         AnalyseModul.zaehneLaecheln => texte.modulZaehneCheckliste,
         AnalyseModul.figurPassform => texte.modulFigurCheckliste,
         AnalyseModul.stilKleiderschrank => texte.modulStilCheckliste,
+        AnalyseModul.persoenlicheZiele => texte.modulZieleCheckliste,
       };
 }

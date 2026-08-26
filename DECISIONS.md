@@ -960,6 +960,100 @@ brauchen seit Android 14 eine eigene Berechtigung, die Google prüft. Für eine
 Erinnerung, die „irgendwann am Abend" kommen soll, ist das der falsche
 Preis.
 
+## 39 · Persönliche Ziele sind ein eigenes Kapitel
+
+Der Freitext bei „Deine Richtung" kommt seit DECISIONS 37 in der Tagesliste
+an. Der Gerätetest hat gezeigt, dass er am falschen Ort ankommt: „Bei
+Rauchverlangen sofort ein Glas kaltes Wasser trinken" stand unter „Haare &
+Bart".
+
+Das war kein Fehler des Modells, sondern die Regel. Sie lautete: in das
+Kapitel, das inhaltlich am besten passt — und wenn es keins gibt, in die
+Basis. Für „aufhören zu rauchen" gibt es kein passendes Look-Kapitel, also
+gewinnt irgendeines. Das Ergebnis liest sich zusammengewürfelt und
+beschädigt das Kapitel, in dem es landet.
+
+**Was jetzt gilt:** Alles, was aus dem Freitext entsteht — Tagesaufgaben,
+die Zielsektion, die Einleitung —, gehört in ein eigenes Kapitel
+`persoenlicheZiele`, angezeigt als „Persönliche Ziele" bzw. „Personal
+goals". Kein anderes Kapitel nimmt Freitext-Inhalte auf, die Basis
+ausdrücklich auch nicht. Die Look-Kapitel bleiben bei ihrem Thema.
+
+**Warum ein Modul und keine neue Struktur:** Ein Kapitel ist im Client
+bereits alles, was gebraucht wird — Überschrift im Report, eigene Karte in
+der Tagesliste, eigene Habits, die der Check-in anpassen kann. Ein zweiter
+Weg daneben hätte jede dieser Stellen doppelt gebraucht. `AnalyseModul`
+bekommt deshalb einen Wert mehr.
+
+**Warum es trotzdem kein wählbares Modul ist:** Es hängt am Freitext, nicht
+an einem Haken. `AnalyseModul.bestellbar` ist die Liste ohne es, und alles,
+was mit *Auswahl* zu tun hat, arbeitet auf dieser Liste: die Modul-Karten,
+„Analyse erweitern", die gespeicherte Auswahl, die Nutzlast an den Server,
+der Foto-Flow, das Abzeichen „alle Module". Serverseitig steht dieselbe
+Grenze noch einmal in `moduleFuer()` — ein manipulierter Client soll das
+Kapitel nicht bestellen können, und ein Report ohne Freitext soll es nicht
+enthalten. Die Nachbereitung wirft es heraus, wenn es trotzdem kommt.
+
+**Warum die Zahl 4 bis 7 dort nicht gilt:** Ein Wunsch ergibt eine bis drei
+Aufgaben. Wer sieben verlangt, bekommt vier erfundene.
+
+**Preis:** Ein Enum-Wert mehr, den jeder erschöpfende `switch` über
+`AnalyseModul` mitnehmen muss — vier Stellen, alle mit Übersetzung.
+Bestehende Reports sind unberührt: Sie haben kein solches Kapitel, und ohne
+Freitext entsteht auch keins.
+
+## 40 · Der Report soll klingen wie ein Stylist, nicht wie eine Suchmaschine
+
+Über mehrere Analysen hinweg kamen Empfehlungen zurück, die austauschbar
+waren: Gesicht waschen, eincremen, Wasser trinken. Dazu Tagesaufgaben, deren
+Zeitpunkt keinen Sinn ergab — den Bart abends in Form bringen, kurz bevor
+man sich hinlegt und die Form im Kissen verschwindet.
+
+Das Modell hat die Fotos gesehen. Es musste nur dazu gebracht werden, sie zu
+benutzen. Der Prompt verlangt deshalb jetzt drei Dinge, jedes prüfbar an
+einer einzelnen Zeile des Reports:
+
+- **Beobachtung.** Jede Empfehlung knüpft an ein Merkmal an, das auf den
+  Fotos zu sehen ist, und benennt es. Was ohne die Fotos genauso dastünde,
+  ist eine Floskel und gehört gestrichen.
+- **Zeitpunkt.** Jede Tagesaufgabe hat eine Tageszeit, die zu ihrem Zweck
+  passt. Der Bart am Abend steht als Musterfall im Prompt — abstrakte Regeln
+  („sinnvoller Zeitpunkt") blieben folgenlos, das Beispiel nicht.
+- **Tiefe.** Basics dürfen vorkommen, aber nie allein: pro Kapitel
+  mindestens eine Empfehlung mit Technik, Reihenfolge, typischem Fehler oder
+  einem Kniff, den ein Laie nicht kennt.
+
+**Warum die Beispiele beschrieben und nicht zitiert sind:** DECISIONS 36 —
+was der Prompt wörtlich nennt, schreibt das Modell wörtlich ab. Ein deutsches
+Musterhabit stünde sonst in einem englischen Report. Der Prompt beschreibt
+das schlechte Beispiel deshalb, statt es als fertigen Satz anzubieten.
+
+**Warum flache Aufgaben gezählt und nicht entfernt werden:** Die
+Nachbereitung erkennt Aufgaben, die aus nichts als einem Gemeinplatz
+bestehen („Gesicht waschen"), und schreibt sie ins Protokoll. Entfernen hieße
+ersatzlos entfernen — eine Checkliste mit zwei Punkten ist schlechter als
+eine mit einem flachen darin. Die Zahl im Log sagt uns, ob der Prompt wirkt;
+sie ist ein Zählwerk, keine Qualitätsmessung, denn sie findet nur, was
+jemand vorhergesehen hat.
+
+**Warum das Modell dasselbe bleibt:** `gemini-3.5-flash-lite` kostet 0,30 $
+je Million Eingabe-Token und 2,50 $ je Million Ausgabe-Token. Eine Analyse
+mit elf Fotos liegt grob bei 14 000 Eingabe- und 5 000 Ausgabe-Token, also
+rund **1,7 Cent**. `gemini-3.7-flash` läge bei 0,75 $ / 3,75 $ und damit bei
+rund **2,9 Cent** je Analyse — ab dem 1. Januar 2027 bei 1,50 $ / 7,50 $ und
+damit rund **6 Cent**. `gemini-3.5-flash` läge sofort bei rund 6,6 Cent.
+Das ist eine Verdopplung bis Vervierfachung der Modellkosten für eine
+Verbesserung, die der Prompt vielleicht schon allein bringt. Erst messen,
+dann zahlen.
+
+**Warum an der Antwortlänge nichts zu holen ist:** Die `generationConfig`
+setzt kein `maxOutputTokens`. Es gibt also gar keine Obergrenze, die zu
+lockern wäre — die Länge des Reports hängt allein am Prompt.
+
+**Preis:** Der System-Prompt wird um gut 20 Zeilen länger und kostet bei
+jedem Aufruf entsprechend mehr Eingabe-Token. Bei 0,30 $ je Million liegt
+das im Bereich von Bruchteilen eines Cents.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

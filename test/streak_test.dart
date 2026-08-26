@@ -95,17 +95,18 @@ void main() {
         analyse: _analyse({AnalyseModul.basis, AnalyseModul.hautFarbtyp}),
       );
       expect(_stand(teilweise, Abzeichen.alleModule).erreicht, isFalse);
-      // Zwei von sechs Modulen sind drin – vier fehlen.
+      // Zwei von sechs bestellbaren Modulen sind drin – vier fehlen. Das
+      // Zielkapitel zaehlt nicht mit: Es laesst sich nicht bestellen.
       expect(
         _stand(teilweise, Abzeichen.alleModule).fehlend,
-        AnalyseModul.values.length - 2,
+        AnalyseModul.bestellbar.length - 2,
       );
       expect(texte.abzeichenNochModule(3), 'noch 3 Module');
       expect(texte.abzeichenNochModule(1), 'noch 1 Modul');
 
       final vollstaendig = abzeichenStaende(
         streak: StreakStand.leer,
-        analyse: _analyse(AnalyseModul.values.toSet()),
+        analyse: _analyse(AnalyseModul.bestellbar.toSet()),
       );
       expect(_stand(vollstaendig, Abzeichen.alleModule).erreicht, isTrue);
     });
@@ -113,7 +114,7 @@ void main() {
     test('erreichte Abzeichen haben nichts mehr offen', () {
       final staende = abzeichenStaende(
         streak: _streak(90),
-        analyse: _analyse(AnalyseModul.values.toSet()),
+        analyse: _analyse(AnalyseModul.bestellbar.toSet()),
       );
 
       expect(staende.every((s) => s.erreicht), isTrue);

@@ -821,6 +821,19 @@ class LDe extends L {
   String get modulStilCheckliste => 'Stil';
 
   @override
+  String get modulZieleTitel => 'Persönliche Ziele';
+
+  @override
+  String get modulZieleText =>
+      'Was du dir bei „Deine Richtung“ in eigenen Worten vorgenommen hast.';
+
+  @override
+  String get modulZieleCheckliste => 'Deine Ziele';
+
+  @override
+  String get modulBenoetigtZiele => 'Deine Angaben bei „Deine Richtung“';
+
+  @override
   String get stilzielKlassisch => 'Klassisch';
 
   @override

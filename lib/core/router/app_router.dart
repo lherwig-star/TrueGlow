@@ -269,7 +269,7 @@ bool _imAnalyseFlow(String ort) =>
 AnalyseModul? _modul(Map<String, String> parameter) {
   final name = parameter['modul'];
   if (name == null) return null;
-  return AnalyseModul.values.where((m) => m.name == name).firstOrNull;
+  return AnalyseModul.bestellbar.where((m) => m.name == name).firstOrNull;
 }
 
 /// Liest die optionale Modul-Liste aus der Route (Neuberechnung).

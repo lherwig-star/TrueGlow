@@ -42,7 +42,7 @@ class AnalyseAnfrage {
       // Onboarding – die Angabe selbst („divers", „keine Angabe") bleibt auf
       // dem Geraet, der Server sieht nur die Entscheidung daraus.
       'ausrichtung': onboarding.geschlecht.ausrichtung.name,
-      'module': AnalyseModul.values
+      'module': AnalyseModul.bestellbar
           .where(module.contains)
           .map((m) => m.name)
           .toList(),

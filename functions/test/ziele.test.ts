@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { systemPrompt, type AnalysePromptDaten } from '../src/analyse_prompt';
-import { SEKTIONEN } from '../src/labels';
+import { SEKTIONEN, ZIELKAPITEL } from '../src/labels';
 import type { Ausrichtung } from '../src/ausrichtung';
 import type { Sprache } from '../src/sprache';
 
@@ -12,6 +12,11 @@ import type { Sprache } from '../src/sprache';
  * Begruendung in DECISIONS 37: Gearbeitet wird mit der Checkliste. Ein
  * Wunsch, der es nicht bis dorthin schafft, ist fuer den Nutzer nicht
  * passiert.
+ *
+ * Seit DECISIONS 39 bekommt der Freitext dafuer ein eigenes Kapitel. Am
+ * Geraet war zu sehen, warum: "Bei Rauchverlangen ein Glas Wasser trinken"
+ * stand unter "Haare & Bart", weil das Modell dort das beste passende
+ * Kapitel sah. Es gab keins.
  */
 
 function daten(options: {
@@ -58,15 +63,6 @@ describe('Freitext steuert die Tagesaufgaben', () => {
     expect(prompt).toContain('heute abhakbar');
   });
 
-  it('nennt "basis" als Auffangkapitel', () => {
-    // Ein Wunsch wie "gepflegtere Haende" passt in kein Kapitel. Ohne
-    // Auffangort faellt er unter den Tisch.
-    const prompt = systemPrompt(daten({ freitext: 'gepflegtere Hände' }));
-
-    expect(prompt).toContain('"basis"');
-    expect(prompt).toContain('gibt es\n  keins');
-  });
-
   it('verlangt Ausloeser-Strategien bei Gewohnheiten', () => {
     const prompt = systemPrompt(daten({ freitext: 'weniger rauchen' }));
 
@@ -83,12 +79,66 @@ describe('Freitext steuert die Tagesaufgaben', () => {
   });
 });
 
+describe('Der Freitext bekommt ein eigenes Kapitel', () => {
+  it('ohne Freitext gibt es das Kapitel nicht', () => {
+    const prompt = systemPrompt(daten({}));
+
+    expect(prompt).not.toContain(ZIELKAPITEL);
+  });
+
+  it('Chips allein erzeugen es auch nicht', () => {
+    const prompt = systemPrompt(daten({ ziele: ['markanter', 'gepflegter'] }));
+
+    expect(prompt).not.toContain(ZIELKAPITEL);
+  });
+
+  it('mit Freitext wird es als Kapitel angefordert', () => {
+    const prompt = systemPrompt(daten({ freitext: 'aufhören zu rauchen' }));
+
+    expect(prompt).toContain(`- "${ZIELKAPITEL}" – Persönliche Ziele`);
+  });
+
+  it('steht hinter den Look-Kapiteln', () => {
+    const prompt = systemPrompt(daten({ freitext: 'aufhören zu rauchen' }));
+
+    expect(prompt.indexOf(`- "${ZIELKAPITEL}" – Persönliche Ziele`))
+      .toBeGreaterThan(prompt.indexOf('- "basis" – Gesicht'));
+  });
+
+  it('verbietet Freitext-Aufgaben in jedem anderen Kapitel', () => {
+    // Der eigentliche Fund am Geraet: Die Aufgaben landeten unter
+    // "Haare & Bart". Auch die Basis ist kein Auffangort mehr.
+    const prompt = systemPrompt(daten({ freitext: 'gepflegtere Hände' }));
+
+    expect(prompt).toContain('AUSSCHLIESSLICH');
+    expect(prompt).toContain('auch "basis" nicht');
+  });
+
+  it('nimmt das Zielkapitel von der Regel "4 bis 7 Aufgaben" aus', () => {
+    // Ein einziger Wunsch ergibt eine bis drei Aufgaben. Sieben waeren
+    // erfunden.
+    const prompt = systemPrompt(daten({ freitext: 'mehr Wasser trinken' }));
+
+    expect(prompt).toContain('Einzige Ausnahme von der Zahl 4 bis 7');
+  });
+
+  it('nennt einen Ort fuer Wuensche ohne eigenes Kapitel', () => {
+    // "Gepflegtere Haende" passt in kein Look-Kapitel. Ohne einen Ort faellt
+    // der Wunsch unter den Tisch – unsichtbar, weil niemand vermisst, was er
+    // nicht sieht.
+    const prompt = systemPrompt(daten({ freitext: 'gepflegtere Hände' }));
+
+    expect(prompt).toContain('gepflegtere Hände');
+    expect(prompt).toContain('eine eigene Sektion');
+  });
+});
+
 describe('Die Zielsektion folgt der Zielsprache', () => {
   it('heisst auf Deutsch "Dein Ziel" und auf Englisch "Your goal"', () => {
     expect(systemPrompt(daten({ sprache: 'de', freitext: 'mehr Wasser' })))
-      .toContain('GENAU "Dein Ziel" lautet');
+      .toContain('GENAU "Dein Ziel"');
     expect(systemPrompt(daten({ sprache: 'en', freitext: 'drink more water' })))
-      .toContain('GENAU "Your goal" lautet');
+      .toContain('GENAU "Your goal"');
   });
 
   it('im englischen Prompt steht der deutsche Name nirgends', () => {
@@ -103,7 +153,7 @@ describe('Die Zielsektion folgt der Zielsprache', () => {
         daten({ sprache: 'en', ausrichtung, freitext: 'quit smoking' }),
       );
 
-      expect(prompt, ausrichtung).toContain('GENAU "Your goal" lautet');
+      expect(prompt, ausrichtung).toContain('GENAU "Your goal"');
       expect(prompt, ausrichtung).not.toContain(SEKTIONEN.ziel.de);
     }
   });

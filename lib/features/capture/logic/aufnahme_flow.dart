@@ -77,6 +77,9 @@ List<FlowSchritt> baueAufnahmeFlow(
       case AnalyseModul.hautFarbtyp:
       case AnalyseModul.makeupAusstrahlung:
       case AnalyseModul.zaehneLaecheln:
+      // Das Zielkapitel kommt nie in `gewaehlt` vor – es wird nicht
+      // ausgewaehlt. Der Zweig steht der Vollstaendigkeit halber hier.
+      case AnalyseModul.persoenlicheZiele:
         break;
     }
   }

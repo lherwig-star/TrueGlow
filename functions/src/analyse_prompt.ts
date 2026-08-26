@@ -13,6 +13,7 @@ import {
   RICHTUNGSZIEL,
   STILZIEL,
   ZEIT,
+  ZIELKAPITEL,
   label,
   labels,
   type Modul,
@@ -79,7 +80,15 @@ export const JSON_NACHFASSEN =
 
 export function systemPrompt(daten: AnalysePromptDaten): string {
   // Reihenfolge der Deklaration, damit Prompt und Report gleich sortiert sind.
-  const gewaehlt = MODULE.filter((m) => daten.module.includes(m));
+  const bestellt = MODULE.filter(
+    (m) => m !== ZIELKAPITEL && daten.module.includes(m),
+  );
+  // Das Zielkapitel bestellt niemand – es entsteht, sobald im Freitextfeld
+  // etwas steht, und faellt sonst weg. Es steht am Ende, weil die
+  // Look-Kapitel den Report tragen.
+  const gewaehlt = hatFreitext(daten.richtung)
+    ? [...bestellt, ZIELKAPITEL]
+    : bestellt;
   const sprache = daten.sprache;
   const ausrichtung = daten.ausrichtung;
 
@@ -107,6 +116,7 @@ Verbindliche Regeln:
 - ${AUSGABESPRACHE[sprache]}
 - Jede Empfehlung ist ein konkreter Schritt, keine Allgemeinplatitüde.
 ${zielRegeln(daten.richtung, sprache)}
+${QUALITAET}
 Antworte AUSSCHLIESSLICH mit einem JSON-Objekt nach diesem Schema. Kein
 Fließtext davor oder danach, keine Markdown-Codefences:
 
@@ -157,7 +167,7 @@ Vorgaben zum Inhalt:
   inhaltlich AUSSCHLIESSLICH zu diesem Kapitel. Eine Haltungsübung gehört zu
   "figurPassform", Zahnseide zu "zaehneLaecheln", Sonnenschutz zu
   "hautFarbtyp" – niemals ins falsche Kapitel und niemals in ein Kapitel, das
-  hier nicht angefordert wurde.
+  hier nicht angefordert wurde.${habitAusnahme(daten.richtung)}
 - Formuliere die Habits über alle Kapitel hinweg unterschiedlich, damit sich
   kein Eintrag doppelt.
 - "plan" gilt für alle Kapitel zusammen und enthält KEINE Tagesaufgaben.
@@ -196,6 +206,71 @@ export function nutzerText(
 }
 
 /**
+ * Woran ein guter Report sich messen lassen muss.
+ *
+ * Der Anlass steht in DECISIONS 40: Ueber mehrere Analysen hinweg kamen
+ * Empfehlungen zurueck, die auch ohne die Fotos richtig gewesen waeren –
+ * Gesicht waschen, eincremen, Wasser trinken – und Tagesaufgaben, deren
+ * Zeitpunkt keinen Sinn ergab. Das Modell hat die Fotos gesehen; es muss nur
+ * dazu gebracht werden, sie auch zu benutzen.
+ *
+ * Drei Forderungen, jede pruefbar an einer einzelnen Zeile des Reports:
+ * Beobachtung, Zeitpunkt, Tiefe.
+ *
+ * Die Beispiele sind bewusst **beschrieben** und nicht als fertiger Satz
+ * zitiert. Was der Prompt woertlich nennt, schreibt das Modell woertlich ab
+ * (DECISIONS 36) – ein deutsches Musterhabit stuende sonst in einem
+ * englischen Report.
+ */
+const QUALITAET = `Qualität der Empfehlungen – daran wird dieser Report gemessen:
+- BEOBACHTUNG: Jede Empfehlung knüpft an ein Merkmal an, das du auf den Fotos
+  wirklich gesehen hast, und benennt es. Haarstruktur und Wuchsrichtung,
+  Bartdichte und die Stellen, an denen sie fehlt, Hautbild, Gesichtsform,
+  Proportionen. Was ohne die Fotos genauso dastünde, ist keine Empfehlung,
+  sondern eine Floskel – streich es und schreib etwas, das nur zu dieser
+  Person passt.
+- ZEITPUNKT: Jede Tagesaufgabe nennt oder impliziert eine Tageszeit, die zu
+  ihrem Zweck passt, und der Zweck muss erkennbar sein. Prüfe jede Aufgabe
+  einzeln: Was bringt sie zu genau dieser Tageszeit? Eine Aufgabe, die den
+  Bart am Abend in Form bringt, ist der Musterfall einer sinnlosen Aufgabe –
+  danach wird geschlafen, am Morgen ist die Form dahin. Dieselbe Handlung
+  gehört an den Morgen. Was über Nacht wirken soll (Pflege, Einwirkzeit),
+  gehört dagegen an den Abend.
+- TIEFE: Basics dürfen vorkommen – Gesicht waschen, eincremen, Wasser
+  trinken –, aber niemals allein. In JEDEM Kapitel steht mindestens eine
+  Empfehlung, die über die erste Seite einer Suchmaschine hinausgeht: eine
+  Technik (wie genau, in welcher Richtung, mit welchem Druck), eine
+  Reihenfolge (was vor was und warum), ein typischer Fehler samt Erklärung,
+  woran man ihn merkt, oder ein Kniff, den ein guter Friseur, Barbier oder
+  Stylist kennt und ein Laie nicht. Nenn ihn beim Namen und erklär, warum er
+  wirkt.
+- Schreib wie jemand, der die Fotos vor sich hat und die Person kennt – nicht
+  wie ein Ratgebertext, der für alle gilt.
+- Keine Empfehlung und keine Tagesaufgabe wiederholt eine andere, auch nicht
+  in anderer Formulierung oder in einem anderen Kapitel.`;
+
+/** Ob im Freitextfeld ueberhaupt etwas steht. */
+function hatFreitext(richtung: Richtungsangaben): boolean {
+  return richtung.freitext.trim().length > 0;
+}
+
+/**
+ * Die Ausnahme von "4 bis 7 Aufgaben pro Kapitel".
+ *
+ * Steht nur da, wenn es das Zielkapitel ueberhaupt gibt. Ein Prompt ohne
+ * Freitext soll Wort fuer Wort derselbe bleiben wie vorher – sonst laesst
+ * sich nie sagen, ob eine Aenderung an der Antwort vom Freitext kommt.
+ */
+function habitAusnahme(richtung: Richtungsangaben): string {
+  if (!hatFreitext(richtung)) return '';
+  return (
+    ` Einzige Ausnahme von der Zahl 4 bis 7 ist\n  "${ZIELKAPITEL}": Dort` +
+    ' stehen so viele Aufgaben, wie die Wünsche im\n  Freitext hergeben, und' +
+    ' keine einzige mehr.'
+  );
+}
+
+/**
  * Der Abschnitt "Persoenliche Ziele des Nutzers". Leer, wenn der Nutzer den
  * Schritt uebersprungen hat – dann analysiert das Modell neutral.
  *
@@ -226,7 +301,7 @@ function ziele(richtung: Richtungsangaben, sprache: Sprache): string {
 function zielRegeln(richtung: Richtungsangaben, sprache: Sprache): string {
   const hatZiele =
     labels(RICHTUNGSZIEL, richtung.ziele, sprache).length > 0 ||
-    richtung.freitext.trim().length > 0;
+    hatFreitext(richtung);
   if (!hatZiele) return '';
 
   return `- Richte ALLE Empfehlungen in sämtlichen Kapiteln an den persönlichen Zielen
@@ -239,7 +314,7 @@ function zielRegeln(richtung: Richtungsangaben, sprache: Sprache): string {
   Abnehmen, Verzicht auf Essen, Selbstbehandlung von Hautproblemen), baue
   darauf keinen Plan. Nimm das Anliegen ernst, benenne freundlich das Risiko
   und schlage einen gesunden Weg zum gleichen Wunschbild vor.
-${freitextRegeln(richtung, sprache)}`;
+${freitextRegeln(richtung)}`;
 }
 
 /**
@@ -252,33 +327,22 @@ ${freitextRegeln(richtung, sprache)}`;
  * Zwei Sorten stehen in diesem Feld, und beide sollen dort landen:
  * Aussehenswünsche ("gepflegtere Hände") und Gewohnheiten, die jemand sich
  * an- oder abgewöhnen will ("aufhören zu rauchen", "mehr Wasser trinken").
- * Die zweite Sorte bekommt zusätzlich einen eigenen Abschnitt, weil eine
- * abhakbare Aufgabe allein noch keine Strategie ist.
+ *
+ * Beide gehören ausschließlich ins Zielkapitel. Vorher galt "das inhaltlich
+ * am besten passende Kapitel, sonst die Basis" – und das Modell fand für
+ * "aufhören zu rauchen" eben "Haare & Bart". Ein Look-Kapitel, in dem eine
+ * Rauchfrei-Aufgabe steht, wirkt zusammengewürfelt. Siehe DECISIONS 39.
  */
-function freitextRegeln(
-  richtung: Richtungsangaben,
-  sprache: Sprache,
-): string {
-  if (richtung.freitext.trim().length === 0) return '';
+function freitextRegeln(richtung: Richtungsangaben): string {
+  if (!hatFreitext(richtung)) return '';
 
-  return `- Der Freitext ist der wichtigste Teil der Ziele. Leite aus JEDEM Wunsch
-  darin mindestens eine, höchstens drei tägliche Aufgaben ab und trage sie in
-  die "habits" des Kapitels ein, das inhaltlich am besten passt – gibt es
-  keins, gehoeren sie in "basis". Sie zählen in die 4 bis 7 Aufgaben dieses
-  Kapitels hinein und ersetzen dort die schwächsten.
-- Jede solche Aufgabe ist heute abhakbar, dauert wenige Minuten und benennt
-  eine konkrete Handlung – nicht "weniger rauchen", sondern was genau zu tun
-  ist, wenn das Verlangen kommt.
-- Nennt der Freitext eine Gewohnheit, die die Person sich abgewöhnen oder
-  angewöhnen möchte, dann lege im passendsten Kapitel zusätzlich eine Sektion
-  an, deren "titel" GENAU "${sektion('ziel', sprache)}" lautet. Sie kommt zu
-  den 2 bis 4 Sektionen dieses Kapitels hinzu. Darin:
-  - "einschaetzung": Wofür der Wunsch im Alltag steht und was ihn schwer
-    macht. Beschreibend, nicht belehrend.
-  - "empfehlungen": Auslöser-Strategien. Benenne die typischen Situationen
-    (Feierabend, Kaffee, Stress, Warten) und gib für jede eine konkrete
-    Alternative oder einen Ersatzgriff – etwa ein Ritual, das dieselbe Lücke
-    füllt, oder etwas, das die Hand beschäftigt.
+  return `- Der Freitext ist der wichtigste Teil der Ziele. Alles, was daraus
+  entsteht, gehört in das Kapitel "${ZIELKAPITEL}" – und AUSSCHLIESSLICH
+  dorthin. Kein anderes Kapitel enthält eine Aufgabe oder eine Sektion aus
+  dem Freitext, auch "basis" nicht.
+- Die Look-Kapitel behandeln weiterhin nur ihr eigenes Thema. Dass du ihre
+  Empfehlungen an den persönlichen Zielen ausrichtest, bleibt richtig; eine
+  Tagesaufgabe aus dem Freitext gehört trotzdem nicht hinein.
 - Der Ton bleibt unterstützend. KEINE Heilaussagen, keine Versprechen über
   gesundheitliche Wirkungen, keine Zahlen zu Krankheitsrisiken, kein
   erhobener Zeigefinger und kein Wort darüber, was die Person bisher falsch
@@ -384,6 +448,36 @@ function kapitelVorgabe(
         'Look-Vorschläge unter Berücksichtigung von Budget, Dresscode ' +
         'und Pflegeaufwand.'
       );
+    case 'persoenlicheZiele':
+      return [
+        `- "${ZIELKAPITEL}" – Persönliche Ziele. Dieses Kapitel gehört allein ` +
+          'dem, was die Person oben in eigenen Worten geschrieben hat. Es ' +
+          'kommt nichts aus den Fotos hinein, und nichts aus diesem Kapitel ' +
+          'taucht in einem anderen wieder auf.',
+        '  Die "einleitung" fasst in 2-3 Sätzen zusammen, was sich die ' +
+          'Person vorgenommen hat – in ihren Worten, ohne Bewertung und ohne ' +
+          'Vorrede.',
+        '  "habits": ein bis drei Aufgaben je Wunsch aus dem Freitext, sonst ' +
+          'nichts. Jede ist heute abhakbar, dauert wenige Minuten und ' +
+          'benennt eine konkrete Handlung – nicht "weniger rauchen", sondern ' +
+          'was genau zu tun ist, wenn das Verlangen kommt.',
+        '  "sektionen": eine je Wunsch, höchstens drei. Geht es um eine ' +
+          'Gewohnheit, die die Person sich ab- oder angewöhnen möchte, ' +
+          `lautet der "titel" dieser Sektion GENAU "${s('ziel')}". Ihre ` +
+          '"einschaetzung" beschreibt, wofür der Wunsch im Alltag steht und ' +
+          'was ihn schwer macht – beschreibend, nicht belehrend. Ihre ' +
+          '"empfehlungen" sind Auslöser-Strategien: Benenne die typischen ' +
+          'Situationen (Feierabend, Kaffee, Stress, Warten) und gib für ' +
+          'jede eine konkrete Alternative oder einen Ersatzgriff – ein ' +
+          'Ritual, das dieselbe Lücke füllt, oder etwas, das die Hand ' +
+          'beschäftigt.',
+        '  Geht es um einen Wunsch ans Aussehen, für den es kein eigenes ' +
+          'Kapitel gibt (gepflegtere Hände, gesündere Nägel, aufrechtere ' +
+          'Haltung), bekommt er eine eigene Sektion mit einem kurzen, ' +
+          'sachlichen "titel" in der Zielsprache.',
+        '  "produkte" nur, wenn ein Produkt für diesen Wunsch wirklich ' +
+          'etwas ändert; sonst eine leere Liste.',
+      ].join('\n');
   }
 }
 

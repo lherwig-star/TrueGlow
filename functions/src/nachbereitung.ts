@@ -1,5 +1,5 @@
 import { type Ausrichtung } from './ausrichtung';
-import { type Modul } from './labels';
+import { ZIELKAPITEL, type Modul } from './labels';
 import { SPRACHEN, type Sprache } from './sprache';
 
 /**
@@ -15,13 +15,52 @@ import { SPRACHEN, type Sprache } from './sprache';
  *  1. **Ausgesiebt** wird, was gegen die Auswahl verstoesst – fremde Module,
  *     und im weiblichen Modus alles, was von Bart oder Rasur handelt.
  *  2. **Gemeldet** wird, wenn der Report offenbar in der falschen Sprache
- *     zurueckkommt. Aussieben laesst sich das nicht; ein Protokolleintrag
- *     sorgt wenigstens dafuer, dass es auffaellt, statt still beim Nutzer zu
- *     landen.
+ *     zurueckkommt, wenn das Zielkapitel fehlt, obwohl der Nutzer etwas
+ *     geschrieben hat, und wenn Tagesaufgaben zurueckkommen, die auch ohne
+ *     die Fotos dagestanden haetten. Aussieben laesst sich nichts davon; ein
+ *     Protokolleintrag sorgt wenigstens dafuer, dass es auffaellt, statt
+ *     still beim Nutzer zu landen.
  */
 
 /** Woran ein Bart-Abschnitt zu erkennen ist. */
 const BART = /\b(bart|bärte|barts|beard|bartpflege|rasur|rasier|shav)/i;
+
+/**
+ * Tagesaufgaben, die auch ohne die Fotos dagestanden haetten.
+ *
+ * Bewusst nur **ganze** Aufgaben: "Gesicht waschen" ist ein Gemeinplatz,
+ * "Morgens vor dem Rasieren mit lauwarmem Wasser waschen" nicht. Deshalb
+ * steht in jedem Ausdruck ein Anker vorn und hinten – ein Treffer heisst,
+ * dass die Aufgabe aus nichts als dem Gemeinplatz besteht.
+ *
+ * Die Liste findet nur, was jemand vorhergesehen hat, und ist damit keine
+ * Qualitaetsmessung. Sie ist ein Zaehlwerk: Wir wollen sehen, wie oft so
+ * etwas noch durchkommt, seit der Prompt Tiefe verlangt (DECISIONS 40).
+ */
+const FLOSKELN: RegExp[] = [
+  /^(das )?gesicht (waschen|reinigen)$/,
+  /^(gesicht |haut )?eincremen$/,
+  /^(mehr |genug |ausreichend )?wasser trinken$/,
+  /^(genug|ausreichend|mehr) schlafen$/,
+  /^zähne putzen$/,
+  /^sonnencreme (auftragen|benutzen)$/,
+  /^wash (your )?face$/,
+  /^(apply )?moisturi[sz]er?$/,
+  /^drink (more |enough )?water$/,
+  /^get (more |enough )?sleep$/,
+  /^brush (your )?teeth$/,
+  /^(apply |wear )?sunscreen$/,
+];
+
+/** Ob eine Aufgabe aus nichts als einem Gemeinplatz besteht. */
+export function istFloskel(habit: string): boolean {
+  const rein = habit
+    .toLowerCase()
+    .replace(/[.!]+$/, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return FLOSKELN.some((muster) => muster.test(rein));
+}
 
 /** Ergebnis der Nachbereitung, fuer Protokoll und Tests. */
 export interface Nachbereitet {
@@ -32,15 +71,29 @@ export interface Nachbereitet {
   entfernteSektionen: string[];
   /** Entfernte Tagesaufgaben. */
   entfernteHabits: number;
+  /** Tagesaufgaben, die nichts als ein Gemeinplatz sind. Nur gezaehlt. */
+  floskeln: string[];
+  /** Das Zielkapitel fehlt, obwohl der Nutzer etwas geschrieben hat. */
+  zielkapitelFehlt: boolean;
   /** Die geschaetzte Sprache, wenn sie nicht der Zielsprache entspricht. */
   falscheSprache?: Sprache;
 }
 
 export function nachbereiten(
   roh: Record<string, unknown>,
-  vorgabe: { sprache: Sprache; ausrichtung: Ausrichtung; module: Modul[] },
+  vorgabe: {
+    sprache: Sprache;
+    ausrichtung: Ausrichtung;
+    module: Modul[];
+    richtung?: { freitext: string };
+  },
 ): Nachbereitet {
+  // Das Zielkapitel steht in keiner Modulauswahl – es haengt am Freitext.
+  // Ohne Freitext ist es ein Kapitel, das niemand angefordert hat, und
+  // faellt unten mit den fremden heraus.
+  const mitZielkapitel = (vorgabe.richtung?.freitext ?? '').trim().length > 0;
   const erlaubt = new Set<string>(vorgabe.module);
+  if (mitZielkapitel) erlaubt.add(ZIELKAPITEL);
   const ohneBart = vorgabe.ausrichtung === 'weiblich';
 
   const fremdeKapitel: string[] = [];
@@ -101,6 +154,10 @@ export function nachbereiten(
     fremdeKapitel,
     entfernteSektionen,
     entfernteHabits,
+    floskeln: alleHabits(kapitel).filter(istFloskel),
+    zielkapitelFehlt:
+      mitZielkapitel &&
+      !kapitel.some((k) => objekt(k).modul === ZIELKAPITEL),
     falscheSprache:
       geschaetzt !== undefined && geschaetzt !== vorgabe.sprache
         ? geschaetzt
@@ -125,6 +182,22 @@ export function melde(befund: Nachbereitet, vorgabe: { sprache: Sprache }): void
   if (befund.entfernteHabits > 0) {
     console.warn(
       `Nachbereitung: ${befund.entfernteHabits} Bart-Aufgaben entfernt`,
+    );
+  }
+  if (befund.zielkapitelFehlt) {
+    console.warn(
+      'Nachbereitung: Der Nutzer hat einen Freitext geschrieben, das ' +
+        `Kapitel "${ZIELKAPITEL}" fehlt aber im Report. Seine Wuensche ` +
+        'stehen dann nirgends in der Tagesliste.',
+    );
+  }
+  if (befund.floskeln.length > 0) {
+    // Bewusst nur gezaehlt, nicht entfernt: Eine Aufgabe faellt hier
+    // ersatzlos weg, und eine Checkliste mit zwei Punkten ist schlechter als
+    // eine mit einem flachen darin. Die Zahl sagt uns, ob der Prompt wirkt.
+    console.warn(
+      `Nachbereitung: ${befund.floskeln.length} Tagesaufgaben ohne Bezug ` +
+        `zu den Fotos (${befund.floskeln.join(', ')})`,
     );
   }
   if (befund.falscheSprache !== undefined) {
@@ -206,6 +279,13 @@ function planOhneBart(roh: unknown): unknown {
       : wert;
   }
   return gefiltert;
+}
+
+/** Alle Tagesaufgaben ueber alle Kapitel – Grundlage der Floskel-Zaehlung. */
+function alleHabits(kapitel: unknown[]): string[] {
+  return kapitel.flatMap((k) =>
+    liste(objekt(k).habits).filter((h): h is string => typeof h === 'string'),
+  );
 }
 
 function liste(roh: unknown): unknown[] {

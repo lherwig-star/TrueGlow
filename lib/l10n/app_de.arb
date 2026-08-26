@@ -304,6 +304,13 @@
   "modulStilTitel": "Stil & Kleiderschrank",
   "modulStilText": "Aktuelle Outfits, Stilziel, konkrete Look-Vorschläge.",
   "modulStilCheckliste": "Stil",
+  "modulZieleTitel": "Persönliche Ziele",
+  "@modulZieleTitel": {
+    "description": "Kapitel im Report und Karte in der Tagesliste, das aus dem Freitext bei „Deine Richtung“ entsteht."
+  },
+  "modulZieleText": "Was du dir bei „Deine Richtung“ in eigenen Worten vorgenommen hast.",
+  "modulZieleCheckliste": "Deine Ziele",
+  "modulBenoetigtZiele": "Deine Angaben bei „Deine Richtung“",
   "stilzielKlassisch": "Klassisch",
   "stilzielMinimalistisch": "Minimalistisch",
   "stilzielSportlich": "Sportlich",

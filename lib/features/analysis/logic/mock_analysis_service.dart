@@ -54,7 +54,7 @@ class MockAnalysisService implements AnalysisService {
   /// Absichtlich mit Codefence, weil echte Modelle die auch dann liefern, wenn
   /// man ausdruecklich darum bittet, es zu lassen.
   static String antwortFuer(Set<AnalyseModul> module) {
-    final kapitel = AnalyseModul.values
+    final kapitel = AnalyseModul.bestellbar
         .where(module.contains)
         .map((m) => _kapitel[m]!)
         .join(',\n');
@@ -64,7 +64,8 @@ class MockAnalysisService implements AnalysisService {
 
   /// Vollstaendige Beispielantwort ueber alle Module – die Grundlage der
   /// Parser-Tests.
-  static String get beispielAntwort => antwortFuer(AnalyseModul.values.toSet());
+  static String get beispielAntwort =>
+      antwortFuer(AnalyseModul.bestellbar.toSet());
 
   static const Map<AnalyseModul, String> _kapitel = {
     AnalyseModul.basis: '''

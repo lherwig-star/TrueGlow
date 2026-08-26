@@ -53,9 +53,25 @@ export const MODULE = [
   'zaehneLaecheln',
   'figurPassform',
   'stilKleiderschrank',
+  'persoenlicheZiele',
 ] as const;
 
 export type Modul = (typeof MODULE)[number];
+
+/**
+ * Das Kapitel, das aus dem Freitext entsteht – und nur daraus.
+ *
+ * Es steht in [MODULE], weil es ein Kapitel wie jedes andere ist: Der Report
+ * traegt es, die Tagesliste zeigt es, der Check-in passt seine Aufgaben an.
+ * Bestellen kann es niemand – [moduleFuer] laesst es nicht durch. Ueber
+ * seine Existenz entscheidet allein, ob im Freitextfeld etwas steht.
+ *
+ * Warum es das gibt: Die Aufgaben aus dem Freitext lagen bisher im
+ * "inhaltlich am besten passenden" Kapitel. Bei „aufhoeren zu rauchen" gibt
+ * es kein passendes – sie landeten unter „Haare & Bart" und liessen das
+ * Kapitel zusammengewuerfelt aussehen. Siehe DECISIONS 39.
+ */
+export const ZIELKAPITEL: Modul = 'persoenlicheZiele';
 
 export function istModul(name: unknown): name is Modul {
   return typeof name === 'string' && (MODULE as readonly string[]).includes(name);
@@ -73,8 +89,11 @@ export function istModul(name: unknown): name is Modul {
  * Basis. Ihn haelt die Nachbereitung heraus, nicht diese Liste.
  */
 export function moduleFuer(ausrichtung: Ausrichtung): readonly Modul[] {
-  if (ausrichtung !== 'maennlich') return MODULE;
-  return MODULE.filter((m) => m !== 'makeupAusstrahlung');
+  // Das Zielkapitel ist nicht waehlbar: Es haengt am Freitext, nicht an einem
+  // Haken im Modul-Bildschirm.
+  const waehlbar = MODULE.filter((m) => m !== ZIELKAPITEL);
+  if (ausrichtung !== 'maennlich') return waehlbar;
+  return waehlbar.filter((m) => m !== 'makeupAusstrahlung');
 }
 
 /**
@@ -134,6 +153,7 @@ export const MODUL_KAPITEL: Record<Modul, Zweisprachig> = {
   zaehneLaecheln: { de: 'Zähne & Lächeln', en: 'Teeth & smile' },
   figurPassform: { de: 'Figur & Passform', en: 'Figure & fit' },
   stilKleiderschrank: { de: 'Stil & Kleiderschrank', en: 'Style & wardrobe' },
+  persoenlicheZiele: { de: 'Persönliche Ziele', en: 'Personal goals' },
 };
 
 /**

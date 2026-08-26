@@ -274,5 +274,6 @@ extension AnalyseModulAufnahmen on AnalyseModul {
         AnalyseModul.zaehneLaecheln => texte.modulBenoetigtZaehne,
         AnalyseModul.figurPassform => texte.modulBenoetigtFigur,
         AnalyseModul.stilKleiderschrank => texte.modulBenoetigtStil,
+        AnalyseModul.persoenlicheZiele => texte.modulBenoetigtZiele,
       };
 }

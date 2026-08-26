@@ -71,7 +71,7 @@ void main() {
       expect(ergebnis.istVollstaendig, isTrue);
 
       // Ein Kapitel pro Modul, in Modul-Reihenfolge.
-      expect(ergebnis.module, AnalyseModul.values.toSet());
+      expect(ergebnis.module, AnalyseModul.bestellbar.toSet());
       expect(ergebnis.kapitel.first.modul, AnalyseModul.basis);
 
       final frisur = ergebnis.kapitel.first.sektionen.first;
@@ -209,9 +209,9 @@ void main() {
         );
 
     test('jedes Kapitel bringt seine eigene Checkliste mit', () {
-      final ergebnis = fuer(AnalyseModul.values.toSet());
+      final ergebnis = fuer(AnalyseModul.bestellbar.toSet());
 
-      expect(ergebnis.checklisten.length, AnalyseModul.values.length);
+      expect(ergebnis.checklisten.length, AnalyseModul.bestellbar.length);
       for (final kapitel in ergebnis.checklisten) {
         expect(kapitel.habits.length, greaterThanOrEqualTo(4));
         expect(kapitel.habits.length, lessThanOrEqualTo(7));
@@ -251,7 +251,7 @@ void main() {
         AnalyseModul.hautFarbtyp,
         AnalyseModul.zaehneLaecheln,
       }).alleHabits.length;
-      final alle = fuer(AnalyseModul.values.toSet()).alleHabits.length;
+      final alle = fuer(AnalyseModul.bestellbar.toSet()).alleHabits.length;
 
       expect(mitZwei, greaterThan(nurBasis));
       expect(alle, greaterThan(mitZwei));

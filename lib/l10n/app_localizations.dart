@@ -1555,6 +1555,30 @@ abstract class L {
   /// **'Stil'**
   String get modulStilCheckliste;
 
+  /// Kapitel im Report und Karte in der Tagesliste, das aus dem Freitext bei „Deine Richtung“ entsteht.
+  ///
+  /// In de, this message translates to:
+  /// **'Persönliche Ziele'**
+  String get modulZieleTitel;
+
+  /// No description provided for @modulZieleText.
+  ///
+  /// In de, this message translates to:
+  /// **'Was du dir bei „Deine Richtung“ in eigenen Worten vorgenommen hast.'**
+  String get modulZieleText;
+
+  /// No description provided for @modulZieleCheckliste.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Ziele'**
+  String get modulZieleCheckliste;
+
+  /// No description provided for @modulBenoetigtZiele.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Angaben bei „Deine Richtung“'**
+  String get modulBenoetigtZiele;
+
   /// No description provided for @stilzielKlassisch.
   ///
   /// In de, this message translates to:
