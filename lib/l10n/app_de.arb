@@ -398,6 +398,10 @@
   "dokumentAgbText": "Die Regeln für die Nutzung von TrueGlow.",
   "dokumentImpressumTitel": "Impressum",
   "dokumentImpressumText": "Wer hinter der App steht und wie du uns erreichst.",
+  "abzeichenSektionTitel": "Deine Abzeichen",
+  "@abzeichenSektionTitel": {
+    "description": "Ueberschrift der Abzeichen-Reihe auf der Startseite."
+  },
   "abzeichenErsteAnalyseTitel": "Erste Analyse geschafft",
   "abzeichenErsteAnalyseText": "Du hast deine erste Analyse abgeschlossen.",
   "abzeichenDreiTitel": "Dranbleiben angefangen",

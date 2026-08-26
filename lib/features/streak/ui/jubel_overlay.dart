@@ -76,10 +76,13 @@ class _JubelDialogState extends State<_JubelDialog>
                     painter: _KonfettiPainter(
                       partikel: _partikel,
                       fortschritt: _controller.value,
+                      // Das Gold ist dabei: Gefeiert wird hier genau das,
+                      // was auf der Startseite golden leuchtet – ein frisch
+                      // freigeschaltetes Abzeichen (DECISIONS 50).
                       farben: [
+                        farben.erreicht,
                         farben.akzent,
                         farben.akzentZwei,
-                        farben.erfolg,
                         farben.textPrimaer,
                       ],
                     ),
@@ -132,11 +135,13 @@ class _Karte extends StatelessWidget {
                 width: 96,
                 height: 96,
                 decoration: BoxDecoration(
-                  color: farben.akzent.withValues(alpha: 0.16),
+                  color: farben.erreicht.withValues(alpha: 0.16),
                   shape: BoxShape.circle,
-                  border: Border.all(color: farben.akzent, width: 2),
+                  border: Border.all(color: farben.erreicht, width: 2),
                 ),
-                child: Icon(abzeichen.icon, size: 46, color: farben.akzent),
+                // Dasselbe Abzeichen, dieselbe Farbe wie danach in der Reihe
+                // auf der Startseite.
+                child: Icon(abzeichen.icon, size: 46, color: farben.erreicht),
               ),
               const SizedBox(height: AppTheme.gapM),
               Text(

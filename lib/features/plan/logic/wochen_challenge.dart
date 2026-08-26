@@ -98,6 +98,27 @@ class Wochenchallenge {
   int get ziel => vorlage.ziel;
 
   double get anteil => ziel == 0 ? 0 : (stand / ziel).clamp(0, 1).toDouble();
+
+  /// In wie viele Segmente der Balken zerfaellt.
+  ///
+  /// Ein Segment je Zieleinheit – „4 Tage" ergibt vier Punkte, und man sieht
+  /// auf einen Blick, wie viele noch fehlen. Bei „25 Aufgaben" waeren
+  /// fuenfundzwanzig Striche nebeneinander aber unlesbar; ab elf wird
+  /// deshalb gebuendelt, moeglichst auf einen Teiler, damit jedes Segment
+  /// gleich viel wert ist.
+  int get segmente => segmenteFuer(ziel);
+
+  /// Wie viele davon gefuellt sind.
+  int get gefuellteSegmente => (anteil * segmente).floor().clamp(0, segmente);
+}
+
+/// Siehe [Wochenchallenge.segmente].
+int segmenteFuer(int ziel) {
+  if (ziel <= 10) return ziel < 1 ? 1 : ziel;
+  for (final teiler in [5, 4, 6, 3]) {
+    if (ziel % teiler == 0) return teiler;
+  }
+  return 5;
 }
 
 // Anzeigetexte als Erweiterung – Begruendung in `onboarding_profile.dart`.

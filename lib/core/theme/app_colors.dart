@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 class AppColors extends ThemeExtension<AppColors> {
   const AppColors({
     required this.hintergrund,
+    required this.hintergrundTief,
     required this.flaeche,
     required this.flaecheHoch,
     required this.rand,
@@ -20,10 +21,18 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.textSekundaer,
     required this.warnung,
     required this.erfolg,
+    required this.erreicht,
   });
 
-  /// Seitenhintergrund.
+  /// Seitenhintergrund – der obere Ton des Seitenverlaufs.
   final Color hintergrund;
+
+  /// Der untere Ton desselben Verlaufs.
+  ///
+  /// Der Hintergrund ist seit DECISIONS 50 kein Flaechenton mehr, sondern
+  /// ein sehr sanfter Verlauf von oben nach unten. Er soll auffallen, ohne
+  /// aufzufallen: Man spuert Tiefe, sieht aber keinen Farbwechsel.
+  final Color hintergrundTief;
 
   /// Karten und abgesetzte Flaechen.
   final Color flaeche;
@@ -57,6 +66,18 @@ class AppColors extends ThemeExtension<AppColors> {
   /// Wechsel nicht alle Icons mitzieht.
   final Color erfolg;
 
+  /// **Erreichtes** – und ausschliesslich das.
+  ///
+  /// Ein warmes, gedaempftes Gold. Es steht an der Streak-Flamme und ihrer
+  /// Zahl, an gesetzten Haken, an gefuellten Fortschrittssegmenten, an
+  /// freigeschalteten Abzeichen und an den Joker-Schilden. Nirgends sonst.
+  ///
+  /// Das ist die ganze Idee dahinter (DECISIONS 50): Wenn Gold ueberall
+  /// auftaucht, heisst es nichts mehr. Wer es sieht, soll wissen, dass er
+  /// etwas geschafft hat, ohne den Text zu lesen. Buttons, Titel und Icons
+  /// bleiben deshalb im Sand-Ton von [akzent].
+  final Color erreicht;
+
   /// Dunkel – "Deep Teal & Sand" (Standard).
   ///
   /// Vorgegeben sind Hintergrund, Karte, Akzent, Sekundaerton und Text; die
@@ -65,6 +86,8 @@ class AppColors extends ThemeExtension<AppColors> {
   static const dunkel = AppColors(
     // Deep Teal / Petrol
     hintergrund: Color(0xFF173C3B),
+    // Fast schwarzes Blau – das untere Ende des Seitenverlaufs.
+    hintergrundTief: Color(0xFF0C1C26),
     // Muted Teal
     flaeche: Color(0xFF295654),
     // Nicht in der Vorgabe: eine Vertiefung innerhalb der Karte. Bewusst
@@ -82,11 +105,15 @@ class AppColors extends ThemeExtension<AppColors> {
     // Gedecktes Apricot – auf Petrol lesbar, ohne grell zu wirken.
     warnung: Color(0xFFEFB79E),
     erfolg: Color(0xFFC7B18C),
+    // Gedaempftes Gold. Hell genug fuer 4,7:1 auf der Karte – der kleinste
+    // Text in dieser Farbe ist die 12-Punkt-Zeile "Geschafft!".
+    erreicht: Color(0xFFE8BE6E),
   );
 
   /// Hell – "Mocha Light".
   static const hell = AppColors(
     hintergrund: Color(0xFFF7F2E9),
+    hintergrundTief: Color(0xFFEDE3D2),
     flaeche: Color(0xFFEFE7D8),
     flaecheHoch: Color(0xFFE5DAC7),
     rand: Color(0xFFDDD2BE),
@@ -97,11 +124,16 @@ class AppColors extends ThemeExtension<AppColors> {
     textSekundaer: Color(0xFF6E6353),
     warnung: Color(0xFFB85C3A),
     erfolg: Color(0xFFA8794F),
+    // Dasselbe Gold, dunkel genug fuer den hellen Grund (5,4:1) und ohne
+    // jeden Blauanteil – sonst waere es vom Mocha-Akzent kaum zu
+    // unterscheiden, und genau das darf es nicht sein.
+    erreicht: Color(0xFF7A5200),
   );
 
   @override
   AppColors copyWith({
     Color? hintergrund,
+    Color? hintergrundTief,
     Color? flaeche,
     Color? flaecheHoch,
     Color? rand,
@@ -112,9 +144,11 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? textSekundaer,
     Color? warnung,
     Color? erfolg,
+    Color? erreicht,
   }) {
     return AppColors(
       hintergrund: hintergrund ?? this.hintergrund,
+      hintergrundTief: hintergrundTief ?? this.hintergrundTief,
       flaeche: flaeche ?? this.flaeche,
       flaecheHoch: flaecheHoch ?? this.flaecheHoch,
       rand: rand ?? this.rand,
@@ -125,6 +159,7 @@ class AppColors extends ThemeExtension<AppColors> {
       textSekundaer: textSekundaer ?? this.textSekundaer,
       warnung: warnung ?? this.warnung,
       erfolg: erfolg ?? this.erfolg,
+      erreicht: erreicht ?? this.erreicht,
     );
   }
 
@@ -133,6 +168,8 @@ class AppColors extends ThemeExtension<AppColors> {
     if (other == null) return this;
     return AppColors(
       hintergrund: Color.lerp(hintergrund, other.hintergrund, t)!,
+      hintergrundTief:
+          Color.lerp(hintergrundTief, other.hintergrundTief, t)!,
       flaeche: Color.lerp(flaeche, other.flaeche, t)!,
       flaecheHoch: Color.lerp(flaecheHoch, other.flaecheHoch, t)!,
       rand: Color.lerp(rand, other.rand, t)!,
@@ -143,6 +180,7 @@ class AppColors extends ThemeExtension<AppColors> {
       textSekundaer: Color.lerp(textSekundaer, other.textSekundaer, t)!,
       warnung: Color.lerp(warnung, other.warnung, t)!,
       erfolg: Color.lerp(erfolg, other.erfolg, t)!,
+      erreicht: Color.lerp(erreicht, other.erreicht, t)!,
     );
   }
 }

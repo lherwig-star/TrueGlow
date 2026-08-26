@@ -39,7 +39,7 @@ class ChecklisteKarte extends ConsumerWidget {
       trailing: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
         decoration: BoxDecoration(
-          color: (alleErledigt ? farben.erfolg : farben.akzent)
+          color: (alleErledigt ? farben.erreicht : farben.textSekundaer)
               .withValues(alpha: 0.14),
           borderRadius: BorderRadius.circular(999),
         ),
@@ -48,7 +48,9 @@ class ChecklisteKarte extends ConsumerWidget {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w800,
-            color: alleErledigt ? farben.erfolg : farben.akzent,
+            // Gold erst, wenn die Liste steht – ein halb voller Zaehler ist
+            // kein Erreichtes (DECISIONS 50).
+            color: alleErledigt ? farben.erreicht : farben.textSekundaer,
           ),
         ),
       ),
@@ -63,6 +65,67 @@ class ChecklisteKarte extends ConsumerWidget {
                   ref.read(planFortschrittProvider.notifier).umschalten(habit),
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// Der Haken einer Zeile – gesetzt in Gold, mit kurzem Einzoomen.
+///
+/// Die Bewegung dauert 220 ms und laeuft nur beim Setzen, nicht beim
+/// Entfernen: Gefeiert wird das Abhaken, nicht das Zuruecknehmen. Bei
+/// „Bewegung reduzieren" wechselt nur die Farbe.
+class _Haken extends StatefulWidget {
+  const _Haken({required this.erledigt});
+
+  final bool erledigt;
+
+  @override
+  State<_Haken> createState() => _HakenState();
+}
+
+class _HakenState extends State<_Haken>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _puls = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 220),
+  );
+
+  @override
+  void didUpdateWidget(_Haken alt) {
+    super.didUpdateWidget(alt);
+    if (widget.erledigt && !alt.erledigt) {
+      MediaQuery.disableAnimationsOf(context)
+          ? _puls.value = 1
+          : _puls.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _puls.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final farben = context.farben;
+
+    return AnimatedBuilder(
+      animation: _puls,
+      builder: (context, kind) {
+        // Einmal auf 1,25 und zurueck – die Spitze liegt in der Mitte der
+        // Bewegung, deshalb der Abstand zum Scheitel.
+        final wert = _puls.value;
+        final skala = 1 + 0.25 * (1 - (wert * 2 - 1).abs());
+        return Transform.scale(scale: wert == 0 ? 1 : skala, child: kind);
+      },
+      child: Icon(
+        widget.erledigt
+            ? Icons.check_circle_rounded
+            : Icons.radio_button_unchecked,
+        color: widget.erledigt ? farben.erreicht : farben.textSekundaer,
+        size: 22,
       ),
     );
   }
@@ -97,13 +160,7 @@ class HabitZeile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: AppTheme.gapXs),
         child: Row(
           children: [
-            Icon(
-              erledigt
-                  ? Icons.check_circle_rounded
-                  : Icons.radio_button_unchecked,
-              color: erledigt ? farben.erfolg : farben.textSekundaer,
-              size: 22,
-            ),
+            _Haken(erledigt: erledigt),
             const SizedBox(width: AppTheme.gapS),
             Expanded(
               child: Text(

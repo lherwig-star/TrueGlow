@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trueglow/core/theme/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trueglow/features/analysis/logic/json_extractor.dart';
@@ -101,6 +102,53 @@ void main() {
     await tester.pump();
 
     expect(find.text(texte.streakTagGesichert), findsNothing);
+  });
+
+  testWidgets('das Gold kommt erst, wenn der Tag steht', (tester) async {
+    // Die ganze Idee der Akzentfarbe (DECISIONS 50): Gold heisst
+    // „geschafft". Ein offener Tag muss deshalb grau bleiben, sonst sagt
+    // die Farbe nichts mehr.
+    final container = await karteZeigen(tester);
+    final farben = AppColors.dunkel;
+
+    Color flammenfarbe() => tester
+        .widget<Icon>(
+          find.byWidgetPredicate(
+            (w) =>
+                w is Icon &&
+                (w.icon == Icons.local_fire_department ||
+                    w.icon == Icons.local_fire_department_outlined),
+          ),
+        )
+        .color!;
+
+    expect(flammenfarbe(), farben.textSekundaer);
+
+    await container
+        .read(planFortschrittProvider.notifier)
+        .umschalten(analyse.alleHabits.first);
+    await tester.pump();
+    await tester.pump();
+
+    expect(flammenfarbe(), farben.erreicht);
+  });
+
+  testWidgets('die Joker-Schilde tragen dieselbe Farbe', (tester) async {
+    await karteZeigen(tester);
+    final farben = AppColors.dunkel;
+
+    final schilde = tester
+        .widgetList<Icon>(
+          find.byWidgetPredicate(
+            (w) => w is Icon && w.icon == Icons.shield_moon,
+          ),
+        )
+        .toList();
+
+    expect(schilde, hasLength(StreakRepository.jokerProMonat));
+    for (final schild in schilde) {
+      expect(schild.color, farben.erreicht);
+    }
   });
 
   testWidgets('ohne Serie und ohne Rekord steht kein Neustart-Text da',

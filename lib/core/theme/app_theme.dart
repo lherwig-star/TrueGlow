@@ -14,7 +14,10 @@ class AppTheme {
   AppTheme._();
 
   // --- Abstaende & Radien (schema-unabhaengig) ---
-  static const double radiusCard = 20;
+  /// Weiche, grosse Rundung. Seit DECISIONS 50 etwas grosszuegiger – der
+  /// Unterschied zwischen 20 und 26 ist genau der zwischen „abgerundet" und
+  /// „weich".
+  static const double radiusCard = 26;
   static const double radiusButton = 14;
   static const double gapXs = 6;
   static const double gapS = 12;
@@ -42,7 +45,10 @@ class AppTheme {
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: dunkel ? Brightness.light : Brightness.dark,
       statusBarBrightness: dunkel ? Brightness.dark : Brightness.light,
-      systemNavigationBarColor: farben.hintergrund,
+      // Der Verlauf endet unten im tiefen Ton – die Systemleiste sitzt
+      // direkt darunter und muss ihn treffen, sonst hat die Seite eine
+      // Kante.
+      systemNavigationBarColor: farben.hintergrundTief,
       systemNavigationBarIconBrightness:
           dunkel ? Brightness.light : Brightness.dark,
     );
@@ -65,12 +71,29 @@ class AppTheme {
       useMaterial3: true,
       brightness: helligkeit,
       colorScheme: scheme,
+      // Der eigentliche Grund ist ein Verlauf und liegt in `AppPage`.
+      // Hier steht der obere Ton als Rueckfall fuer Bildschirme ohne
+      // AppPage – etwa Dialoge im Vollbild.
       scaffoldBackgroundColor: farben.hintergrund,
     );
 
-    // Im hellen Schema duerfen Schatten etwas sichtbarer sein – auf dunklem
-    // Grund verpufft ein Schatten ohnehin.
-    final kartenSchatten = helligkeit == Brightness.light ? 2.0 : 0.0;
+    // Kein Schatten mehr, in keinem Schema: Die Karte setzt sich seit
+    // DECISIONS 50 ueber eine hauchduenne helle Kontur ab, nicht ueber einen
+    // Schlagschatten. Auf einem Verlauf sieht ein Schatten schmutzig aus.
+    const kartenSchatten = 0.0;
+
+    // Leicht durchscheinend, damit der Verlauf dahinter mitarbeitet. Im
+    // hellen Schema zurueckhaltender – dort traegt der Grund weniger.
+    final kartenFlaeche = farben.flaeche.withValues(
+      alpha: helligkeit == Brightness.dark ? 0.78 : 0.92,
+    );
+
+    // Die Kontur ist Licht, kein Rahmen: eine Spur Textfarbe bei geringer
+    // Deckkraft. `rand` waere hier zu kraeftig und zoege eine sichtbare
+    // Linie um jede Karte.
+    final kartenKontur = farben.textPrimaer.withValues(
+      alpha: helligkeit == Brightness.dark ? 0.10 : 0.07,
+    );
 
     return base.copyWith(
       extensions: [farben],
@@ -92,14 +115,14 @@ class AppTheme {
         iconTheme: IconThemeData(color: farben.textPrimaer),
       ),
       cardTheme: CardThemeData(
-        color: farben.flaeche,
+        color: kartenFlaeche,
         surfaceTintColor: Colors.transparent,
-        shadowColor: Colors.black.withValues(alpha: 0.18),
+        shadowColor: Colors.transparent,
         elevation: kartenSchatten,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radiusCard),
-          side: BorderSide(color: farben.rand),
+          side: BorderSide(color: kartenKontur),
         ),
       ),
       dialogTheme: DialogThemeData(

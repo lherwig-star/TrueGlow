@@ -1118,6 +1118,9 @@ class LDe extends L {
       'Wer hinter der App steht und wie du uns erreichst.';
 
   @override
+  String get abzeichenSektionTitel => 'Deine Abzeichen';
+
+  @override
   String get abzeichenErsteAnalyseTitel => 'Erste Analyse geschafft';
 
   @override

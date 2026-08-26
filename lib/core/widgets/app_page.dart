@@ -32,7 +32,26 @@ class AppPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final farben = context.farben;
+
+    // Der Verlauf liegt hinter dem Scaffold und nicht darin: So faerbt er
+    // auch die Flaeche hinter AppBar und Aktionsleiste, und die Seite hat
+    // von oben bis unten genau einen Grund.
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [farben.hintergrund, farben.hintergrundTief],
+        ),
+      ),
+      child: _geruest(context),
+    );
+  }
+
+  Widget _geruest(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: title == null
           ? null
           : AppBar(
@@ -69,7 +88,9 @@ class _Aktionsleiste extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hintergrund = context.farben.hintergrund;
+    // Der tiefe Ton, nicht der obere: Die Leiste sitzt am unteren Ende des
+    // Seitenverlaufs, und dort ist der Grund fast schwarzblau.
+    final hintergrund = context.farben.hintergrundTief;
 
     return DecoratedBox(
       decoration: mitVerlauf

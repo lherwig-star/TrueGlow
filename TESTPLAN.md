@@ -830,6 +830,111 @@ Datum herbeiführen (Handy um acht Tage vorstellen, App öffnen).
 > Googles Backup wandern. Das entscheidet sich im Manifest, und dort besteht
 > seit diesem Paket ein Test darauf (`fortschritts_fotos_test.dart`).
 
+## 20 · Der Start und die neue Optik
+
+Kein Kontingent, kein Analyse-Lauf. Im Demo-Modus in zehn Minuten
+durchgesehen. Dieser Abschnitt entscheidet sich am Hinsehen, nicht an einem
+Häkchen — nimm dir die Zeit dafür.
+
+### Der Start
+
+1. **Kaltstart.** App über den Task-Manager komplett schließen, dann vom
+   Startbildschirm öffnen. Erwartet: **Ein** durchgehender Start — das
+   Zeichen erscheint, bleibt an derselben Stelle stehen, und der Schriftzug
+   „TrueGlow" kommt darunter dazu. Kein zweites Aufblenden, kein Sprung des
+   Zeichens nach oben, kein weißes oder schwarzes Aufblitzen dazwischen.
+
+2. **Mehrfach hintereinander.** Punkt 1 fünfmal wiederholen. Erwartet:
+   jedes Mal gleich. Ein Ruck, der nur beim ersten Start nach der
+   Installation auftritt, ist trotzdem ein Fund — notier ihn.
+
+3. **Flugmodus an.** Erwartet: Der Start dauert länger (Firebase wartet),
+   sieht aber genauso aus. Der Startbildschirm darf nicht hängen bleiben.
+
+### Die Optik
+
+4. **Der Hintergrund.** Startseite ganz nach oben und ganz nach unten
+   scrollen. Erwartet: Oben Deep Teal, unten spürbar tiefer, fast
+   schwarzblau. Der Übergang ist weich — man soll ihn spüren, nicht als
+   Farbverlauf erkennen. Kein Streifen, keine Kante.
+
+5. **Auf anderen Seiten.** Zum Plan, zum Verlauf, in die Einstellungen.
+   Erwartet: derselbe Verlauf. Er gilt auf allen Seiten — Absicht, damit der
+   Grund beim Wechseln nicht springt.
+
+6. **Die Karten.** Erwartet: eine Spur heller als der Grund, weich
+   abgerundet, mit einer sehr dünnen hellen Linie am Rand. **Kein**
+   Schlagschatten. Der Verlauf schimmert leicht durch.
+
+7. **Das Gold — wo es steht.** Erwartet, und nur dort:
+   - die Streak-Flamme und die große Zahl, **sobald heute etwas abgehakt ist**
+   - die zwei Joker-Schilde
+   - gesetzte Haken in den Checklisten
+   - gefüllte Segmente der Challenge
+   - freigeschaltete Abzeichen
+
+8. **Das Gold — wo es nicht stehen darf.** Erwartet: Buttons, Überschriften,
+   die kleinen Icons in den Kartentiteln und der „Neu ab heute"-Marker
+   bleiben im bisherigen Sandton. Findest du Gold an einer anderen Stelle als
+   in Punkt 7, ist das ein Fund.
+
+9. **Gold heißt fertig, nicht halb fertig.** Vor dem ersten Haken des Tages:
+   Erwartet: Flamme **grau**, Checklisten-Zähler grau. Nach dem ersten
+   Haken: Flamme golden. Erst wenn eine Checkliste **komplett** abgehakt ist,
+   wird ihr Zähler („4/4") golden.
+
+10. **Die Streak-Karte.** Erwartet: Die Flamme ist deutlich größer als
+    vorher, hinter ihr liegt ein weicher Schein — nur bei gesichertem Tag.
+    Die Zahl ist deutlich größer und fett. Der Schein darf nicht als Ring
+    oder harte Kante zu sehen sein.
+
+11. **Die Challenge-Karte.** Erwartet: Statt eines Balkens mehrere Segmente.
+    Bei „Sei an 3 Tagen aktiv" sind es drei, bei „4 Tage in Folge" vier. Bei
+    „15 Aufgaben" sind es fünf — jedes steht dann für drei Aufgaben. Gefüllte
+    Segmente golden, leere blass.
+
+12. **Die Abzeichen.** Erwartet: eine waagerechte Reihe zum Wischen.
+    Freigeschaltete golden, gesperrte grau mit kleinem Schloss unten rechts,
+    darunter weiterhin „noch 3 Tage" bzw. „noch 2 Module". Langes Drücken auf
+    ein Abzeichen zeigt seine Beschreibung.
+
+### Die Bewegungen
+
+13. **Haken setzen.** Erwartet: Der Haken zoomt einmal kurz auf und wieder
+    zurück. Unter einer halben Sekunde. Beim **Entfernen** passiert nichts —
+    gefeiert wird das Abhaken.
+
+14. **Seite öffnen.** Startseite verlassen und zurückkommen. Erwartet: Die
+    Challenge-Segmente füllen sich von links nach rechts nacheinander, die
+    Streak-Zahl zählt einmal kurz hoch. Beides ist nach einem Wimpernschlag
+    vorbei.
+
+15. **Nichts blinkt dauerhaft.** Die Startseite eine Minute offen liegen
+    lassen und hinsehen. Erwartet: völlige Ruhe. Nichts pulsiert, nichts
+    flackert, nichts läuft im Kreis.
+
+16. **Mit „Bewegung reduzieren".** Android-Einstellungen → Bedienungshilfen →
+    „Animationen entfernen". App neu starten. Erwartet: Alles steht sofort
+    da — Zahl, Segmente, Haken. Nichts fehlt, nichts ist unsichtbar.
+
+### Gegenproben
+
+17. **Helles Schema.** Einstellungen → Hell. Erwartet: Der Verlauf ist auch
+    dort da, nur viel dezenter. Das Gold ist ein dunkles Amber und deutlich
+    vom Mocha-Braun der Buttons zu unterscheiden. Alle Texte bleiben lesbar.
+
+18. **Große Systemschrift.** Schriftgröße auf das Maximum. Erwartet: Die
+    Abzeichen-Reihe und die Segmente laufen nicht über; Abzeichen-Titel
+    dürfen abgeschnitten werden (zwei Zeilen mit „…"), nichts anderes.
+
+19. **TalkBack.** Erwartet: Der Fortschritt der Challenge wird als „3 von 4"
+    vorgelesen, die Abzeichen-Beschreibungen werden mitgelesen. Die
+    Bewegungen ändern daran nichts.
+
+> **Wenn das Design nicht gefällt:** Es hängt an genau einem Commit
+> („Design: …"). Der Splash-Umbau steckt in einem eigenen davor und bleibt
+> stehen, wenn das Design zurückgedreht wird.
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

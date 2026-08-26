@@ -1503,6 +1503,85 @@ gibt.
 echten Abhängigkeit geworden — es ist jetzt nicht mehr nur Generator,
 sondern auch Laufzeit.
 
+## 50 · Der Petrol-Look bekommt Tiefe und genau eine Akzentfarbe
+
+Kein Neuaufbau, nur Optik: Aufbau, Navigation und Reihenfolge der Karten
+bleiben, wie sie waren. Geändert haben sich fünf Dinge.
+
+**1. Der Grund ist ein Verlauf.** Von Deep Teal oben zu einem fast
+schwarzblauen Ton unten (`hintergrundTief`). Er liegt in `AppPage` **hinter**
+dem Scaffold, damit auch die Flächen hinter AppBar und Aktionsleiste ihn
+tragen — sonst hätte die Seite oben und unten je eine Kante.
+
+Er liegt damit auf **allen** Seiten, nicht nur auf der Startseite. Das ist
+Absicht: Ein Grund, der beim Wechsel von der Startseite zum Plan die Farbe
+wechselt, sieht nicht nach Design aus, sondern nach Fehler. Zwei Tests halten
+ihn im Zaum — er muss dunkler enden, als er anfängt, aber so dezent bleiben,
+dass eine Karte an beiden Enden abhebt (unter 2,2:1 Unterschied).
+
+**2. Karten sind Licht, kein Kasten.** Sie liegen leicht durchscheinend über
+dem Verlauf (78 % im dunklen Schema, 92 % im hellen), haben eine weichere
+Rundung (26 statt 20) und statt eines Schattens eine hauchdünne helle Kontur
+— eine Spur Textfarbe bei 10 % Deckkraft. `rand` wäre dafür zu kräftig
+gewesen und zöge eine sichtbare Linie um jede Karte. Der Schlagschatten im
+hellen Schema ist ersatzlos weg: Auf einem Verlauf sieht er schmutzig aus.
+
+**3. Gold heißt „geschafft" — und sonst nichts.** Neue Farbrolle `erreicht`,
+ein warmes gedämpftes Gold. Sie steht an genau fünf Stellen: Streak-Flamme
+und Streak-Zahl, gesetzte Haken, gefüllte Fortschrittssegmente,
+freigeschaltete Abzeichen, Joker-Schilde. Dazu das frisch freigeschaltete
+Abzeichen im Jubel-Dialog — dasselbe Abzeichen, dieselbe Farbe.
+
+Das ist die ganze Idee: **Wenn Gold überall auftaucht, heißt es nichts
+mehr.** Buttons, Titel, Karten-Icons und der „Neu ab heute"-Marker bleiben
+deshalb im Sand-Ton. Und was halb fertig ist, ist nicht golden: Der
+Checklisten-Zähler wechselt erst bei „4/4", die Flamme erst, wenn der Tag
+steht, die Abzeichen-Bilanz erst ab dem ersten erreichten.
+
+Beide Töne tragen kleine Schrift — die Zeile „Geschafft!" ist 12 Punkt —,
+also gilt für sie dieselbe Schwelle wie für jeden Text: 4,5:1 auf jeder
+Fläche, geprüft in `farbschema_test.dart`. Im hellen Schema hat das Gold
+ausdrücklich **keinen** Blauanteil (`#7A5200`): Sonst wäre es vom
+Mocha-Akzent kaum zu unterscheiden, und genau das darf es nicht sein. Ein
+Test besteht auf dem Abstand.
+
+**4. Die Streak-Karte trägt die Serie.** Flamme von 64 auf 76 dp, Symbol von
+32 auf 38, Zahl von 34 auf 44. Hinter der Flamme liegt ein Schein — weit
+gestreut, 22 % Deckkraft, und nur, wenn der Tag steht. Er soll als Wärme um
+die Flamme wirken, nicht als Ring; ein Leuchteffekt wäre genau das, was der
+Auftrag ausschließt.
+
+**5. Segmente statt Balken.** Ein durchgehender Balken sagt „irgendwo
+dazwischen". Segmente sagen „drei von vier" — dieselbe Information, aber
+abzählbar. Ein Segment je Zieleinheit; ab elf wird gebündelt, weil
+fünfundzwanzig Striche nebeneinander kein Fortschritt mehr sind, sondern ein
+Zaun. Gebündelt wird auf einen **Teiler** des Ziels, damit jedes Segment
+gleich viel wert ist: 15 → fünf zu drei, 25 → fünf zu fünf. Ein Test geht
+den ganzen Vorrat durch und besteht darauf, dass die Rechnung aufgeht.
+
+**6. Abzeichen als Reihe.** Vorher acht Zeilen untereinander, die den halben
+Bildschirm füllten und fast nur Gesperrtes zeigten. Jetzt eine waagerechte
+Reihe: Erreichtes vorn im Blick, Gesperrtes grau mit kleinem Schloss, und
+„noch 3 Tage" steht weiterhin darunter. Die Beschreibung ist nicht
+verschwunden, sie liegt als Tooltip auf dem Abzeichen und wird von TalkBack
+mitgelesen.
+
+Dabei sind zwei fest verdrahtete deutsche Texte herausgeflogen („Deine
+Abzeichen", „Rekord: 3 Tage") — sie standen dort seit jeher und wären einem
+englischen Nutzer auf Deutsch begegnet.
+
+**7. Micro-Animationen, alle unter einer halben Sekunde.** Der Haken zoomt
+beim Setzen kurz ein (220 ms) — beim Entfernen nicht, gefeiert wird das
+Abhaken. Die Segmente füllen sich beim Öffnen nacheinander (40 ms Versatz,
+220 ms je Segment). Die Streak-Zahl zählt einmal hoch (450 ms), gebunden an
+die Zahl selbst, damit sie beim Abhaken nicht ein zweites Mal losläuft —
+dafür gibt es schon die Bestätigung darunter. Jede dieser Bewegungen
+respektiert „Bewegung reduzieren" und steht dann sofort.
+
+**Preis:** Zwei Farbrollen mehr in `AppColors`, und jede neue Farbe muss ab
+jetzt durch die Kontrastprüfung. Das Design lässt sich als ein Commit
+zurückdrehen; der Splash-Umbau (DECISIONS 49) hängt nicht daran.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

@@ -133,7 +133,9 @@ class _Zeile extends StatelessWidget {
     final texte = context.texte;
     final farben = context.farben;
     final aktiv = streak.heuteGesichert;
-    final farbe = aktiv ? farben.akzent : farben.textSekundaer;
+    // Gold steht ausschliesslich fuer Erreichtes (DECISIONS 50). Ein noch
+    // offener Tag bleibt deshalb in der ruhigen Sekundaerfarbe.
+    final farbe = aktiv ? farben.erreicht : farben.textSekundaer;
 
     return Row(
       children: [
@@ -150,14 +152,10 @@ class _Zeile extends StatelessWidget {
             children: [
               // Zahl gross, "Tage am Stueck" als Unterzeile darunter –
               // nebeneinander laeuft die Zeile auf schmalen Geraeten ueber.
-              Text(
-                '${streak.aktuell}',
-                style: TextStyle(
-                  fontSize: 34,
-                  height: 1.05,
-                  fontWeight: FontWeight.w900,
-                  color: farbe,
-                ),
+              _Serienzahl(
+                tage: streak.aktuell,
+                farbe: farbe,
+                bewegungErlaubt: bewegungErlaubt,
               ),
               Text(
                 texte.streakTage,
@@ -198,6 +196,51 @@ class _Zeile extends StatelessWidget {
   }
 }
 
+/// Die Serienzahl – beim Oeffnen der Seite zaehlt sie kurz hoch.
+///
+/// Unter einer halben Sekunde und nur einmal je Aufbau: Es ist eine
+/// Begruessung, keine Dauervorstellung. Bei „Bewegung reduzieren" steht die
+/// Zahl sofort da.
+///
+/// Bewusst nicht bei jeder Aenderung: Wer einen Haken setzt, sieht die
+/// Bestaetigung darunter – die Zahl noch einmal hochlaufen zu lassen waere
+/// zweimal dasselbe gesagt.
+class _Serienzahl extends StatelessWidget {
+  const _Serienzahl({
+    required this.tage,
+    required this.farbe,
+    required this.bewegungErlaubt,
+  });
+
+  final int tage;
+  final Color farbe;
+  final bool bewegungErlaubt;
+
+  @override
+  Widget build(BuildContext context) {
+    final stil = TextStyle(
+      fontSize: 44,
+      height: 1.0,
+      fontWeight: FontWeight.w900,
+      color: farbe,
+    );
+
+    if (!bewegungErlaubt || tage == 0) {
+      return Text('$tage', style: stil);
+    }
+
+    return TweenAnimationBuilder<double>(
+      // Der Schluessel bindet die Animation an die Zahl: Ohne ihn liefe sie
+      // bei einem Wechsel von 3 auf 4 noch einmal von vorn los.
+      key: ValueKey(tage),
+      tween: Tween(begin: 0, end: tage.toDouble()),
+      duration: const Duration(milliseconds: 450),
+      curve: Curves.easeOutCubic,
+      builder: (context, wert, _) => Text('${wert.round()}', style: stil),
+    );
+  }
+}
+
 /// „Tag gesichert" – der kurze Moment nach dem ersten Haken des Tages.
 class _Bestaetigung extends StatelessWidget {
   const _Bestaetigung({
@@ -232,7 +275,7 @@ class _Bestaetigung extends StatelessWidget {
                     vertical: AppTheme.gapXs,
                   ),
                   decoration: BoxDecoration(
-                    color: farben.erfolg.withValues(alpha: 0.12),
+                    color: farben.erreicht.withValues(alpha: 0.12),
                     borderRadius:
                         BorderRadius.circular(AppTheme.radiusButton),
                   ),
@@ -244,7 +287,7 @@ class _Bestaetigung extends StatelessWidget {
                         Icon(
                           Icons.check_circle_rounded,
                           size: 20,
-                          color: farben.erfolg,
+                          color: farben.erreicht,
                         ),
                         const SizedBox(width: AppTheme.gapS),
                         Expanded(
@@ -255,7 +298,7 @@ class _Bestaetigung extends StatelessWidget {
                                 texte.streakTagGesichert,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w800,
-                                  color: farben.erfolg,
+                                  color: farben.erreicht,
                                 ),
                               ),
                               Text(
@@ -309,7 +352,7 @@ class _JokerHinweisState extends ConsumerState<_JokerHinweis> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(Icons.shield_moon_outlined, size: 16, color: farben.akzentZwei),
+        Icon(Icons.shield_moon_outlined, size: 16, color: farben.erreicht),
         const SizedBox(width: 6),
         Expanded(
           child: Text(
@@ -318,7 +361,7 @@ class _JokerHinweisState extends ConsumerState<_JokerHinweis> {
               fontSize: 13,
               height: 1.35,
               fontWeight: FontWeight.w700,
-              color: farben.akzentZwei,
+              color: farben.erreicht,
             ),
           ),
         ),
@@ -357,7 +400,7 @@ class _JokerVorrat extends StatelessWidget {
                           : Icons.shield_moon_outlined,
                       size: 18,
                       color: i < uebrig
-                          ? farben.akzentZwei
+                          ? farben.erreicht
                           : farben.textSekundaer.withValues(alpha: 0.4),
                     ),
                   ),
@@ -407,21 +450,33 @@ class _Flamme extends StatelessWidget {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
-        width: 64,
-        height: 64,
+        width: 76,
+        height: 76,
         decoration: BoxDecoration(
-          color: farbe.withValues(alpha: aktiv ? 0.18 : 0.08),
+          color: farbe.withValues(alpha: aktiv ? 0.16 : 0.07),
           shape: BoxShape.circle,
           border: Border.all(
-            color: farbe.withValues(alpha: aktiv ? 0.8 : 0.25),
+            color: farbe.withValues(alpha: aktiv ? 0.75 : 0.22),
             width: 1.6,
           ),
+          // Ein Schein, kein Leuchten: weit gestreut, sehr durchsichtig und
+          // nur, wenn der Tag steht. Sichtbar wird er als Waerme um die
+          // Flamme, nicht als Ring.
+          boxShadow: aktiv
+              ? [
+                  BoxShadow(
+                    color: farbe.withValues(alpha: 0.22),
+                    blurRadius: 26,
+                    spreadRadius: 1,
+                  ),
+                ]
+              : null,
         ),
         child: Icon(
           aktiv
               ? Icons.local_fire_department
               : Icons.local_fire_department_outlined,
-          size: 32,
+          size: 38,
           color: farbe,
         ),
       ),

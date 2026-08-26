@@ -114,4 +114,79 @@ void main() {
       expect(AppColors.hell.textPrimaer, const Color(0xFF2B241C));
     });
   });
+
+  group('Der Goldton fuer Erreichtes', () {
+    // Er traegt kleine Schrift – die Zeile „Geschafft!" auf der
+    // Challenge-Karte ist 12 Punkt. Damit gilt fuer ihn dieselbe Schwelle
+    // wie fuer jeden anderen Text: 4,5:1 (DECISIONS 50).
+    test('bleibt in beiden Schemata auf jeder Flaeche lesbar', () {
+      for (final schema in {'dunkel': AppColors.dunkel, 'hell': AppColors.hell}.entries) {
+        final farben = schema.value;
+        final flaechen = {
+          'Hintergrund': farben.hintergrund,
+          'Verlaufsende': farben.hintergrundTief,
+          'Karte': farben.flaeche,
+          'Vertiefung': farben.flaecheHoch,
+        };
+
+        for (final flaeche in flaechen.entries) {
+          expect(
+            _kontrast(flaeche.value, farben.erreicht),
+            greaterThanOrEqualTo(4.5),
+            reason: 'erreicht auf ${flaeche.key} (${schema.key})',
+          );
+        }
+      }
+    });
+
+    test('unterscheidet sich deutlich vom Sand-Akzent', () {
+      // Sonst waere die ganze Idee dahin: Erreichtes soll auffallen, nicht
+      // aussehen wie jeder andere Button.
+      for (final farben in [AppColors.dunkel, AppColors.hell]) {
+        final gold = farben.erreicht;
+        final sand = farben.akzent;
+        final abstand = (gold.r - sand.r).abs() +
+            (gold.g - sand.g).abs() +
+            (gold.b - sand.b).abs();
+        expect(abstand, greaterThan(0.25));
+      }
+    });
+  });
+
+  group('Der Seitenverlauf', () {
+    test('endet dunkler, als er anfaengt', () {
+      // Von Petrol oben nach fast schwarzem Blau unten – im hellen Schema
+      // entsprechend eine Spur tiefer.
+      for (final farben in [AppColors.dunkel, AppColors.hell]) {
+        expect(
+          farben.hintergrundTief.computeLuminance(),
+          lessThan(farben.hintergrund.computeLuminance()),
+        );
+      }
+    });
+
+    test('bleibt dezent genug, dass die Karte ueberall abhebt', () {
+      // Die Karte liegt auf beiden Enden des Verlaufs. Faellt der Grund zu
+      // tief, wirkt sie oben flach und unten wie ein Fremdkoerper.
+      for (final farben in [AppColors.dunkel, AppColors.hell]) {
+        expect(
+          _kontrast(farben.hintergrund, farben.hintergrundTief),
+          lessThan(2.2),
+        );
+      }
+    });
+
+    test('traegt Fliesstext auch am tiefsten Punkt', () {
+      for (final farben in [AppColors.dunkel, AppColors.hell]) {
+        expect(
+          _kontrast(farben.hintergrundTief, farben.textPrimaer),
+          greaterThanOrEqualTo(4.5),
+        );
+        expect(
+          _kontrast(farben.hintergrundTief, farben.textSekundaer),
+          greaterThanOrEqualTo(4.5),
+        );
+      }
+    });
+  });
 }

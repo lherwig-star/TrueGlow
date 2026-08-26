@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -27,7 +29,6 @@ class ChallengeKarte extends ConsumerWidget {
     final texte = context.texte;
     final farben = context.farben;
     final geschafft = challenge.geschafft;
-    final farbe = geschafft ? farben.erfolg : farben.akzent;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppTheme.gapS),
@@ -38,14 +39,14 @@ class ChallengeKarte extends ConsumerWidget {
             ? Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.check_circle, size: 18, color: farben.erfolg),
+                  Icon(Icons.check_circle, size: 18, color: farben.erreicht),
                   const SizedBox(width: 4),
                   Text(
                     texte.challengeGeschafft,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w800,
-                      color: farben.erfolg,
+                      color: farben.erreicht,
                     ),
                   ),
                 ],
@@ -55,7 +56,7 @@ class ChallengeKarte extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w800,
-                  color: farben.akzent,
+                  color: farben.textSekundaer,
                 ),
               ),
         child: Column(
@@ -68,18 +69,121 @@ class ChallengeKarte extends ConsumerWidget {
             const SizedBox(height: AppTheme.gapS),
             Semantics(
               label: texte.challengeStand(challenge.stand, challenge.ziel),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(999),
-                child: LinearProgressIndicator(
-                  value: challenge.anteil,
-                  minHeight: 8,
-                  backgroundColor: farbe.withValues(alpha: 0.14),
-                  valueColor: AlwaysStoppedAnimation<Color>(farbe),
-                ),
+              child: _Segmente(
+                gefuellt: challenge.gefuellteSegmente,
+                gesamt: challenge.segmente,
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Der Fortschritt als Segmente statt als Balken.
+///
+/// Ein durchgehender Balken sagt „irgendwo dazwischen". Segmente sagen
+/// „drei von vier" – dieselbe Information, aber abzählbar, und man sieht
+/// ohne zu rechnen, wie viel noch fehlt (DECISIONS 50).
+///
+/// Beim Öffnen füllen sie sich nacheinander, jedes in gut einer Zehntel-
+/// sekunde und der ganze Lauf unter einer halben. Bei „Bewegung reduzieren"
+/// stehen sie sofort.
+class _Segmente extends StatelessWidget {
+  const _Segmente({required this.gefuellt, required this.gesamt});
+
+  final int gefuellt;
+  final int gesamt;
+
+  @override
+  Widget build(BuildContext context) {
+    final farben = context.farben;
+    final bewegungErlaubt = !MediaQuery.disableAnimationsOf(context);
+
+    return Row(
+      children: [
+        for (var i = 0; i < gesamt; i += 1) ...[
+          if (i > 0) const SizedBox(width: 5),
+          Expanded(
+            child: _Segment(
+              voll: i < gefuellt,
+              // Gestaffelt, aber nur so weit, dass der letzte Punkt noch
+              // innerhalb einer halben Sekunde steht.
+              verzoegerung: bewegungErlaubt
+                  ? Duration(milliseconds: 40 * i)
+                  : Duration.zero,
+              bewegungErlaubt: bewegungErlaubt,
+              gefuellteFarbe: farben.erreicht,
+              leereFarbe: farben.textSekundaer.withValues(alpha: 0.18),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _Segment extends StatefulWidget {
+  const _Segment({
+    required this.voll,
+    required this.verzoegerung,
+    required this.bewegungErlaubt,
+    required this.gefuellteFarbe,
+    required this.leereFarbe,
+  });
+
+  final bool voll;
+  final Duration verzoegerung;
+  final bool bewegungErlaubt;
+  final Color gefuellteFarbe;
+  final Color leereFarbe;
+
+  @override
+  State<_Segment> createState() => _SegmentState();
+}
+
+class _SegmentState extends State<_Segment> {
+  bool _an = false;
+  Timer? _start;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!widget.bewegungErlaubt) {
+      _an = true;
+      return;
+    }
+    _start = Timer(widget.verzoegerung, () {
+      if (mounted) setState(() => _an = true);
+    });
+  }
+
+  @override
+  void didUpdateWidget(_Segment alt) {
+    super.didUpdateWidget(alt);
+    // Ein Segment, das nachträglich voll wird, füllt sich ohne Wartezeit –
+    // der Nutzer hat gerade eben etwas abgehakt.
+    if (widget.voll != alt.voll) _an = true;
+  }
+
+  @override
+  void dispose() {
+    _start?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final voll = widget.voll && _an;
+
+    return AnimatedContainer(
+      duration: Duration(milliseconds: widget.bewegungErlaubt ? 220 : 0),
+      curve: Curves.easeOutCubic,
+      height: 8,
+      decoration: BoxDecoration(
+        color: voll ? widget.gefuellteFarbe : widget.leereFarbe,
+        borderRadius: BorderRadius.circular(999),
       ),
     );
   }

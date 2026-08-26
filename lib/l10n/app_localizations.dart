@@ -2101,6 +2101,12 @@ abstract class L {
   /// **'Wer hinter der App steht und wie du uns erreichst.'**
   String get dokumentImpressumText;
 
+  /// Ueberschrift der Abzeichen-Reihe auf der Startseite.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Abzeichen'**
+  String get abzeichenSektionTitel;
+
   /// No description provided for @abzeichenErsteAnalyseTitel.
   ///
   /// In de, this message translates to:

@@ -159,6 +159,64 @@ void main() {
     });
   });
 
+  group('Der Fortschritt als Segmente', () {
+    Wochenchallenge challenge(int ziel, int stand) => Wochenchallenge(
+          vorlage: Challengevorlage(Challengeart.aktiveTage, ziel, icon: _icon),
+          montag: montag,
+          stand: stand,
+          geschafft: stand >= ziel,
+        );
+
+    test('ein Segment je Zieleinheit, solange es lesbar bleibt', () {
+      // „4 Tage" ergibt vier Punkte – man sieht ohne zu rechnen, wie viele
+      // noch fehlen.
+      for (var ziel = 1; ziel <= 10; ziel += 1) {
+        expect(segmenteFuer(ziel), ziel, reason: 'Ziel $ziel');
+      }
+    });
+
+    test('groessere Ziele werden gebuendelt', () {
+      // Fuenfundzwanzig Striche nebeneinander sind kein Fortschritt, sondern
+      // ein Zaun.
+      expect(segmenteFuer(15), 5);
+      expect(segmenteFuer(25), 5);
+      expect(segmenteFuer(12), 4);
+    });
+
+    test('gebuendelt wird auf einen Teiler, damit jedes Segment gleich zaehlt',
+        () {
+      for (final vorlage in vorrat) {
+        final teile = segmenteFuer(vorlage.ziel);
+        expect(
+          vorlage.ziel % teile,
+          0,
+          reason: '${vorlage.art.name} mit Ziel ${vorlage.ziel}',
+        );
+      }
+    });
+
+    test('nie null Segmente, auch bei unsinnigem Ziel', () {
+      expect(segmenteFuer(0), 1);
+      expect(segmenteFuer(-3), 1);
+    });
+
+    test('gefuellt wird abgerundet – ein halbes Segment gibt es nicht', () {
+      expect(challenge(4, 0).gefuellteSegmente, 0);
+      expect(challenge(4, 1).gefuellteSegmente, 1);
+      expect(challenge(4, 3).gefuellteSegmente, 3);
+      expect(challenge(4, 4).gefuellteSegmente, 4);
+
+      // 15 Aufgaben auf 5 Segmente: jedes steht fuer drei.
+      expect(challenge(15, 2).gefuellteSegmente, 0);
+      expect(challenge(15, 3).gefuellteSegmente, 1);
+      expect(challenge(15, 14).gefuellteSegmente, 4);
+    });
+
+    test('mehr als das Ziel bleibt voll, nicht ueber voll', () {
+      expect(challenge(4, 9).gefuellteSegmente, 4);
+    });
+  });
+
   group('Das Abzeichen', () {
     test('fällt nach vier geschafften Challenges', () {
       final vorher = abzeichenStaende(

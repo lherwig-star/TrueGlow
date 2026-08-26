@@ -1114,6 +1114,9 @@ class LEn extends L {
       'Who is behind the app and how to reach us.';
 
   @override
+  String get abzeichenSektionTitel => 'Your badges';
+
+  @override
   String get abzeichenErsteAnalyseTitel => 'First analysis done';
 
   @override
