@@ -214,7 +214,9 @@ class _Sprachumschalter extends ConsumerWidget {
                         ? farben.akzent.withValues(alpha: 0.16)
                         : Colors.transparent,
                     border: Border.all(
-                      color: sprache == aktiv ? farben.akzent : farben.rand,
+                      color: sprache == aktiv
+                          ? farben.erreicht
+                          : farben.kartenrand,
                     ),
                     borderRadius: BorderRadius.circular(999),
                   ),

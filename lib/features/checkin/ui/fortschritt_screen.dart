@@ -365,7 +365,7 @@ class _Zeitleiste extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: aktiv ? farben.akzent : farben.rand,
+                        color: aktiv ? farben.erreicht : farben.kartenrand,
                         width: aktiv ? 2 : 1,
                       ),
                     ),
@@ -390,7 +390,7 @@ class _Zeitleiste extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: aktiv ? FontWeight.w800 : FontWeight.w600,
-                        color: aktiv ? farben.akzent : farben.textSekundaer,
+                        color: aktiv ? farben.erreicht : farben.textSekundaer,
                       ),
                     ),
                   ),

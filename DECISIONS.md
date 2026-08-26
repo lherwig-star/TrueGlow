@@ -1582,6 +1582,56 @@ respektiert „Bewegung reduzieren" und steht dann sofort.
 jetzt durch die Kontrastprüfung. Das Design lässt sich als ein Commit
 zurückdrehen; der Splash-Umbau (DECISIONS 49) hängt nicht daran.
 
+## 51 · Das Design gilt überall — und ein Test besteht darauf
+
+Nach dem Umbau (DECISIONS 50) trug die Startseite den neuen Look, die
+Unterseiten nur den Hintergrund. Auf „Analyse zusammenstellen" standen noch
+die alten Auswahlhäkchen, die alten Kartenrahmen und ein Button, der daneben
+alt aussah.
+
+**Die Ursache war keine vergessene Stelle, sondern eine fehlende Rolle.** Das
+Theme rechnete sich die neue hauchdünne Kartenkontur in `_bauen` selbst aus.
+Jede handgebaute Karte auf einer Unterseite griff dagegen weiter zu `rand` —
+und `rand` gab es ja noch, also fiel nichts auf. Die Kontur ist deshalb jetzt
+eine eigene Farbrolle `kartenrand` in `AppColors`, und alle greifen dorthin.
+Dasselbe gilt für den Auswahlzustand: Er hieß an zwölf Stellen
+`aktiv ? farben.akzent : farben.rand`, jedes Mal einzeln ausgeschrieben.
+
+**Gold heißt jetzt auch „ausgewählt".** Bisher stand es nur für Erreichtes.
+Es steht ab sofort an jedem Zustand, den der Nutzer selbst eingeschaltet
+hat: gewählte Module und ihr Häkchen, angeklickte Chips im Onboarding, im
+Stil-Fragebogen und bei „Deine Richtung", die Antwortknöpfe im Check-in, das
+gewählte Foto in der Zeitleiste, Checkboxen, Radios und der Umschalter in
+den Einstellungen. Dazu die zurückgelegten Schritte im Foto-Flow, im
+Onboarding und im Check-in — ein erledigter Schritt ist Erreichtes.
+
+Die Regel bleibt dieselbe und wird dadurch sogar schärfer: **Gold heißt „das
+ist an".** Was noch offen ist, bleibt grau; was nur ein Angebot ist — Buttons,
+Titel, Icons — bleibt im Sand-Ton.
+
+**Zwei Werte ändern sich für die ganze App**, und damit auch für die zwei
+Knöpfe auf der Startseite, die sonst unangetastet bleibt: Der Umriss-Button
+trägt dieselbe Kontur wie eine Karte (zwei verschiedene Randstärken
+untereinander sehen nach Versehen aus), und der Button-Radius geht von 14 auf
+18. Kantige Knöpfe unter sehr weichen Karten waren genau der Bruch, der auf
+„Analyse zusammenstellen" auffiel. 18 statt 26: Ein Button darf fester
+wirken als eine Karte, nur nicht wie aus einem anderen Programm.
+
+**Der Test, damit es nicht wieder halb passiert.** `design_werte_test.dart`
+liest den ganzen Quelltext und besteht darauf, dass außerhalb einer kurzen
+Ausnahmeliste kein `Color(0x…)` und kein `Colors.rot` steht. Die Ausnahmen
+tragen ihren Grund im Code, und zwei weitere Tests halten die Liste sauber:
+Eine Ausnahme für eine gelöschte Datei fliegt auf, und eine Farbrolle, die
+niemand mehr benutzt, ebenfalls.
+
+**Was ausdrücklich eine feste Farbe behalten darf:** alles, was über einem
+Kamerabild oder einem Foto liegt. Dort ist der Untergrund beliebig, und
+Schwarz oder Weiß ist das Einzige, was in jedem Fall lesbar bleibt. Eine
+Themefarbe wäre dort nicht konsequenter, sondern nur unlesbarer.
+
+**Preis:** Eine Farbrolle mehr und ein Test, der bei jeder neuen Farbe
+anspringt. Genau das ist der Sinn.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

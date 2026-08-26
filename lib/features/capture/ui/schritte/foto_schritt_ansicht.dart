@@ -112,7 +112,7 @@ class _Sucher extends ConsumerWidget {
             DecoratedBox(
               decoration: BoxDecoration(
                 color: farben.flaeche,
-                border: Border.all(color: farben.rand),
+                border: Border.all(color: farben.kartenrand),
                 borderRadius: BorderRadius.circular(AppTheme.radiusCard),
               ),
             ),
@@ -210,19 +210,21 @@ class _GeprueftBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: farben.hintergrund.withValues(alpha: 0.85),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: farben.erfolg),
+        // Ein geprueftes Foto ist erledigt – dieselbe Farbe wie jeder
+        // andere Haken in der App (DECISIONS 51).
+        border: Border.all(color: farben.erreicht),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.check_circle, size: 14, color: farben.erfolg),
+          Icon(Icons.check_circle, size: 14, color: farben.erreicht),
           const SizedBox(width: 6),
           Text(
             context.texte.fotoGeprueft,
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
-              color: farben.erfolg,
+              color: farben.erreicht,
             ),
           ),
         ],

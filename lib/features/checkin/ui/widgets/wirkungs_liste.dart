@@ -152,7 +152,9 @@ class _SkalaKnopf extends StatelessWidget {
             color: aktiv
                 ? farben.akzent.withValues(alpha: 0.18)
                 : farben.flaecheHoch,
-            border: Border.all(color: aktiv ? farben.akzent : farben.rand),
+            border: Border.all(
+              color: aktiv ? farben.erreicht : farben.kartenrand,
+            ),
             borderRadius: BorderRadius.circular(AppTheme.radiusButton),
           ),
           child: Column(
@@ -160,7 +162,7 @@ class _SkalaKnopf extends StatelessWidget {
               Icon(
                 _icon,
                 size: 20,
-                color: aktiv ? farben.akzent : farben.textSekundaer,
+                color: aktiv ? farben.erreicht : farben.textSekundaer,
               ),
               const SizedBox(height: 4),
               Text(

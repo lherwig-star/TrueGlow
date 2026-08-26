@@ -187,12 +187,15 @@ class _FotoLeiste extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: farben.flaeche,
                   borderRadius: BorderRadius.circular(10),
+                  // Ein bereits aufgenommenes Foto ist Erledigtes und
+                  // traegt deshalb das Gold; der gerade offene Schritt bleibt
+                  // im Sand-Ton, er ist noch nichts.
                   border: Border.all(
                     color: istAktuell
                         ? farben.akzent
                         : foto != null
-                            ? farben.erfolg.withValues(alpha: 0.6)
-                            : farben.rand,
+                            ? farben.erreicht.withValues(alpha: 0.7)
+                            : farben.kartenrand,
                     width: istAktuell ? 2 : 1,
                   ),
                 ),
@@ -245,7 +248,8 @@ class _Fortschritt extends StatelessWidget {
               height: 4,
               margin: EdgeInsets.only(right: i == gesamt - 1 ? 0 : 4),
               decoration: BoxDecoration(
-                color: i <= aktuell ? farben.akzent : farben.rand,
+                // Zurueckgelegte Schritte sind Erreichtes (DECISIONS 51).
+                color: i <= aktuell ? farben.erreicht : farben.kartenrand,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),

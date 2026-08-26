@@ -22,6 +22,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.warnung,
     required this.erfolg,
     required this.erreicht,
+    required this.kartenrand,
   });
 
   /// Seitenhintergrund – der obere Ton des Seitenverlaufs.
@@ -66,17 +67,33 @@ class AppColors extends ThemeExtension<AppColors> {
   /// Wechsel nicht alle Icons mitzieht.
   final Color erfolg;
 
-  /// **Erreichtes** – und ausschliesslich das.
+  /// **Erreichtes und Ausgewaehltes** – und ausschliesslich das.
   ///
   /// Ein warmes, gedaempftes Gold. Es steht an der Streak-Flamme und ihrer
   /// Zahl, an gesetzten Haken, an gefuellten Fortschrittssegmenten, an
-  /// freigeschalteten Abzeichen und an den Joker-Schilden. Nirgends sonst.
+  /// freigeschalteten Abzeichen, an den Joker-Schilden – und seit DECISIONS
+  /// 51 an jedem Zustand, den der Nutzer selbst eingeschaltet hat: gewaehlte
+  /// Module, angeklickte Chips, gesetzte Checkboxen, das gewaehlte Foto in
+  /// der Zeitleiste.
   ///
   /// Das ist die ganze Idee dahinter (DECISIONS 50): Wenn Gold ueberall
-  /// auftaucht, heisst es nichts mehr. Wer es sieht, soll wissen, dass er
-  /// etwas geschafft hat, ohne den Text zu lesen. Buttons, Titel und Icons
-  /// bleiben deshalb im Sand-Ton von [akzent].
+  /// auftaucht, heisst es nichts mehr. Wer es sieht, soll wissen, dass hier
+  /// etwas an ist, ohne den Text zu lesen. Buttons, Titel und Icons bleiben
+  /// deshalb im Sand-Ton von [akzent].
   final Color erreicht;
+
+  /// Die hauchduenne helle Kontur einer Karte.
+  ///
+  /// Seit DECISIONS 50 setzt sich eine Karte darueber ab und nicht mehr ueber
+  /// einen Schlagschatten. Bewusst eine eigene Rolle und nicht `rand`: Der
+  /// ist kraeftiger und zieht eine sichtbare Linie – richtig fuer
+  /// Trennstriche und Eingabefelder, zu laut fuer eine Karte.
+  ///
+  /// Sie steht hier, damit es genau **eine** Stelle gibt. Vorher rechnete
+  /// das Theme sie sich selbst aus, und jede handgebaute Karte nahm `rand` –
+  /// das war der Grund, warum das neue Design auf den Unterseiten nur halb
+  /// ankam (DECISIONS 51).
+  final Color kartenrand;
 
   /// Dunkel – "Deep Teal & Sand" (Standard).
   ///
@@ -108,6 +125,8 @@ class AppColors extends ThemeExtension<AppColors> {
     // Gedaempftes Gold. Hell genug fuer 4,7:1 auf der Karte – der kleinste
     // Text in dieser Farbe ist die 12-Punkt-Zeile "Geschafft!".
     erreicht: Color(0xFFE8BE6E),
+    // Off-White bei 10 % – Licht, kein Rahmen.
+    kartenrand: Color(0x1AF2EEE6),
   );
 
   /// Hell – "Mocha Light".
@@ -128,6 +147,8 @@ class AppColors extends ThemeExtension<AppColors> {
     // jeden Blauanteil – sonst waere es vom Mocha-Akzent kaum zu
     // unterscheiden, und genau das darf es nicht sein.
     erreicht: Color(0xFF7A5200),
+    // Auf hellem Grund traegt weniger: 7 % der Textfarbe.
+    kartenrand: Color(0x122B241C),
   );
 
   @override
@@ -145,6 +166,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? warnung,
     Color? erfolg,
     Color? erreicht,
+    Color? kartenrand,
   }) {
     return AppColors(
       hintergrund: hintergrund ?? this.hintergrund,
@@ -160,6 +182,7 @@ class AppColors extends ThemeExtension<AppColors> {
       warnung: warnung ?? this.warnung,
       erfolg: erfolg ?? this.erfolg,
       erreicht: erreicht ?? this.erreicht,
+      kartenrand: kartenrand ?? this.kartenrand,
     );
   }
 
@@ -181,6 +204,7 @@ class AppColors extends ThemeExtension<AppColors> {
       warnung: Color.lerp(warnung, other.warnung, t)!,
       erfolg: Color.lerp(erfolg, other.erfolg, t)!,
       erreicht: Color.lerp(erreicht, other.erreicht, t)!,
+      kartenrand: Color.lerp(kartenrand, other.kartenrand, t)!,
     );
   }
 }

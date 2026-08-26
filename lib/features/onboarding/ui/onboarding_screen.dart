@@ -174,7 +174,7 @@ class _Fortschritt extends StatelessWidget {
               height: 4,
               margin: EdgeInsets.only(right: i == gesamt - 1 ? 0 : 6),
               decoration: BoxDecoration(
-                color: i <= seite ? farben.akzent : farben.rand,
+                color: i <= seite ? farben.erreicht : farben.kartenrand,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -470,14 +470,16 @@ class _Chip extends StatelessWidget {
           color: aktiv
               ? farben.akzent.withValues(alpha: 0.14)
               : farben.flaeche,
-          border: Border.all(color: aktiv ? farben.akzent : farben.rand),
+          border: Border.all(
+            color: aktiv ? farben.erreicht : farben.kartenrand,
+          ),
           borderRadius: BorderRadius.circular(999),
         ),
         child: Text(
           label,
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            color: aktiv ? farben.akzent : farben.textPrimaer,
+            color: aktiv ? farben.erreicht : farben.textPrimaer,
           ),
         ),
       ),
@@ -514,7 +516,9 @@ class _Auswahlkarte extends StatelessWidget {
           color: aktiv
               ? farben.akzent.withValues(alpha: 0.10)
               : farben.flaeche,
-          border: Border.all(color: aktiv ? farben.akzent : farben.rand),
+          border: Border.all(
+            color: aktiv ? farben.erreicht : farben.kartenrand,
+          ),
           borderRadius: BorderRadius.circular(AppTheme.radiusCard),
         ),
         child: Row(
@@ -545,7 +549,7 @@ class _Auswahlkarte extends StatelessWidget {
                   : (aktiv
                       ? Icons.radio_button_checked
                       : Icons.radio_button_unchecked),
-              color: aktiv ? farben.akzent : farben.textSekundaer,
+              color: aktiv ? farben.erreicht : farben.textSekundaer,
             ),
           ],
         ),

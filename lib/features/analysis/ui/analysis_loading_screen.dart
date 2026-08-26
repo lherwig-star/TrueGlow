@@ -216,7 +216,7 @@ class _SkeletonBlockState extends State<_SkeletonBlock>
               margin: const EdgeInsets.only(bottom: AppTheme.gapS),
               decoration: BoxDecoration(
                 color: farben.akzent.withValues(alpha: staerke),
-                border: Border.all(color: farben.rand),
+                border: Border.all(color: farben.kartenrand),
                 borderRadius: BorderRadius.circular(AppTheme.radiusCard),
               ),
             );

@@ -18,7 +18,9 @@ class AppTheme {
   /// Unterschied zwischen 20 und 26 ist genau der zwischen „abgerundet" und
   /// „weich".
   static const double radiusCard = 26;
-  static const double radiusButton = 14;
+  /// Etwas weicher als frueher (14), damit Buttons neben den weichen
+  /// Karten nicht kantig wirken – aber deutlich fester als eine Karte.
+  static const double radiusButton = 18;
   static const double gapXs = 6;
   static const double gapS = 12;
   static const double gapM = 20;
@@ -88,12 +90,10 @@ class AppTheme {
       alpha: helligkeit == Brightness.dark ? 0.78 : 0.92,
     );
 
-    // Die Kontur ist Licht, kein Rahmen: eine Spur Textfarbe bei geringer
-    // Deckkraft. `rand` waere hier zu kraeftig und zoege eine sichtbare
-    // Linie um jede Karte.
-    final kartenKontur = farben.textPrimaer.withValues(
-      alpha: helligkeit == Brightness.dark ? 0.10 : 0.07,
-    );
+    // Die Kontur steht seit DECISIONS 51 als eigene Rolle in AppColors.
+    // Vorher rechnete das Theme sie sich hier selbst aus – und jede
+    // handgebaute Karte auf einer Unterseite nahm weiterhin `rand`.
+    final kartenKontur = farben.kartenrand;
 
     return base.copyWith(
       extensions: [farben],
@@ -151,7 +151,10 @@ class AppTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: farben.textPrimaer,
           minimumSize: const Size.fromHeight(54),
-          side: BorderSide(color: farben.rand),
+          // Dieselbe Kontur wie eine Karte – der Umriss-Button steht meist
+          // direkt darunter, und zwei verschiedene Randstaerken nebeneinander
+          // sehen nach Versehen aus.
+          side: BorderSide(color: farben.kartenrand),
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radiusButton),
@@ -161,10 +164,12 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(foregroundColor: farben.akzent),
       ),
+      // Angehakt heisst „an" – und das traegt seit DECISIONS 51 dieselbe
+      // Farbe wie jeder andere eingeschaltete Zustand in der App.
       checkboxTheme: CheckboxThemeData(
         fillColor: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.selected)
-              ? farben.akzent
+              ? farben.erreicht
               : Colors.transparent,
         ),
         checkColor: WidgetStatePropertyAll(farben.aufAkzent),
@@ -174,7 +179,7 @@ class AppTheme {
       radioTheme: RadioThemeData(
         fillColor: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.selected)
-              ? farben.akzent
+              ? farben.erreicht
               : farben.textSekundaer,
         ),
       ),
@@ -188,7 +193,7 @@ class AppTheme {
         style: ButtonStyle(
           backgroundColor: WidgetStateProperty.resolveWith(
             (states) => states.contains(WidgetState.selected)
-                ? farben.akzent
+                ? farben.erreicht
                 : Colors.transparent,
           ),
           foregroundColor: WidgetStateProperty.resolveWith(
@@ -201,7 +206,7 @@ class AppTheme {
                 ? farben.aufAkzent
                 : farben.textSekundaer,
           ),
-          side: WidgetStatePropertyAll(BorderSide(color: farben.rand)),
+          side: WidgetStatePropertyAll(BorderSide(color: farben.kartenrand)),
           textStyle: const WidgetStatePropertyAll(
             TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
           ),

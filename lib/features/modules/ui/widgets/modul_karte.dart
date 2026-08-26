@@ -49,27 +49,22 @@ class ModulKarte extends ConsumerWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
           padding: const EdgeInsets.all(AppTheme.gapM),
+          // Dieselbe Flaeche und dieselbe Kontur wie jede andere Karte der
+          // App – nur eben handgebaut, weil der Auswahlzustand mitanimiert
+          // wird. Die Werte kommen aus dem Theme, damit sie nicht wieder
+          // auseinanderlaufen (DECISIONS 51).
           decoration: BoxDecoration(
             color: ausgewaehlt
                 ? Color.alphaBlend(
-                    farben.akzent.withValues(alpha: 0.10),
-                    farben.flaeche,
+                    farben.erreicht.withValues(alpha: 0.10),
+                    Theme.of(context).cardTheme.color ?? farben.flaeche,
                   )
-                : farben.flaeche,
+                : Theme.of(context).cardTheme.color ?? farben.flaeche,
             border: Border.all(
-              color: ausgewaehlt ? farben.akzent : farben.rand,
+              color: ausgewaehlt ? farben.erreicht : farben.kartenrand,
               width: ausgewaehlt ? 1.6 : 1,
             ),
             borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-            boxShadow: ausgewaehlt
-                ? [
-                    BoxShadow(
-                      color: farben.akzent.withValues(alpha: 0.18),
-                      blurRadius: 14,
-                      offset: const Offset(0, 4),
-                    ),
-                  ]
-                : null,
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,9 +190,9 @@ class _Haken extends StatelessWidget {
       width: 26,
       height: 26,
       decoration: BoxDecoration(
-        color: aktiv ? farben.akzent : Colors.transparent,
+        color: aktiv ? farben.erreicht : Colors.transparent,
         border: Border.all(
-          color: aktiv ? farben.akzent : farben.textSekundaer,
+          color: aktiv ? farben.erreicht : farben.textSekundaer,
           width: 1.6,
         ),
         borderRadius: BorderRadius.circular(8),

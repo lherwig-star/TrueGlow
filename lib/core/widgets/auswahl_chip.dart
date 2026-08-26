@@ -32,15 +32,19 @@ class AuswahlChip extends StatelessWidget {
         duration: AppTheme.animation(context, const Duration(milliseconds: 180)),
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
         decoration: BoxDecoration(
-          color: aktiv ? farben.akzent.withValues(alpha: 0.14) : farben.flaeche,
-          border: Border.all(color: aktiv ? farben.akzent : farben.rand),
+          color: aktiv
+              ? farben.erreicht.withValues(alpha: 0.14)
+              : farben.flaeche,
+          border: Border.all(
+            color: aktiv ? farben.erreicht : farben.kartenrand,
+          ),
           borderRadius: BorderRadius.circular(999),
         ),
         child: Text(
           label,
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            color: aktiv ? farben.akzent : farben.textPrimaer,
+            color: aktiv ? farben.erreicht : farben.textPrimaer,
           ),
         ),
       ),
