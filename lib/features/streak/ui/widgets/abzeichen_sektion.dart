@@ -113,5 +113,6 @@ class _AbzeichenZeile extends StatelessWidget {
 String _fortschritt(AbzeichenStand stand, L texte) => switch (stand.abzeichen) {
       Abzeichen.ersteAnalyse => texte.abzeichenErsteAnalyseOffen,
       Abzeichen.alleModule => texte.abzeichenNochModule(stand.fehlend),
+      Abzeichen.challenges => texte.abzeichenNochChallenges(stand.fehlend),
       _ => texte.abzeichenNochTage(stand.fehlend),
     };

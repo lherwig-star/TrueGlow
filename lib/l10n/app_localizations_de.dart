@@ -1813,6 +1813,62 @@ class LDe extends L {
       'Neustart – dein längster Streak bleibt dir erhalten.';
 
   @override
+  String get challengeTitel => 'Challenge der Woche';
+
+  @override
+  String challengeAktiveTage(int ziel) {
+    return 'Sei an $ziel Tagen aktiv – ein Haken genügt.';
+  }
+
+  @override
+  String challengeSerie(int ziel) {
+    return 'Hake $ziel Tage in Folge mindestens einen Punkt ab.';
+  }
+
+  @override
+  String challengeVolleTage(int ziel) {
+    return 'Schaffe an $ziel Tagen deine komplette Checkliste.';
+  }
+
+  @override
+  String challengeAufgaben(int ziel) {
+    return 'Hake diese Woche $ziel Aufgaben ab.';
+  }
+
+  @override
+  String get challengeFrueheWoche =>
+      'Starker Start: Montag bis Mittwoch je ein Haken.';
+
+  @override
+  String get challengeWochenende =>
+      'Auch am Wochenende: Samstag und Sonntag je ein Haken.';
+
+  @override
+  String challengeStand(int stand, int ziel) {
+    return '$stand von $ziel';
+  }
+
+  @override
+  String get challengeGeschafft => 'Geschafft!';
+
+  @override
+  String get abzeichenChallengesTitel => 'Vier Wochen, vier Ziele';
+
+  @override
+  String get abzeichenChallengesText => 'Vier Wochen-Challenges geschafft.';
+
+  @override
+  String abzeichenNochChallenges(int anzahl) {
+    String _temp0 = intl.Intl.pluralLogic(
+      anzahl,
+      locale: localeName,
+      other: 'noch $anzahl Challenges',
+      one: 'noch 1 Challenge',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get rueckblickTitel => 'Deine Woche';
 
   @override

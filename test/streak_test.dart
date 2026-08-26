@@ -34,10 +34,14 @@ void main() {
       );
     });
 
-    test('zwei Abzeichen haengen nicht am Streak', () {
+    test('drei Abzeichen haengen nicht am Streak', () {
       final ohneStreak =
           Abzeichen.values.where((a) => !a.istStreakZiel).toList();
-      expect(ohneStreak, [Abzeichen.ersteAnalyse, Abzeichen.alleModule]);
+      expect(ohneStreak, [
+        Abzeichen.ersteAnalyse,
+        Abzeichen.alleModule,
+        Abzeichen.challenges,
+      ]);
     });
 
     test('jedes Abzeichen hat Titel, Beschreibung und Jubeltext', () {
@@ -115,6 +119,7 @@ void main() {
       final staende = abzeichenStaende(
         streak: _streak(90),
         analyse: _analyse(AnalyseModul.bestellbar.toSet()),
+        challenges: Abzeichen.challengeZiel,
       );
 
       expect(staende.every((s) => s.erreicht), isTrue);

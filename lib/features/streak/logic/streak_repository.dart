@@ -8,6 +8,7 @@ import '../../analysis/models/analysis_result.dart';
 import '../../history/logic/analysis_repository.dart';
 import '../../modules/models/analyse_modul.dart';
 import '../../plan/logic/plan_progress_repository.dart';
+import '../../plan/logic/wochen_challenge.dart';
 import '../models/abzeichen.dart';
 
 /// Wann ein Tag als geschafft gilt.
@@ -308,6 +309,7 @@ class StreakRepository {
 List<AbzeichenStand> abzeichenStaende({
   required StreakStand streak,
   required AnalysisResult? analyse,
+  int challenges = 0,
 }) {
   final module = analyse?.module ?? const <AnalyseModul>{};
   // Gezaehlt wird nur, was sich bestellen laesst. Das Zielkapitel entsteht
@@ -328,6 +330,12 @@ List<AbzeichenStand> abzeichenStaende({
             abzeichen: abzeichen,
             erreicht: alleModule,
             fehlend: bestellbar.length - erreichte,
+          ),
+        Abzeichen.challenges => AbzeichenStand(
+            abzeichen: abzeichen,
+            erreicht: challenges >= Abzeichen.challengeZiel,
+            fehlend: (Abzeichen.challengeZiel - challenges)
+                .clamp(0, Abzeichen.challengeZiel),
           ),
         _ => AbzeichenStand(
             abzeichen: abzeichen,
@@ -385,6 +393,7 @@ final abzeichenProvider = Provider<List<AbzeichenStand>>((ref) {
   return abzeichenStaende(
     streak: ref.watch(streakProvider),
     analyse: ref.watch(aktuelleAnalyseProvider),
+    challenges: ref.watch(geschaffteChallengesProvider),
   );
 });
 

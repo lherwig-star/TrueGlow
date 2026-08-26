@@ -1330,6 +1330,52 @@ das würde den stärksten Bereich stillschweigend verschieben.
 weggeklickt wurde) und eine Karte, die an zwei von sieben Tagen auf der
 Startseite steht.
 
+## 47 · Wochen-Challenges aus einem festen Vorrat
+
+Jede Woche eine kleine Extra-Aufgabe über die Tagesliste hinaus: „Schaffe an
+2 Tagen deine komplette Checkliste", „Hake 4 Tage in Folge mindestens einen
+Punkt ab". Zehn Vorlagen, aus denen wöchentlich rotiert wird. Alles daran
+wird aus den vorhandenen Haken gerechnet — kein Modellaufruf, keine Kosten.
+
+**Warum sechs Sorten und zehn Vorlagen.** Eine Vorlage ist eine Sorte plus
+eine Zielzahl. So braucht jede Sorte nur **einen** Satz Text mit einer
+Zahl darin, und aus sechs Sätzen entstehen zehn Wochen. Zehn einzelne
+Textbausteine hätten zwanzig ARB-Einträge gekostet und wären die erste
+Stelle gewesen, an der eine Übersetzung fehlt.
+
+**Warum die Reihenfolge im Vorrat die Rotation ist.** Kein Zufall, keine
+Auswahl nach Können: Ein Zufallsgenerator kann dieselbe Challenge zweimal
+hintereinander ziehen, und eine Auswahl nach Können bräuchte eine Bewertung
+des Nutzers — genau das, was die App an keiner Stelle tut. Die Liste
+wechselt bewusst zwischen leicht und schwer, damit nicht zwei harte Wochen
+aufeinandertreffen. Ein Test besteht darauf, dass keine zwei
+aufeinanderfolgenden Wochen dieselbe Vorlage ziehen.
+
+**Warum eine feste Epoche.** Die Woche wird über den Abstand zu Montag, dem
+5. Januar 2026 gerechnet. Damit zeigt jedes Gerät dieselbe Challenge — ohne
+Server, ohne Sync. Ein Gerät mit falsch gestelltem Datum landet vor der
+Epoche; die Rechnung fängt das ab, statt einen negativen Index zu erzeugen.
+
+**Warum einmal geschafft geschafft bleibt.** Die Challenge wird bei jedem
+Haken neu gerechnet. Ohne Vermerk verschwände ein erreichtes „Geschafft!"
+wieder, sobald jemand einen Haken zurücknimmt — und das wäre eine Bestrafung
+für das Korrigieren eines Versehens.
+
+**Warum eine verpasste Woche nicht vermerkt wird.** Gespeichert werden nur
+die geschafften Wochen. Es gibt kein „leider verpasst" und keine Statistik
+darüber, was nicht geklappt hat. Am Montag steht die nächste Challenge da,
+und das ist die einzige Nachricht, die an dieser Stelle hilft.
+
+**Das Abzeichen** heißt „Vier Wochen, vier Ziele" und fällt nach vier
+geschafften Challenges. Es hängt als dritter Wert nicht am Streak, sondern an
+dieser Zahl — die Abzeichen-Liste kannte diesen Fall schon (erste Analyse,
+alle Module), es kam nur ein Zweig dazu.
+
+**Preis:** Ein Schlüssel mehr im Fortschritts-Speicher und eine Karte mehr
+auf der Startseite. Die Startseite wird länger; das ist der Punkt, an dem
+irgendwann zu überlegen ist, ob Serie, Challenge und Rückblick
+zusammenrücken.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

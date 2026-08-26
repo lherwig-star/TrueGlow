@@ -3271,6 +3271,78 @@ abstract class L {
   /// **'Neustart – dein längster Streak bleibt dir erhalten.'**
   String get streakNeustart;
 
+  /// Wöchentliche Extra-Aufgabe auf der Startseite. Rotiert aus einem festen Vorrat.
+  ///
+  /// In de, this message translates to:
+  /// **'Challenge der Woche'**
+  String get challengeTitel;
+
+  /// No description provided for @challengeAktiveTage.
+  ///
+  /// In de, this message translates to:
+  /// **'Sei an {ziel} Tagen aktiv – ein Haken genügt.'**
+  String challengeAktiveTage(int ziel);
+
+  /// No description provided for @challengeSerie.
+  ///
+  /// In de, this message translates to:
+  /// **'Hake {ziel} Tage in Folge mindestens einen Punkt ab.'**
+  String challengeSerie(int ziel);
+
+  /// No description provided for @challengeVolleTage.
+  ///
+  /// In de, this message translates to:
+  /// **'Schaffe an {ziel} Tagen deine komplette Checkliste.'**
+  String challengeVolleTage(int ziel);
+
+  /// No description provided for @challengeAufgaben.
+  ///
+  /// In de, this message translates to:
+  /// **'Hake diese Woche {ziel} Aufgaben ab.'**
+  String challengeAufgaben(int ziel);
+
+  /// No description provided for @challengeFrueheWoche.
+  ///
+  /// In de, this message translates to:
+  /// **'Starker Start: Montag bis Mittwoch je ein Haken.'**
+  String get challengeFrueheWoche;
+
+  /// No description provided for @challengeWochenende.
+  ///
+  /// In de, this message translates to:
+  /// **'Auch am Wochenende: Samstag und Sonntag je ein Haken.'**
+  String get challengeWochenende;
+
+  /// No description provided for @challengeStand.
+  ///
+  /// In de, this message translates to:
+  /// **'{stand} von {ziel}'**
+  String challengeStand(int stand, int ziel);
+
+  /// No description provided for @challengeGeschafft.
+  ///
+  /// In de, this message translates to:
+  /// **'Geschafft!'**
+  String get challengeGeschafft;
+
+  /// No description provided for @abzeichenChallengesTitel.
+  ///
+  /// In de, this message translates to:
+  /// **'Vier Wochen, vier Ziele'**
+  String get abzeichenChallengesTitel;
+
+  /// No description provided for @abzeichenChallengesText.
+  ///
+  /// In de, this message translates to:
+  /// **'Vier Wochen-Challenges geschafft.'**
+  String get abzeichenChallengesText;
+
+  /// No description provided for @abzeichenNochChallenges.
+  ///
+  /// In de, this message translates to:
+  /// **'{anzahl, plural, =1{noch 1 Challenge} other{noch {anzahl} Challenges}}'**
+  String abzeichenNochChallenges(int anzahl);
+
   /// Wochen-Rückblick auf der Startseite, Sonntagabend bis Montag.
   ///
   /// In de, this message translates to:

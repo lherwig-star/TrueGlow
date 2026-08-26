@@ -705,6 +705,46 @@ Kein Kontingent, kein Analyse-Lauf. Braucht aber das Verstellen des Datums.
 11. **Englisch.** Erwartet: „Your week", „active on 4 of 7 days", „Your
     strongest area: …", „Solid week. The groundwork is there."
 
+## 18 · Die Wochen-Challenge
+
+Kein Kontingent, kein Analyse-Lauf. Braucht das Verstellen des Datums.
+
+1. **Die Karte ist da.** Startseite im Demo-Modus öffnen. Erwartet: Unter
+   der Serien-Karte steht **„Challenge der Woche"** mit einem Satz, einem
+   Balken und dem Stand rechts oben („0 von 3").
+
+2. **Der Balken bewegt sich.** Einen Punkt abhaken. Erwartet: Der Stand
+   steigt, der Balken wächst. Bei einer Challenge, die volle Tage verlangt,
+   springt er erst, wenn die komplette Liste steht.
+
+3. **Geschafft.** Die Challenge der Woche erfüllen (notfalls über das
+   Datum: einen Tag vorstellen, abhaken, wiederholen). Erwartet: Rechts oben
+   steht **„Geschafft!"** mit grünem Haken, der Balken ist voll.
+
+4. **Ein Haken zurück nimmt sie nicht weg.** Einen Punkt wieder abwählen.
+   Erwartet: „Geschafft!" bleibt stehen. Was einmal erreicht war, bleibt
+   erreicht.
+
+5. **Nächste Woche, andere Challenge.** Datum eine Woche vorstellen.
+   Erwartet: Ein **anderer** Challenge-Text, Stand wieder bei 0. Kein
+   „leider verpasst", kein Hinweis auf die alte Woche.
+
+6. **Der Vorrat wiederholt sich nicht so schnell.** Das Datum zehnmal um je
+   eine Woche vorstellen und die Texte mitschreiben. Erwartet: zehn
+   verschiedene Challenges, danach fängt es wieder von vorn an.
+
+7. **Das Abzeichen.** Vier Challenges schaffen (am schnellsten über das
+   Datum, mit der jeweils leichtesten). Erwartet: In der Abzeichen-Liste
+   steht **„Vier Wochen, vier Ziele"** als erreicht. Vorher steht darunter
+   „noch 2 Challenges" oder Ähnliches.
+
+8. **Englisch.** Erwartet: „This week's challenge", „Be active on 3 days —
+   one tick is enough.", „2 of 3", „Done!", „Four weeks, four goals".
+
+9. **Ohne Plan.** In den Einstellungen alle Daten löschen, App öffnen.
+   Erwartet: Ohne Analyse gibt es keine Startseite mit Karten — die Challenge
+   erscheint erst mit dem ersten Plan.
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

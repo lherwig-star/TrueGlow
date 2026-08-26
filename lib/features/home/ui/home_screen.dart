@@ -18,6 +18,7 @@ import '../../checkin/logic/checkin_controller.dart';
 import '../../checkin/ui/widgets/checkin_karte.dart';
 import '../../modules/logic/module_controller.dart';
 import '../../history/logic/analysis_repository.dart';
+import '../../plan/ui/widgets/challenge_karte.dart';
 import '../../plan/ui/widgets/checkliste_karte.dart';
 import '../../plan/ui/widgets/wochen_rueckblick_karte.dart';
 import '../../streak/logic/erinnerung_planer.dart';
@@ -204,6 +205,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       const WochenRueckblickKarte(),
       const StreakKarte(),
       const SizedBox(height: AppTheme.gapS),
+      const ChallengeKarte(),
       SectionCard(
         title: texte.homeDeinPlan,
         icon: Icons.flag_outlined,

@@ -1804,6 +1804,62 @@ class LEn extends L {
       'Fresh start — your longest streak stays with you.';
 
   @override
+  String get challengeTitel => 'This week\'s challenge';
+
+  @override
+  String challengeAktiveTage(int ziel) {
+    return 'Be active on $ziel days — one tick is enough.';
+  }
+
+  @override
+  String challengeSerie(int ziel) {
+    return 'Tick off at least one item on $ziel days in a row.';
+  }
+
+  @override
+  String challengeVolleTage(int ziel) {
+    return 'Clear your whole checklist on $ziel days.';
+  }
+
+  @override
+  String challengeAufgaben(int ziel) {
+    return 'Tick off $ziel tasks this week.';
+  }
+
+  @override
+  String get challengeFrueheWoche =>
+      'Strong start: one tick on Monday, Tuesday and Wednesday.';
+
+  @override
+  String get challengeWochenende =>
+      'Weekends too: one tick on Saturday and Sunday.';
+
+  @override
+  String challengeStand(int stand, int ziel) {
+    return '$stand of $ziel';
+  }
+
+  @override
+  String get challengeGeschafft => 'Done!';
+
+  @override
+  String get abzeichenChallengesTitel => 'Four weeks, four goals';
+
+  @override
+  String get abzeichenChallengesText => 'Four weekly challenges completed.';
+
+  @override
+  String abzeichenNochChallenges(int anzahl) {
+    String _temp0 = intl.Intl.pluralLogic(
+      anzahl,
+      locale: localeName,
+      other: '$anzahl challenges to go',
+      one: '1 challenge to go',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get rueckblickTitel => 'Your week';
 
   @override

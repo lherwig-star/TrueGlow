@@ -13,7 +13,14 @@ enum Abzeichen {
   dreissigTage(icon: Icons.calendar_month_outlined, tage: 30),
   sechzigTage(icon: Icons.military_tech_outlined, tage: 60),
   neunzigTage(icon: Icons.workspace_premium_outlined, tage: 90),
-  alleModule(icon: Icons.grid_view_rounded);
+  alleModule(icon: Icons.grid_view_rounded),
+
+  /// Vier geschaffte Wochen-Challenges. Haengt nicht am Streak, sondern an
+  /// der Zahl der Wochen, in denen das Wochenziel gefallen ist.
+  challenges(icon: Icons.emoji_events_outlined);
+
+  /// So viele Challenges braucht [Abzeichen.challenges].
+  static const challengeZiel = 4;
 
   const Abzeichen({required this.icon, this.tage});
 
@@ -46,6 +53,7 @@ extension AbzeichenText on Abzeichen {
         Abzeichen.sechzigTage => texte.abzeichenSechzigTitel,
         Abzeichen.neunzigTage => texte.abzeichenNeunzigTitel,
         Abzeichen.alleModule => texte.abzeichenAlleModuleTitel,
+        Abzeichen.challenges => texte.abzeichenChallengesTitel,
       };
 
   String beschreibung(L texte) => switch (this) {
@@ -57,6 +65,7 @@ extension AbzeichenText on Abzeichen {
         Abzeichen.sechzigTage => texte.abzeichenSechzigText,
         Abzeichen.neunzigTage => texte.abzeichenNeunzigText,
         Abzeichen.alleModule => texte.abzeichenAlleModuleText,
+        Abzeichen.challenges => texte.abzeichenChallengesText,
       };
 }
 

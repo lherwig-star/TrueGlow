@@ -719,6 +719,39 @@
     "placeholders": { "tage": { "type": "int" } }
   },
   "streakNeustart": "Neustart – dein längster Streak bleibt dir erhalten.",
+  "challengeTitel": "Challenge der Woche",
+  "@challengeTitel": {
+    "description": "Wöchentliche Extra-Aufgabe auf der Startseite. Rotiert aus einem festen Vorrat."
+  },
+  "challengeAktiveTage": "Sei an {ziel} Tagen aktiv – ein Haken genügt.",
+  "@challengeAktiveTage": {
+    "placeholders": { "ziel": { "type": "int" } }
+  },
+  "challengeSerie": "Hake {ziel} Tage in Folge mindestens einen Punkt ab.",
+  "@challengeSerie": {
+    "placeholders": { "ziel": { "type": "int" } }
+  },
+  "challengeVolleTage": "Schaffe an {ziel} Tagen deine komplette Checkliste.",
+  "@challengeVolleTage": {
+    "placeholders": { "ziel": { "type": "int" } }
+  },
+  "challengeAufgaben": "Hake diese Woche {ziel} Aufgaben ab.",
+  "@challengeAufgaben": {
+    "placeholders": { "ziel": { "type": "int" } }
+  },
+  "challengeFrueheWoche": "Starker Start: Montag bis Mittwoch je ein Haken.",
+  "challengeWochenende": "Auch am Wochenende: Samstag und Sonntag je ein Haken.",
+  "challengeStand": "{stand} von {ziel}",
+  "@challengeStand": {
+    "placeholders": { "stand": { "type": "int" }, "ziel": { "type": "int" } }
+  },
+  "challengeGeschafft": "Geschafft!",
+  "abzeichenChallengesTitel": "Vier Wochen, vier Ziele",
+  "abzeichenChallengesText": "Vier Wochen-Challenges geschafft.",
+  "abzeichenNochChallenges": "{anzahl, plural, =1{noch 1 Challenge} other{noch {anzahl} Challenges}}",
+  "@abzeichenNochChallenges": {
+    "placeholders": { "anzahl": { "type": "int" } }
+  },
   "rueckblickTitel": "Deine Woche",
   "@rueckblickTitel": {
     "description": "Wochen-Rückblick auf der Startseite, Sonntagabend bis Montag."
