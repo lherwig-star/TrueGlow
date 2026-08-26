@@ -1798,6 +1798,49 @@ class LDe extends L {
   }
 
   @override
+  String streakRekord(int tage) {
+    String _temp0 = intl.Intl.pluralLogic(
+      tage,
+      locale: localeName,
+      other: 'Längste Serie: $tage Tage',
+      one: 'Längste Serie: 1 Tag',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get streakNeustart =>
+      'Neustart – dein längster Streak bleibt dir erhalten.';
+
+  @override
+  String streakJokerUebrig(int anzahl) {
+    String _temp0 = intl.Intl.pluralLogic(
+      anzahl,
+      locale: localeName,
+      other: 'Noch $anzahl Joker diesen Monat',
+      one: 'Noch 1 Joker diesen Monat',
+      zero: 'Diesen Monat keine Joker mehr',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String streakJokerGerettet(int anzahl) {
+    String _temp0 = intl.Intl.pluralLogic(
+      anzahl,
+      locale: localeName,
+      other: '$anzahl Joker haben deinen Streak gerettet.',
+      one: 'Ein Joker hat deinen Streak gerettet.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String streakJokerErklaerung(int gesamt) {
+    return 'Joker: $gesamt pro Monat. Verpasst du einen Tag, springt automatisch einer ein.';
+  }
+
+  @override
   String streakNochModule(int anzahl) {
     return 'noch $anzahl';
   }

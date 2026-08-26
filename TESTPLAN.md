@@ -479,11 +479,20 @@ Dokument `checkin` das Feld `freiZuletzt` löschen.
    durchgehen — Bart-Test, Suchmaschinen-Test, Wiederholungs-Test. Das ist
    der eigentliche Zweck des Wechsels. Notier, was durchgerutscht ist.
 
-4. **Was hat der Lauf gekostet?** Optional, am Rechner. In der
-   Google-Cloud-Konsole unter „Vertex AI" bzw. im Abrechnungsbericht des
-   Projekts steht der Verbrauch. Interessant ist die Zahl der Denk-Tokens —
-   davon hängt ab, ob wir bei 3 oder bei 5 Cent je Analyse liegen
-   (`DECISIONS.md` 41).
+4. **Was hat der Lauf gekostet?** Optional, am Rechner. Drei Stellen, je
+   nachdem, was du wissen willst:
+
+   - **Aufrufe und Fehlerquote** der Gemini-API:
+     <https://console.cloud.google.com/apis/api/generativelanguage.googleapis.com/metrics?project=trueglow-b2c1c>
+   - **Tokens je Schlüssel**, inklusive der Denk-Tokens:
+     <https://aistudio.google.com/usage>
+   - **Euro**, im Abrechnungsbericht des Projekts:
+     <https://console.cloud.google.com/billing?project=trueglow-b2c1c> →
+     „Berichte", dort nach Dienst filtern (`Generative Language API`).
+
+   Interessant ist die Zahl der Denk-Tokens — davon hängt ab, ob wir bei 3
+   oder bei 5 Cent je Analyse liegen (`DECISIONS.md` 41). Die Abrechnung
+   hinkt ein paar Stunden hinterher; die Token-Zahlen stehen schneller da.
 
 5. **Der Zähler in der App.** Modul-Auswahl öffnen. Erwartet: „Noch 2 von 3
    Analysen heute". Der Monatszähler steht dort nicht — er meldet sich erst,
@@ -521,6 +530,56 @@ Dokument `checkin` das Feld `freiZuletzt` löschen.
 
 10. **Zurücksetzen nicht vergessen.** Nach dem Test das Dokument `analyse`
     wieder löschen, sonst bleibt dein Zähler auf 10 stehen.
+
+## 14 · Der Streak-Joker
+
+Kostet kein Kontingent und keinen Analyse-Lauf. Am schnellsten geht es im
+Demo-Modus (`flutter run --dart-define=TRUEGLOW_MOCK=true`), weil dort sofort
+ein Plan mit Tagesaufgaben dasteht.
+
+1. **Der Vorrat ist sichtbar.** Startseite öffnen. Erwartet: Rechts an der
+   Serien-Karte stehen **zwei kleine Schilde** und darunter „2/2". Lange
+   drauftippen zeigt den Hinweis „Joker: 2 pro Monat …".
+
+2. **Eine Aufgabe abhaken.** Erwartet: Die Flamme leuchtet auf, die Serie
+   steht auf 1, die Schilde bleiben bei 2/2. Ein Joker wird für heute nie
+   verbraucht — der Tag ist ja noch offen.
+
+3. **Einen Tag überspringen.** Das Handy einen Tag vorstellen (Einstellungen
+   → Datum & Uhrzeit, automatische Zeit aus), die App öffnen und **nichts**
+   abhaken. Wieder einen Tag vorstellen und dann eine Aufgabe abhaken.
+   Erwartet: Die Serie steht auf **2**, nicht auf 1 — der übersprungene Tag
+   wurde überbrückt. Auf der Karte steht „Ein Joker hat deinen Streak
+   gerettet.", und die Schilde stehen auf **1/2**.
+
+4. **Der Hinweis kommt nur einmal.** App verlassen und neu öffnen. Erwartet:
+   Der Satz „Ein Joker hat deinen Streak gerettet." ist weg, die Schilde
+   stehen weiter auf 1/2, die Serie bleibt bei 2.
+
+5. **Der zweite Joker.** Punkt 3 noch einmal. Erwartet: Serie 3, Schilde
+   0/2, Hinweis wieder da.
+
+6. **Der dritte verpasste Tag reißt die Serie.** Punkt 3 ein drittes Mal.
+   Erwartet: Die Serie steht auf **1** (nur der heutige Tag), und auf der
+   Karte steht **nicht** „0 Tage" mit einem Vorwurf, sondern die Serie
+   beginnt neu. Darunter steht „Längste Serie: 3 Tage".
+
+7. **Der Neustart-Ton.** Datum einen Tag weiter, App öffnen und **nichts**
+   abhaken. Erwartet: Die Serie steht auf 0 und die Karte sagt „Neustart —
+   dein längster Streak bleibt dir erhalten." Kein „leider", kein
+   Ausrufezeichen, keine rote Farbe.
+
+8. **Monatswechsel füllt auf.** Das Datum auf den 1. des nächsten Monats
+   stellen und die App öffnen. Erwartet: Die Schilde stehen wieder auf
+   **2/2**.
+
+9. **Englisch.** Einstellungen → English, Startseite. Erwartet: „A joker
+   saved your streak.", „Longest streak: 3 days", „Fresh start — your longest
+   streak stays with you." Kein deutsches Wort.
+
+> **Danach das Datum wieder auf automatisch stellen.** Die abgehakten Tage
+> aus dem Test bleiben gespeichert; wenn dich das stört, in den Einstellungen
+> „Alle Daten löschen".
 
 ## Was mit Funden passiert
 

@@ -713,6 +713,27 @@
   "streakKeineAufgaben": "Noch keine Tagesaufgaben.",
   "streakNichtsAbgehakt": "Heute noch nichts abgehakt – ein Haken sichert den Tag.",
   "streakHeuteErledigt": "Heute {erledigt} von {gesamt} erledigt",
+  "streakRekord": "{tage, plural, =1{Längste Serie: 1 Tag} other{Längste Serie: {tage} Tage}}",
+  "@streakRekord": {
+    "description": "Der längste je erreichte Streak. Bleibt stehen, auch wenn die aktuelle Serie reißt.",
+    "placeholders": { "tage": { "type": "int" } }
+  },
+  "streakNeustart": "Neustart – dein längster Streak bleibt dir erhalten.",
+  "streakJokerUebrig": "{anzahl, plural, =0{Diesen Monat keine Joker mehr} =1{Noch 1 Joker diesen Monat} other{Noch {anzahl} Joker diesen Monat}}",
+  "@streakJokerUebrig": {
+    "description": "Wie viele Streak-Joker der laufende Kalendermonat noch hergibt.",
+    "placeholders": { "anzahl": { "type": "int" } }
+  },
+  "streakJokerGerettet": "{anzahl, plural, =1{Ein Joker hat deinen Streak gerettet.} other{{anzahl} Joker haben deinen Streak gerettet.}}",
+  "@streakJokerGerettet": {
+    "description": "Freundlicher Hinweis, wenn für einen verpassten Tag ein Joker eingesprungen ist.",
+    "placeholders": { "anzahl": { "type": "int" } }
+  },
+  "streakJokerErklaerung": "Joker: {gesamt} pro Monat. Verpasst du einen Tag, springt automatisch einer ein.",
+  "@streakJokerErklaerung": {
+    "description": "Tooltip an den Joker-Symbolen.",
+    "placeholders": { "gesamt": { "type": "int" } }
+  },
   "@streakHeuteErledigt": {
     "description": "Fortschritt der Tages-Checkliste.",
     "placeholders": {

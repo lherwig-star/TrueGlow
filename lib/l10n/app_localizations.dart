@@ -3259,6 +3259,36 @@ abstract class L {
   /// **'Heute {erledigt} von {gesamt} erledigt'**
   String streakHeuteErledigt(int erledigt, int gesamt);
 
+  /// Der längste je erreichte Streak. Bleibt stehen, auch wenn die aktuelle Serie reißt.
+  ///
+  /// In de, this message translates to:
+  /// **'{tage, plural, =1{Längste Serie: 1 Tag} other{Längste Serie: {tage} Tage}}'**
+  String streakRekord(int tage);
+
+  /// No description provided for @streakNeustart.
+  ///
+  /// In de, this message translates to:
+  /// **'Neustart – dein längster Streak bleibt dir erhalten.'**
+  String get streakNeustart;
+
+  /// Wie viele Streak-Joker der laufende Kalendermonat noch hergibt.
+  ///
+  /// In de, this message translates to:
+  /// **'{anzahl, plural, =0{Diesen Monat keine Joker mehr} =1{Noch 1 Joker diesen Monat} other{Noch {anzahl} Joker diesen Monat}}'**
+  String streakJokerUebrig(int anzahl);
+
+  /// Freundlicher Hinweis, wenn für einen verpassten Tag ein Joker eingesprungen ist.
+  ///
+  /// In de, this message translates to:
+  /// **'{anzahl, plural, =1{Ein Joker hat deinen Streak gerettet.} other{{anzahl} Joker haben deinen Streak gerettet.}}'**
+  String streakJokerGerettet(int anzahl);
+
+  /// Tooltip an den Joker-Symbolen.
+  ///
+  /// In de, this message translates to:
+  /// **'Joker: {gesamt} pro Monat. Verpasst du einen Tag, springt automatisch einer ein.'**
+  String streakJokerErklaerung(int gesamt);
+
   /// Fortschritt zum Abzeichen „Alles freigeschaltet".
   ///
   /// In de, this message translates to:

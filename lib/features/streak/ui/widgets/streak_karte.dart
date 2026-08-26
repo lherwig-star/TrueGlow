@@ -106,6 +106,10 @@ class _StreakKarteState extends ConsumerState<StreakKarte>
                 const SizedBox(height: AppTheme.gapXs),
                 MutedText(
                   switch (habits.isEmpty) {
+                    // „Neustart" steht vor allem anderen: Wer die Serie
+                    // verloren hat, soll nicht als Erstes eine nackte Null
+                    // mit einer Aufgabenzahl daneben lesen.
+                    _ when streak.neustartNachSerie => texte.streakNeustart,
                     true => texte.streakKeineAufgaben,
                     false when erledigt == habits.length =>
                       texte.streakAllesErledigt,
@@ -114,10 +118,121 @@ class _StreakKarteState extends ConsumerState<StreakKarte>
                     false => texte.streakHeuteErledigt(erledigt, habits.length),
                   },
                 ),
+                if (streak.rekord > 0 && streak.rekord != streak.aktuell) ...[
+                  const SizedBox(height: 2),
+                  MutedText(texte.streakRekord(streak.rekord)),
+                ],
+                if (streak.ungemeldeteJoker > 0) ...[
+                  const SizedBox(height: AppTheme.gapXs),
+                  _JokerHinweis(anzahl: streak.ungemeldeteJoker),
+                ],
               ],
             ),
           ),
+          _JokerVorrat(uebrig: streak.jokerUebrig),
         ],
+      ),
+    );
+  }
+}
+
+/// „Ein Joker hat deinen Streak gerettet." – einmal, dann abgehakt.
+///
+/// Der Hinweis meldet sich selbst als gesehen, sobald er einmal gezeichnet
+/// wurde. Er steht bewusst als Zeile in der Karte und nicht als Dialog: Es
+/// ist eine gute Nachricht, kein Vorgang, den jemand bestätigen muss.
+class _JokerHinweis extends ConsumerStatefulWidget {
+  const _JokerHinweis({required this.anzahl});
+
+  final int anzahl;
+
+  @override
+  ConsumerState<_JokerHinweis> createState() => _JokerHinweisState();
+}
+
+class _JokerHinweisState extends ConsumerState<_JokerHinweis> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ref.read(streakProvider.notifier).jokerGemeldet();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final farben = context.farben;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(Icons.shield_moon_outlined, size: 16, color: farben.akzentZwei),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(
+            context.texte.streakJokerGerettet(widget.anzahl),
+            style: TextStyle(
+              fontSize: 13,
+              height: 1.35,
+              fontWeight: FontWeight.w700,
+              color: farben.akzentZwei,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Die Joker des laufenden Monats als kleine Schilde – verbrauchte blass.
+class _JokerVorrat extends StatelessWidget {
+  const _JokerVorrat({required this.uebrig});
+
+  final int uebrig;
+
+  @override
+  Widget build(BuildContext context) {
+    final farben = context.farben;
+    final texte = context.texte;
+
+    return Tooltip(
+      message: texte.streakJokerErklaerung(StreakRepository.jokerProMonat),
+      child: Semantics(
+        label: texte.streakJokerUebrig(uebrig),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var i = 0; i < StreakRepository.jokerProMonat; i += 1)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 3),
+                    child: Icon(
+                      i < uebrig
+                          ? Icons.shield_moon
+                          : Icons.shield_moon_outlined,
+                      size: 18,
+                      color: i < uebrig
+                          ? farben.akzentZwei
+                          : farben.textSekundaer.withValues(alpha: 0.4),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 2),
+            ExcludeSemantics(
+              child: Text(
+                '$uebrig/${StreakRepository.jokerProMonat}',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: farben.textSekundaer,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

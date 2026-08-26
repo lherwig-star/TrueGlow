@@ -1163,6 +1163,46 @@ wieder losgeht und dass die Check-ins weiterlaufen.
 Check-in-Pfad. Zum Zurücksetzen beim Testen reicht weiterhin die
 Firebase-Konsole — wie, steht in `SETUP.md` 6.6.
 
+## 43 · Der Streak-Joker
+
+Eine Serie, die beim ersten vergessenen Tag auf null fällt, bestraft genau
+den, den sie tragen soll. Neu: **zwei Joker pro Kalendermonat**. Verpasst
+jemand einen Tag, springt automatisch einer ein — ohne Knopf, ohne Nachfrage.
+
+**Warum der gerettete Tag nicht mitzählt.** „Tage am Stück" sind Tage, an
+denen wirklich etwas passiert ist. Ein Joker hält die Kette zusammen, aber er
+erfindet keinen Tag. Zählte er mit, stünde in der App eine Zahl, die dem
+Nutzer mehr erzählt, als er getan hat — und der erste, dem das auffällt, ist
+er selbst.
+
+**Warum ein Joker nie am losen Ende ausgegeben wird.** Das ist die Falle, in
+die man bei so etwas läuft: Beim allerersten Start ist jeder Tag rückwärts
+leer. Eine naive Rechnung setzt zwei Joker und meldet eine Serie von zwei
+Tagen aus dem Nichts. Deshalb wird ein Joker erst gültig, wenn dahinter noch
+ein wirklich geschaffter Tag kommt — er darf eine Lücke *überbrücken*, nicht
+den Anfang erfinden. Zwei Tests decken genau diesen Fall ab.
+
+**Warum verbrauchte Joker festgeschrieben werden.** Die Serie wird bei jedem
+Laden neu aus den Tagesdaten gerechnet (das war schon vorher so und ist
+richtig — sonst stimmt sie nicht, wenn die App tagelang zu war). Ohne
+Festschreiben spränge derselbe Joker bei jedem Laden erneut ein, und das
+Monatskontingent wäre eine Zierde. Die geretteten Tage stehen deshalb als
+Liste im Speicher, direkt neben der Serie.
+
+**Warum Kalendermonat.** Dieselbe Überlegung wie beim Analyse-Kontingent
+(DECISIONS 42): „am Ersten wieder zwei" versteht jeder. Maßgeblich ist dabei
+der Monat des *geretteten Tages*, nicht der von heute — eine Lücke über den
+Monatswechsel zahlen deshalb beide Monate je zur Hälfte.
+
+**Der Ton, wenn es doch reißt.** Keine dramatische Null: Steht die Serie auf
+0 und gab es schon einmal eine, sagt die Karte „Neustart — dein längster
+Streak bleibt dir erhalten." Der Rekord wurde ohnehin schon gespeichert; er
+wird jetzt auch angezeigt, sobald er von der laufenden Serie abweicht.
+
+**Preis:** Zwei Schlüssel mehr im Speicher und eine Serienrechnung, die man
+nicht mehr in drei Zeilen liest. Dafür liegt sie jetzt als freie Funktion
+ohne Speicher da und lässt sich vollständig durchspielen.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

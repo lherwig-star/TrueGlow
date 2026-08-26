@@ -156,10 +156,34 @@ void main() {
       expect(streakRepo().berechneAktuell(const []), 2);
     });
 
-    test('eine Luecke beendet die Serie', () async {
+    test('eine Luecke ueberbruecken die Joker', () async {
+      // Zwei verpasste Tage faengt das Monatskontingent ab – gezaehlt
+      // werden weiterhin nur die beiden Tage mit echtem Haken.
       await hakeAb(0);
       await hakeAb(3);
+      expect(streakRepo().berechneAktuell(const []), 2);
+    });
+
+    test('nach zwei Jokern ist Schluss', () async {
+      await hakeAb(0);
+      await hakeAb(4);
       expect(streakRepo().berechneAktuell(const []), 1);
+    });
+
+    test('ein verbrauchter Joker springt nicht zweimal ein', () async {
+      // Die Serie wird bei jedem Laden neu gerechnet. Ohne Festschreiben
+      // waere das Monatskontingent wertlos.
+      await hakeAb(0);
+      await hakeAb(3);
+
+      final repo = streakRepo();
+      repo.laden(const []);
+      expect(repo.jokerUebrig, 0);
+
+      // Zweiter Lauf: dieselben Tage, kein weiterer Verbrauch.
+      final stand = streakRepo().laden(const []);
+      expect(stand.aktuell, 2);
+      expect(stand.jokerUebrig, 0);
     });
 
     test('ohne jeden Haken ist die Serie null', () {

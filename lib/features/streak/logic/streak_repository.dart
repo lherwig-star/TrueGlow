@@ -27,6 +27,8 @@ class StreakStand {
     required this.letzterTag,
     required this.heuteGesichert,
     required this.gefeiert,
+    this.jokerUebrig = StreakRepository.jokerProMonat,
+    this.ungemeldeteJoker = 0,
   });
 
   /// Tage am Stueck.
@@ -44,6 +46,17 @@ class StreakStand {
   /// Abzeichen, deren Jubel-Moment bereits gezeigt wurde.
   final Set<Abzeichen> gefeiert;
 
+  /// Joker, die diesen Kalendermonat noch zur Verfuegung stehen.
+  final int jokerUebrig;
+
+  /// Joker, die eingesprungen sind, ohne dass es der Nutzer schon gesehen
+  /// hat. Steuert den freundlichen Hinweis auf der Streak-Karte.
+  final int ungemeldeteJoker;
+
+  /// Ob die Serie gerissen ist, obwohl es schon einmal eine gab. Der
+  /// Unterschied zaehlt fuer den Ton: „Neustart" statt einer nackten Null.
+  bool get neustartNachSerie => aktuell == 0 && rekord > 0;
+
   static const leer = StreakStand(
     aktuell: 0,
     rekord: 0,
@@ -51,6 +64,85 @@ class StreakStand {
     heuteGesichert: false,
     gefeiert: {},
   );
+}
+
+/// Was die Rueckwaertsrechnung ergeben hat.
+class Serienstand {
+  const Serienstand({required this.laenge, required this.neueJoker});
+
+  /// Tage am Stueck, an denen wirklich etwas abgehakt wurde.
+  final int laenge;
+
+  /// Tage, fuer die bei dieser Rechnung erstmals ein Joker eingesprungen ist
+  /// – als Tagesschluessel `jjjj-mm-tt`.
+  final List<String> neueJoker;
+}
+
+/// Zaehlt die Serie rueckwaerts und laesst Joker fuer verpasste Tage
+/// einspringen.
+///
+/// Bewusst eine freie Funktion ohne Speicher: Hier steckt die ganze Regel,
+/// und sie soll sich ohne Hive und ohne Riverpod durchspielen lassen.
+///
+/// **Ein geretteter Tag ueberbrueckt, er zaehlt aber nicht mit.** „Tage am
+/// Stueck" sind Tage, an denen wirklich etwas passiert ist – ein Joker haelt
+/// die Kette zusammen, erfindet aber keinen Tag. Alles andere waere eine
+/// Zahl, die dem Nutzer mehr erzaehlt, als er getan hat.
+///
+/// **Ein Joker wird nur zum Ueberbruecken ausgegeben**, nie am losen Ende.
+/// Sonst verbraeuchte ein Nutzer, der noch nie etwas abgehakt hat, beim
+/// ersten Start beide Joker und bekaeme eine Serie geschenkt. Ein vorlaeufig
+/// gesetzter Joker zaehlt deshalb erst, wenn dahinter noch ein wirklich
+/// geschaffter Tag kommt.
+Serienstand serieRechnen({
+  required DateTime start,
+  required bool Function(DateTime tag) geschafft,
+  required Set<String> jokerTage,
+  required int jokerProMonat,
+  int maxTage = 3650,
+}) {
+  final verbraucht = <String, int>{};
+  for (final tag in jokerTage) {
+    final monat = tag.length >= 7 ? tag.substring(0, 7) : tag;
+    verbraucht[monat] = (verbraucht[monat] ?? 0) + 1;
+  }
+
+  var tag = start;
+  var laenge = 0;
+  final bestaetigt = <String>[];
+  var offen = <String>[];
+
+  for (var schritt = 0; schritt < maxTage; schritt += 1) {
+    if (geschafft(tag)) {
+      laenge += 1;
+      // Alles, was bis hierher vorlaeufig ueberbrueckt wurde, ist jetzt ein
+      // echter Lueckenschluss.
+      bestaetigt.addAll(offen);
+      offen = <String>[];
+      tag = tag.subtract(const Duration(days: 1));
+      continue;
+    }
+
+    final schluessel = PlanProgressRepository.schluessel(tag);
+
+    // Ein Tag, der frueher schon gerettet wurde, bleibt gerettet – auch
+    // wenn das Monatskontingent inzwischen anders aussieht.
+    if (jokerTage.contains(schluessel)) {
+      tag = tag.subtract(const Duration(days: 1));
+      continue;
+    }
+
+    final monat = schluessel.substring(0, 7);
+    final frei = jokerProMonat - (verbraucht[monat] ?? 0);
+    // Ohne begonnene Serie gibt es nichts zu retten.
+    if (frei <= 0 || laenge == 0) break;
+
+    verbraucht[monat] = (verbraucht[monat] ?? 0) + 1;
+    offen.add(schluessel);
+    tag = tag.subtract(const Duration(days: 1));
+  }
+
+  return Serienstand(laenge: laenge, neueJoker: bestaetigt);
 }
 
 /// Rechnet die Serie aus den abgehakten Tagen und haelt Rekord sowie die
@@ -69,6 +161,12 @@ class StreakRepository {
   /// Umschalter fuer die Bedingung eines geschafften Tages.
   static const Tagesziel tagesziel = Tagesziel.eineAufgabe;
 
+  /// So viele verpasste Tage faengt die App pro Kalendermonat ab.
+  ///
+  /// Kalendermonat, weil er sich erklaeren laesst: „am Ersten wieder zwei".
+  /// Dieselbe Ueberlegung wie beim Analyse-Kontingent (DECISIONS 42).
+  static const jokerProMonat = 2;
+
   /// Sicherheitsnetz gegen kaputte Daten beim Rueckwaertslaufen.
   static const _maxTage = 3650;
 
@@ -76,6 +174,12 @@ class StreakRepository {
   static const _kRekord = 'streakRekord';
   static const _kLetzterTag = 'streakLetzterTag';
   static const _kGefeiert = 'abzeichenGefeiert';
+
+  /// Tage, an denen ein Joker eingesprungen ist (`jjjj-mm-tt`).
+  static const _kJoker = 'streakJokerTage';
+
+  /// Davon diejenigen, die der Nutzer schon gesehen hat.
+  static const _kJokerGemeldet = 'streakJokerGemeldet';
 
   static DateTime heute() {
     final jetzt = DateTime.now();
@@ -95,23 +199,45 @@ class StreakRepository {
     };
   }
 
-  /// Zaehlt aufeinanderfolgende geschaffte Tage.
+  /// Zaehlt aufeinanderfolgende geschaffte Tage – Joker inbegriffen.
   ///
   /// Der heutige Tag zaehlt nur mit, wenn schon etwas erledigt ist – ein noch
-  /// leerer Vormittag soll die Serie aber nicht abreissen lassen.
-  int berechneAktuell(List<String> habits) {
+  /// leerer Vormittag soll die Serie aber nicht abreissen lassen. Aus
+  /// demselben Grund kann fuer heute nie ein Joker einspringen: Der Tag ist
+  /// noch offen.
+  Serienstand berechneSerie(List<String> habits) {
     final start = heute();
-    var tag = geschafftAm(start, habits)
-        ? start
-        : start.subtract(const Duration(days: 1));
+    return serieRechnen(
+      start: geschafftAm(start, habits)
+          ? start
+          : start.subtract(const Duration(days: 1)),
+      geschafft: (tag) => geschafftAm(tag, habits),
+      jokerTage: jokerTage,
+      jokerProMonat: jokerProMonat,
+      maxTage: _maxTage,
+    );
+  }
 
-    var zaehler = 0;
-    while (geschafftAm(tag, habits)) {
-      zaehler++;
-      tag = tag.subtract(const Duration(days: 1));
-      if (zaehler >= _maxTage) break;
-    }
-    return zaehler;
+  int berechneAktuell(List<String> habits) => berechneSerie(habits).laenge;
+
+  /// Tage, an denen bisher ein Joker eingesprungen ist.
+  Set<String> get jokerTage => _tagesliste(_kJoker);
+
+  /// Wie viele Joker dieser Kalendermonat noch hergibt.
+  int get jokerUebrig {
+    final monat = PlanProgressRepository.schluessel(heute()).substring(0, 7);
+    final verbraucht = jokerTage.where((t) => t.startsWith(monat)).length;
+    return (jokerProMonat - verbraucht).clamp(0, jokerProMonat);
+  }
+
+  Set<String> _tagesliste(String schluessel) {
+    final roh = _box.get(schluessel);
+    return roh is List ? roh.whereType<String>().toSet() : <String>{};
+  }
+
+  /// Merkt sich, dass der Nutzer den Joker-Hinweis gesehen hat.
+  Future<void> jokerGemeldet() async {
+    await _box.put(_kJokerGemeldet, jokerTage.toList());
   }
 
   /// Letzter geschaffter Tag – heute oder gestern, sonst der gespeicherte.
@@ -128,7 +254,8 @@ class StreakRepository {
 
   /// Liest den Stand, rechnet ihn neu und schreibt ihn zurueck.
   StreakStand laden(List<String> habits) {
-    final aktuell = berechneAktuell(habits);
+    final serie = berechneSerie(habits);
+    final aktuell = serie.laenge;
     final gespeicherterRekord = switch (_box.get(_kRekord)) {
       final int i => i,
       _ => 0,
@@ -136,11 +263,20 @@ class StreakRepository {
     final rekord = math.max(aktuell, gespeicherterRekord);
     final letzter = _letzterTag(habits);
 
+    // Ein eingesprungener Joker wird festgeschrieben, sonst spraenge er beim
+    // naechsten Laden erneut ein und das Monatskontingent waere wertlos.
+    final alleJoker = {...jokerTage, ...serie.neueJoker};
+    if (serie.neueJoker.isNotEmpty) {
+      _box.put(_kJoker, alleJoker.toList());
+    }
+
     _box.put(_kAktuell, aktuell);
     _box.put(_kRekord, rekord);
     if (letzter != null) {
       _box.put(_kLetzterTag, letzter.toIso8601String());
     }
+
+    final gemeldet = _tagesliste(_kJokerGemeldet);
 
     return StreakStand(
       aktuell: aktuell,
@@ -148,6 +284,8 @@ class StreakRepository {
       letzterTag: letzter,
       heuteGesichert: geschafftAm(heute(), habits),
       gefeiert: _gefeierte(),
+      jokerUebrig: jokerUebrig,
+      ungemeldeteJoker: alleJoker.difference(gemeldet).length,
     );
   }
 
@@ -212,6 +350,12 @@ class StreakNotifier extends StateNotifier<StreakStand> {
 
   Future<void> gefeiert(Abzeichen abzeichen) async {
     await _repo.alsGefeiertMerken(abzeichen);
+    aktualisieren();
+  }
+
+  /// Der Joker-Hinweis wurde gezeigt.
+  Future<void> jokerGemeldet() async {
+    await _repo.jokerGemeldet();
     aktualisieren();
   }
 }
