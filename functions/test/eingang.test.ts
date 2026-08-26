@@ -141,20 +141,11 @@ describe('leseCheckin', () => {
     bilder: [BILD, BILD],
   };
 
-  it('nimmt ueberhaupt keine Bilder mehr an', () => {
-    // Seit DECISIONS 48 bleibt das Fortschrittsfoto auf dem Geraet. Der
-    // Server verlaesst sich dafuer nicht auf den Client: Was ankommt, faellt
-    // heraus, bevor es das Modell sehen kann.
+  it('nimmt genau zwei Bilder an', () => {
     const eingang = leseCheckin(payload);
 
-    expect(eingang.bilder).toHaveLength(0);
-    expect(eingang.prompt.mitFotos).toBe(false);
-  });
-
-  it('weist deshalb aber niemanden ab', () => {
-    // Ein alter Client soll seinen Check-in bekommen – nur eben ohne Bilder.
-    expect(() => leseCheckin({ ...payload, bilder: [BILD] })).not.toThrow();
-    expect(() => leseCheckin({ ...payload, bilder: [] })).not.toThrow();
+    expect(eingang.bilder).toHaveLength(2);
+    expect(eingang.prompt.mitFotos).toBe(true);
   });
 
   it('laeuft auch ohne Bilder', () => {
@@ -162,6 +153,12 @@ describe('leseCheckin', () => {
 
     expect(eingang.bilder).toHaveLength(0);
     expect(eingang.prompt.mitFotos).toBe(false);
+  });
+
+  it('lehnt eine ungerade Bildzahl ab', () => {
+    expect(() => leseCheckin({ ...payload, bilder: [BILD] })).toThrowError(
+      /apiFehler/,
+    );
   });
 
   it('behaelt nur die juengsten Historieneintraege', () => {

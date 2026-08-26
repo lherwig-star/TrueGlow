@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/firebase/firebase_start.dart';
@@ -19,8 +21,7 @@ import 'checkin_anfrage.dart';
 /// Fotoset und bekommt keinen Report zurueck, sondern eine Handvoll gezielter
 /// Aenderungen.
 abstract interface class CheckinService {
-  /// Ausdruecklich **ohne Fotos**: Das Fortschrittsfoto bleibt seit
-  /// DECISIONS 48 auf dem Geraet und verlaesst es nie.
+  /// [erstfoto] und [fortschrittsfoto] gehen nur beim Wirkungs-Check mit.
   ///
   /// [abbruch] stoppt Warten und Wiederholen, wenn der Nutzer aufgibt.
   ///
@@ -33,6 +34,8 @@ abstract interface class CheckinService {
     required List<Checkin> historie,
     required Sprache sprache,
     required Ausrichtung ausrichtung,
+    File? erstfoto,
+    File? fortschrittsfoto,
     Abbruch? abbruch,
   });
 }
@@ -55,8 +58,21 @@ class FunctionsCheckinService implements CheckinService {
     required List<Checkin> historie,
     required Sprache sprache,
     required Ausrichtung ausrichtung,
+    File? erstfoto,
+    File? fortschrittsfoto,
     Abbruch? abbruch,
   }) async {
+    // Der Vergleich braucht beide Bilder; fehlt eines, laeuft der Check-in
+    // ohne Fotos weiter statt zu scheitern.
+    final beide = erstfoto != null &&
+        fortschrittsfoto != null &&
+        await erstfoto.exists() &&
+        await fortschrittsfoto.exists();
+
+    final bilder = beide
+        ? [await base64Bild(erstfoto), await base64Bild(fortschrittsfoto)]
+        : const <String>[];
+
     final antwort = await _client.rufe(
       FirebaseKonfig.functionCheckin,
       CheckinAnfrage.bauen(
@@ -65,6 +81,7 @@ class FunctionsCheckinService implements CheckinService {
         historie: historie,
         sprache: sprache,
         ausrichtung: ausrichtung,
+        bilder: bilder,
       ),
       abbruch: abbruch,
     );
@@ -100,6 +117,8 @@ class MockCheckinService implements CheckinService {
     required List<Checkin> historie,
     required Sprache sprache,
     required Ausrichtung ausrichtung,
+    File? erstfoto,
+    File? fortschrittsfoto,
     Abbruch? abbruch,
   }) async {
     await Future<void>.delayed(AnalysisConfig.mockDauer);
@@ -134,8 +153,9 @@ class MockCheckinService implements CheckinService {
 
     return CheckinAuswertung(
       zusammenfassung: zusammenfassung,
-      // Das Zwischenfazit gehoert zum Wirkungs-Check, nicht zum Foto: Das
-      // Foto bietet die App seit DECISIONS 48 bei jedem Check-in an.
+      // Das Zwischenfazit gehoert zum Wirkungs-Check. `mitFortschrittsfoto`
+      // taugt dafuer nicht mehr als Bedingung: Ein Foto bietet die App seit
+      // DECISIONS 48 bei jedem Check-in an.
       fazit: checkin.typ == CheckinTyp.wirkung ? texte.mockFazit : '',
       anpassungen: anpassungen,
     );

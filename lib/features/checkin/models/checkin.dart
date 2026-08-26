@@ -26,11 +26,20 @@ enum CheckinTyp {
 
   /// Ob ein Fortschrittsfoto angeboten wird.
   ///
-  /// Seit DECISIONS 48 bei jedem Check-in, nicht nur beim Wirkungs-Check.
-  /// Die Fotos sind kein Material fuer die Auswertung mehr, sondern ein
-  /// Tagebuch fuer den Nutzer selbst – und ein Tagebuch mit einem Eintrag
-  /// alle dreissig Tage ist keins.
+  /// Seit DECISIONS 48 bei jedem Check-in, nicht nur beim Wirkungs-Check:
+  /// Ein Tagebuch mit einem Eintrag alle dreissig Tage ist keins.
   bool get mitFortschrittsfoto => true;
+
+  /// Ob die Fotos zur Auswertung an das Modell gehen.
+  ///
+  /// Nur beim Wirkungs-Check – nur dort entsteht ein Zwischenfazit, das sich
+  /// auf den Vergleich stuetzen kann. Bei den uebrigen Check-ins bleibt das
+  /// Foto im Tagebuch; es mitzuschicken kostete Tokens fuer eine Aussage,
+  /// die niemand anfordert.
+  ///
+  /// Bewusst nicht [mitFortschrittsfoto]: Das ist seit DECISIONS 48 ueberall
+  /// wahr und taugt als Bedingung nicht mehr.
+  bool get fotosZurAuswertung => this == CheckinTyp.wirkung;
 }
 
 // Anzeigetexte als Erweiterung – Begruendung in `features/onboarding/models/onboarding_profile.dart`.

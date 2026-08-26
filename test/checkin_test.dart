@@ -577,10 +577,11 @@ void main() {
       ]);
     });
 
-    test('weder Foto noch Pfad verlassen das Geraet', () {
-      // Frueher ging das Bild als base64 mit, damit das Modell ein
-      // Zwischenfazit aus dem Vergleich schreiben konnte. Seit DECISIONS 48
-      // bleibt es hier – das Fazit entsteht aus den Antworten.
+    test('das Bild geht mit, sein Speicherort nicht', () {
+      // Die Fotos duerfen zur Auswertung an das Modell – gespeichert wird
+      // dort keins (DECISIONS 48). Der Pfad hat in der Nutzlast trotzdem
+      // nichts zu suchen: Er sagt etwas ueber das Geraet, nicht ueber den
+      // Check-in.
       final checkin = _checkin(typ: CheckinTyp.wirkung)
           .copyWith(fortschrittsfoto: '/daten/glowup_fotos/fortschritt0.jpg');
 
@@ -590,9 +591,24 @@ void main() {
         historie: const [],
         sprache: Sprache.deutsch,
         ausrichtung: Ausrichtung.maennlich,
+        bilder: const ['AAAA', 'BBBB'],
       );
 
       expect(jsonEncode(anfrage), isNot(contains('glowup_fotos')));
+      expect(anfrage['bilder'], ['AAAA', 'BBBB']);
+    });
+
+    test('ohne Bilder bleibt das Feld leer', () {
+      // Der Alltags- und der Zwischencheck schicken keine Fotos – dort gibt
+      // es kein Fazit, das sich darauf stuetzen koennte.
+      final anfrage = CheckinAnfrage.bauen(
+        checkin: _checkin(),
+        analyse: _analyse(),
+        historie: const [],
+        sprache: Sprache.deutsch,
+        ausrichtung: Ausrichtung.maennlich,
+      );
+
       expect(anfrage['bilder'], isEmpty);
     });
   });

@@ -2160,7 +2160,7 @@ class LEn extends L {
 
   @override
   String get mockFazit =>
-      'After four weeks, what carries you is what comes easily. Stick with those tasks — the two adjusted ones will save you time.';
+      'Compared with your first photo, your routine looks more consistent overall. Stick with the tasks that come easily — the two adjusted ones will save you time.';
 
   @override
   String mockVarianteZeit(String habit) {

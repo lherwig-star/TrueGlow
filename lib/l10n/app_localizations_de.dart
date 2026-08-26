@@ -2170,7 +2170,7 @@ class LDe extends L {
 
   @override
   String get mockFazit =>
-      'Nach vier Wochen trägt vor allem, was dir leichtfällt. Bleib bei diesen Aufgaben – die zwei angepassten Punkte nehmen dir Zeit ab.';
+      'Im Vergleich zum Startfoto wirkt die Pflege insgesamt gleichmäßiger. Bleib bei den Aufgaben, die dir leichtfallen – die zwei angepassten Punkte nehmen dir Zeit ab.';
 
   @override
   String mockVarianteZeit(String habit) {

@@ -3730,7 +3730,7 @@ abstract class L {
   /// No description provided for @mockFazit.
   ///
   /// In de, this message translates to:
-  /// **'Nach vier Wochen trägt vor allem, was dir leichtfällt. Bleib bei diesen Aufgaben – die zwei angepassten Punkte nehmen dir Zeit ab.'**
+  /// **'Im Vergleich zum Startfoto wirkt die Pflege insgesamt gleichmäßiger. Bleib bei den Aufgaben, die dir leichtfallen – die zwei angepassten Punkte nehmen dir Zeit ab.'**
   String get mockFazit;
 
   /// No description provided for @mockVarianteZeit.

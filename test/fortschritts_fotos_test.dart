@@ -6,10 +6,13 @@ import 'package:trueglow/features/checkin/models/checkin.dart';
 
 /// Die Fortschritts-Fotos.
 ///
-/// Zwei Versprechen stehen hier auf dem Spiel, und beide sind still, wenn sie
-/// brechen: Die Bilder verlassen das Gerät nicht, und sie gehen nicht an die
-/// Analyse-API. Der Rest des Beweises steht in `checkin_test.dart`
-/// („weder Foto noch Pfad verlassen das Gerät") und im Manifest weiter unten.
+/// Das Versprechen lautet: **gespeichert** wird nur auf diesem Gerät. Zur
+/// Auswertung dürfen die Bilder an das Modell — dort bleibt keins liegen,
+/// genau wie bei der Erst-Analyse (DECISIONS 48).
+///
+/// Der stille Teil davon steht unten: die Backup-Ausschlüsse im Manifest.
+/// Ohne sie wandern die Bilder über Googles automatisches Backup in die
+/// Cloud, und niemand merkt es, weil nichts abstürzt.
 void main() {
   group('Das Foto wird bei jedem Check-in angeboten', () {
     test('nicht mehr nur beim Wirkungs-Check', () {
@@ -20,10 +23,16 @@ void main() {
     });
 
     test('das Zwischenfazit hängt weiterhin nur am Wirkungs-Check', () {
-      // Es hing früher am Foto. Jetzt hängt es an den Antworten – und der
-      // Alltags-Check fragt gar nicht nach Wirkung.
+      // `mitFortschrittsfoto` taugt seitdem nicht mehr als Bedingung dafür,
+      // ob Fotos mitgehen – es ist überall wahr. Maßgeblich ist der Typ.
       expect(CheckinTyp.alltag.fragtNachWirkung, isFalse);
+      expect(CheckinTyp.zwischen.fragtNachWirkung, isTrue);
       expect(CheckinTyp.wirkung.fragtNachWirkung, isTrue);
+
+      // Und nur der Wirkungs-Check schickt Fotos zur Auswertung mit.
+      expect(CheckinTyp.alltag.fotosZurAuswertung, isFalse);
+      expect(CheckinTyp.zwischen.fotosZurAuswertung, isFalse);
+      expect(CheckinTyp.wirkung.fotosZurAuswertung, isTrue);
     });
   });
 

@@ -774,7 +774,7 @@ Datum herbeiführen (Handy um acht Tage vorstellen, App öffnen).
    aufnehmen. Erwartet: Beim **ersten** Foto überhaupt erscheint einmalig
    ein Hinweis-Dialog **„Diese Fotos bleiben auf diesem Gerät"**. Er nennt
    ausdrücklich: nicht in der Galerie, nicht im Google-Backup, nicht auf dem
-   Server, nicht für die Analyse — und dass sie beim Handywechsel weg sind.
+   Server — und dass sie beim Handywechsel weg sind.
 
 4. **Nicht in der Galerie.** Die Galerie-App öffnen und nachsehen. Erwartet:
    Das Foto taucht dort **nicht** auf. Das ist der wichtigste Punkt dieses
@@ -805,12 +805,24 @@ Datum herbeiführen (Handy um acht Tage vorstellen, App öffnen).
 10. **Das Startfoto ist geschützt.** Das erste Foto lange drücken. Erwartet:
     **Keine** Rückfrage, es passiert nichts. Es gehört zur Analyse.
 
-11. **Nichts geht an die Analyse.** Beim Wirkungs-Check (Tag 30): Erwartet:
-    Das Zwischenfazit ist weiterhin da, spricht aber **nicht** mehr vom
-    Vergleich der Fotos, sondern von deinen Antworten. Das ist gewollt —
-    Begründung in `DECISIONS.md` 48.
+11. **Der Bildvergleich beim Wirkungs-Check.** Am Tag 30 einen Check-in mit
+    Foto abschließen. Erwartet: Das Zwischenfazit nimmt erkennbar auf den
+    **Vergleich mit dem Startfoto** Bezug — „im Vergleich zu deinem ersten
+    Foto wirkt …". Dafür gehen Start- und aktuelles Foto durch unsere Cloud
+    Function an das Modell; gespeichert wird dort keins (`DECISIONS.md` 48).
 
-12. **Englisch.** Erwartet: „Your progress photos", „Before"/„After", „Drag
+12. **Die anderen Check-ins schicken nichts.** Am Tag 7 und Tag 14 mit Foto
+    abschließen. Erwartet: Der Check-in passt den Plan an, es gibt aber
+    **kein** Zwischenfazit — und damit auch keinen Grund, Bilder zu
+    schicken. Das Foto steht trotzdem im Album.
+
+13. **Ohne Foto-Einwilligung.** In den Einstellungen die Einwilligung zur
+    Foto-Analyse zurückziehen und einen Wirkungs-Check abschließen.
+    Erwartet: Der Check-in läuft durch und passt den Plan an, das
+    Zwischenfazit fällt weg oder kommt ohne Bildbezug. Kein Fehler, kein
+    Abbruch.
+
+14. **Englisch.** Erwartet: „Your progress photos", „Before"/„After", „Drag
     the slider to compare.", „These photos stay on this device", „Delete
     photo?".
 
