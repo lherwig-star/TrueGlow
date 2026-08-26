@@ -490,9 +490,20 @@ Dokument `checkin` das Feld `freiZuletzt` löschen.
      <https://console.cloud.google.com/billing?project=trueglow-b2c1c> →
      „Berichte", dort nach Dienst filtern (`Generative Language API`).
 
-   Interessant ist die Zahl der Denk-Tokens — davon hängt ab, ob wir bei 3
-   oder bei 5 Cent je Analyse liegen (`DECISIONS.md` 41). Die Abrechnung
-   hinkt ein paar Stunden hinterher; die Token-Zahlen stehen schneller da.
+   **Am schnellsten geht es über das Protokoll der Function.** Seit dem
+   26.08.2026 schreibt jeder Aufruf eine Zeile wie „Verbrauch
+   gemini-3.7-flash: Eingabe 13800, Ausgabe 4200, davon Denken 3100". Reine
+   Zahlen, kein Analysetext:
+
+   ```bash
+   firebase functions:log --only analysiere --project trueglow-b2c1c
+   ```
+
+   Rechnung dazu: Eingabe × 0,75 $ / 1 Mio. plus (Ausgabe + Denken) ×
+   3,75 $ / 1 Mio. Interessant ist die Zahl der Denk-Tokens — davon hängt
+   ab, ob wir bei 3 oder bei 5 Cent je Analyse liegen (`DECISIONS.md` 41).
+   Die Abrechnung in der Konsole hinkt ein paar Stunden hinterher; die
+   Token-Zahlen stehen sofort da.
 
 5. **Der Zähler in der App.** Modul-Auswahl öffnen. Erwartet: „Noch 2 von 3
    Analysen heute". Der Monatszähler steht dort nicht — er meldet sich erst,

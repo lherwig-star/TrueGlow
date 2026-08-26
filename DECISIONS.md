@@ -1094,8 +1094,14 @@ einige tausend. Realistischer sind bei elf Bildern:
 | ab 01.01.2027 | 1,50 $/Mio. | 7,50 $/Mio. | rund 6 bis 10 Cent |
 
 Die Spanne kommt daher, dass niemand vorher weiß, wie lange das Modell
-nachdenkt. Genauer wird die Zahl erst mit ein paar echten Läufen; wo man sie
-abliest, steht im Testplan.
+nachdenkt.
+
+**Deshalb steht der Verbrauch jetzt im Protokoll.** Jeder Aufruf schreibt
+eine Zeile mit Eingabe-, Ausgabe- und Denk-Tokens — reine Zahlen, kein
+Inhalt. Damit lässt sich der Preis eines einzelnen Laufs ausrechnen, statt
+ihn zu schätzen; die Abrechnung in der Cloud-Konsole hinkt Stunden
+hinterher und zeigt nur Summen. Wo man die Zeile liest, steht im Testplan,
+Abschnitt 13.
 
 **Preis:** Eine Analyse kostet das Zwei- bis Dreifache. Das ist die
 Entscheidung, die getroffen wurde — die Analyse ist das Produkt. Die

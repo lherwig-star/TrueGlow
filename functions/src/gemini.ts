@@ -116,6 +116,36 @@ export async function frage(options: {
   return textAusAntwort(await antwort.text());
 }
 
+/**
+ * Schreibt den Token-Verbrauch eines Aufrufs ins Protokoll.
+ *
+ * Reine Zahlen, kein Inhalt – aus einer Zeile wie „Eingabe 13800, Ausgabe
+ * 4200, davon Denken 3100" laesst sich der Preis eines Laufs ausrechnen,
+ * ohne dass ein Analysetext im Cloud-Logging landet.
+ *
+ * Der Anlass: Nach dem Wechsel auf ein denkendes Modell (DECISIONS 41) liess
+ * sich nur noch schaetzen, was eine Analyse kostet – die Denk-Tokens werden
+ * wie Ausgabe-Tokens abgerechnet, und wie viele es sind, weiss vorher
+ * niemand. Jetzt steht es nach jedem Lauf im Log.
+ */
+function meldeVerbrauch(roh: unknown): void {
+  if (roh === null || typeof roh !== 'object') return;
+  const daten = roh as Record<string, unknown>;
+
+  const zahl = (wert: unknown) =>
+    typeof wert === 'number' && Number.isFinite(wert) ? wert : 0;
+
+  const eingabe = zahl(daten.promptTokenCount);
+  const ausgabe = zahl(daten.candidatesTokenCount);
+  const denken = zahl(daten.thoughtsTokenCount);
+  if (eingabe === 0 && ausgabe === 0 && denken === 0) return;
+
+  console.info(
+    `Verbrauch ${MODELL}: Eingabe ${eingabe}, Ausgabe ${ausgabe}, ` +
+      `davon Denken ${denken}, gesamt ${zahl(daten.totalTokenCount)}`,
+  );
+}
+
 /** Schaelt den Modelltext aus der Gemini-Antwortstruktur. */
 function textAusAntwort(rohtext: string): string {
   let json: unknown;
@@ -127,6 +157,11 @@ function textAusAntwort(rohtext: string): string {
 
   if (json === null || typeof json !== 'object') return '';
   const wurzel = json as Record<string, unknown>;
+
+  // Vor der Pruefung auf Kandidaten: Ein Aufruf, den der Sicherheitsfilter
+  // abfaengt, kostet trotzdem Tokens und soll deshalb auch in der Rechnung
+  // auftauchen.
+  meldeVerbrauch(wurzel.usageMetadata);
 
   const kandidaten = wurzel.candidates;
   if (!Array.isArray(kandidaten) || kandidaten.length === 0) {
