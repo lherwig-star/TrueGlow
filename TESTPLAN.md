@@ -1063,6 +1063,44 @@ was hier zu sehen sein soll, dauert eine halbe Sekunde.
 > ffmpeg -i aufnahme.mp4 -q:v 2 bild_%04d.png
 > ```
 
+## 23 · Das neue Zeichen
+
+Kein Kontingent, kein Analyse-Lauf.
+
+**Vergleichsbild:** `assets/branding/icon_vorschau.png` — dasselbe Motiv
+dreimal: als Kachel groß, in Homescreen-Größe und ohne Kachel, so wie es auf
+dem Splash steht. Halt es neben deine Vorlage.
+
+1. **Auf dem Homescreen.** App deinstallieren und neu installieren (sonst
+   hält der Launcher das alte Icon fest). Erwartet: dunkle Kachel mit dem
+   Petrol-Verlauf, feine helle Linien für Kopf und Schultern, in der
+   Brustmitte ein warmer Glutkern, der weit und weich nach außen streut.
+   Kein harter Kreis, keine Strahlen, kein Text.
+
+2. **Die Launcher-Maske.** Erwartet: Nichts ist angeschnitten — weder der
+   Schulterbogen noch der Kopfkreis, egal ob dein Launcher rund, eckig oder
+   als Tropfen zuschneidet. Falls dein Launcher eine Icon-Form einstellen
+   lässt, probier zwei verschiedene.
+
+3. **In der Icon-Reihe.** Erwartet: Das Zeichen ist auch klein noch zu
+   erkennen und hebt sich neben bunten Icons durch die Glut ab.
+
+4. **Beim Start.** App öffnen. Erwartet: **Dasselbe** Zeichen wie auf dem
+   Homescreen, nur ohne Kachel — Linien und Glut direkt auf dem dunklen
+   Hintergrund. Weder größer noch kleiner als bisher, weder verschoben.
+
+5. **Auf dem Anmeldebildschirm.** (Nur nach „Alle Daten löschen" oder
+   Abmelden.) Erwartet: dasselbe Zeichen, klein, über den Anmeldeknöpfen.
+
+6. **Im hellen Schema.** Einstellungen → Hell, dann zum Anmeldebildschirm.
+   Erwartet: Die Linien sind dunkel statt weiß, die Glut ein dunkles Amber.
+   Erkennbar bleibt es.
+
+7. **Monochrom (Themed Icons).** Falls dein Launcher „themenbasierte
+   Symbole" anbietet: Erwartet: Die Silhouette bleibt erkennbar. Die Glut
+   fällt dort weg — ein Monochrom-Icon hat nur eine Farbe, das ist so
+   vorgesehen.
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

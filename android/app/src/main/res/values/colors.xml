@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_launcher_background">#173C3B</color>
+    <!-- Der Hintergrund des adaptiven Icons ist seit DECISIONS 54 ein Bild
+         (der Petrol-Verlauf) und keine Farbe mehr. Der frühere Eintrag
+         `ic_launcher_background` stand hier noch, ohne dass ihn jemand
+         benutzt – `mipmap-anydpi-v26/ic_launcher.xml` verweist auf das
+         gleichnamige Drawable. -->
     <!-- Die Mitte des Seitenverlaufs, und zwar in jedem Schema – kein
          Gegenstueck unter values-night/. Der native Splash kann nur dem
          System folgen, die App richtet sich aber nach ihrer eigenen

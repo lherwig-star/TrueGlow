@@ -163,7 +163,11 @@ flutter_launcher_icons:
   image_path: assets/branding/app_icon.png
   # Adaptives Icon: Der Launcher schneidet den Vordergrund je nach Geraet
   # rund, eckig oder als Tropfen zu. Deshalb liegt das Motiv dort auf 62 %.
-  adaptive_icon_background: "#173C3B"
+  #
+  # Der Hintergrund ist seit DECISIONS 54 ein Bild und keine Farbe mehr: Die
+  # Kachel traegt den Petrol-Verlauf der App, und einen Verlauf kann eine
+  # Farbangabe nicht.
+  adaptive_icon_background: assets/branding/app_icon_hintergrund.png
   adaptive_icon_foreground: assets/branding/app_icon_vordergrund.png
   adaptive_icon_monochrome: assets/branding/app_icon_vordergrund.png
   # iOS erlaubt keine Transparenz im App-Icon.

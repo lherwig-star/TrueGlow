@@ -1790,6 +1790,75 @@ Wechsel wieder hart; das ist die Einstellung, um die es geht.
 Timer. Und die Standzeit ist um 100 ms gewachsen, damit die Blende nicht vom
 Wechsel auf die Startseite abgeschnitten wird.
 
+## 54 · Silhouette mit Glut — das neue Zeichen
+
+Das Personen-Zeichen bleibt, was es war: der Kopfkreis aus dem Kamera-Sucher
+mit angedeuteten Schultern darunter. Neu ist die Glut in der Brustmitte.
+
+**Der Gedanke dahinter** steht in der Vorgabe und ist die halbe Begründung:
+Man glüht von innen nach außen. Gesündere Gewohnheiten verbessern einen von
+innen heraus, und das sieht man außen. Deshalb sitzt die Glut nicht *neben*
+der Silhouette, sondern **in** ihr — genau auf der Oberkante des
+Schulterbogens, dort, wo die Brustmitte läge.
+
+**Warum die Glut über den Linien liegt.** Sie überstrahlt den Schulterbogen
+dort, wo sie am dichtesten ist. Läge sie darunter, wäre sie ein Hintergrund
+und kein Licht. Das Licht kommt von innen und liegt vor dem Körper.
+
+**Die Kurve steht in `Marke`, nicht zweimal.** Die Glut entsteht an zwei
+Stellen: `tool/marke_erzeugen.dart` rechnet sie Pixel für Pixel für die
+PNG-Dateien, [MarkenLogo] legt sie zur Laufzeit als Verlauf an. Zwei Kurven
+wären zwei verschiedene Zeichen — ähnlich genug, dass es niemandem auffällt.
+`Marke.glutDeckung` und `Marke.glutWeiss` sind deshalb Funktionen, die beide
+aufrufen; der Verlauf tastet sie an sechzehn Stellen ab.
+
+Der Exponent darin ist der Unterschied zwischen einem Schein und einem
+Kreis. Zu steil, und von der weiten, sanften Streuung bleibt ein Lichtpunkt;
+zu flach, und die ganze Kachel leuchtet. 1,4 traf die Vorlage; das war der
+vierte Versuch, jeweils gerendert und danebengehalten.
+
+**Die Linien sind jetzt weiches Weiß statt Sand.** So steht es in der
+Vorlage, und es ist auch richtig: Sand ist der Ton für Bedienelemente, und
+neben der goldenen Glut wäre er zu nah dran. Weiß und Gold sind zwei Dinge,
+Sand und Gold wären eines mit zwei Namen.
+
+**Die Kachel trägt den Verlauf der App**, nicht mehr einen flachen Ton. Damit
+sieht das Icon aus wie der Grund, auf dem die App steht. Für Android heißt
+das: Der adaptive Hintergrund ist ein **Bild** und keine Farbe mehr — einen
+Verlauf kann `adaptive_icon_background: "#RRGGBB"` nicht.
+
+**Der Rand ist nachgemessen, nicht geraten.** In der Vorlage nimmt der
+Kopfkreis knapp ein Drittel der Kachelbreite ein, der Schulterbogen knapp die
+Hälfte. Bei einem Motivanteil von 0,72 trifft unsere Geometrie beides. Vorher
+stand das Motiv randlos in der Kachel und jede runde Launcher-Maske schnitt
+den Schulterbogen an.
+
+**Schutzzone.** Der adaptive Vordergrund nimmt denselben Anteil, und
+`flutter_launcher_icons` setzt zusätzlich 16 % Einzug: 0,72 × 0,68 ≈ 0,49 der
+Fläche. Das liegt gut innerhalb der inneren zwei Drittel, die jede Maske
+stehen lässt. Die Glut reicht weiter, ist dort aber längst durchsichtig — ein
+Schnitt durch etwas Unsichtbares ist keiner. Ein Test rechnet beides nach.
+
+**Überall dasselbe Zeichen:** Homescreen (mit Kachel), System-Splash und
+eigener Startbildschirm (ohne Kachel, direkt auf dem Hintergrund), In-App-Logo
+auf dem Anmeldebildschirm. Alle acht Fassungen kommen aus einem Generatorlauf.
+
+**Die Vorschau** liegt als `assets/branding/icon_vorschau.png` und wird
+mitgeneriert — von Hand gepflegt zeigte sie irgendwann ein Zeichen, das es
+nicht mehr gibt. Sie zeigt dasselbe Motiv dreimal: als Kachel groß, in
+Homescreen-Größe und so, wie es ohne Kachel auf dem Splash steht. Der Ordner
+`assets/branding/` ist bewusst **nicht** in `pubspec.yaml` als Asset
+eingetragen; die Dateien sind Quellen für die Generatoren und landen nicht im
+APK.
+
+**Weiß ist keine Designfarbe.** Der Kern der Glut ist weißglühend, und das
+ist Physik, keine Palette. `marken_logo.dart` steht deshalb mit genau dieser
+Begründung auf der Ausnahmeliste in `design_werte_test.dart`.
+
+**Preis:** Eine Datei mehr in `assets/branding/`, und der Generator läuft
+spürbar länger — die Glut wird für jedes Pixel gerechnet, das 1152er-Bild hat
+1,3 Millionen davon.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

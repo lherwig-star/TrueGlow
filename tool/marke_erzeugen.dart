@@ -12,21 +12,47 @@
 // gesichtsOval`): ein hochkant stehender Ring mit angedeuteten Schultern
 // darunter. Wer die App kennt, erkennt das Icon wieder.
 //
+// Seit DECISIONS 54 kommt die Glut dazu: ein warmer Kern in der Brustmitte,
+// der weit und weich nach aussen streut. Man glueht von innen nach aussen.
+// Die Kurve dafuer steht in `Marke.glutDeckung` – dieselbe, die die App zur
+// Laufzeit benutzt.
+//
 // Nach dem Lauf:
 //   dart run flutter_launcher_icons
 //   dart run flutter_native_splash:create
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:image/image.dart';
 import 'package:trueglow/core/theme/marke.dart';
 
 // --- Farben (Spiegel von lib/core/theme/app_colors.dart) -------------------
 
-/// Deep Teal – Hintergrund des dunklen Schemas.
+/// Deep Teal – oberes Ende des Seitenverlaufs.
 const _deepTeal = 0xFF173C3B;
+
+/// Fast schwarzes Blau – unteres Ende desselben Verlaufs. Die Icon-Kachel
+/// traegt ihn, damit sie aussieht wie der Hintergrund der App.
+const _tiefBlau = 0xFF0C1C26;
 
 /// Sand – Akzent des dunklen Schemas.
 const _sand = 0xFFD8C6AA;
+
+/// Off-White – die Linienfarbe des Zeichens (Spiegel von `textPrimaer`).
+const _offWhite = 0xFFF2EEE6;
+
+/// Gedaempftes Gold – die Glut (Spiegel von `erreicht`).
+const _gold = 0xFFE8BE6E;
+
+/// Der weissgluehende Kern.
+const _kernweiss = 0xFFFFFFFF;
+
+/// Wie viel der Kachel das Motiv einnimmt.
+///
+/// Nachgemessen an der Vorlage: Der Kopfkreis nimmt dort knapp ein Drittel
+/// der Kachelbreite ein, der Schulterbogen knapp die Haelfte. Bei diesem
+/// Anteil trifft unsere Geometrie beides.
+const _kachelAnteil = 0.72;
 
 // Mocha (#F7F2E9) ist die Hintergrundfarbe des hellen Schemas. Sie steht
 // nicht hier, sondern in der flutter_native_splash-Konfiguration in
@@ -34,6 +60,9 @@ const _sand = 0xFFD8C6AA;
 
 /// Akzent des hellen Schemas.
 const _mochaAkzent = 0xFF6B4F3A;
+
+/// Die Glut im hellen Schema (Spiegel von `erreicht` in Mocha Light).
+const _mochaGlut = 0xFF7A5200;
 
 // --- Geometrie, normiert auf 0..1 ------------------------------------------
 //
@@ -62,29 +91,55 @@ void main(List<String> argumente) {
 
   // --- Icons --------------------------------------------------------------
   // Vollbild, mit Hintergrund: Quelle für iOS und den Legacy-Launcher.
-  _schreibe('${ziel.path}/app_icon.png', _icon(1024, mitHintergrund: true));
+  //
+  // Das Motiv steht nicht randlos in der Kachel – die Vorlage lässt rundum
+  // Luft, und ohne sie schneidet jede runde Launcher-Maske den
+  // Schulterbogen an.
+  _schreibe(
+    '${ziel.path}/app_icon.png',
+    _icon(1024, mitHintergrund: true, motivAnteil: _kachelAnteil),
+  );
 
   // Store-Icon 512×512 – dieselbe Grafik, andere Kantenlänge.
-  _schreibe('${ziel.path}/store_icon_512.png', _icon(512, mitHintergrund: true));
+  _schreibe(
+    '${ziel.path}/store_icon_512.png',
+    _icon(512, mitHintergrund: true, motivAnteil: _kachelAnteil),
+  );
 
-  // Adaptiver Vordergrund: transparent, Motiv auf 62 % geschrumpft. Android
-  // beschneidet die äußeren 33 % je nach Launcher-Maske – was dort liegt,
-  // kann weg sein.
+  // Adaptiver Vordergrund: transparent, derselbe Anteil wie in der Kachel.
+  //
+  // Die Schutzzone kommt oben drauf: `flutter_launcher_icons` setzt die
+  // Grafik mit 16 % Einzug in die Adaptive-Icon-Fläche, das Motiv landet
+  // also bei 0,72 × 0,68 ≈ 0,49 davon – gut innerhalb der inneren zwei
+  // Drittel, die jede Launcher-Maske stehen lässt. Die Glut reicht weiter,
+  // ist dort aber längst durchsichtig.
   _schreibe(
     '${ziel.path}/app_icon_vordergrund.png',
-    _icon(1024, mitHintergrund: false, motivAnteil: 0.62),
+    _icon(1024, mitHintergrund: false, motivAnteil: _kachelAnteil),
   );
+
+  // Adaptiver Hintergrund: nur der Verlauf, ohne Motiv. Eine Farbe reichte
+  // frueher; der Verlauf braucht ein Bild.
+  final grund = Image(width: 1024, height: 1024, numChannels: 4);
+  _verlauf(grund);
+  _schreibe('${ziel.path}/app_icon_hintergrund.png', grund);
 
   // --- Splash -------------------------------------------------------------
   // Klassischer Splash: Motiv ohne Hintergrund, die Farbe setzt
   // flutter_native_splash.
   _schreibe(
     '${ziel.path}/splash_dunkel.png',
-    _icon(512, mitHintergrund: false, farbe: _sand, motivAnteil: 0.80),
+    _icon(512, mitHintergrund: false, motivAnteil: 0.80),
   );
   _schreibe(
     '${ziel.path}/splash_hell.png',
-    _icon(512, mitHintergrund: false, farbe: _mochaAkzent, motivAnteil: 0.80),
+    _icon(
+      512,
+      mitHintergrund: false,
+      farbe: _mochaAkzent,
+      glutfarbe: _mochaGlut,
+      motivAnteil: 0.80,
+    ),
   );
 
   // Android 12+: Das System zeigt eine 1152×1152-Grafik, von der nur die
@@ -99,7 +154,6 @@ void main(List<String> argumente) {
     _icon(
       1152,
       mitHintergrund: false,
-      farbe: _sand,
       motivAnteil: Marke.splashMotivAnteil,
     ),
   );
@@ -109,13 +163,52 @@ void main(List<String> argumente) {
       1152,
       mitHintergrund: false,
       farbe: _mochaAkzent,
+      glutfarbe: _mochaGlut,
       motivAnteil: Marke.splashMotivAnteil,
     ),
   );
 
+  // --- Vorschau -----------------------------------------------------------
+  // Ein Bild zum Danebenhalten: dasselbe Zeichen gross, in
+  // Homescreen-Groesse und so, wie es ohne Kachel auf dem Splash steht.
+  _schreibe('${ziel.path}/icon_vorschau.png', _vorschau());
+
   stdout.writeln('Fertig. Weiter mit:');
   stdout.writeln('  dart run flutter_launcher_icons');
   stdout.writeln('  dart run flutter_native_splash:create');
+}
+
+/// Das Vergleichsbild.
+///
+/// Links die Kachel gross, in der Mitte in Homescreen-Groesse (48 dp auf
+/// einem xxhdpi-Geraet sind 144 px), rechts das Zeichen ohne Kachel auf dem
+/// Ton, mit dem der Start beginnt – so steht es im Splash.
+Image _vorschau() {
+  const rand = 24;
+  const gross = 320;
+  const klein = 144;
+  final blatt = Image(width: 3 * gross + 4 * rand, height: gross + 2 * rand)
+    ..clear(ColorUint8.rgb(14, 16, 18));
+
+  final kachel = _icon(gross, mitHintergrund: true, motivAnteil: _kachelAnteil);
+  compositeImage(blatt, kachel, dstX: rand, dstY: rand);
+
+  final winzig = copyResize(kachel, width: klein, height: klein);
+  compositeImage(
+    blatt,
+    winzig,
+    dstX: 2 * rand + gross,
+    dstY: rand + (gross - klein) ~/ 2,
+  );
+
+  // Der Splash: flache Startfarbe, Motiv ohne Kachel.
+  final startton = Image(width: gross, height: gross, numChannels: 4)
+    ..clear(ColorUint8.rgb(0x12, 0x2C, 0x31));
+  final motiv = _icon(gross, mitHintergrund: false, motivAnteil: 0.52);
+  compositeImage(startton, motiv);
+  compositeImage(blatt, startton, dstX: 3 * rand + 2 * gross, dstY: rand);
+
+  return blatt;
 }
 
 void _schreibe(String pfad, Image bild) {
@@ -130,18 +223,17 @@ void _schreibe(String pfad, Image bild) {
 Image _icon(
   int kante, {
   required bool mitHintergrund,
-  int farbe = _sand,
+  int farbe = _offWhite,
+  int glutfarbe = _gold,
   double motivAnteil = 1.0,
 }) {
   final bild = Image(width: kante, height: kante, numChannels: 4);
 
-  final hintergrund = ColorUint8.rgba(
-    (_deepTeal >> 16) & 0xFF,
-    (_deepTeal >> 8) & 0xFF,
-    _deepTeal & 0xFF,
-    mitHintergrund ? 255 : 0,
-  );
-  fill(bild, color: hintergrund);
+  if (mitHintergrund) {
+    _verlauf(bild);
+  } else {
+    fill(bild, color: ColorUint8.rgba(0, 0, 0, 0));
+  }
 
   final r = (farbe >> 16) & 0xFF;
   final g = (farbe >> 8) & 0xFF;
@@ -171,8 +263,81 @@ Image _icon(
     }
   }
 
+  _glut(bild, motivAnteil, glutfarbe);
   return bild;
 }
+
+/// Der Petrol-Verlauf der App als Kachel-Hintergrund.
+///
+/// Kein flacher Ton mehr: Das Icon soll aussehen wie der Grund, auf dem die
+/// App steht (DECISIONS 54). Oben Deep Teal, unten fast schwarzes Blau.
+void _verlauf(Image bild) {
+  final kante = bild.height;
+  for (var y = 0; y < kante; y++) {
+    final t = y / (kante - 1);
+    final farbe = ColorUint8.rgba(
+      _misch((_deepTeal >> 16) & 0xFF, (_tiefBlau >> 16) & 0xFF, t),
+      _misch((_deepTeal >> 8) & 0xFF, (_tiefBlau >> 8) & 0xFF, t),
+      _misch(_deepTeal & 0xFF, _tiefBlau & 0xFF, t),
+      255,
+    );
+    for (var x = 0; x < bild.width; x++) {
+      bild.setPixel(x, y, farbe);
+    }
+  }
+}
+
+/// Die Glut – über die Linien gelegt, nicht darunter.
+///
+/// Sie überstrahlt den Schulterbogen dort, wo sie am dichtesten ist. Genau so
+/// steht es in der Vorlage: Das Licht kommt von innen und liegt vor dem
+/// Körper, nicht dahinter.
+///
+/// Die Kurve kommt aus [Marke.glutDeckung] – dieselbe, die [MarkenLogo] zur
+/// Laufzeit abtastet. Zwei Kurven wären zwei verschiedene Zeichen.
+void _glut(Image bild, double motivAnteil, int glutfarbe) {
+  final kante = bild.height;
+  final radius = Marke.glutRadius * motivAnteil;
+
+  final gr = (glutfarbe >> 16) & 0xFF;
+  final gg = (glutfarbe >> 8) & 0xFF;
+  final gb = glutfarbe & 0xFF;
+  final wr = (_kernweiss >> 16) & 0xFF;
+  final wg = (_kernweiss >> 8) & 0xFF;
+  final wb = _kernweiss & 0xFF;
+
+  // Mittelpunkt mitskaliert, wie beim Motiv auch.
+  final cx = 0.5 + (Marke.glutX - 0.5) * motivAnteil;
+  final cy = 0.5 + (Marke.glutY - 0.5) * motivAnteil;
+
+  for (var py = 0; py < kante; py++) {
+    for (var px = 0; px < bild.width; px++) {
+      final x = (px + 0.5) / kante;
+      final y = (py + 0.5) / kante;
+      final dx = x - cx;
+      final dy = y - cy;
+      final abstand = math.sqrt(dx * dx + dy * dy);
+      if (abstand >= radius) continue;
+
+      final anteil = abstand / radius;
+      final deckung = Marke.glutDeckung(anteil);
+      if (deckung <= 0.002) continue;
+
+      final weiss = Marke.glutWeiss(anteil);
+      _mische(
+        bild,
+        px,
+        py,
+        _misch(gr, wr, weiss),
+        _misch(gg, wg, weiss),
+        _misch(gb, wb, weiss),
+        deckung,
+      );
+    }
+  }
+}
+
+int _misch(int a, int b, double t) => (a + (b - a) * t).round().clamp(0, 255);
 
 /// Liegt ein Punkt auf einem der beiden Ringe?
 bool _imMotiv(double x, double y, double anteil) {

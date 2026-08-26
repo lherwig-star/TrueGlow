@@ -1,9 +1,12 @@
+import 'dart:math' as math;
+
 /// Die Geometrie des TrueGlow-Zeichens – ein hochkant stehendes Oval mit
 /// angedeuteten Schultern darunter, dasselbe Motiv wie das Gesichts-Oval im
 /// Kamera-Sucher.
 ///
 /// Bewusst ohne Flutter-Abhängigkeit und bewusst als eigene Datei: Dieselben
 /// Zahlen brauchen zwei Stellen, die nicht dieselbe Laufzeit haben.
+/// (`dart:math` ist keine – das gibt es auch im reinen Dart-Skript.)
 ///
 /// * `tool/marke_erzeugen.dart` läuft als reines Dart-Skript und rechnet die
 ///   PNG-Dateien für Icon und nativen Splash daraus aus.
@@ -38,6 +41,57 @@ class Marke {
   /// Unterhalb dieser Höhe wird der Schulterbogen abgeschnitten – sonst wirkt
   /// er wie ein abgeschnittener Kreis statt wie Schultern.
   static const schulterUnterkante = 0.895;
+
+  // --- Der Glutkern ------------------------------------------------------
+  //
+  // „Man glüht von innen nach außen": Gesündere Gewohnheiten verbessern
+  // einen von innen heraus, und das sieht man außen. Deshalb sitzt die Glut
+  // in der Brustmitte, genau auf der Oberkante des Schulterbogens, und
+  // strahlt von dort weit und weich nach außen ab.
+
+  /// Mittelpunkt der Glut.
+  static const glutX = 0.500;
+  static const glutY = 0.800;
+
+  /// Wie weit die Glut streut. Deutlich mehr als das Zeichen breit ist – der
+  /// äußere Rand ist längst durchsichtig, aber der Übergang bleibt weich.
+  static const glutRadius = 0.640;
+
+  /// Der dichte, helle Kern in der Mitte. Ein Kern, kein Punkt: In der
+  /// Vorlage ist die Mitte ein weicher heller Fleck, keine Lampe.
+  static const glutKern = 0.200;
+
+  /// Wie stark die Glut an einer Stelle deckt.
+  ///
+  /// [anteil] ist der Abstand vom Mittelpunkt, geteilt durch [glutRadius].
+  ///
+  /// Die Funktion steht hier und nicht zweimal, weil die Glut an zwei
+  /// Stellen entsteht: `tool/marke_erzeugen.dart` rechnet sie Pixel für
+  /// Pixel für die PNG-Dateien, [MarkenLogo] legt sie zur Laufzeit als
+  /// Verlauf an. Zwei Kurven wären zwei verschiedene Zeichen.
+  ///
+  /// Der Exponent ist der Unterschied zwischen einem Schein und einem Kreis:
+  /// Die Deckung fällt nach außen stetig auf null, und der Rand ist nirgends
+  /// als Kante zu sehen. Zu steil wäre auch falsch – dann bliebe von der
+  /// weiten, sanften Streuung ein Lichtpunkt übrig.
+  static double glutDeckung(double anteil) {
+    if (anteil >= 1) return 0;
+    final aussen = math.pow(1 - anteil, 1.4) * 0.85;
+    final kern = math.pow(_kernAnteil(anteil), 1.6) * 0.55;
+    return _klemme(aussen + kern);
+  }
+
+  /// Wie weiß die Glut an einer Stelle ist – innen weißglühend, außen gold.
+  static double glutWeiss(double anteil) =>
+      _klemme(math.pow(_kernAnteil(anteil), 3.0) * 1.05);
+
+  /// Wie tief ein Punkt im dichten Kern liegt: 1 in der Mitte, 0 am Rand
+  /// des Kerns.
+  static double _kernAnteil(double anteil) =>
+      _klemme(1 - anteil * glutRadius / glutKern);
+
+  static double _klemme(num wert) =>
+      wert < 0 ? 0 : (wert > 1 ? 1 : wert.toDouble());
 
   // --- Der native Splash -------------------------------------------------
   //

@@ -38,6 +38,9 @@ void main() {
     'silhouette_overlay.dart': 'Silhouette über dem Kamerabild',
     'fortschritt_screen.dart': 'Marken über dem Foto',
     'jubel_overlay.dart': 'Abdunkelung hinter dem Jubel-Dialog',
+    // Weißglühend ist weiß. Der Kern der Glut ist kein Designton, sondern
+    // die Mitte eines Leuchtens – in beiden Schemata dieselbe Physik.
+    'marken_logo.dart': 'der weißglühende Kern der Glut',
   };
 
   bool istErlaubt(String pfad) =>

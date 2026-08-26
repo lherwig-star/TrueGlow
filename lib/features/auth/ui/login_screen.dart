@@ -78,7 +78,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final texte = context.texte;
-    final farben = context.farben;
     final anbieter = AuthAnbieter.values
         .where((a) => a.verfuegbarAuf(defaultTargetPlatform))
         .toList();
@@ -103,7 +102,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     child: _Sprachumschalter(),
                   ),
                   const SizedBox(height: AppTheme.gapL),
-                  MarkenLogo(groesse: 76, farbe: farben.akzent),
+                  const MarkenLogo(groesse: 76),
                   const SizedBox(height: AppTheme.gapM),
                   Text(
                     texte.appName,
@@ -211,7 +210,7 @@ class _Sprachumschalter extends ConsumerWidget {
                   ),
                   decoration: BoxDecoration(
                     color: sprache == aktiv
-                        ? farben.akzent.withValues(alpha: 0.16)
+                        ? farben.erreicht.withValues(alpha: 0.16)
                         : Colors.transparent,
                     border: Border.all(
                       color: sprache == aktiv
@@ -226,7 +225,7 @@ class _Sprachumschalter extends ConsumerWidget {
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
                       color: sprache == aktiv
-                          ? farben.akzent
+                          ? farben.erreicht
                           : farben.textSekundaer,
                     ),
                   ),
