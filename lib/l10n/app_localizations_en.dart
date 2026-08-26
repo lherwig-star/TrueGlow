@@ -1804,6 +1804,20 @@ class LEn extends L {
       'Fresh start — your longest streak stays with you.';
 
   @override
+  String get streakTagGesichert => 'Day secured!';
+
+  @override
+  String streakTagGesichertText(int tage) {
+    String _temp0 = intl.Intl.pluralLogic(
+      tage,
+      locale: localeName,
+      other: 'That makes $tage days in a row.',
+      one: 'That\'s day 1 on the board.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String streakJokerUebrig(int anzahl) {
     String _temp0 = intl.Intl.pluralLogic(
       anzahl,

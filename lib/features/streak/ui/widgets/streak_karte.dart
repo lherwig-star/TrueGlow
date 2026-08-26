@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,7 +15,13 @@ import '../../../../core/l10n/texte.dart';
 ///
 /// Die Flamme bleibt gedimmt, solange heute noch nichts abgehakt ist – so ist
 /// auf einen Blick klar, ob der Tag schon gesichert ist. Beim ersten Haken des
-/// Tages flackert sie kurz auf.
+/// Tages flackert sie kurz auf, und darunter erscheint fuer ein paar Sekunden
+/// die Bestaetigung, dass der Tag steht.
+///
+/// **Warum der Moment in der Karte bleibt und kein Dialog ist.** Er kommt
+/// jeden Tag einmal. Was jeden Tag kommt und weggeklickt werden muss, ist
+/// nach einer Woche eine Belaestigung. Deshalb: kurz, an der Stelle, auf die
+/// der Nutzer ohnehin schaut, und von selbst wieder weg.
 class StreakKarte extends ConsumerStatefulWidget {
   const StreakKarte({super.key});
 
@@ -28,10 +36,16 @@ class _StreakKarteState extends ConsumerState<StreakKarte>
     duration: const Duration(milliseconds: 500),
   );
 
+  /// So lange steht die Bestaetigung, dann blendet sie sich aus.
+  static const _dauer = Duration(seconds: 5);
+
   bool? _zuletztGesichert;
+  bool _zeigeBestaetigung = false;
+  Timer? _ausblenden;
 
   @override
   void dispose() {
+    _ausblenden?.cancel();
     _flackern.dispose();
     super.dispose();
   }
@@ -40,19 +54,28 @@ class _StreakKarteState extends ConsumerState<StreakKarte>
   void _pruefeUebergang(bool gesichert, {required bool bewegungErlaubt}) {
     final vorher = _zuletztGesichert;
     _zuletztGesichert = gesichert;
-    if (vorher == false && gesichert) {
-      if (bewegungErlaubt) {
-        _flackern.forward(from: 0);
-      } else {
-        _flackern.value = 1;
-      }
+    if (vorher != false || !gesichert) return;
+
+    if (bewegungErlaubt) {
+      _flackern.forward(from: 0);
+    } else {
+      _flackern.value = 1;
     }
+
+    // Nicht waehrend des Baus setzen – der Haken kommt aus einem anderen
+    // Widget, und `setState` mitten im Bau ist ein Fehler.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      setState(() => _zeigeBestaetigung = true);
+      _ausblenden?.cancel();
+      _ausblenden = Timer(_dauer, () {
+        if (mounted) setState(() => _zeigeBestaetigung = false);
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final texte = context.texte;
-    final farben = context.farben;
     final streak = ref.watch(streakProvider);
 
     // Systemeinstellung "Bewegung reduzieren" respektieren.
@@ -67,71 +90,191 @@ class _StreakKarteState extends ConsumerState<StreakKarte>
         .where(habits.contains)
         .length;
 
+    return SectionCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _Zeile(
+            flackern: _flackern,
+            bewegungErlaubt: bewegungErlaubt,
+            streak: streak,
+            habits: habits,
+            erledigt: erledigt,
+          ),
+          _Bestaetigung(
+            sichtbar: _zeigeBestaetigung,
+            tage: streak.aktuell,
+            bewegungErlaubt: bewegungErlaubt,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Die eigentliche Serien-Zeile: Flamme, Zahl, Stand des Tages, Joker.
+class _Zeile extends StatelessWidget {
+  const _Zeile({
+    required this.flackern,
+    required this.bewegungErlaubt,
+    required this.streak,
+    required this.habits,
+    required this.erledigt,
+  });
+
+  final Animation<double> flackern;
+  final bool bewegungErlaubt;
+  final StreakStand streak;
+  final List<String> habits;
+  final int erledigt;
+
+  @override
+  Widget build(BuildContext context) {
+    final texte = context.texte;
+    final farben = context.farben;
     final aktiv = streak.heuteGesichert;
     final farbe = aktiv ? farben.akzent : farben.textSekundaer;
 
-    return SectionCard(
-      child: Row(
-        children: [
-          _Flamme(
-            animation: _flackern,
-            farbe: farbe,
-            aktiv: aktiv,
-            bewegungErlaubt: bewegungErlaubt,
-          ),
-          const SizedBox(width: AppTheme.gapM),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Zahl gross, "Tage am Stueck" als Unterzeile darunter –
-                // nebeneinander laeuft die Zeile auf schmalen Geraeten ueber.
-                Text(
-                  '${streak.aktuell}',
-                  style: TextStyle(
-                    fontSize: 34,
-                    height: 1.05,
-                    fontWeight: FontWeight.w900,
-                    color: farbe,
-                  ),
+    return Row(
+      children: [
+        _Flamme(
+          animation: flackern,
+          farbe: farbe,
+          aktiv: aktiv,
+          bewegungErlaubt: bewegungErlaubt,
+        ),
+        const SizedBox(width: AppTheme.gapM),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Zahl gross, "Tage am Stueck" als Unterzeile darunter –
+              // nebeneinander laeuft die Zeile auf schmalen Geraeten ueber.
+              Text(
+                '${streak.aktuell}',
+                style: TextStyle(
+                  fontSize: 34,
+                  height: 1.05,
+                  fontWeight: FontWeight.w900,
+                  color: farbe,
                 ),
-                Text(
-                  texte.streakTage,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: farben.textSekundaer,
-                  ),
+              ),
+              Text(
+                texte.streakTage,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: farben.textSekundaer,
                 ),
-                const SizedBox(height: AppTheme.gapXs),
-                MutedText(
-                  switch (habits.isEmpty) {
-                    // „Neustart" steht vor allem anderen: Wer die Serie
-                    // verloren hat, soll nicht als Erstes eine nackte Null
-                    // mit einer Aufgabenzahl daneben lesen.
-                    _ when streak.neustartNachSerie => texte.streakNeustart,
-                    true => texte.streakKeineAufgaben,
-                    false when erledigt == habits.length =>
-                      texte.streakAllesErledigt,
-                    false when erledigt == 0 =>
-                      texte.streakNichtsAbgehakt,
-                    false => texte.streakHeuteErledigt(erledigt, habits.length),
-                  },
-                ),
-                if (streak.rekord > 0 && streak.rekord != streak.aktuell) ...[
-                  const SizedBox(height: 2),
-                  MutedText(texte.streakRekord(streak.rekord)),
-                ],
-                if (streak.ungemeldeteJoker > 0) ...[
-                  const SizedBox(height: AppTheme.gapXs),
-                  _JokerHinweis(anzahl: streak.ungemeldeteJoker),
-                ],
+              ),
+              const SizedBox(height: AppTheme.gapXs),
+              MutedText(
+                switch (habits.isEmpty) {
+                  // „Neustart" steht vor allem anderen: Wer die Serie
+                  // verloren hat, soll nicht als Erstes eine nackte Null
+                  // mit einer Aufgabenzahl daneben lesen.
+                  _ when streak.neustartNachSerie => texte.streakNeustart,
+                  true => texte.streakKeineAufgaben,
+                  false when erledigt == habits.length =>
+                    texte.streakAllesErledigt,
+                  false when erledigt == 0 => texte.streakNichtsAbgehakt,
+                  false => texte.streakHeuteErledigt(erledigt, habits.length),
+                },
+              ),
+              if (streak.rekord > 0 && streak.rekord != streak.aktuell) ...[
+                const SizedBox(height: 2),
+                MutedText(texte.streakRekord(streak.rekord)),
               ],
-            ),
+              if (streak.ungemeldeteJoker > 0) ...[
+                const SizedBox(height: AppTheme.gapXs),
+                _JokerHinweis(anzahl: streak.ungemeldeteJoker),
+              ],
+            ],
           ),
-          _JokerVorrat(uebrig: streak.jokerUebrig),
-        ],
-      ),
+        ),
+        _JokerVorrat(uebrig: streak.jokerUebrig),
+      ],
+    );
+  }
+}
+
+/// „Tag gesichert" – der kurze Moment nach dem ersten Haken des Tages.
+class _Bestaetigung extends StatelessWidget {
+  const _Bestaetigung({
+    required this.sichtbar,
+    required this.tage,
+    required this.bewegungErlaubt,
+  });
+
+  final bool sichtbar;
+  final int tage;
+  final bool bewegungErlaubt;
+
+  @override
+  Widget build(BuildContext context) {
+    final texte = context.texte;
+    final farben = context.farben;
+
+    return AnimatedSize(
+      duration: Duration(milliseconds: bewegungErlaubt ? 260 : 0),
+      curve: Curves.easeOutCubic,
+      alignment: Alignment.topCenter,
+      child: !sichtbar
+          ? const SizedBox(width: double.infinity)
+          : Padding(
+              padding: const EdgeInsets.only(top: AppTheme.gapS),
+              child: AnimatedOpacity(
+                opacity: 1,
+                duration: Duration(milliseconds: bewegungErlaubt ? 260 : 0),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.gapS,
+                    vertical: AppTheme.gapXs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: farben.erfolg.withValues(alpha: 0.12),
+                    borderRadius:
+                        BorderRadius.circular(AppTheme.radiusButton),
+                  ),
+                  // Vorgelesen wird der Moment einmal, sobald er auftaucht.
+                  child: Semantics(
+                    liveRegion: true,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.check_circle_rounded,
+                          size: 20,
+                          color: farben.erfolg,
+                        ),
+                        const SizedBox(width: AppTheme.gapS),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                texte.streakTagGesichert,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  color: farben.erfolg,
+                                ),
+                              ),
+                              Text(
+                                texte.streakTagGesichertText(tage),
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  height: 1.35,
+                                  color: farben.textSekundaer,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
     );
   }
 }

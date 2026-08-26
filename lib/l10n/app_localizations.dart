@@ -3271,6 +3271,18 @@ abstract class L {
   /// **'Neustart – dein längster Streak bleibt dir erhalten.'**
   String get streakNeustart;
 
+  /// Kurzer Moment nach dem ersten Haken des Tages. Steht in der Serien-Karte und blendet sich von selbst aus.
+  ///
+  /// In de, this message translates to:
+  /// **'Tag gesichert!'**
+  String get streakTagGesichert;
+
+  /// No description provided for @streakTagGesichertText.
+  ///
+  /// In de, this message translates to:
+  /// **'{tage, plural, =1{Der Anfang steht – Tag 1.} other{Damit stehen {tage} Tage am Stück.}}'**
+  String streakTagGesichertText(int tage);
+
   /// Wie viele Streak-Joker der laufende Kalendermonat noch hergibt.
   ///
   /// In de, this message translates to:

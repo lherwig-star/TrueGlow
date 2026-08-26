@@ -625,6 +625,41 @@ Punkt 4 gleich mitprüfen.
    der Checkliste sauber auf zwei Zeilen um, nichts ist abgeschnitten. Prüf
    das auch mit großer Systemschrift (Abschnitt 4).
 
+## 16 · Der Moment nach dem ersten Haken
+
+Kein Kontingent, kein Analyse-Lauf. Im Demo-Modus in einer Minute geprüft.
+
+1. **Vor dem ersten Haken.** Startseite öffnen. Erwartet: Die Flamme ist
+   gedimmt, unter der Zahl steht „Heute noch nichts abgehakt …". Keine
+   Bestätigung.
+
+2. **Ersten Punkt abhaken.** Erwartet: Die Flamme flackert kurz auf, und
+   direkt darunter erscheint ein grüner Streifen: **„Tag gesichert!"** mit
+   dem Stand der Serie darunter. Kein Vollbild, kein Knopf, nichts zum
+   Wegklicken.
+
+3. **Warten.** Erwartet: Nach etwa fünf Sekunden blendet sich der Streifen
+   von selbst aus. Die Karte rückt dabei ruhig zusammen, sie springt nicht.
+
+4. **Zweiten Punkt abhaken.** Erwartet: **Nichts** passiert — kein zweiter
+   Streifen. Gefeiert wird der Tag, nicht jeder Haken.
+
+5. **Bildschirm wechseln und zurück.** Zum Plan und zurück zur Startseite.
+   Erwartet: Der Streifen kommt nicht erneut.
+
+6. **Haken wieder entfernen und neu setzen.** Erwartet: Der Streifen kommt
+   wieder — der Tag war zwischendurch offen. Das ist gewollt und lässt sich
+   nur von Hand herbeiführen.
+
+7. **Mit „Bewegung reduzieren".** In den Android-Einstellungen unter
+   Bedienungshilfen „Animationen entfernen" einschalten, App neu starten,
+   abhaken. Erwartet: Der Streifen ist da, erscheint aber ohne Bewegung.
+
+8. **Mit TalkBack.** Erwartet: Beim Erscheinen wird „Tag gesichert!"
+   einmal vorgelesen, ohne dass man hinnavigieren muss.
+
+9. **Englisch.** Erwartet: „Day secured!" und „That makes 2 days in a row."
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

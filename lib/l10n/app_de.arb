@@ -719,6 +719,14 @@
     "placeholders": { "tage": { "type": "int" } }
   },
   "streakNeustart": "Neustart – dein längster Streak bleibt dir erhalten.",
+  "streakTagGesichert": "Tag gesichert!",
+  "@streakTagGesichert": {
+    "description": "Kurzer Moment nach dem ersten Haken des Tages. Steht in der Serien-Karte und blendet sich von selbst aus."
+  },
+  "streakTagGesichertText": "{tage, plural, =1{Der Anfang steht – Tag 1.} other{Damit stehen {tage} Tage am Stück.}}",
+  "@streakTagGesichertText": {
+    "placeholders": { "tage": { "type": "int" } }
+  },
   "streakJokerUebrig": "{anzahl, plural, =0{Diesen Monat keine Joker mehr} =1{Noch 1 Joker diesen Monat} other{Noch {anzahl} Joker diesen Monat}}",
   "@streakJokerUebrig": {
     "description": "Wie viele Streak-Joker der laufende Kalendermonat noch hergibt.",

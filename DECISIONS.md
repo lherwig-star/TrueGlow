@@ -1249,6 +1249,39 @@ sein muss als der, den er ersetzt.
 Aufgaben in der Tagesliste sind länger als vorher. Das ist der Punkt der
 Übung.
 
+## 45 · Der Moment nach dem ersten Haken
+
+Beim ersten abgehakten Punkt des Tages flackert die Flamme auf — das war
+schon so. Neu ist die Bestätigung darunter: „Tag gesichert!" plus der Stand
+der Serie, fünf Sekunden lang, dann blendet sie sich von selbst aus.
+
+**Warum kein Dialog und kein Vollbild.** Dieser Moment kommt jeden Tag. Was
+jeden Tag kommt und weggeklickt werden muss, ist nach einer Woche eine
+Belästigung — und der Nutzer klickt es dann weg, ohne es zu lesen. Deshalb:
+in der Karte, auf die er ohnehin schaut, kurz, und ohne Knopf.
+
+Der Jubel-Dialog für Abzeichen bleibt davon unberührt. Der ist selten (acht
+Mal insgesamt) und darf deshalb groß sein.
+
+**Warum genau einmal pro Tag.** Ausgelöst wird nicht am Haken, sondern am
+Übergang „heute noch nichts" → „heute gesichert". Jeder weitere Haken am
+selben Tag ändert diesen Zustand nicht mehr. Ein Test hakt zweimal ab und
+besteht darauf, dass der Moment nicht wiederkommt.
+
+**Warum er nicht beim Zurückkommen erneut auftaucht.** Der Übergang wird im
+Widget-Zustand gemerkt, nicht gespeichert. Wer den Bildschirm verlässt und
+zurückkommt, startet ohne Vorzustand — und ein Übergang von „unbekannt" nach
+„gesichert" zählt nicht. Das ist genau richtig: Gefeiert wird der Moment, in
+dem es passiert, nicht der Zustand danach.
+
+**Barrierefreiheit:** Die Bestätigung ist eine `liveRegion` — TalkBack liest
+sie einmal vor, wenn sie erscheint. Bei „Bewegung reduzieren" erscheint sie
+ohne Animation, aber sie erscheint.
+
+**Preis:** Ein Timer mehr im Widget-Zustand. Die Karte ist beim Bauen um zwei
+kleine Widgets gewachsen, dafür ist die Serien-Zeile jetzt ein eigenes Widget
+und nicht mehr eine `build`-Methode über hundert Zeilen.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

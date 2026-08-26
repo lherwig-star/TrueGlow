@@ -529,6 +529,8 @@
   "streakHeuteErledigt": "{erledigt} of {gesamt} done today",
   "streakRekord": "{tage, plural, =1{Longest streak: 1 day} other{Longest streak: {tage} days}}",
   "streakNeustart": "Fresh start — your longest streak stays with you.",
+  "streakTagGesichert": "Day secured!",
+  "streakTagGesichertText": "{tage, plural, =1{That's day 1 on the board.} other{That makes {tage} days in a row.}}",
   "streakJokerUebrig": "{anzahl, plural, =0{No jokers left this month} =1{1 joker left this month} other{{anzahl} jokers left this month}}",
   "streakJokerGerettet": "{anzahl, plural, =1{A joker saved your streak.} other{{anzahl} jokers saved your streak.}}",
   "streakJokerErklaerung": "Jokers: {gesamt} a month. Miss a day and one steps in automatically.",

@@ -1813,6 +1813,20 @@ class LDe extends L {
       'Neustart – dein längster Streak bleibt dir erhalten.';
 
   @override
+  String get streakTagGesichert => 'Tag gesichert!';
+
+  @override
+  String streakTagGesichertText(int tage) {
+    String _temp0 = intl.Intl.pluralLogic(
+      tage,
+      locale: localeName,
+      other: 'Damit stehen $tage Tage am Stück.',
+      one: 'Der Anfang steht – Tag 1.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String streakJokerUebrig(int anzahl) {
     String _temp0 = intl.Intl.pluralLogic(
       anzahl,
