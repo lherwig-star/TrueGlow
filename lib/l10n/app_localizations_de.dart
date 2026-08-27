@@ -191,6 +191,11 @@ class LDe extends L {
   String get moduleEyebrow => 'Deine Analyse';
 
   @override
+  String moduleAusOnboarding(String module) {
+    return 'Aus deinen Schwerpunkten im Onboarding schon angehakt: $module. Du kannst das hier frei ändern.';
+  }
+
+  @override
   String get moduleUeberschrift => 'Was sollen wir uns ansehen?';
 
   @override

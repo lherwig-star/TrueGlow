@@ -57,6 +57,7 @@
   "aufnahmeFehlgeschlagen": "That photo did not work — please try again",
   "moduleTitel": "Build your analysis",
   "moduleEyebrow": "Your analysis",
+  "moduleAusOnboarding": "Already ticked from your onboarding focus: {module}. You can change this freely here.",
   "moduleUeberschrift": "What should we look at?",
   "moduleEinleitung": "Face, hair and beard are always included. Everything else is up to you — and you can add more later.",
   "moduleBasisBadge": "Core",

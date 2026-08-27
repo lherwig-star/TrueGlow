@@ -36,6 +36,14 @@ class ModuleSelectionScreen extends ConsumerWidget {
     final kontingent = ref.watch(kontingentProvider).valueOrNull;
     final gesperrt = kontingent?.erschoepft ?? false;
 
+    // Was aus den Schwerpunkten im Onboarding vorausgewaehlt wurde – und
+    // zwar gerechnet, nicht gemerkt: So stimmt der Hinweis auch dann noch,
+    // wenn der Nutzer die Auswahl inzwischen veraendert hat.
+    final ausOnboarding = Fokusbereich.moduleFuer(
+      ref.watch(onboardingControllerProvider).fokus,
+      ausrichtung,
+    ).where(zustand.enthaelt).toList();
+
     return AppPage(
       title: texte.moduleTitel,
       bottomFade: true,
@@ -76,6 +84,18 @@ class ModuleSelectionScreen extends ConsumerWidget {
               ? texte.moduleEinleitungOhneBart
               : texte.moduleEinleitung,
         ),
+        if (ausOnboarding.isNotEmpty) ...[
+          const SizedBox(height: AppTheme.gapS),
+          // Der Satz, der aus einer doppelten Frage eine Erleichterung
+          // macht: „schon angehakt, kannst du aendern" (DECISIONS 60).
+          MutedText(
+            texte.moduleAusOnboarding(
+              ausOnboarding
+                  .map((m) => m.titel(texte, ausrichtung))
+                  .join(', '),
+            ),
+          ),
+        ],
         if (kontingent != null) ...[
           const SizedBox(height: AppTheme.gapM),
           if (kontingent.erschoepft)

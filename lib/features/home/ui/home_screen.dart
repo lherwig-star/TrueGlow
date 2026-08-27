@@ -11,6 +11,8 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../analysis/logic/analysis_controller.dart';
 import '../../analysis/logic/modus_controller.dart';
+import '../../onboarding/logic/onboarding_controller.dart';
+import '../../onboarding/models/onboarding_profile.dart';
 import '../../analysis/models/analysis_result.dart';
 import '../../analysis/ui/unterbrochen_karte.dart';
 import '../../capture/logic/capture_controller.dart';
@@ -116,7 +118,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// Frage beim naechsten Mal neu gestellt.
   void _neueAnalyse(BuildContext context, WidgetRef ref) {
     ref.read(captureControllerProvider.notifier).alleVerwerfen();
-    ref.read(moduleControllerProvider.notifier).zuruecksetzen();
+    // Die Schwerpunkte aus dem Onboarding waehlen die passenden Module vor
+    // (DECISIONS 60). Aendern kann der Nutzer sie auf dem naechsten
+    // Bildschirm frei – vorausgewaehlt heisst nicht festgelegt.
+    ref.read(moduleControllerProvider.notifier).vorbereiten(
+          Fokusbereich.moduleFuer(
+            ref.read(onboardingControllerProvider).fokus,
+            ref.read(ausrichtungProvider),
+          ),
+        );
     ref.read(modusControllerProvider.notifier).zuruecksetzen();
     ref.read(analysisControllerProvider.notifier).zuruecksetzen();
     // Ein neuer Plan heisst ein neuer Check-in-Zyklus. Der Termin steht erst,

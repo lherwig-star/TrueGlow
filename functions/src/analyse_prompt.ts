@@ -615,12 +615,47 @@ function kontext(daten: AnalysePromptDaten, module: readonly Modul[]): string {
   }
 
   if (zeilen.length === 0) {
-    return 'Zur Person liegen keine weiteren Angaben vor.';
+    // Auch ohne jede Angabe muss dastehen, wie zu gewichten ist – sonst
+    // sucht sich das Modell selbst einen Schwerpunkt.
+    return `Zur Person liegen keine weiteren Angaben vor.
+${schwerpunktRegel([])}`;
   }
 
   return (
     `Angaben der Person:\n${zeilen.join('\n')}\n` +
-    'Gewichte die genannten Schwerpunkte stärker, ignoriere die übrigen ' +
-    'Bereiche aber nicht völlig.'
+    schwerpunktRegel(daten.profil.fokus)
+  );
+}
+
+/**
+ * Was ein Schwerpunkt heisst.
+ *
+ * Der Anlass steht in DECISIONS 60: Die Frage „Worauf willst du dich
+ * konzentrieren?" wirkte bis dahin nur ueber diese eine Zeile — „gewichte
+ * staerker" —, und am fertigen Report war nicht zu erkennen, ob jemand
+ * ueberhaupt etwas angekreuzt hatte. Eine Gewichtung, die niemand sieht, ist
+ * keine.
+ *
+ * Deshalb steht hier jetzt eine Zahl statt eines Adverbs: eine Empfehlung
+ * mehr und eine Tagesaufgabe, die genau darauf zielt. Das ist an einer
+ * einzelnen Zeile des Reports nachzuzaehlen.
+ *
+ * Die Kapitelgrenze bleibt unangetastet (DECISIONS 39): Ein Schwerpunkt
+ * verschiebt Gewicht **innerhalb** der bestellten Kapitel, er erfindet keins
+ * und traegt nichts in ein fremdes hinein.
+ */
+function schwerpunktRegel(fokus: string[]): string {
+  if (fokus.length === 0) {
+    return 'Behandle alle angeforderten Kapitel gleich gewichtet.';
+  }
+
+  return (
+    'Die genannten Schwerpunkte sind eine Vorgabe, keine Stimmung: In dem '
+    + 'Kapitel, zu dem ein Schwerpunkt gehört, steht mindestens eine '
+    + 'Empfehlung mehr als in den übrigen und mindestens eine Tagesaufgabe, '
+    + 'die genau auf diesen Schwerpunkt zielt. Gehört ein Schwerpunkt zu '
+    + 'keinem der angeforderten Kapitel, lass ihn weg – erfinde dafür kein '
+    + 'Kapitel und trag ihn in kein fremdes hinein. Die übrigen Bereiche '
+    + 'werden dadurch nicht dünner, sie bekommen nur nicht das Zusätzliche.'
   );
 }

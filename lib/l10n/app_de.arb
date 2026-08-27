@@ -63,6 +63,15 @@
   },
   "moduleTitel": "Analyse zusammenstellen",
   "moduleEyebrow": "Deine Analyse",
+  "moduleAusOnboarding": "Aus deinen Schwerpunkten im Onboarding schon angehakt: {module}. Du kannst das hier frei ändern.",
+  "@moduleAusOnboarding": {
+    "description": "Hinweis ueber der Modulliste, wenn das Onboarding etwas vorausgewaehlt hat.",
+    "placeholders": {
+      "module": {
+        "type": "String"
+      }
+    }
+  },
   "moduleUeberschrift": "Was sollen wir uns ansehen?",
   "moduleEinleitung": "Gesicht, Haare und Bart sind immer dabei. Alles Weitere wählst du selbst – und kannst es auch später noch ergänzen.",
   "moduleBasisBadge": "Basis",

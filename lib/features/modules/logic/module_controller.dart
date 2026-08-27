@@ -94,10 +94,26 @@ class ModuleController extends StateNotifier<ModulZustand> {
       _setzeEingaben(state.eingaben.copyWith(stil: angaben));
 
   /// Zuruecksetzen auf die reine Basis-Auswahl.
-  void zuruecksetzen() {
-    state = ModulZustand.leer;
-    _box.delete(_schluesselModule);
+  void zuruecksetzen() => vorbereiten(const {});
+
+  /// Setzt zurueck und waehlt [vorauswahl] gleich mit an.
+  ///
+  /// Das ist der Weg, auf dem die Schwerpunkte aus dem Onboarding wirken
+  /// (DECISIONS 60): Wer dort „Haut" angekreuzt hat, findet „Haut & Farbtyp"
+  /// beim naechsten Zusammenstellen bereits ausgewaehlt vor – und kann es
+  /// mit einem Tipp wieder abwaehlen. Das Onboarding spart damit
+  /// Tipparbeit, statt dieselbe Frage ein zweites Mal zu stellen.
+  ///
+  /// Die Zusatzangaben (Figur, Stil) werden trotzdem geleert: Sie gehoeren
+  /// zum vorigen Durchlauf, nicht zur Vorauswahl.
+  void vorbereiten(Set<AnalyseModul> vorauswahl) {
     _box.delete(_schluesselEingaben);
+    state = ModulZustand.leer;
+    if (vorauswahl.isEmpty) {
+      _box.delete(_schluesselModule);
+      return;
+    }
+    _setzeModule(vorauswahl);
   }
 
   void neuLaden() => state = _lade(_box);

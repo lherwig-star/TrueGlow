@@ -2228,6 +2228,87 @@ festzunageln, ohne nativen Code in den Debug-Build zu ziehen. Solange das so
 ist, ist die Regel aus `CLAUDE.md` — nicht deinstallieren — auch die
 Absicherung dieser Stelle.
 
+## 60 · Die Schwerpunkte aus dem Onboarding tun endlich etwas
+
+**Was die Auswahl bisher bewirkt hat — die ehrliche Antwort:** genau eine
+Zeile im Analyse-Prompt.
+
+```
+- Gewünschte Schwerpunkte: Haut, Haare
+…
+Gewichte die genannten Schwerpunkte stärker, ignoriere die übrigen Bereiche
+aber nicht völlig.
+```
+
+Sonst nichts. Nicht die Modulauswahl, nicht der Check-in, nicht der Plan,
+nicht die Tagesaufgaben, nichts in der Oberfläche nach dem Onboarding. Die
+Frage war also nicht wirkungslos — aber ihre Wirkung war unsichtbar, und zwei
+Bildschirme später fragte die Modulauswahl dasselbe noch einmal, nur
+ausführlicher. Wer „Haut" angekreuzt hatte, musste „Haut & Farbtyp" trotzdem
+von Hand anhaken.
+
+**Verdrahtet statt gelöscht.** Jeder Schwerpunkt kennt jetzt sein Modul, und
+ein neuer Durchlauf startet mit diesen Modulen vorausgewählt:
+
+| Schwerpunkt | Modul |
+|---|---|
+| Haut | Haut & Farbtyp |
+| Style | Stil & Kleiderschrank |
+| Fitness-Habits | Figur & Passform |
+| Haare | — (Teil der Basis) |
+| Bart | — (Teil der Basis) |
+
+Haare und Bart wählen nichts vor, weil die Basis ohnehin immer dabei ist.
+Ihre Wirkung bleibt die Gewichtung im Prompt — und die ist dort echt: Die
+Basis hat einen Frisur- und einen Bart-Abschnitt.
+
+**Fitness-Habits → Figur & Passform** ist die einzige Zuordnung, die eine
+Begründung braucht. Das Kapitel heißt nach der Passform, aber sein Inhalt ist
+der Körper: Proportionen, Haltung, und in der Tagesliste Aufgaben wie der
+Brustöffner im Türrahmen. Wer „Fitness-Habits" ankreuzt, meint genau die.
+Ein eigenes Fitness-Kapitel gibt es nicht und soll es nicht geben — die App
+ist kein Trainingsplan, und ein Kapitel ohne Foto wäre eins ohne Grundlage.
+
+**Vorausgewählt heißt nicht festgelegt.** Der nächste Bildschirm ist die
+Modulauswahl, dort lässt sich jeder Haken mit einem Tipp wieder entfernen.
+Damit das nicht wie Magie wirkt, steht über der Liste ein Satz: „Aus deinen
+Schwerpunkten im Onboarding schon angehakt: … Du kannst das hier frei
+ändern." Er wird **gerechnet, nicht gemerkt** — er stimmt also auch dann
+noch, wenn inzwischen abgewählt wurde.
+
+Das ist nicht kostenlos: Eine Vorauswahl kann Aufnahmen nach sich ziehen.
+„Stil & Kleiderschrank" will Outfit-Fotos, „Figur & Passform" Ganzkörper.
+Deshalb der Hinweis und deshalb die Reihenfolge — erst sehen, was
+vorausgewählt ist, dann in die Kamera.
+
+**Die Gewichtung nennt jetzt eine Zahl statt eines Adverbs.** „Gewichte
+stärker" ist für ein Modell eine Stimmung; am fertigen Report war nicht zu
+erkennen, ob überhaupt etwas angekreuzt war. Neu:
+
+> Die genannten Schwerpunkte sind eine Vorgabe, keine Stimmung: In dem
+> Kapitel, zu dem ein Schwerpunkt gehört, steht mindestens eine Empfehlung
+> mehr als in den übrigen und mindestens eine Tagesaufgabe, die genau auf
+> diesen Schwerpunkt zielt.
+
+Das ist an einer einzelnen Zeile des Reports nachzuzählen. Dazu zwei
+Absicherungen: Ein Schwerpunkt, dessen Kapitel gar nicht bestellt wurde,
+fällt weg — er erfindet kein Kapitel und wandert in kein fremdes hinein
+(dieselbe Grenze wie beim Zielkapitel, DECISIONS 39). Und die übrigen
+Bereiche werden nicht dünner, sie bekommen nur nicht das Zusätzliche.
+
+**Ohne jeden Schwerpunkt** steht jetzt ausdrücklich „Behandle alle
+angeforderten Kapitel gleich gewichtet." — vorher stand dort nichts, und das
+Modell durfte sich selbst einen Schwerpunkt aussuchen.
+
+**Nichts wurde aus dem Onboarding entfernt.** Das Paket stellte es für den
+Fall frei, dass ein Schwerpunkt nirgendwo mehr eine ehrliche Wirkung hat.
+Nach der Verdrahtung hat jeder eine: drei wählen ein Modul vor, zwei
+gewichten die Basis.
+
+**Preis:** Ein Satz mehr auf der Modulseite, und der Flow beginnt für Nutzer
+mit vielen Schwerpunkten mit mehr Aufnahmen als vorher. Beides ist mit einem
+Tipp zu ändern.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

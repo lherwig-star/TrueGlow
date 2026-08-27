@@ -1,4 +1,5 @@
 import '../../../core/l10n/texte.dart';
+import '../../modules/models/analyse_modul.dart';
 
 /// Antworten aus dem Onboarding. Fliessen spaeter in den Analyse-Prompt ein.
 /// Die Altersbereiche, nach denen das Onboarding fragt.
@@ -47,12 +48,42 @@ enum Budget { niedrig, mittel, hoch }
 
 enum Zeitbudget { kurz, mittel, lang }
 
+/// Worauf jemand sich konzentrieren will – die Frage aus dem Onboarding.
+///
+/// **Was die Antwort bewirkt** (DECISIONS 60): Sie wählt beim Zusammenstellen
+/// der Analyse die passenden Module vor, und sie steht als „Gewünschte
+/// Schwerpunkte" im Prompt. Bis dahin war nur das Zweite der Fall — die
+/// Auswahl färbte den Report ein und stellte ansonsten dieselbe Frage ein
+/// zweites Mal.
 enum Fokusbereich {
-  haut,
-  haare,
-  bart,
-  style,
-  fitness;
+  /// → „Haut & Farbtyp". Braucht keine eigene Aufnahme.
+  haut(modul: AnalyseModul.hautFarbtyp),
+
+  /// Gehört zur Basis und ist damit immer dabei. Vorauswählen lässt sich da
+  /// nichts – die Wirkung liegt allein in der Gewichtung im Prompt.
+  haare(modul: null),
+
+  /// Dito. Im weiblichen Modus fällt der Schwerpunkt ganz weg.
+  bart(modul: null),
+
+  /// → „Stil & Kleiderschrank".
+  style(modul: AnalyseModul.stilKleiderschrank),
+
+  /// → „Figur & Passform".
+  ///
+  /// Das ist die einzige Zuordnung, die eine Erklärung braucht: Das Kapitel
+  /// heißt nach der Passform, aber sein Inhalt ist der Körper — Proportionen,
+  /// Haltung, und in der Tagesliste Übungen wie der Brustöffner im
+  /// Türrahmen. Wer „Fitness-Habits" ankreuzt, meint genau diese Aufgaben.
+  /// Ein eigenes Fitness-Kapitel gibt es nicht und soll es nicht geben; die
+  /// App ist kein Trainingsplan.
+  fitness(modul: AnalyseModul.figurPassform);
+
+  const Fokusbereich({required this.modul});
+
+  /// Das Analyse-Modul, das dieser Schwerpunkt vorauswählt – oder `null`,
+  /// wenn er in der Basis aufgeht.
+  final AnalyseModul? modul;
 
   /// Was zur Wahl steht.
   ///
@@ -62,6 +93,22 @@ enum Fokusbereich {
       ausrichtung == Ausrichtung.weiblich
           ? values.where((f) => f != Fokusbereich.bart).toList()
           : values;
+
+  /// Die Module, die eine Auswahl von Schwerpunkten vorauswählt.
+  ///
+  /// Gefiltert nach der Ausrichtung: Was im aktuellen Modus gar nicht zur
+  /// Wahl steht, wird auch nicht vorausgewählt.
+  static Set<AnalyseModul> moduleFuer(
+    Iterable<Fokusbereich> schwerpunkte,
+    Ausrichtung ausrichtung,
+  ) {
+    final waehlbar = AnalyseModul.waehlbareFuer(ausrichtung).toSet();
+    return {
+      for (final s in schwerpunkte)
+        if (s.modul case final m?)
+          if (waehlbar.contains(m)) m,
+    };
+  }
 }
 
 // Die Anzeigetexte stehen bewusst nicht mehr im Enum, sondern in

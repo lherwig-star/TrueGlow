@@ -439,6 +439,12 @@ abstract class L {
   /// **'Deine Analyse'**
   String get moduleEyebrow;
 
+  /// Hinweis ueber der Modulliste, wenn das Onboarding etwas vorausgewaehlt hat.
+  ///
+  /// In de, this message translates to:
+  /// **'Aus deinen Schwerpunkten im Onboarding schon angehakt: {module}. Du kannst das hier frei ändern.'**
+  String moduleAusOnboarding(String module);
+
   /// No description provided for @moduleUeberschrift.
   ///
   /// In de, this message translates to:

@@ -190,6 +190,11 @@ class LEn extends L {
   String get moduleEyebrow => 'Your analysis';
 
   @override
+  String moduleAusOnboarding(String module) {
+    return 'Already ticked from your onboarding focus: $module. You can change this freely here.';
+  }
+
+  @override
   String get moduleUeberschrift => 'What should we look at?';
 
   @override
