@@ -132,12 +132,14 @@ enum AufnahmeTyp {
     overlay: Overlaytyp.keins,
     pruefung: Pruefprofil.frei,
     rueckkamera: true,
+    autoAusloeser: true,
   ),
   stilOutfitZwei(
     modul: AnalyseModul.stilKleiderschrank,
     overlay: Overlaytyp.keins,
     pruefung: Pruefprofil.frei,
     rueckkamera: true,
+    autoAusloeser: true,
   ),
   stilOutfitDrei(
     modul: AnalyseModul.stilKleiderschrank,
@@ -145,6 +147,7 @@ enum AufnahmeTyp {
     pruefung: Pruefprofil.frei,
     rueckkamera: true,
     optional: true,
+    autoAusloeser: true,
   );
 
   const AufnahmeTyp({
@@ -174,10 +177,16 @@ enum AufnahmeTyp {
 
   /// Ob die App selbst ausloest, sobald jemand vollstaendig im Bild steht.
   ///
-  /// Nur bei den Ganzkoerperfotos: Dort stellt man das Handy ab und tritt
-  /// mehrere Meter zurueck – der Ausloeser ist von dort nicht erreichbar.
-  /// Bei allen anderen Aufnahmen haelt man das Geraet in der Hand, und ein
-  /// Automatismus waere nur ein Foto zum falschen Zeitpunkt.
+  /// Bei jeder Aufnahme, fuer die man das Handy abstellt und zuruecktritt:
+  /// den beiden Ganzkoerperfotos und den drei Outfit-Fotos. Von dort ist der
+  /// Ausloeser nicht erreichbar. Bei den Portraits haelt man das Geraet in
+  /// der Hand – dort waere ein Automatismus nur ein Foto zum falschen
+  /// Zeitpunkt.
+  ///
+  /// Bei den Outfit-Fotos ist er ein Angebot, keine Bedingung: Liegt das
+  /// Outfit ausgelegt da, wird nie eine Pose erkannt, der Countdown startet
+  /// gar nicht erst – und der Ausloeser bleibt druckbar wie immer
+  /// (DECISIONS 68).
   final bool autoAusloeser;
 
   /// Die Hilfslinien, die im Sucher wirklich liegen.
@@ -200,10 +209,19 @@ enum AufnahmeTyp {
 
   /// Ob ueberhaupt ein Bildstrom laufen muss.
   ///
-  /// Gesichtserkennung fuer die Portraits, Posenerkennung fuer die
-  /// Ganzkoerperfotos – Outfit-Aufnahmen brauchen keins von beidem und
-  /// bekommen deshalb auch keinen Strom.
+  /// Gesichtserkennung fuer die Portraits, Posenerkennung ueberall dort, wo
+  /// die App selbst ausloest. Seit auch die Outfit-Fotos selbst ausloesen,
+  /// trifft das auf jede Aufnahme zu – der Sucher verlaesst sich darauf und
+  /// hat keine Fassung ohne Statuszeile mehr.
   bool get mitBildstrom => mitLiveHilfe || autoAusloeser;
+
+  /// Ob das Bild auch ohne Person gueltig ist.
+  ///
+  /// Nur die Outfit-Fotos: Dort darf das Kleidungsstueck ausgelegt sein oder
+  /// auf dem Buegel haengen. An der Auto-Ausloesung aendert das nichts, wohl
+  /// aber an ihrem Ton – „Stell dich ins Bild" waere dort eine Forderung,
+  /// die der Schritt gar nicht stellt.
+  bool get personOptional => pruefung == Pruefprofil.frei;
 
   /// Der Hinweistext, abhaengig von den gewaehlten Modulen.
   ///
@@ -257,6 +275,15 @@ extension AufnahmeTypText on AufnahmeTyp {
         AufnahmeTyp.stilOutfitZwei => texte.aufnahmeOutfitZweiHinweis,
         AufnahmeTyp.stilOutfitDrei => texte.aufnahmeOutfitDreiHinweis,
       };
+
+  /// Die Erklaerung zum Auto-Ausloeser im Foto-Schritt.
+  ///
+  /// Zwei Fassungen, weil zwei Dinge verschieden sind: Die Ganzkoerperfotos
+  /// haben einen Umriss, in den man sich stellt. Die Outfit-Fotos haben
+  /// keinen und duerfen ohne Person auskommen – dort muss der Text sagen,
+  /// dass der Automatismus dann einfach nicht anspringt.
+  String autoHinweis(L texte) =>
+      personOptional ? texte.outfitAutoHinweis : texte.koerperAutoHinweis;
 }
 
 /// Die Aufnahmen eines Moduls in Flow-Reihenfolge.

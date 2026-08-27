@@ -144,6 +144,9 @@ class LEn extends L {
   String get koerperNiemand => 'Step into the frame';
 
   @override
+  String get koerperNiemandFrei => 'Step into the frame – or shoot manually';
+
+  @override
   String get koerperNichtGanz => 'All of you — head and feet';
 
   @override
@@ -161,6 +164,10 @@ class LEn extends L {
   @override
   String get koerperAutoHinweis =>
       'Prop your phone up, step back and line yourself up with the outline. Once you are fully in frame, the app counts down and takes the photo itself. You can also shoot manually at any time.';
+
+  @override
+  String get outfitAutoHinweis =>
+      'Prop your phone up, step back and stand in the middle of the frame. Once you are fully visible – head to feet – the app counts down and takes the photo itself. If the outfit is laid out instead, nothing starts: just shoot manually as usual.';
 
   @override
   String get kameraKeineBerechtigungTitel => 'Camera access needed';

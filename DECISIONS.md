@@ -2840,6 +2840,74 @@ lässt sich die Oberfläche in beiden Modi ohne Kontingent prüfen.
 Prompt in jedem Lauf. Das kostet Eingabe-Tokens — und spart dem Leser einen
 Text, den er zweimal liest.
 
+## 68 · Auch die Outfit-Fotos lösen selbst aus
+
+Dasselbe Problem wie bei den Ganzkörperfotos, ein Modul weiter: Für ein
+Outfit-Foto stellt man das Handy ab und tritt mehrere Meter zurück. Von dort
+ist der Auslöser nicht erreichbar. Bisher lösten nur die beiden Figur-Fotos
+selbst aus — bei den drei Outfit-Fotos musste man zurücklaufen, tippen und
+wieder hinlaufen, oder jemanden bitten.
+
+**Gleiche Lösung, gleiche Bauteile.** Die drei Aufnahmen bekommen
+`autoAusloeser: true`. Damit läuft dieselbe Kette wie bei der Figur:
+Posenerkennung → `LiveKoerperGuide` → `AutoAusloeser` → Countdown → Auslösen.
+An der Logik selbst wurde nichts geändert, sie ist Zeile für Zeile dieselbe.
+
+### Warum die Haltungsregeln passen
+
+Der Guide verlangt Kopf **und** Füße im Bild, 55–94 % der Bildhöhe und mittig
+stehend. Das ist für ein Outfit-Foto nicht bloß zulässig, sondern genau
+richtig: Ein Outfit beurteilt man von der Schulter bis zum Schuh. Wer
+angeschnitten oder zu weit weg steht, liefert ein Bild, aus dem die Analyse
+über Passform und Proportion nichts sagen kann.
+
+### Der Unterschied: Hier ist eine Person freiwillig
+
+Das Outfit darf **ausgelegt** sein oder auf dem Bügel hängen — so steht es im
+Hinweis des Schritts, und `Pruefprofil.frei` lässt es zu. Ein Auto-Auslöser,
+der eine Person verlangt, würde diesen Weg verbauen.
+
+Er tut es nicht, und zwar von selbst: Ohne Person erkennt ML Kit keine Pose,
+der Guide meldet „niemand", der Countdown startet gar nicht erst — und der
+Auslöser ist wie immer druckbar. Der Ring um ihn markiert nur die Haltung, er
+sperrt nichts. **Der Automatismus ist hier ein Angebot, keine Bedingung.**
+
+Damit das auch so *klingt*, tragen zwei Texte eine zweite Fassung:
+
+| | Ganzkörper | Outfit |
+|---|---|---|
+| Erklärung im Schritt | „…stell dich in den **Umriss**" | „…**mittig ins Bild**", plus: liegt das Outfit da, löst du von Hand aus |
+| Sucher, niemand im Bild | „Stell dich ins Bild" | „Stell dich ins Bild – **oder löse von Hand aus**" |
+
+Der erste Unterschied ist kein Stil, sondern eine Tatsache: Die Outfit-Fotos
+haben keine Silhouette (`Overlaytyp.keins`). „Stell dich in den Umriss"
+schickte den Nutzer dort nach etwas suchen, was nicht da ist. Alle übrigen
+Hinweise — „ganz ins Bild", „ein paar Schritte zurück", „steht" — bleiben
+wortgleich; die Haltungsregeln sind identisch, also darf die Anweisung es
+auch sein.
+
+### Kein Umriss dazu
+
+Naheliegend wäre gewesen, den Outfit-Fotos die Ganzkörper-Silhouette zu geben
+— sie zielt genau in die Mitte dessen, was der Guide akzeptiert. Dagegen
+spricht der ausgelegte Fall: Ein Körperumriss über einem Hemd auf dem Bett
+ist eine Anweisung, die dort niemand befolgen kann. Das freie Bild bleibt
+frei.
+
+### Was dabei wegfiel
+
+Seit dieser Änderung hat **jede** Aufnahme eine Erkennung — Gesicht oder
+Pose. Die stumme Anleitungskarte im Sucher, die nur bei den Outfit-Fotos zu
+sehen war, hatte damit keinen Fall mehr und ist entfernt. Ihr Text steht
+unverändert eine Ebene höher unter „So klappt das Foto". Ein Test hält fest,
+dass es keine Aufnahme ohne Bildstrom mehr gibt: Wer eine hinzufügt, muss den
+Sucher wieder um eine Fassung ohne Statuszeile ergänzen.
+
+**Preis:** Auf den drei Outfit-Schritten läuft jetzt die Posenerkennung mit —
+etwa vier Bilder je Sekunde, dieselbe Taktung wie bei der Figur. Das kostet
+Rechenzeit und Wärme auf schwachen Geräten, in einem Schritt, der bisher
+ganz ohne auskam. Dafür entfällt der Weg zum Handy und zurück, drei Mal.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

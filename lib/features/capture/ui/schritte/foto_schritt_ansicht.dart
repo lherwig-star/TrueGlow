@@ -78,7 +78,7 @@ class FotoSchrittAnsicht extends ConsumerWidget {
           SectionCard(
             title: texte.fotoAutoTitel,
             icon: Icons.timer_outlined,
-            child: MutedText(texte.koerperAutoHinweis),
+            child: MutedText(typ.autoHinweis(texte)),
           ),
         ],
       ],

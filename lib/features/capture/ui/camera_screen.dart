@@ -243,8 +243,10 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
         return;
       }
 
-      // Outfit-Aufnahmen brauchen weder Gesichts- noch Posenerkennung – dort
-      // laeuft gar kein Bildstrom.
+      // Gesichter bei den Portraits, Posen ueberall dort, wo die App selbst
+      // ausloest. Die Abfrage bleibt stehen, obwohl derzeit jede Aufnahme
+      // einen Strom braucht: Sie ist die eine Stelle, an der eine kuenftige
+      // Aufnahme ohne Erkennung wieder aussteigen koennte.
       if (widget.typ.mitBildstrom) {
         await controller.startImageStream(_frameVerarbeiten);
       }
@@ -688,7 +690,10 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
     // bekommen hat, braucht diese Nachricht und nicht „Steht – nicht bewegen".
     final statustext = _fehlschlag ??
         (widget.typ.autoAusloeser
-            ? _koerperHinweis.text(texte)
+            ? _koerperHinweis.text(
+                texte,
+                personOptional: widget.typ.personOptional,
+              )
             : _hinweis.text(texte));
 
     return Scaffold(
@@ -732,16 +737,14 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
                     onSchliessen: () => Navigator.of(context).pop(false),
                   ),
                   const Spacer(),
-                  // Ein Fehlschlag geht auch der Anleitung vor: Bei den
-                  // Outfit-Aufnahmen laeuft keine Live-Hilfe, und ohne diesen
-                  // Zweig bliebe eine misslungene Aufnahme dort unsichtbar.
-                  if (widget.typ.mitBildstrom || _fehlschlag != null)
-                    _Statustext(
-                      text: statustext,
-                      bereit: bereit && _fehlschlag == null,
-                    )
-                  else
-                    _Anleitung(text: widget.typ.hinweis(texte)),
+                  // Jede Aufnahme hat inzwischen eine Erkennung, also auch
+                  // eine Statuszeile. Die frueher hier stehende stumme
+                  // Anleitung fuer die Outfit-Fotos ist damit weg – ihr Text
+                  // steht unveraendert eine Ebene hoeher im Foto-Schritt.
+                  _Statustext(
+                    text: statustext,
+                    bereit: bereit && _fehlschlag == null,
+                  ),
                   const SizedBox(height: AppTheme.gapM),
                   _Bedienleiste(
                     bereit: bereit,
@@ -1306,33 +1309,6 @@ class _Fehlerhinweis extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-/// Steht anstelle der Statuszeile, wenn es keine Live-Erkennung gibt.
-class _Anleitung extends StatelessWidget {
-  const _Anleitung({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppTheme.gapM),
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppTheme.gapM,
-        vertical: AppTheme.gapS,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.55),
-        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-      ),
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        style: const TextStyle(color: Colors.white, height: 1.4),
       ),
     );
   }

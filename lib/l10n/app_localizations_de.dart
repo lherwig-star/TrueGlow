@@ -145,6 +145,10 @@ class LDe extends L {
   String get koerperNiemand => 'Stell dich ins Bild';
 
   @override
+  String get koerperNiemandFrei =>
+      'Stell dich ins Bild – oder löse von Hand aus';
+
+  @override
   String get koerperNichtGanz => 'Ganz ins Bild – Kopf und Füße';
 
   @override
@@ -162,6 +166,10 @@ class LDe extends L {
   @override
   String get koerperAutoHinweis =>
       'Stell dein Handy auf, tritt zurück und stell dich in den Umriss. Sobald du ganz im Bild stehst, zählt die App herunter und löst selbst aus. Du kannst auch jederzeit von Hand auslösen.';
+
+  @override
+  String get outfitAutoHinweis =>
+      'Stell dein Handy auf, tritt zurück und stell dich mittig ins Bild. Sobald du ganz zu sehen bist – Kopf und Füße –, zählt die App herunter und löst selbst aus. Liegt das Outfit ausgelegt da, springt nichts an: Dann löst du wie gewohnt von Hand aus.';
 
   @override
   String get kameraKeineBerechtigungTitel => 'Kamerazugriff nötig';

@@ -164,9 +164,10 @@ void main() {
       expect(AufnahmeTyp.stilOutfitEins.mitLiveHilfe, isFalse);
     });
 
-    test('nur die Ganzkoerperfotos loesen selbst aus', () {
-      // Bei allen anderen haelt man das Geraet in der Hand – ein Automatismus
-      // waere dort nur ein Foto zum falschen Zeitpunkt.
+    test('alles, wofuer man zuruecktritt, loest selbst aus', () {
+      // Ganzkoerper und Outfit: Dort steht das Handy und der Nutzer mehrere
+      // Meter davor. Bei den Portraits haelt man das Geraet in der Hand –
+      // ein Automatismus waere dort nur ein Foto zum falschen Zeitpunkt.
       final automatisch =
           AufnahmeTyp.values.where((t) => t.autoAusloeser).toSet();
 
@@ -175,23 +176,40 @@ void main() {
         {
           AufnahmeTyp.figurGanzkoerperFrontal,
           AufnahmeTyp.figurGanzkoerperSeitlich,
+          AufnahmeTyp.stilOutfitEins,
+          AufnahmeTyp.stilOutfitZwei,
+          AufnahmeTyp.stilOutfitDrei,
         },
       );
     });
 
-    test('ein Bildstrom laeuft nur, wo etwas erkannt wird', () {
-      // Outfit-Fotos brauchen weder Gesicht noch Pose. Liefe der Strom dort
-      // trotzdem, kostete er auf schwachen Geraeten Speicher und Waerme fuer
-      // nichts.
+    test('bei den Outfit-Fotos ist die Person nicht Pflicht', () {
+      // Das Kleidungsstueck darf ausgelegt sein. Dann wird keine Pose
+      // erkannt, der Countdown startet gar nicht – von Hand geht es wie
+      // immer. Deshalb ist der Auto-Ausloeser dort ein Angebot und keine
+      // Bedingung (DECISIONS 68).
+      for (final typ in AufnahmeTyp.values) {
+        expect(
+          typ.personOptional,
+          typ.modul == AnalyseModul.stilKleiderschrank,
+          reason: typ.name,
+        );
+      }
+    });
+
+    test('jede Aufnahme hat einen Bildstrom', () {
+      // Seit die Outfit-Fotos selbst ausloesen, gilt das ausnahmslos. Der
+      // Sucher verlaesst sich darauf: Er zeigt immer die Statuszeile und hat
+      // keine stumme Anleitung mehr (camera_screen.dart). Wer eine Aufnahme
+      // ohne Erkennung hinzufuegt, muss sie dort wieder einbauen.
       for (final typ in AufnahmeTyp.values) {
         expect(
           typ.mitBildstrom,
           typ.mitLiveHilfe || typ.autoAusloeser,
           reason: typ.name,
         );
+        expect(typ.mitBildstrom, isTrue, reason: typ.name);
       }
-      expect(AufnahmeTyp.stilOutfitEins.mitBildstrom, isFalse);
-      expect(AufnahmeTyp.figurGanzkoerperFrontal.mitBildstrom, isTrue);
     });
 
     test('jede Aufnahme gehoert zu genau einem Modul', () {

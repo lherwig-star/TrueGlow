@@ -6,6 +6,7 @@ import 'package:trueglow/features/capture/logic/auto_ausloeser.dart';
 import 'package:trueglow/features/capture/logic/live_face_guide.dart';
 import 'package:trueglow/features/capture/logic/live_koerper_guide.dart';
 import 'package:trueglow/features/capture/logic/signalton.dart';
+import 'package:trueglow/features/capture/models/aufnahme_typ.dart';
 import 'package:trueglow/features/capture/ui/widgets/silhouette_overlay.dart';
 
 /// Die deutschen Texte, gegen die geprueft wird.
@@ -452,5 +453,69 @@ void main() {
         }
       });
     }
+  });
+
+  group('Der Auto-Ausloeser spricht bei den Outfit-Fotos anders', () {
+    test('die Erklaerung nennt dort keinen Umriss', () {
+      // Die Ganzkoerperfotos haben eine Silhouette, in die man sich stellt.
+      // Die Outfit-Fotos haben keine – „stell dich in den Umriss" schickte
+      // den Nutzer dort nach etwas suchen, was nicht da ist.
+      final koerper =
+          AufnahmeTyp.figurGanzkoerperFrontal.autoHinweis(texte);
+      final outfit = AufnahmeTyp.stilOutfitEins.autoHinweis(texte);
+
+      expect(koerper, contains('Umriss'));
+      expect(outfit, isNot(contains('Umriss')));
+      expect(outfit, isNot(equals(koerper)));
+    });
+
+    test('und sagt, was beim ausgelegten Outfit passiert', () {
+      // Ohne diesen Satz wartet jemand mit einem Outfit auf dem Bett auf
+      // einen Countdown, der nie kommt.
+      expect(
+        AufnahmeTyp.stilOutfitEins.autoHinweis(texte),
+        contains('von Hand'),
+      );
+    });
+
+    test('alle drei Outfit-Fotos bekommen denselben Text', () {
+      for (final typ in [
+        AufnahmeTyp.stilOutfitZwei,
+        AufnahmeTyp.stilOutfitDrei,
+      ]) {
+        expect(
+          typ.autoHinweis(texte),
+          AufnahmeTyp.stilOutfitEins.autoHinweis(texte),
+          reason: typ.name,
+        );
+      }
+    });
+
+    test('im Sucher ist „niemand im Bild" dort kein Vorwurf', () {
+      // Beim Ganzkoerperfoto ist ein leeres Bild ein Fehler, beim Outfit
+      // nicht. Derselbe Hinweis, zwei Saetze.
+      const niemand = KoerperHinweis.niemand;
+
+      expect(niemand.text(texte), texte.koerperNiemand);
+      expect(
+        niemand.text(texte, personOptional: true),
+        texte.koerperNiemandFrei,
+      );
+      expect(texte.koerperNiemandFrei, contains('von Hand'));
+    });
+
+    test('alle uebrigen Hinweise bleiben wortgleich', () {
+      // Nur „niemand" hat eine zweite Fassung. Wer im Bild steht, bekommt
+      // dieselbe Anweisung wie beim Ganzkoerperfoto – die Haltungsregeln
+      // sind identisch.
+      for (final hinweis in KoerperHinweis.values) {
+        if (hinweis == KoerperHinweis.niemand) continue;
+        expect(
+          hinweis.text(texte, personOptional: true),
+          hinweis.text(texte),
+          reason: hinweis.name,
+        );
+      }
+    });
   });
 }

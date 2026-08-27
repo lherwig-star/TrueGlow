@@ -1779,6 +1779,79 @@ flutter run --dart-define=TRUEGLOW_MOCK=true
 | Das Kapitel wiederholt die Richtung, bevor es einsteigt | Vor dem Launch beheben. |
 | Das Protokoll meldet einen doppelten Namen | Notieren — der Prompt greift dort nicht zuverlässig. |
 
+## 32 · Der Auto-Auslöser bei den Outfit-Fotos
+
+Prüft DECISIONS 68. **Ohne Kontingent** — es wird nur fotografiert, keine
+Analyse gestartet. Du brauchst: eine Ablage fürs Handy, drei Meter Platz und
+ein Outfit zum Anziehen sowie eines zum Hinlegen.
+
+### A · Der Automatismus selbst
+
+1. **Die Erklärung steht da.** Öffne den Schritt „Outfit 1". Erwartet: unter
+   „So klappt das Foto" eine zweite Karte **„Die App löst selbst aus"**.
+
+2. **Und sie nennt keinen Umriss.** Die Karte lesen. *Kriterium:* Steht dort
+   das Wort „Umriss", ist das ein Fund — im Sucher gibt es bei Outfit-Fotos
+   keinen.
+
+3. **Sie sagt, was beim ausgelegten Outfit passiert.** Erwartet: ein Satz
+   darüber, dass du dann von Hand auslöst.
+
+4. **Der Countdown läuft.** Kamera öffnen, Handy so aufstellen, dass drei
+   Meter davor Platz sind, zurücktreten und dich ganz ins Bild stellen.
+   Erwartet: Die Statuszeile wandert über „Ganz ins Bild" / „Ein paar
+   Schritte näher" zu **„Steht – nicht bewegen"**, dann erscheint die große
+   Ziffer 3-2-1 und die App löst aus.
+
+5. **Der Ton kommt mit.** Erwartet: je Sekunde ein Zählton, beim Auslösen ein
+   anderer. (Lautlos-Schalter am Gerät prüfen, falls nichts zu hören ist.)
+
+6. **Das Bild ist brauchbar.** Erwartet: Du bist von Kopf bis Fuß drauf und
+   stehst mittig.
+
+7. **Dasselbe für Outfit 2 und Outfit 3.** Erwartet: identisches Verhalten,
+   dieselbe Erklärung.
+
+### B · Das ausgelegte Outfit — der wichtige Teil
+
+8. **Kein Countdown ohne Person.** Outfit auf Bett oder Bügel, Kamera öffnen,
+   draufhalten — niemand im Bild. Erwartet: **kein** Countdown, keine Ziffer.
+   In der Statuszeile steht **„Stell dich ins Bild – oder löse von Hand
+   aus"**.
+
+9. **Von Hand geht trotzdem.** Den weißen Auslöser tippen. Erwartet: Das Foto
+   wird aufgenommen und geprüft wie immer. *Kriterium:* Lässt sich der
+   Auslöser nicht drücken oder passiert nichts, ist das ein **Blocker** — der
+   ausgelegte Fall ist ausdrücklich erlaubt.
+
+10. **Auf Englisch.** Sprache umstellen, Schritte 1 bis 3 und 8 wiederholen.
+
+### C · Die Figur-Fotos haben sich nicht verändert
+
+11. **Der Umriss steht noch.** Schritt „Ganzkörper frontal" öffnen, Kamera
+    starten. Erwartet: die Silhouette im Sucher wie bisher, die Erklärung
+    nennt weiterhin den Umriss.
+
+12. **Und löst wie bisher aus.** Zurücktreten, in den Umriss stellen.
+    Erwartet: Countdown und Auslösen wie gewohnt.
+
+### D · Die Portraits erst recht nicht
+
+13. **Kein Selbstauslöser vorn.** Schritt „Frontal" öffnen. Erwartet: **keine**
+    Karte „Die App löst selbst aus", keine Ziffer im Sucher, die Statuszeile
+    zeigt die gewohnten Gesichts-Hinweise.
+
+### Was ein Fund ist
+
+| Fund | Reaktion |
+|---|---|
+| Der Auslöser lässt sich beim ausgelegten Outfit nicht drücken | Blocker. |
+| Bei einem Outfit-Foto startet der Countdown ohne Person im Bild | Blocker. |
+| Ein Portrait löst plötzlich selbst aus | Blocker. |
+| „Umriss" steht in der Outfit-Erklärung | Vor dem Launch beheben. |
+| Der Countdown läuft, löst aber nicht aus | Blocker (der `clamp`-Fehler in `auto_ausloeser.dart`). |
+| Die Vorschau ruckelt auf dem Gerät spürbar stärker als vorher | Notieren, mit Gerätemodell. |
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

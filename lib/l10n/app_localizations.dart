@@ -355,6 +355,12 @@ abstract class L {
   /// **'Stell dich ins Bild'**
   String get koerperNiemand;
 
+  /// No description provided for @koerperNiemandFrei.
+  ///
+  /// In de, this message translates to:
+  /// **'Stell dich ins Bild – oder löse von Hand aus'**
+  String get koerperNiemandFrei;
+
   /// No description provided for @koerperNichtGanz.
   ///
   /// In de, this message translates to:
@@ -390,6 +396,12 @@ abstract class L {
   /// In de, this message translates to:
   /// **'Stell dein Handy auf, tritt zurück und stell dich in den Umriss. Sobald du ganz im Bild stehst, zählt die App herunter und löst selbst aus. Du kannst auch jederzeit von Hand auslösen.'**
   String get koerperAutoHinweis;
+
+  /// No description provided for @outfitAutoHinweis.
+  ///
+  /// In de, this message translates to:
+  /// **'Stell dein Handy auf, tritt zurück und stell dich mittig ins Bild. Sobald du ganz zu sehen bist – Kopf und Füße –, zählt die App herunter und löst selbst aus. Liegt das Outfit ausgelegt da, springt nichts an: Dann löst du wie gewohnt von Hand aus.'**
+  String get outfitAutoHinweis;
 
   /// No description provided for @kameraKeineBerechtigungTitel.
   ///

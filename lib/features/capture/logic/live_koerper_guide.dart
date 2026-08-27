@@ -20,8 +20,13 @@ enum KoerperHinweis {
 /// Der Satz, der im Sucher steht – aus demselben Grund eine Erweiterung wie
 /// bei [LiveHinweisText].
 extension KoerperHinweisText on KoerperHinweis {
-  String text(L texte) => switch (this) {
-        KoerperHinweis.niemand => texte.koerperNiemand,
+  /// [personOptional] gilt bei den Outfit-Fotos: Dort ist ein Bild ohne
+  /// Person kein Fehler, sondern der ausgelegte Fall. „Stell dich ins Bild"
+  /// laese sich dort wie eine Bedingung – deshalb nennt der Satz dort auch
+  /// den anderen Weg.
+  String text(L texte, {bool personOptional = false}) => switch (this) {
+        KoerperHinweis.niemand =>
+          personOptional ? texte.koerperNiemandFrei : texte.koerperNiemand,
         KoerperHinweis.zuDunkel => texte.kameraZuDunkel,
         KoerperHinweis.nichtGanz => texte.koerperNichtGanz,
         KoerperHinweis.zuWeitWeg => texte.koerperZuWeitWeg,
