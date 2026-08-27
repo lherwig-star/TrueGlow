@@ -1304,6 +1304,101 @@ Zusätzlich zur Tabelle unten gilt für diesen Abschnitt:
 | Alte Chip-Auswahl ist nach dem Update leer | Blocker — die Überführung greift dann nicht. |
 | Der Vorschlag ist gut, aber nicht dein Geschmack | **Kein Fund.** Dafür gibt es den zweiten Modus. |
 
+## 26 · Nacharbeiten: Zugang, Schwerpunkte, Chip-Raster
+
+Prüft die drei Punkte aus dem Paket vom 27.08.2026. Hintergrund in
+DECISIONS 59 bis 61.
+
+**Kontingent:** Ein einziger echter Lauf (Abschnitt B). Alles andere im
+Demo-Modus.
+
+### A · Die abgelehnte Installation sagt es jetzt
+
+Nur relevant, wenn die Analyse wieder mit einer Fehlermeldung abbricht.
+
+1. **Die Meldung lesen.** Erwartet, falls App Check ablehnt: „Diese
+   Installation ist nicht freigegeben" — **nicht** „Der Analyse-Dienst
+   antwortet gerade nicht". Der Text sagt ausdrücklich, dass Warten nicht
+   hilft.
+
+2. **Gegenprobe im Protokoll.** Steht dort
+   `{"verifications":{"auth":"VALID","app":"INVALID"}}`, ist es genau dieser
+   Fall — und die Lösung steht in `SETUP.md` 4.3.
+
+   ```bash
+   firebase functions:log --only analysiere --project trueglow-b2c1c -n 1
+   ```
+
+3. **Das Kontingent ist unberührt.** Erwartet: Nach so einem Abbruch zeigt
+   die Modulseite denselben Reststand wie vorher.
+
+### B · Der Beweis-Lauf (ein echter Lauf)
+
+Nach dem Eintragen des Debug-Tokens. Modus „Neuen Look entdecken", Sprache
+Deutsch.
+
+1. **Sie läuft durch.** Erwartet: kein Abbruch, ein fertiger Report.
+2. **Im Protokoll steht `app: VALID`.** Befehl wie oben.
+3. **Die Verbrauchszeile notieren** („Verbrauch gemini-…: Eingabe …,
+   Ausgabe …") — wie in Abschnitt 12.
+
+### C · Die Schwerpunkte wirken (Demo-Modus)
+
+1. **Vorausgewählt.** Einstellungen → alle Daten löschen → Onboarding neu,
+   dabei **Haut** und **Style** ankreuzen. Dann „Analyse starten". Erwartet:
+   Auf der Modulseite sind **Haut & Farbtyp** und **Stil & Kleiderschrank**
+   bereits angehakt.
+
+2. **Und es steht dabei, warum.** Erwartet: über der Liste der Satz „Aus
+   deinen Schwerpunkten im Onboarding schon angehakt: …".
+
+3. **Vorausgewählt heißt nicht festgelegt.** Einen der beiden Haken
+   entfernen. Erwartet: Er geht weg, und der Satz oben nennt nur noch den
+   verbliebenen.
+
+4. **Ohne Schwerpunkte kein Satz.** Onboarding ohne Häkchen (nur die
+   Pflichtfelder), dann „Analyse starten". Erwartet: nur die Basis
+   angehakt, kein Hinweissatz.
+
+5. **Fitness-Habits.** Im Onboarding nur **Fitness-Habits** ankreuzen.
+   Erwartet: **Figur & Passform** ist vorausgewählt. *Kriterium:* Wenn dir
+   das falsch vorkommt, ist das ein Fund — die Begründung steht in
+   DECISIONS 60 und gehört dann überdacht.
+
+6. **Haare und Bart wählen nichts vor.** Nur diese beiden ankreuzen.
+   Erwartet: nur die Basis angehakt, **kein** Hinweissatz — beide gehören
+   zur Basis, die ohnehin immer dabei ist.
+
+### D · Das Chip-Raster (Demo-Modus)
+
+1. **Alle acht in einer Spalte.** „Deine Richtung" öffnen. Erwartet: acht
+   Zeilen untereinander, **alle gleich breit**, alle an derselben linken
+   Kante. Keine steht allein rechts außen.
+
+2. **Titel und Untertext bündig.** Erwartet: In jeder Zeile beginnt die
+   kleine zweite Zeile genau unter der ersten, und rechts steht ein Kästchen.
+
+3. **Antippen ruckelt nicht.** Mehrere Chips antippen. Erwartet: Das Kästchen
+   füllt sich, die Zeile bleibt exakt gleich breit, nichts springt.
+
+4. **Auf Englisch.** Sprache umstellen, „Deine Richtung" öffnen. Erwartet:
+   dasselbe Bild. Kein abgeschnittener Text, kein roter Überlaufbalken.
+
+5. **Der Stil-Fragebogen bleibt rund.** Modul „Stil & Kleiderschrank"
+   wählen und zum Fragebogen gehen. Erwartet: Dort stehen weiterhin die
+   runden Pillen nebeneinander — die neue Form gilt nur für „Deine Richtung".
+
+### E · Was ein Fund ist
+
+| Fund | Reaktion |
+|---|---|
+| „Analyse-Dienst antwortet nicht" bei abgelehntem App Check | Blocker — die Meldung führt wieder in die Irre. |
+| Ein abgebrochener Lauf hat Kontingent gekostet | Blocker. |
+| Schwerpunkte wählen nichts vor | Blocker — dann ist die Frage wieder doppelt. |
+| Ein Haken lässt sich nicht mehr entfernen | Blocker. |
+| Ein Chip ist breiter als die anderen | Vor dem Launch beheben. |
+| Text im Chip abgeschnitten (besonders Englisch) | Vor dem Launch beheben. |
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

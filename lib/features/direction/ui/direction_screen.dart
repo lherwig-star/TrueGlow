@@ -104,22 +104,23 @@ class _DirectionScreenState extends ConsumerState<DirectionScreen> {
         const SizedBox(height: 2),
         MutedText(texte.richtungChipsText),
         const SizedBox(height: AppTheme.gapS),
-        Wrap(
-          spacing: AppTheme.gapS,
-          runSpacing: AppTheme.gapS,
-          children: [
-            for (final ziel in Richtungsziel.values)
-              AuswahlChip(
-                label: ziel.label(texte),
-                // Ohne den Untertext ist „Smart & hochwertig" fuer jemanden
-                // ohne Modewissen eine leere Huelle (DECISIONS 58).
-                untertext: ziel.untertext(texte),
-                aktiv: richtung.ziele.contains(ziel),
-                onTap: () => ctrl.umschalten(ziel),
-              ),
-          ],
-        ),
-        const SizedBox(height: AppTheme.gapL),
+        // Untereinander und in voller Breite, wie die Modul-Karten
+        // (DECISIONS 61). Als Pillen in einem `Wrap` franste die Liste aus:
+        // unterschiedlich breit, eine einzelne rechts aussen — und in der
+        // englischen Fassung schlimmer, weil die Texte laenger sind.
+        for (final ziel in Richtungsziel.values) ...[
+          AuswahlChip(
+            label: ziel.label(texte),
+            // Ohne den Untertext ist „Smart & hochwertig" fuer jemanden
+            // ohne Modewissen eine leere Huelle (DECISIONS 58).
+            untertext: ziel.untertext(texte),
+            vollBreite: true,
+            aktiv: richtung.ziele.contains(ziel),
+            onTap: () => ctrl.umschalten(ziel),
+          ),
+          const SizedBox(height: AppTheme.gapS),
+        ],
+        const SizedBox(height: AppTheme.gapM),
 
         // --- Teil B: Freitext ---
         Text(

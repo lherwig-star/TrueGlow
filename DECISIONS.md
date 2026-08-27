@@ -2309,6 +2309,47 @@ gewichten die Basis.
 mit vielen Schwerpunkten mit mehr Aufnahmen als vorher. Beides ist mit einem
 Tipp zu ändern.
 
+## 61 · Acht Chips, ein Raster
+
+Die acht neuen Stilrichtungen (DECISIONS 58) standen in einem `Wrap` als
+Pillen — jede so breit wie ihr Text. Bei acht unterschiedlich langen
+Beschriftungen ergibt das kein Raster, sondern Streugut: zwei in der ersten
+Zeile, eine in der zweiten, eine einzelne rechts außen. Am Gerät sah das aus
+wie ein Fehler, und auf Englisch wurde es schlimmer, weil die Texte dort
+länger sind.
+
+**Jetzt eine Zeile pro Richtung, über die volle Breite** — wie die
+Modul-Karten, die daneben ohnehin schon so aussehen. Links Titel und
+Untertext bündig untereinander, rechts ein Haken.
+
+**Warum nicht zwei Spalten**, die das Paket ebenfalls anbot: Bei 320 dp
+Gerätebreite bleiben je Spalte rund 140 dp. „Sportlich & funktional" mit
+„Athletisch, praktisch, robust" bricht dort auf drei Zeilen um, auf Englisch
+auf vier — und dann sind die Kacheln wieder unterschiedlich hoch. Volle
+Breite kann per Konstruktion nicht ausfransen: Jede Zeile ist gleich breit,
+und kein Text kann die Spalte verlassen. Der Preis ist Höhe, und die kostet
+in einer Liste, durch die man ohnehin scrollt, am wenigsten.
+
+**Die Form steht im Widget, nicht am Aufrufer.** `AuswahlChip` bekommt
+`vollBreite`; ohne das Flag bleibt es die runde Pille, die der
+Stil-Fragebogen und der Check-in benutzen. Ein zweites Chip-Widget wäre beim
+nächsten Feinschliff sofort auseinandergelaufen — derselbe Grund, aus dem es
+dieses Widget überhaupt zentral gibt.
+
+**Der Haken statt nur der Farbe.** Bei voller Breite ist rechts Platz, und
+ein Haken sagt „mehreres geht" deutlicher als ein Farbwechsel. Er ist eckig —
+der runde Punkt bleibt der Moduswahl vorbehalten, wo genau eines gilt
+(DECISIONS 56). Und er ändert die Breite nicht: Sonst ruckelte die ganze
+Liste beim Antippen.
+
+**Ein Test besteht auf dem Raster.** Bei 320, 400 und 480 dp, auf Deutsch und
+auf Englisch, mit und ohne Auswahl: alle acht exakt gleich breit, alle an
+derselben linken Kante, Titel und Untertext bündig, kein Überlauf. Das ist
+die Eigenschaft, die das alte Bild ausschließt — und sie lässt sich messen,
+statt sie anzusehen.
+
+**Preis:** Die Liste ist höher als vorher. Wer alle acht sehen will, scrollt.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`
