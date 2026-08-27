@@ -2448,6 +2448,124 @@ eines Vorschlags steht.
 
 **Preis:** Zwei Farbrollen mehr, die jedes künftige Schema mitliefern muss.
 
+## 63 · Heller Modus V2: Creme, Teal und Amber
+
+Die erste Überarbeitung (DECISIONS 62) machte den hellen Modus zum
+Geschwister des dunklen — aber in kühlem Grau-Grün, und das gefiel nicht.
+**Die Struktur bleibt vollständig, nur die Werte werden ersetzt:** dieselben
+Rollen an denselben Stellen, die zwei Amber-Rollen mit ihren eigenen
+Schwellen, der Test gegen fest verdrahtete Farbwerte, der eingefrorene
+Dunkelmodus.
+
+Jetzt ist der helle Modus **durchgehend warm**.
+
+| Rolle | V2 | Herkunft |
+|---|---|---|
+| hintergrund → hintergrundTief | `#FDF5EE` → `#F6E8D9` | Vorgabe / abgeleitet |
+| flaeche (Karten) | `#FEFAF7` | Vorgabe |
+| flaecheHoch | `#F9EFE4` | abgeleitet |
+| akzent (Teal) | `#025D70` | Vorgabe |
+| aufAkzent | `#FEFAF7` (Karten-Weiß) | Vorgabe |
+| textPrimaer | `#12383F` | Vorgabe |
+| textSekundaer | `#4F6468` | abgeleitet |
+| akzentZwei / erfolg | `#0E6D82` | abgeleitet |
+| rand | `#DFC7AC` | abgeleitet |
+| warnung | `#A8442A` | abgeleitet |
+| erreicht (Ocker) | `#8F5500` | Vorgabe, nachgedunkelt |
+| erreichtFlaeche (Amber) | `#E59305` | Vorgabe |
+| aufErreicht | `#12383F` | abgeleitet |
+| erreichtLeer | `#FDE9D2` | Vorgabe |
+| erreichtChip | `#F5DEB9` | Vorgabe |
+| kartenrand | Tinte bei 10 % | wie dunkel |
+
+### Die Messungen
+
+Alle Textfarben auf allen vier Flächen (Hintergrund, Verlaufsende, Karte,
+Vertiefung):
+
+| | min | Schwelle |
+|---|---|---|
+| Tinte `#12383F` | 10,5:1 | 4,5 |
+| Teal `#025D70` | 6,2:1 | 4,5 |
+| Sekundärtext `#4F6468` | 5,2:1 | 4,5 |
+| Warnung `#A8442A` | 5,0:1 | 4,5 |
+| Ocker `#8F5500` | 5,0:1 | 4,5 |
+| Karten-Weiß auf Teal | 7,2:1 | 4,5 |
+| Ocker auf dem Zähler-Chip | 4,6:1 | 4,5 |
+
+**Der Ocker ist um eine Nuance nachgedunkelt.** Die Vorgabe nannte `#955900`;
+das hält die 4,5:1 auf allen vier Flächen, kommt aber auf dem Zähler-Chip
+`#F5DEB9` nur auf **4,3:1** — und genau dort steht Ocker-Text. `#8F5500`
+bringt ihn auf 4,6:1. Das PDF sah das ausdrücklich vor.
+
+### Wo das Amber die Schwelle nicht hält — und warum es trotzdem bleibt
+
+Das Amber `#E59305` erreicht gegen die helle Karte **2,4:1** und gegen den
+Creme-Amber daneben **2,1:1**. Die WCAG verlangt für grafische Elemente 3:1.
+Dunkler wäre es kein Amber mehr, und das Amber ist der Punkt.
+
+Es bleibt, weil der Zustand nie an der Fläche allein hängt: Im Haken steht
+ein Haken, am Zähler eine Zahl, an der Challenge die Angabe „1 von 4", an der
+Serie die Zahl der Tage. Die Fläche ist Wiedererkennung, nicht die
+Information. Der Test sagt das jetzt ausdrücklich, statt eine 3:1-Schwelle zu
+behaupten, die hier nicht gilt — wer die Zeile liest, weiß, dass es eine
+Entscheidung war und kein Versehen.
+
+**Was auf dem Amber liegt, ist die Tinte** (`#12383F`, 5,1:1). Das
+Referenzbild zeigt dort weiße Haken; Weiß auf Amber kommt auf 2,5:1 und wäre
+selbst als Haken zu schwach.
+
+### Zwei neue Tönungsrollen
+
+Die warmen Flächen aus dem Bild standen bisher als Rechnung im Widget:
+
+- `erreichtLeer` — die ungefüllte Gegenseite im Challenge-Balken. Vorher
+  `textSekundaer` bei 18 %, was hell ein kühles Grau ergeben hätte; jetzt
+  `#FDE9D2`.
+- `erreichtChip` — die Fläche des Zählers „2/5". Vorher `erreicht` bei 14 %,
+  was hell zu blass geraten wäre; jetzt `#F5DEB9`.
+
+**Im Dunkelmodus tragen beide exakt die Zahlen, die dort vorher gerechnet
+wurden** (`0x2EBCCCC8` und `0x24E8BE6E`). Ein Test vergleicht sie mit
+genau diesen Rechnungen — aus dem Aufräumen wird so keine Änderung.
+
+Der Kreis hinter der Flamme brauchte keine eigene Rolle: Er entsteht weiter
+aus dem Amber bei 16 % und ergibt auf der Karte `#FAEAD0` — der Vorgabe
+`#FDECD6` bis auf wenige Stufen gleich.
+
+### Was beide Modi berührt hat
+
+Drei Stellen, alle im Dunkelmodus folgenlos:
+
+1. **Die zwei neuen Rollen** — dunkel wertgleich mit dem, was vorher
+   gerechnet wurde.
+2. **Flamme und Joker-Schilde** wechseln von `erreicht` auf
+   `erreichtFlaeche`. Dunkel sind beide Rollen derselbe Ton — Pixel für
+   Pixel dasselbe.
+3. **Die Zusicherung im Kamera-Test** hieß seit DECISIONS 62 „Buttontext ist
+   praktisch der Hintergrundton". Hell ist er jetzt das **Karten-Weiß** —
+   Vorgabe. Der Test sagt deshalb: `aufAkzent` ist der Hintergrund **oder**
+   die Kartenfarbe seines Schemas. Dunkel bleibt es der Hintergrund; eine
+   Fremdfarbe fällt weiterhin durch.
+
+**Der Einfrier-Test ist unverändert grün.** Alle vierzehn Dunkelwerte stehen
+weiter als abgeschriebene Zahl.
+
+### Was aus dem Referenzbild NICHT übernommen wurde
+
+- **Die Tab-Leiste am unteren Rand.** Ausdrücklich ausgeschlossen; die
+  Navigation bleibt, wie sie ist.
+- **Das zweite, teal eingefärbte Segment** im Challenge-Balken. Im Bild ist
+  es ein Gestaltungseinfall, in der Vorgabe steht er nicht — gefüllt ist
+  Amber, ungefüllt Creme-Amber.
+- **Weiße Haken auf Amber** — siehe oben, Kontrast.
+- **Ein amberner Zähler bei „2/5".** Der Chip färbt sich erst, wenn die Liste
+  steht: Ein halb voller Zähler ist kein Erreichtes (DECISIONS 50). Das Bild
+  zeigt ihn amber, die Regel ist älter und bleibt.
+
+**Preis:** Zwei Farbrollen mehr. Layout, Rundungen und Animationen sind in
+beiden Modi unverändert — es haben sich ausschließlich Farbwerte bewegt.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

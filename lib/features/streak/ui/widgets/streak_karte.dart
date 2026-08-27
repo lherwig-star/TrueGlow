@@ -135,7 +135,10 @@ class _Zeile extends StatelessWidget {
     final aktiv = streak.heuteGesichert;
     // Gold steht ausschliesslich fuer Erreichtes (DECISIONS 50). Ein noch
     // offener Tag bleibt deshalb in der ruhigen Sekundaerfarbe.
-    final farbe = aktiv ? farben.erreicht : farben.textSekundaer;
+    // Flamme, Ring und Schein sind Flaeche, nicht Schrift – deshalb der
+    // Flaechen-Ton (DECISIONS 63).
+    final farbe =
+        aktiv ? farben.erreichtFlaeche : farben.textSekundaer;
 
     return Row(
       children: [
@@ -352,7 +355,11 @@ class _JokerHinweisState extends ConsumerState<_JokerHinweis> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(Icons.shield_moon_outlined, size: 16, color: farben.erreicht),
+        Icon(
+          Icons.shield_moon_outlined,
+          size: 16,
+          color: farben.erreichtFlaeche,
+        ),
         const SizedBox(width: 6),
         Expanded(
           child: Text(

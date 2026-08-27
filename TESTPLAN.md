@@ -1469,6 +1469,76 @@ stellt wieder zurück.)
 | Ein Bildschirm bleibt hell, wenn du auf Dunkel stellst | Blocker. |
 | Der Farbton gefällt dir nicht ganz | Kein Blocker — Nuancen lassen sich nachziehen. |
 
+## 28 · Der helle Modus V2 (Creme, Teal, Amber)
+
+Ersetzt Abschnitt 27 — die Werte von dort gibt es nicht mehr. **Kein
+Analyse-Lauf nötig:**
+
+```bash
+flutter run --dart-define=TRUEGLOW_MOCK=true
+```
+
+**Vorbereitung:** Einstellungen → Design → **Hell**.
+
+1. **Warmes Creme, kein Grau-Grün.** Startseite ansehen. Erwartet: Der
+   Hintergrund ist ein warmes Creme, nach unten eine Spur tiefer. *Kriterium:*
+   Wirkt es kühl oder gräulich, ist es ein Fund.
+
+2. **Teal führt.** Erwartet: „TrueGlow", „Challenge der Woche", „Dein Plan",
+   „Haare & Bart" — alle Überschriften in kräftigem Teal. Der Button „Plan
+   ansehen" ist teal gefüllt mit hellem Text, „Analyse" teal umrandet.
+
+3. **Amber für Erreichtes.** Erwartet: Flamme und Serienzahl amber, der
+   gefüllte Teil des Challenge-Balkens amber, die Joker-Schilde amber, die
+   gesetzten Haken amber gefüllt.
+
+4. **Die leeren Segmente sind warm.** Erwartet: Die noch offenen Segmente des
+   Challenge-Balkens sind ein zartes Creme-Amber — **nicht** grau.
+
+5. **Der Haken ist zu sehen.** Ein Häkchen setzen. Erwartet: Im amber
+   gefüllten Kreis steht ein **dunkler** Haken, deutlich lesbar.
+   *Kriterium:* Ein weißer Haken wäre ein Fund — der Kontrast reicht dort
+   nicht.
+
+6. **Kleine Amber-Schrift ist lesbar.** Eine Checkliste komplett abhaken.
+   Erwartet: Der Zähler wird zum Amber-Chip mit dunklem Ocker-Text, ohne
+   Anstrengung lesbar.
+
+7. **Kein Braun, nirgends.** Der Reihe nach: Plan, Analyse-Report, Check-in,
+   Album, Wochen-Rückblick, Einstellungen, Verlauf. Erwartet: überall dieselbe
+   warme Welt in Creme und Teal. *Kriterium:* Eine beige-braune oder eine
+   grau-grüne Fläche ist ein Fund.
+
+8. **Fehlerseiten.** Flugmodus an, Analyse starten. Erwartet: helle Karte,
+   Warnfarbe ein gedecktes Terrakotta.
+
+9. **Auf Englisch.** Sprache umstellen, Schritte 1 und 7 kurz wiederholen.
+
+10. **Die Gegenprobe: Dunkelmodus unverändert.** Einstellungen → Design →
+    **Dunkel**. Erwartet: **exakt** das gewohnte Bild. Achte besonders auf
+    Flamme, Joker-Schilde, den Challenge-Balken und den Zähler-Chip — genau
+    diese vier Stellen wurden auf neue Rollen umgestellt. *Kriterium:* Jede
+    sichtbare Abweichung ist ein Blocker.
+
+11. **Hin und her.** Zwei-, dreimal zwischen Hell und Dunkel umschalten.
+    Erwartet: Die Oberfläche wechselt vollständig, nichts bleibt stehen.
+
+12. **Was ausdrücklich fehlen muss.** Erwartet: **keine** Tab-Leiste am
+    unteren Rand. Die stand im Referenzbild und wird nicht gebaut.
+
+### Was ein Fund ist
+
+| Fund | Reaktion |
+|---|---|
+| Kühles Grau-Grün oder Beige-Braun irgendwo | Blocker — die Farbe hängt nicht an den Rollen. |
+| Der Dunkelmodus sieht anders aus als vorher | Blocker. |
+| Weißer Haken auf amberner Fläche | Blocker. |
+| Leere Segmente grau statt creme | Blocker. |
+| Amber-Schrift schwer lesbar | Blocker. |
+| Eine Tab-Leiste ist aufgetaucht | Blocker — nicht bestellt. |
+| Der Zähler „2/5" ist grau statt amber | **Kein Fund.** Er färbt sich erst, wenn die Liste steht (DECISIONS 50). |
+| Der Farbton gefällt nicht ganz | Kein Blocker — Nuancen lassen sich nachziehen. |
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

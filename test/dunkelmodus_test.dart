@@ -81,6 +81,24 @@ void main() {
       expect(AppColors.dunkel.aufErreicht, AppColors.dunkel.aufAkzent);
     });
 
+    test('und die Toenungen tragen die zuvor gerechneten Werte', () {
+      // `erreichtLeer` und `erreichtChip` standen bis DECISIONS 63 als
+      // Rechnung im Widget: `textSekundaer` bei 18 % und `erreicht` bei
+      // 14 %. Als Rolle tragen sie exakt dieselben Zahlen – sonst waere aus
+      // einer Aufraeumaktion eine Aenderung am Dunkelmodus geworden.
+      // Verglichen wird der gerenderte 32-Bit-Wert, nicht die
+      // Fliesskomma-Darstellung: `withValues(alpha: 0.18)` haelt 0,1800,
+      // die Konstante 0x2E ergibt 0,1804 – auf dem Schirm dasselbe Pixel.
+      expect(
+        AppColors.dunkel.erreichtLeer.toARGB32(),
+        AppColors.dunkel.textSekundaer.withValues(alpha: 0.18).toARGB32(),
+      );
+      expect(
+        AppColors.dunkel.erreichtChip.toARGB32(),
+        AppColors.dunkel.erreicht.withValues(alpha: 0.14).toARGB32(),
+      );
+    });
+
     test('auch die abgeleitete Startfläche bleibt, was sie war', () {
       // Sie steht in `styles.xml` als fester Hex-Wert und im nativen Splash
       // (DECISIONS 53). Verschöbe sie sich, blitzte der Start wieder auf.

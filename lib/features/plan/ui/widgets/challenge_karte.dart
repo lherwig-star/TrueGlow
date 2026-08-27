@@ -114,8 +114,8 @@ class _Segmente extends StatelessWidget {
                   ? Duration(milliseconds: 40 * i)
                   : Duration.zero,
               bewegungErlaubt: bewegungErlaubt,
-              gefuellteFarbe: farben.erreicht,
-              leereFarbe: farben.textSekundaer.withValues(alpha: 0.18),
+              gefuellteFarbe: farben.erreichtFlaeche,
+              leereFarbe: farben.erreichtLeer,
             ),
           ),
         ],

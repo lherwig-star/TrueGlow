@@ -39,8 +39,9 @@ class ChecklisteKarte extends ConsumerWidget {
       trailing: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
         decoration: BoxDecoration(
-          color: (alleErledigt ? farben.erreicht : farben.textSekundaer)
-              .withValues(alpha: 0.14),
+          color: alleErledigt
+              ? farben.erreichtChip
+              : farben.textSekundaer.withValues(alpha: 0.14),
           borderRadius: BorderRadius.circular(999),
         ),
         child: Text(
