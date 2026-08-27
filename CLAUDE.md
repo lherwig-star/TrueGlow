@@ -13,6 +13,10 @@ gearbeitet wird.
   Gerät (DECISIONS 48) und hängen an keiner Cloud.
 - Serie, Joker, abgehakte Tage, geschaffte Challenges und der laufende
   Check-in-Entwurf, bis der Sync sie wiederherstellt.
+- das **App-Check-Debug-Token**. Danach lehnt der Server jede Analyse ab,
+  bis das neue Token in der Firebase-Konsole eingetragen ist (SETUP.md 4.3).
+  Am 27.08.2026 hat genau das die Analyse einen halben Tag lahmgelegt —
+  siehe DECISIONS 59.
 
 Am 27.08.2026 ist genau das passiert: Deinstallieren war der bequeme Weg,
 den Launcher zum Neuladen des Icons zu bewegen — und hat die lokalen Daten

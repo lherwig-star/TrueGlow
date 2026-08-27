@@ -2083,6 +2083,18 @@ abstract class L {
   /// **'Die Analyse hat zu lange gedauert. Versuch es bitte erneut.'**
   String get analyseZeitTipp;
 
+  /// App Check hat den Aufruf abgelehnt – die Installation, nicht das Konto.
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Installation ist nicht freigegeben'**
+  String get analyseZugangTitel;
+
+  /// Sagt ausdruecklich, dass Warten nicht hilft.
+  ///
+  /// In de, this message translates to:
+  /// **'Der Server hat nicht dein Konto abgelehnt, sondern diese Installation der App. Warten hilft hier nicht. Beende die App und starte sie neu — bleibt es dabei, muss die Installation freigeschaltet werden (SETUP.md, Abschnitt 4.3).'**
+  String get analyseZugangTipp;
+
   /// No description provided for @analyseApiTitel.
   ///
   /// In de, this message translates to:

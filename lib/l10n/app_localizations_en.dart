@@ -1101,6 +1101,13 @@ class LEn extends L {
   String get analyseZeitTipp => 'The analysis took too long. Please try again.';
 
   @override
+  String get analyseZugangTitel => 'This installation is not authorised';
+
+  @override
+  String get analyseZugangTipp =>
+      'The server did not reject your account — it rejected this installation of the app. Waiting will not help. Close the app and start it again; if it persists, the installation needs to be authorised (SETUP.md, section 4.3).';
+
+  @override
   String get analyseApiTitel => 'Analysis unavailable';
 
   @override

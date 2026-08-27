@@ -60,6 +60,16 @@ enum AnalysisFehler {
   keinApiKey,
   fotosFehlen,
   einwilligungFehlt,
+
+  /// Der Server hat nicht das Konto abgelehnt, sondern die **Installation**.
+  ///
+  /// Das ist App Check: Die Cloud Function nimmt nur Aufrufe aus echten
+  /// Installationen der App an. Fällt diese Prüfung durch, kommt
+  /// `unauthenticated` zurück – und das sah bis DECISIONS 59 aus wie ein
+  /// vorübergehender Ausfall des Dienstes („antwortet gerade nicht"). Es ist
+  /// aber das Gegenteil: Der Dienst antwortet sofort und dauerhaft mit Nein,
+  /// und Warten hilft nicht.
+  zugangAbgelehnt,
 }
 
 // Anzeigetexte als Erweiterung – Begruendung in `onboarding_profile.dart`.
@@ -74,6 +84,7 @@ extension AnalysisFehlerText on AnalysisFehler {
         AnalysisFehler.keinApiKey => texte.analyseKeinSchluesselTitel,
         AnalysisFehler.fotosFehlen => texte.analyseFotosFehlenTitel,
         AnalysisFehler.einwilligungFehlt => texte.analyseEinwilligungTitel,
+        AnalysisFehler.zugangAbgelehnt => texte.analyseZugangTitel,
       };
 
   String tipp(L texte) => switch (this) {
@@ -86,6 +97,7 @@ extension AnalysisFehlerText on AnalysisFehler {
         AnalysisFehler.keinApiKey => texte.analyseKeinSchluesselTipp,
         AnalysisFehler.fotosFehlen => texte.analyseFotosFehlenTipp,
         AnalysisFehler.einwilligungFehlt => texte.analyseEinwilligungTipp,
+        AnalysisFehler.zugangAbgelehnt => texte.analyseZugangTipp,
       };
 }
 

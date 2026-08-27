@@ -310,9 +310,42 @@ deiner App gerufen werden können — nicht per `curl` mit einem geklauten Token
 
 ☐ **4.2 iOS registrieren (App Attest)** — erst wenn iOS gebaut wird, siehe Abschnitt 7
 
-☑ **4.3 Debug-Token für die Entwicklung eintragen** — zuletzt am 25.08.2026
-neu eingetragen (Gerät SM A525F). Der ältere Eintrag `Samsung A52` galt nach
-einer Neuinstallation nicht mehr und kann weg.
+☑ **4.3 Debug-Token für die Entwicklung eintragen** — zuletzt am 27.08.2026
+neu eingetragen (Gerät SM A525F, Token `eadf101d-…`). Ältere Einträge gelten
+nicht weiter und können weg.
+
+> ## Das Token stirbt bei jeder Deinstallation — und nimmt die Analyse mit
+>
+> **Das ist am 25.08. und am 27.08.2026 je einmal passiert.** Am 27.08. hat es
+> zwei Stunden Fehlersuche an der falschen Stelle gekostet, weil am selben Tag
+> ein Server-Deploy lief und der Verdacht deshalb dort landete (DECISIONS 59).
+>
+> Der Debug-Provider legt sein Geheimnis im **privaten Speicher der App** ab.
+> Alles, was diesen Speicher leert, erzeugt beim nächsten Start ein neues
+> Token, und das ist nicht eingetragen:
+>
+> - `adb uninstall` (deshalb steht das Verbot in `CLAUDE.md`)
+> - `adb shell pm clear`
+> - `flutter run --uninstall-first`
+> - „App-Daten löschen" in den Android-Einstellungen
+>
+> `adb install -r` und `flutter run` ohne `--uninstall-first` sind unbedenklich.
+>
+> **Woran man es sofort erkennt:** Die App zeigt beim Analyse-Start seit
+> DECISIONS 59 „Diese Installation ist nicht freigegeben" statt „Der
+> Analyse-Dienst antwortet gerade nicht". Im Server-Protokoll steht:
+>
+> ```
+> Failed to validate AppCheck token. FirebaseAppCheckError: Decoding App Check
+> token failed. …
+> Callable request verification failed: AppCheck token was rejected.
+> {"verifications":{"auth":"VALID","app":"INVALID"}}
+> ```
+>
+> `auth: VALID` neben `app: INVALID` ist die Signatur: Das Konto stimmt, die
+> Installation nicht. Ein abgelehnter Aufruf kostet **kein Kontingent** — App
+> Check greift, bevor der Rumpf der Function beginnt.
+
 
 1. App im Debug-Modus einmal starten: `flutter run`
 2. In der Konsolenausgabe nach einer Zeile suchen, die so aussieht:
@@ -333,7 +366,14 @@ einer Neuinstallation nicht mehr und kann weg.
 >
 > Das Token gilt **pro Installation**: Nach `flutter run --uninstall-first`
 > oder einer Neuinstallation ist es ein anderes und muss neu eingetragen
-> werden.
+> werden. Der Kasten oben sagt, woran man das erkennt.
+>
+> Am schnellsten geht es so — die Zeile enthält die UUID und gleich den
+> passenden Konsolen-Link:
+>
+> ```bash
+> adb logcat -c && adb shell am force-stop com.trueglow.app && adb shell am start -n com.trueglow.app/.MainActivity && sleep 12 && adb logcat -d | grep DebugAppCheckProvider
+> ```
 >
 > ## Woran ein abgelaufenes Token zu erkennen ist
 >

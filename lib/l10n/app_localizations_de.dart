@@ -1105,6 +1105,13 @@ class LDe extends L {
       'Die Analyse hat zu lange gedauert. Versuch es bitte erneut.';
 
   @override
+  String get analyseZugangTitel => 'Diese Installation ist nicht freigegeben';
+
+  @override
+  String get analyseZugangTipp =>
+      'Der Server hat nicht dein Konto abgelehnt, sondern diese Installation der App. Warten hilft hier nicht. Beende die App und starte sie neu — bleibt es dabei, muss die Installation freigeschaltet werden (SETUP.md, Abschnitt 4.3).';
+
+  @override
   String get analyseApiTitel => 'Analyse nicht möglich';
 
   @override

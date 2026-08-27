@@ -38,7 +38,7 @@ class FunctionsClient {
     try {
       return await rufeRoh(name, daten, abbruch: abbruch);
     } on FunctionsFehler catch (e) {
-      throw AnalysisException(_fehler(e), '${e.code}: ${e.nachricht}');
+      throw AnalysisException(fehlerFuer(e), '${e.code}: ${e.nachricht}');
     }
   }
 
@@ -126,7 +126,8 @@ class FunctionsClient {
   /// Die Function schickt ihren Fall ausdruecklich in `details.fehler` mit –
   /// nur wenn der fehlt (etwa weil der Aufruf gar nicht ankam), wird auf den
   /// gRPC-Code zurueckgefallen.
-  static AnalysisFehler _fehler(FunctionsFehler e) {
+  @visibleForTesting
+  static AnalysisFehler fehlerFuer(FunctionsFehler e) {
     for (final fall in AnalysisFehler.values) {
       if (fall.name == e.fall) return fall;
     }
@@ -135,8 +136,14 @@ class FunctionsClient {
       'unavailable' => AnalysisFehler.keinInternet,
       'deadline-exceeded' => AnalysisFehler.zeitueberschreitung,
       'resource-exhausted' => AnalysisFehler.kontingent,
-      // 'unauthenticated' deckt beides ab: fehlende Anmeldung und ein
-      // abgelehntes App-Check-Token.
+      // Der Server hat die Installation abgelehnt, nicht das Konto – App
+      // Check. Bis DECISIONS 59 lief das unter `apiFehler` und sah damit aus
+      // wie ein voruebergehender Ausfall. Am 27.08.2026 hat genau das zwei
+      // Stunden Fehlersuche an der falschen Stelle gekostet: Die Meldung
+      // sagte „antwortet gerade nicht", der Server sagte im Protokoll
+      // „AppCheck token was rejected".
+      'unauthenticated' => AnalysisFehler.zugangAbgelehnt,
+      'permission-denied' => AnalysisFehler.zugangAbgelehnt,
       _ => AnalysisFehler.apiFehler,
     };
   }

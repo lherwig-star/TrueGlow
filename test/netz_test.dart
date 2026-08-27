@@ -169,6 +169,57 @@ void main() {
     });
   });
 
+  group('Was der Fehler dem Nutzer sagt', () {
+    test('ein abgelehnter Zugang ist kein Ausfall des Dienstes', () {
+      // Der Anlass steht in DECISIONS 59: Am 27.08.2026 lehnte App Check die
+      // Installation ab, und die App meldete „Der Analyse-Dienst antwortet
+      // gerade nicht". Das ist das Gegenteil der Wahrheit – der Dienst
+      // antwortet sofort und dauerhaft mit Nein.
+      expect(
+        FunctionsClient.fehlerFuer(
+          const FunctionsFehler(code: 'unauthenticated'),
+        ),
+        AnalysisFehler.zugangAbgelehnt,
+      );
+      expect(
+        FunctionsClient.fehlerFuer(
+          const FunctionsFehler(code: 'permission-denied'),
+        ),
+        AnalysisFehler.zugangAbgelehnt,
+      );
+    });
+
+    test('und der Text sagt ausdruecklich, dass Warten nicht hilft', () {
+      final tipp = AnalysisFehler.zugangAbgelehnt.tipp(texte);
+
+      expect(tipp, contains('Warten'));
+      expect(tipp, isNot(contains('später')));
+      // Der alte Text ist der, der in die Irre geführt hat.
+      expect(
+        AnalysisFehler.zugangAbgelehnt.titel(texte),
+        isNot(AnalysisFehler.apiFehler.titel(texte)),
+      );
+    });
+
+    test('der Fall der Function schlaegt den gRPC-Code', () {
+      // Ein Server, der seinen Fall ausdruecklich mitschickt, wird ernst
+      // genommen – auch wenn der Code etwas anderes nahelegt.
+      expect(
+        FunctionsClient.fehlerFuer(
+          const FunctionsFehler(code: 'unauthenticated', fall: 'kontingent'),
+        ),
+        AnalysisFehler.kontingent,
+      );
+    });
+
+    test('alles Unbekannte bleibt der allgemeine API-Fehler', () {
+      expect(
+        FunctionsClient.fehlerFuer(const FunctionsFehler(code: 'internal')),
+        AnalysisFehler.apiFehler,
+      );
+    });
+  });
+
   group('Unterbrochene Analyse', () {
     KeyValueStore mitMarke() =>
         MemoryStore()..put(CloudModell.keyAnalyseLaeuftSeit, '2026-08-24T10:00:00.000');

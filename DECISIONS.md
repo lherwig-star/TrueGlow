@@ -2134,6 +2134,100 @@ Liste für später.
 alle acht antippt, verlängert ihn spürbar — das ist der Preis dafür, dass die
 Wahl im Report ankommt.
 
+## 59 · Der Analyse-Ausfall vom 27.08.2026 — App Check, nicht der neue Code
+
+Zwei Stunden nach dem Ausrollen der drei Functions brach eine echte Analyse
+mit „Analyse nicht möglich — Der Analyse-Dienst antwortet gerade nicht" ab.
+Der Verdacht lag beim frischen Server-Code oder an den zwei neuen Feldern
+(Modus, neue Stilrichtungen). **Beides war falsch.**
+
+**Der Befund.** Im Protokoll der Function, um 13:47:07 UTC — das ist 15:47
+Ortszeit, die gemeldete Minute:
+
+```
+Failed to validate AppCheck token. FirebaseAppCheckError: Decoding App Check
+token failed. Make sure you passed the entire string JWT which represents the
+Firebase App Check token.
+Callable request verification failed: AppCheck token was rejected.
+{"verifications":{"auth":"VALID","app":"INVALID"}}
+```
+
+`auth: VALID` neben `app: INVALID` ist die ganze Diagnose: **Das Konto war in
+Ordnung, die Installation nicht.** Der Aufruf wurde im Callable-Rahmen
+abgewiesen — bevor eine einzige Zeile des neuen Codes lief. Kein Prompt wurde
+gebaut, kein Feld gelesen, kein Modell gefragt.
+
+Drei Versuche stehen im Protokoll (13:47:07, 13:47:13, 13:52:37), alle mit
+derselben Zeile. Danach nichts mehr.
+
+**Die Ursache.** Im Debug-Build läuft der App-Check-Debug-Provider. Sein
+Geheimnis liegt im privaten Speicher der App. Die Deinstallation am
+27.08.2026 gegen 01:00 Uhr — dieselbe, die die Fortschritts-Fotos gekostet
+hat und die zu `CLAUDE.md` geführt hat — hat diesen Speicher geleert. Beim
+nächsten Start erzeugte der Provider ein neues Token
+(`eadf101d-b147-4c54-b4d8-befc62166f66`), und das stand nicht auf der
+Freigabeliste in der Firebase-Konsole.
+
+Der Deploy um 13:43 Uhr war Zufall: Es war schlicht der erste
+Analyse-Versuch nach der Deinstallation.
+
+Dass genau das passieren kann, stand seit dem 25.08.2026 in `SETUP.md` 4.3 —
+damals war es schon einmal passiert. Zweimal derselbe Fehler ist keiner mehr,
+sondern eine Konstruktionsschwäche.
+
+**Was daraus folgt.**
+
+**Die Meldung sagt jetzt die Wahrheit.** „Der Analyse-Dienst antwortet gerade
+nicht. Bitte später noch einmal versuchen." war das Gegenteil dessen, was
+vorlag: Der Dienst antwortete sofort, dauerhaft und mit Nein. Genau dieser
+Satz hat die Suche in Richtung Server geschickt. `unauthenticated` und
+`permission-denied` bekommen deshalb einen eigenen Fall
+`AnalysisFehler.zugangAbgelehnt` mit dem Titel „Diese Installation ist nicht
+freigegeben" und einem Tipp, der ausdrücklich sagt, dass Warten nicht hilft.
+Vorher lief das unter „unauthenticated deckt beides ab" — ein Kommentar, der
+die Verwechslung beschrieb, statt sie zu beheben.
+
+**Ein Test hält App und Server aneinander.** Die Frage „liegt es an einem
+Versatz zwischen App und Server?" ließ sich nicht in einer Minute
+beantworten, weil kein Test die beiden Seiten zusammenbrachte: Die
+Dart-Tests prüften die App, die TypeScript-Tests prüften den Server, und
+dazwischen war nichts. Jetzt schreibt `test/anfrage_form_test.dart` die
+**echte** Nutzlast aus demselben `AnalyseAnfrage.bauen`, das auch die App
+benutzt, nach `functions/test/fixtures/`, und
+`functions/test/anfrage_form.test.ts` schickt sie durch `leseAnalyse`, den
+Prompt und die Nachbereitung. Ein umbenanntes oder verlorenes Feld fällt im
+Testlauf auf statt am Gerät.
+
+Der Test hat übrigens nebenbei bewiesen, dass es **keinen** Versatz gab: Die
+Nutzlast vom 27.08. läuft vollständig durch.
+
+**App Check bleibt erzwungen.** Der schnellste Weg zurück wäre gewesen,
+`enforceAppCheck` abzuschalten. Das wäre der teuerste: Ohne diese Tür kann
+jeder mit einem abgegriffenen Auth-Token Gemini auf unsere Rechnung rufen.
+Ein Test besteht auf `enforceAppCheck: true`.
+
+**Ein abgelehnter Aufruf kostet kein Kontingent** — das war schon so und
+bleibt so. App Check greift im Callable-Rahmen, `reservieren` steht
+ausschließlich in `mitKontingent` und damit mitten im Rumpf. Ein zweiter
+Test hält diese Reihenfolge fest. Im Protokoll des 27.08. steht dazu passend
+keine einzige Kontingent-Zeile.
+
+**Die Dokumentation nennt die Falle beim Namen.** `SETUP.md` 4.3 listet jetzt
+auf, was das Token tötet (`adb uninstall`, `pm clear`,
+`--uninstall-first`, „App-Daten löschen"), woran man es im Protokoll und in
+der App erkennt, und den Einzeiler, der das neue Token ausliest. `CLAUDE.md`
+führt das Token in der Liste dessen, was eine Deinstallation kostet — neben
+den Fortschritts-Fotos.
+
+**Preis:** Nichts an Laufzeit. Ein Fehlerfall mehr in der Aufzählung, zwei
+Fixture-Dateien im Repo und ein Testlauf, der die Nutzlast mitschreibt.
+
+**Was ausdrücklich offen bleibt:** Das Debug-Token muss weiterhin von Hand in
+der Konsole eingetragen werden. Es gibt keinen Weg, es aus dem Projekt heraus
+festzunageln, ohne nativen Code in den Debug-Build zu ziehen. Solange das so
+ist, ist die Regel aus `CLAUDE.md` — nicht deinstallieren — auch die
+Absicherung dieser Stelle.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

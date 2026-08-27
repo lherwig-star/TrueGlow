@@ -1,0 +1,55 @@
+{
+  "sprache": "en",
+  "modus": "verfeinern",
+  "ausrichtung": "maennlich",
+  "module": [
+    "basis",
+    "hautFarbtyp",
+    "figurPassform",
+    "stilKleiderschrank"
+  ],
+  "profil": {
+    "alter": "a25bis34",
+    "budget": "mittel",
+    "zeit": "mittel",
+    "fokus": [
+      "haut",
+      "haare"
+    ]
+  },
+  "eingaben": {
+    "figur": {
+      "groesseCm": 182,
+      "gewichtKg": 78
+    },
+    "stil": {
+      "ziele": [
+        "smartCasual"
+      ],
+      "dresscode": "businessCasual",
+      "budget": "mittel",
+      "pflegeaufwand": "mittel"
+    }
+  },
+  "richtung": {
+    "ziele": [
+      "streetwearLaessig",
+      "smartHochwertig"
+    ],
+    "freitext": "Ich will im Bewerbungsgespräch souverän wirken."
+  },
+  "bilder": [
+    {
+      "typ": "basisFrontal",
+      "daten": "AAAA"
+    },
+    {
+      "typ": "basisProfilLinks",
+      "daten": "BBBB"
+    },
+    {
+      "typ": "figurGanzkoerperFrontal",
+      "daten": "CCCC"
+    }
+  ]
+}
