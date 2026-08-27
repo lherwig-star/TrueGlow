@@ -249,6 +249,46 @@ class LDe extends L {
   }
 
   @override
+  String get modusTitel => 'Neue Analyse';
+
+  @override
+  String get modusEyebrow => 'Erster Schritt';
+
+  @override
+  String get modusUeberschrift => 'Was soll die Analyse für dich tun?';
+
+  @override
+  String get modusEinleitung =>
+      'Beides sind vollwertige Analysen mit denselben Fotos. Der Unterschied liegt darin, welche Frage wir für dich beantworten.';
+
+  @override
+  String get modusVerfeinernTitel => 'Meinen Look verfeinern';
+
+  @override
+  String get modusVerfeinernText =>
+      'Du magst deinen Stil? Wir holen das Beste heraus – Schnitt, Pflege und Details, die zu dem passen, was du schon hast.';
+
+  @override
+  String get modusVerfeinernEtikett => 'Verfeinert';
+
+  @override
+  String get modusEntdeckenTitel => 'Neuen Look entdecken';
+
+  @override
+  String get modusEntdeckenText =>
+      'Lust auf Veränderung? Wir schlagen dir eine neue Richtung vor, die zu deinem Gesicht, deinem Haar und deinem Alltag passt.';
+
+  @override
+  String get modusEntdeckenEtikett => 'Neuer Look';
+
+  @override
+  String get modusWeiter => 'Weiter zu den Modulen';
+
+  @override
+  String get modusHinweis =>
+      'Beide Modi kosten genau einen Analyse-Lauf, und du machst in beiden dieselben Aufnahmen. Du entscheidest bei jeder Analyse neu.';
+
+  @override
   String get richtungTitel => 'Deine Richtung';
 
   @override

@@ -1,3 +1,4 @@
+import 'analyse_modus.dart';
 import '../../direction/models/richtung.dart';
 import '../../modules/models/analyse_modul.dart';
 import '../../../core/l10n/texte.dart';
@@ -205,6 +206,7 @@ class AnalysisResult {
     required this.kapitel,
     required this.plan,
     this.richtung = Richtung.leer,
+    this.modus = AnalyseModus.standard,
   });
 
   /// Eindeutige ID, gleichzeitig Schluessel in der lokalen Speicherung.
@@ -221,6 +223,14 @@ class AnalysisResult {
   /// kann, worauf er beruht – und damit auffaellt, wenn sich die Richtung
   /// seitdem geaendert hat.
   final Richtung richtung;
+
+  /// Mit welchem Auftrag dieser Report entstanden ist.
+  ///
+  /// Haengt am Ergebnis und nicht am Controller: Der Modus gilt pro Analyse,
+  /// und im Verlauf soll ablesbar bleiben, welche Frage ein Report
+  /// beantwortet hat. Alte Reports kennen das Feld nicht – sie sind per
+  /// Definition [AnalyseModus.verfeinern], weil es damals nichts anderes gab.
+  final AnalyseModus modus;
 
   /// Welche Module dieser Report abdeckt.
   Set<AnalyseModul> get module => kapitel.map((k) => k.modul).toSet();
@@ -270,6 +280,10 @@ class AnalysisResult {
       kapitel: sortiert,
       plan: planErgaenzung == null ? plan : plan.ergaenztUm(planErgaenzung),
       richtung: richtung ?? this.richtung,
+      // Ein nachtraegliches Kapitel aendert den Auftrag des Reports nicht:
+      // Wer erweitert, bekommt das neue Kapitel im Modus des Reports, in den
+      // es eingehaengt wird.
+      modus: modus,
     );
   }
 
@@ -279,6 +293,7 @@ class AnalysisResult {
         'kapitel': kapitel.map((k) => k.toJson()).toList(),
         'plan': plan.toJson(),
         'richtung': richtung.toJson(),
+        'modus': modus.name,
       };
 
   /// Liest eine bereits gespeicherte Analyse (inkl. ID und Datum).
@@ -296,6 +311,8 @@ class AnalysisResult {
             ? Richtung.fromJson(
                 Map<String, dynamic>.from(json['richtung'] as Map))
             : Richtung.leer,
+        // Dito: ohne Feld der Rueckfall, und der ist das bisherige Verhalten.
+        modus: AnalyseModus.ausName(json['modus']),
       );
 
   /// Liest die rohe KI-Antwort, die weder ID noch Datum enthaelt.
@@ -304,6 +321,7 @@ class AnalysisResult {
     required String id,
     required DateTime erstelltAm,
     Richtung richtung = Richtung.leer,
+    AnalyseModus modus = AnalyseModus.standard,
   }) =>
       AnalysisResult(
         id: id,
@@ -313,6 +331,7 @@ class AnalysisResult {
             ? Plan.fromJson(Map<String, dynamic>.from(json['plan'] as Map))
             : Plan.leer,
         richtung: richtung,
+        modus: modus,
       );
 
   /// Minimalpruefung, ob die Antwort ueberhaupt brauchbar ist.

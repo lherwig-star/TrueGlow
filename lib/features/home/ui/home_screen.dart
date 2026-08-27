@@ -10,6 +10,7 @@ import '../../../core/utils/datum.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../analysis/logic/analysis_controller.dart';
+import '../../analysis/logic/modus_controller.dart';
 import '../../analysis/models/analysis_result.dart';
 import '../../analysis/ui/unterbrochen_karte.dart';
 import '../../capture/logic/capture_controller.dart';
@@ -107,16 +108,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  /// Setzt Fotos, Modulauswahl und Analysezustand zurueck, bevor ein neuer
-  /// Durchlauf startet – sonst startet der Flow mit alten Aufnahmen.
+  /// Setzt Fotos, Modulauswahl, Modus und Analysezustand zurueck, bevor ein
+  /// neuer Durchlauf startet – sonst startet der Flow mit alten Aufnahmen.
+  ///
+  /// Der Modus gehoert ausdruecklich dazu: Er gilt pro Analyse und nicht als
+  /// Vorliebe. Wer beim letzten Mal einen neuen Look wollte, bekommt die
+  /// Frage beim naechsten Mal neu gestellt.
   void _neueAnalyse(BuildContext context, WidgetRef ref) {
     ref.read(captureControllerProvider.notifier).alleVerwerfen();
     ref.read(moduleControllerProvider.notifier).zuruecksetzen();
+    ref.read(modusControllerProvider.notifier).zuruecksetzen();
     ref.read(analysisControllerProvider.notifier).zuruecksetzen();
     // Ein neuer Plan heisst ein neuer Check-in-Zyklus. Der Termin steht erst,
     // wenn die Analyse da ist – bis dahin bleibt der alte Zyklus stehen.
     _checkinGeprueft = false;
-    context.push(Routes.module);
+    context.push(Routes.modus);
   }
 
   @override

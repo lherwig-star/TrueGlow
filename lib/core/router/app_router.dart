@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/analysis/ui/analysis_loading_screen.dart';
+import '../../features/analysis/ui/modus_screen.dart';
 import '../../features/auth/logic/auth_repository.dart';
 import '../../features/auth/ui/login_screen.dart';
 import '../../features/consent/logic/einwilligung_controller.dart';
@@ -54,9 +55,19 @@ class Routes {
 
   /// Der Analyse-Flow, den die Altersbestaetigung schuetzt. Wer eine dieser
   /// Routen ohne Bestaetigung aufruft, landet auf [altersHinweis].
-  static const analyseFlow = {module, richtung, aufnahme, kamera, analysis};
+  static const analyseFlow = {
+    modus,
+    module,
+    richtung,
+    aufnahme,
+    kamera,
+    analysis,
+  };
 
   static const home = '/';
+
+  /// Erster Schritt jeder Analyse: verfeinern oder neu entdecken.
+  static const modus = '/modus';
   static const module = '/module';
   static const richtung = '/richtung';
   static const aufnahme = '/aufnahme';
@@ -190,6 +201,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(path: Routes.home, builder: (context, state) => const HomeScreen()),
+      GoRoute(
+        path: Routes.modus,
+        builder: (context, state) => const ModusScreen(),
+      ),
       GoRoute(
         path: Routes.module,
         builder: (context, state) => const ModuleSelectionScreen(),

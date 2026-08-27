@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/analysis/logic/analysis_controller.dart';
+import '../../features/analysis/logic/modus_controller.dart';
 import '../../features/capture/logic/capture_controller.dart';
 import '../../features/consent/logic/einwilligung_controller.dart';
 import '../../features/checkin/logic/checkin_controller.dart';
@@ -36,6 +37,7 @@ final syncDienstProvider = Provider<SyncDienst>((ref) {
 void zustaendeNeuLaden(WidgetRef ref) {
   ref.read(captureControllerProvider.notifier).neuLaden();
   ref.read(moduleControllerProvider.notifier).neuLaden();
+  ref.read(modusControllerProvider.notifier).neuLaden();
   ref.read(directionControllerProvider.notifier).neuLaden();
   ref.read(checkinControllerProvider.notifier).neuLaden();
   ref.read(onboardingControllerProvider.notifier).neuLaden();

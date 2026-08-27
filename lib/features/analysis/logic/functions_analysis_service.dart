@@ -2,6 +2,7 @@ import 'dart:io';
 
 import '../../capture/models/aufnahme_typ.dart';
 import '../../direction/models/richtung.dart';
+import '../models/analyse_modus.dart';
 import '../../modules/models/analyse_modul.dart';
 import '../../modules/models/modul_eingaben.dart';
 import '../../onboarding/models/onboarding_profile.dart';
@@ -33,6 +34,7 @@ class FunctionsAnalysisService implements AnalysisService {
     required ModulEingaben eingaben,
     required Sprache sprache,
     Richtung richtung = Richtung.leer,
+    AnalyseModus modus = AnalyseModus.standard,
     Abbruch? abbruch,
   }) async {
     if (fotos.isEmpty) {
@@ -59,6 +61,7 @@ class FunctionsAnalysisService implements AnalysisService {
         eingaben: eingaben,
         sprache: sprache,
         richtung: richtung,
+        modus: modus,
       ),
       abbruch: abbruch,
     );
@@ -73,6 +76,7 @@ class FunctionsAnalysisService implements AnalysisService {
       id: DateTime.now().microsecondsSinceEpoch.toString(),
       erstelltAm: DateTime.now(),
       richtung: richtung,
+      modus: modus,
     );
 
     // Die Function prueft nur grob, ob Kapitel vorhanden sind. Ob der Report

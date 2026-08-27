@@ -7,6 +7,7 @@ import '../../direction/models/richtung.dart';
 import '../../modules/models/analyse_modul.dart';
 import '../../modules/models/modul_eingaben.dart';
 import '../../onboarding/models/onboarding_profile.dart';
+import '../models/analyse_modus.dart';
 import '../models/analysis_result.dart';
 import '../../../core/l10n/texte.dart';
 
@@ -110,6 +111,10 @@ abstract interface class AnalysisService {
   /// [richtung] sind die persoenlichen Ziele des Nutzers; sie sind optional
   /// und leer, wenn der Schritt uebersprungen wurde.
   ///
+  /// [modus] entscheidet, welche Frage der Report beantwortet: den
+  /// vorhandenen Look verbessern oder einen neuen entwerfen. Die Fotos und
+  /// die Module sind in beiden Faellen dieselben.
+  ///
   /// [abbruch] stoppt Warten und Wiederholen, wenn der Nutzer aufgibt.
   ///
   /// Wirft bei Problemen eine [AnalysisException].
@@ -123,6 +128,7 @@ abstract interface class AnalysisService {
     required ModulEingaben eingaben,
     required Sprache sprache,
     Richtung richtung = Richtung.leer,
+    AnalyseModus modus = AnalyseModus.standard,
     Abbruch? abbruch,
   });
 }

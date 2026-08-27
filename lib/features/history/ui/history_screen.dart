@@ -9,6 +9,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/datum.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
+import '../../analysis/models/analyse_modus.dart';
 import '../../analysis/models/analysis_result.dart';
 import '../logic/analysis_repository.dart';
 
@@ -127,9 +128,18 @@ class _VerlaufKarte extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  Datum.kurz(analyse.erstelltAm, texte.localeName),
-                  style: const TextStyle(fontWeight: FontWeight.w700),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        Datum.kurz(analyse.erstelltAm, texte.localeName),
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    _ModusEtikett(modus: analyse.modus),
+                  ],
                 ),
                 const SizedBox(height: 2),
                 MutedText(
@@ -148,6 +158,43 @@ class _VerlaufKarte extends StatelessWidget {
             tooltip: texte.verlaufLoeschenTooltip,
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Das kleine Etikett am Verlaufseintrag: verfeinert oder neu entdeckt.
+///
+/// Steht an jedem Eintrag, auch am verfeinernden. Nur den einen zu
+/// kennzeichnen hiesse, den anderen zur Norm zu erklaeren – und dann waere
+/// ein Report ohne Etikett zweideutig: alter Report oder verfeinert?
+///
+/// Der entdeckende Modus traegt die Farbe fuer Erreichtes, der verfeinernde
+/// den ruhigen Sekundaerton. Das ist keine Wertung, sondern Wiedererkennung:
+/// Dieselbe Farbe markiert im Report den Abschnitt "Dein neuer Look".
+class _ModusEtikett extends StatelessWidget {
+  const _ModusEtikett({required this.modus});
+
+  final AnalyseModus modus;
+
+  @override
+  Widget build(BuildContext context) {
+    final farben = context.farben;
+    final ton = modus.istEntdecken ? farben.erreicht : farben.textSekundaer;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: ton.withValues(alpha: 0.14),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        modus.etikett(context.texte),
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+          color: ton,
+        ),
       ),
     );
   }

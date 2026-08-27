@@ -18,8 +18,10 @@ import '../../history/logic/analysis_repository.dart';
 import '../../modules/logic/module_controller.dart';
 import '../../modules/models/analyse_modul.dart';
 import '../../onboarding/logic/onboarding_controller.dart';
+import '../models/analyse_modus.dart';
 import '../models/analysis_result.dart';
 import 'analysis_service.dart';
+import 'modus_controller.dart';
 import 'functions_analysis_service.dart';
 import 'mock_analysis_service.dart';
 
@@ -99,6 +101,18 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
     final richtung = _ref.read(directionControllerProvider);
     final gewaehlteModule = module ?? modulZustand.module;
 
+    // Beim Erweitern und beim Neurechnen zaehlt der Modus des bestehenden
+    // Reports, nicht der, der gerade im Flow steht: Ein Kapitel, das in einen
+    // Report mit neuem Look eingehaengt wird, muss zu diesem Look passen.
+    final bestehend = _ref.read(analysisRepositoryProvider).aktuelle();
+    final AnalyseModus modus;
+    if (nurModul == null && module == null) {
+      // Ein regulaerer neuer Durchlauf: Es gilt, was im Flow gewaehlt wurde.
+      modus = _ref.read(modusControllerProvider);
+    } else {
+      modus = bestehend?.modus ?? _ref.read(modusControllerProvider);
+    }
+
     final pflicht = pflichtAufnahmen(gewaehlteModule, nur: nurModul);
     if (!aufnahmen.vollstaendig(pflicht)) {
       state = const AnalyseFehlgeschlagen(AnalysisFehler.fotosFehlen);
@@ -138,6 +152,7 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
             eingaben: modulZustand.eingaben,
             sprache: _ref.read(aktiveSpracheProvider),
             richtung: richtung,
+            modus: modus,
             abbruch: abbruch,
           );
 

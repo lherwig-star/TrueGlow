@@ -7,6 +7,7 @@ import '../../direction/models/richtung.dart';
 import '../../modules/models/analyse_modul.dart';
 import '../../modules/models/modul_eingaben.dart';
 import '../../onboarding/models/onboarding_profile.dart';
+import '../models/analyse_modus.dart';
 import '../models/analysis_result.dart';
 import 'analysis_service.dart';
 import 'json_extractor.dart';
@@ -31,6 +32,7 @@ class MockAnalysisService implements AnalysisService {
     // beruecksichtigen; sie wird aber wie im Echtbetrieb ans Ergebnis
     // geheftet, damit der Report sie anzeigen kann.
     Richtung richtung = Richtung.leer,
+    AnalyseModus modus = AnalyseModus.standard,
     Abbruch? abbruch,
   }) async {
     await Future<void>.delayed(AnalysisConfig.mockDauer);
@@ -46,6 +48,7 @@ class MockAnalysisService implements AnalysisService {
       id: DateTime.now().microsecondsSinceEpoch.toString(),
       erstelltAm: DateTime.now(),
       richtung: richtung,
+      modus: modus,
     );
   }
 

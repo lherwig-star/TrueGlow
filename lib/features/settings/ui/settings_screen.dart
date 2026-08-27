@@ -13,6 +13,7 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../account/logic/konto_dienst.dart';
 import '../../analysis/logic/analysis_controller.dart';
+import '../../analysis/logic/modus_controller.dart';
 import '../../analysis/logic/analysis_service.dart';
 import '../../auth/logic/auth_repository.dart';
 import '../../consent/logic/einwilligung_controller.dart';
@@ -169,6 +170,7 @@ class SettingsScreen extends ConsumerWidget {
     // Alle Zustaende zuruecksetzen, damit nichts Altes im Speicher bleibt.
     ref.read(captureControllerProvider.notifier).alleVerwerfen();
     ref.read(moduleControllerProvider.notifier).zuruecksetzen();
+    ref.read(modusControllerProvider.notifier).zuruecksetzen();
     ref.read(directionControllerProvider.notifier).zuruecksetzen();
     ref.read(checkinControllerProvider.notifier).zuruecksetzen();
     await ref.read(checkinBenachrichtigungProvider).abbrechen();

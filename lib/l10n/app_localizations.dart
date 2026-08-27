@@ -529,6 +529,78 @@ abstract class L {
   /// **'{uebrig, plural, =1{Noch 1 von {gesamt} Analysen heute} other{Noch {uebrig} von {gesamt} Analysen heute}}'**
   String kontingentUebrig(int uebrig, int gesamt);
 
+  /// Titelzeile des ersten Schritts einer Analyse.
+  ///
+  /// In de, this message translates to:
+  /// **'Neue Analyse'**
+  String get modusTitel;
+
+  /// Kleine Zeile ueber der Ueberschrift.
+  ///
+  /// In de, this message translates to:
+  /// **'Erster Schritt'**
+  String get modusEyebrow;
+
+  /// Die Frage, die auf diesem Bildschirm beantwortet wird.
+  ///
+  /// In de, this message translates to:
+  /// **'Was soll die Analyse für dich tun?'**
+  String get modusUeberschrift;
+
+  /// Zwei Saetze darunter: was beide Modi gemeinsam haben.
+  ///
+  /// In de, this message translates to:
+  /// **'Beides sind vollwertige Analysen mit denselben Fotos. Der Unterschied liegt darin, welche Frage wir für dich beantworten.'**
+  String get modusEinleitung;
+
+  /// Karte 1 – der bisherige Modus.
+  ///
+  /// In de, this message translates to:
+  /// **'Meinen Look verfeinern'**
+  String get modusVerfeinernTitel;
+
+  /// Untertext von Karte 1.
+  ///
+  /// In de, this message translates to:
+  /// **'Du magst deinen Stil? Wir holen das Beste heraus – Schnitt, Pflege und Details, die zu dem passen, was du schon hast.'**
+  String get modusVerfeinernText;
+
+  /// Kurzes Etikett am Verlaufseintrag fuer Karte 1.
+  ///
+  /// In de, this message translates to:
+  /// **'Verfeinert'**
+  String get modusVerfeinernEtikett;
+
+  /// Karte 2 – die KI entwirft eine neue Richtung.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuen Look entdecken'**
+  String get modusEntdeckenTitel;
+
+  /// Untertext von Karte 2.
+  ///
+  /// In de, this message translates to:
+  /// **'Lust auf Veränderung? Wir schlagen dir eine neue Richtung vor, die zu deinem Gesicht, deinem Haar und deinem Alltag passt.'**
+  String get modusEntdeckenText;
+
+  /// Kurzes Etikett am Verlaufseintrag fuer Karte 2.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuer Look'**
+  String get modusEntdeckenEtikett;
+
+  /// Knopf unten.
+  ///
+  /// In de, this message translates to:
+  /// **'Weiter zu den Modulen'**
+  String get modusWeiter;
+
+  /// Nimmt die zwei haeufigsten Rueckfragen vorweg: Kosten und Fotos.
+  ///
+  /// In de, this message translates to:
+  /// **'Beide Modi kosten genau einen Analyse-Lauf, und du machst in beiden dieselben Aufnahmen. Du entscheidest bei jeder Analyse neu.'**
+  String get modusHinweis;
+
   /// No description provided for @richtungTitel.
   ///
   /// In de, this message translates to:

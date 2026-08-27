@@ -1941,6 +1941,57 @@ flacher Farbe, bevor überhaupt etwas erscheint. Das ist Android beim Starten
 des Prozesses, nicht die App. In dieser Aufnahme waren es 7,2 Sekunden
 (Debug-Build).
 
+## 56 · Zwei Modi statt einer Frage
+
+Die Analyse konnte bisher genau eine Frage beantworten: „Wie hole ich aus
+dem, was da ist, das Beste heraus?" Das ist die richtige Frage für jemanden,
+der seinen Stil mag. Wer Veränderung will, bekam darauf eine Antwort, die ihn
+festhielt — freundlich, konkret, und am Anliegen vorbei.
+
+**Deshalb steht am Anfang jeder Analyse eine Entscheidung**: „Meinen Look
+verfeinern" oder „Neuen Look entdecken". Zwei gleich große Karten, ein eigener
+Bildschirm vor der Modulauswahl, kein Überspringen.
+
+**Warum ein eigener Schritt und kein Schalter auf der Modulseite.** Die Frage
+ist grundlegender als die Modulauswahl: Sie entscheidet nicht, *worüber* der
+Report spricht, sondern *was er will*. Als Schalter zwischen den Modulkarten
+hätte sie ausgesehen wie eine Einstellung und wäre überlesen worden — und ein
+überlesener Standard hätte für die Hälfte der Nutzer den falschen Report
+erzeugt. Für genau die Hälfte, die Veränderung sucht.
+
+**Warum kein Überspringen.** Der Schritt „Deine Richtung" darf übersprungen
+werden, weil „keine Angabe" dort eine sinnvolle Antwort ist: Dann schaut das
+Modell neutral. Hier gibt es kein Neutral — jeder Report beantwortet die eine
+oder die andere Frage. Also wird sie gestellt.
+
+**Die Wahl gilt pro Analyse, nicht fürs Konto.** Sie wird zwar gespeichert,
+aber nur für die Dauer eines Durchlaufs: Zwischen Moduswahl und Startknopf
+liegen Module, Richtung und bis zu elf Aufnahmen, und ein Anruf dazwischen
+darf die Entscheidung nicht kosten. Jeder neue Durchlauf setzt sie zurück
+(`_neueAnalyse` in `home_screen.dart`) und fragt neu. Wer einmal einen neuen
+Look wollte, bekommt ihn nicht stillschweigend für immer.
+
+**Beim Erweitern zählt der Report, nicht der Flow.** Wer über „Analyse
+erweitern" ein Kapitel nachbestellt oder den Plan mit neuer Richtung neu
+rechnet, bekommt es im Modus *des bestehenden Reports*. Ein
+Verfeinerungs-Kapitel in einem Report mit neuem Look wäre ein Fremdkörper.
+
+**Der Modus hängt am Ergebnis** und nicht nur am Controller — aus demselben
+Grund wie die Richtung (DECISIONS 39): Im Verlauf muss ablesbar bleiben,
+welche Frage ein Report beantwortet hat. Deshalb trägt **jeder** Eintrag ein
+Etikett, auch der verfeinernde. Nur den neuen zu kennzeichnen hieße, den
+anderen zur Norm zu erklären — und ein Eintrag ohne Etikett wäre zweideutig:
+alter Report oder verfeinert?
+
+**Der Rückfall ist überall `verfeinern`**, an vier Stellen unabhängig
+voneinander: gespeicherter Report ohne Feld, unbekannter Name, Client ohne
+das Feld, Server ohne Modus in der Nutzlast. Wer den Modus nicht kennt,
+bekommt genau das, was er bisher bekommen hat.
+
+**Preis:** Ein Bildschirm mehr im Flow — vier Schritte statt drei, bevor die
+erste Aufnahme kommt. Das ist der Preis dafür, dass die Frage nicht
+untergeht.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

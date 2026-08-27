@@ -247,6 +247,46 @@ class LEn extends L {
   }
 
   @override
+  String get modusTitel => 'New analysis';
+
+  @override
+  String get modusEyebrow => 'First step';
+
+  @override
+  String get modusUeberschrift => 'What should this analysis do for you?';
+
+  @override
+  String get modusEinleitung =>
+      'Both are full analyses using the same photos. What differs is the question we answer for you.';
+
+  @override
+  String get modusVerfeinernTitel => 'Refine my look';
+
+  @override
+  String get modusVerfeinernText =>
+      'Happy with your style? We bring out the best of it — cut, grooming and the details that suit what you already have.';
+
+  @override
+  String get modusVerfeinernEtikett => 'Refined';
+
+  @override
+  String get modusEntdeckenTitel => 'Discover a new look';
+
+  @override
+  String get modusEntdeckenText =>
+      'Ready for a change? We propose a new direction that suits your face, your hair and your everyday life.';
+
+  @override
+  String get modusEntdeckenEtikett => 'New look';
+
+  @override
+  String get modusWeiter => 'Continue to the modules';
+
+  @override
+  String get modusHinweis =>
+      'Both modes cost exactly one analysis run, and you take the same photos either way. You choose again for every analysis.';
+
+  @override
   String get richtungTitel => 'Your direction';
 
   @override

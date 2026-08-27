@@ -89,6 +89,54 @@
       }
     }
   },
+  "modusTitel": "Neue Analyse",
+  "@modusTitel": {
+    "description": "Titelzeile des ersten Schritts einer Analyse."
+  },
+  "modusEyebrow": "Erster Schritt",
+  "@modusEyebrow": {
+    "description": "Kleine Zeile ueber der Ueberschrift."
+  },
+  "modusUeberschrift": "Was soll die Analyse für dich tun?",
+  "@modusUeberschrift": {
+    "description": "Die Frage, die auf diesem Bildschirm beantwortet wird."
+  },
+  "modusEinleitung": "Beides sind vollwertige Analysen mit denselben Fotos. Der Unterschied liegt darin, welche Frage wir für dich beantworten.",
+  "@modusEinleitung": {
+    "description": "Zwei Saetze darunter: was beide Modi gemeinsam haben."
+  },
+  "modusVerfeinernTitel": "Meinen Look verfeinern",
+  "@modusVerfeinernTitel": {
+    "description": "Karte 1 – der bisherige Modus."
+  },
+  "modusVerfeinernText": "Du magst deinen Stil? Wir holen das Beste heraus – Schnitt, Pflege und Details, die zu dem passen, was du schon hast.",
+  "@modusVerfeinernText": {
+    "description": "Untertext von Karte 1."
+  },
+  "modusVerfeinernEtikett": "Verfeinert",
+  "@modusVerfeinernEtikett": {
+    "description": "Kurzes Etikett am Verlaufseintrag fuer Karte 1."
+  },
+  "modusEntdeckenTitel": "Neuen Look entdecken",
+  "@modusEntdeckenTitel": {
+    "description": "Karte 2 – die KI entwirft eine neue Richtung."
+  },
+  "modusEntdeckenText": "Lust auf Veränderung? Wir schlagen dir eine neue Richtung vor, die zu deinem Gesicht, deinem Haar und deinem Alltag passt.",
+  "@modusEntdeckenText": {
+    "description": "Untertext von Karte 2."
+  },
+  "modusEntdeckenEtikett": "Neuer Look",
+  "@modusEntdeckenEtikett": {
+    "description": "Kurzes Etikett am Verlaufseintrag fuer Karte 2."
+  },
+  "modusWeiter": "Weiter zu den Modulen",
+  "@modusWeiter": {
+    "description": "Knopf unten."
+  },
+  "modusHinweis": "Beide Modi kosten genau einen Analyse-Lauf, und du machst in beiden dieselben Aufnahmen. Du entscheidest bei jeder Analyse neu.",
+  "@modusHinweis": {
+    "description": "Nimmt die zwei haeufigsten Rueckfragen vorweg: Kosten und Fotos."
+  },
   "richtungTitel": "Deine Richtung",
   "richtungEyebrow": "Optional",
   "richtungUeberschrift": "In welche Richtung soll sich dein Look entwickeln?",
