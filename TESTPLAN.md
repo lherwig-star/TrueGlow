@@ -1158,6 +1158,152 @@ Während der Aufnahme kalt starten, danach herunterladen, mit
 die Helligkeit der Zeichen-Pixel Bild für Bild vergleichen. Erwartet: kein
 Bild dunkler als das davor. **Aufnahmen danach vom Gerät löschen.**
 
+## 25 · Die zwei Analyse-Modi
+
+Prüft das große Paket: die Moduswahl, den Report „Neuen Look entdecken" und
+die überarbeiteten Stilrichtungen. Hintergrund in DECISIONS 56 bis 58.
+
+**Kontingent:** Höchstens **zwei** echte Läufe — einer je Modus, einer davon
+auf Englisch. Alles andere geht im Demo-Modus:
+
+```bash
+flutter run --dart-define=TRUEGLOW_MOCK=true
+```
+
+### A · Ohne Kontingent (Demo-Modus)
+
+1. **Die Analyse fragt zuerst.** Auf der Startseite „Neue Analyse" antippen.
+   Erwartet: Zuerst kommt ein Bildschirm mit **zwei gleich großen Karten** —
+   „Meinen Look verfeinern" und „Neuen Look entdecken". Kein
+   „Überspringen" oben rechts. Unter den Karten steht, dass beide gleich viel
+   kosten und dieselben Fotos brauchen.
+
+2. **Eine von beiden, nicht beide.** Erst die eine Karte antippen, dann die
+   andere. Erwartet: Der Punkt rechts wandert mit; es ist immer genau eine
+   Karte hervorgehoben. Beim Öffnen ist „Meinen Look verfeinern" gesetzt.
+
+3. **Weiter geht es wie bisher.** „Weiter zu den Modulen" antippen. Erwartet:
+   die gewohnte Modul-Auswahl, danach „Deine Richtung", danach die Aufnahme.
+
+4. **Die neuen Stilrichtungen.** Auf „Deine Richtung" die Chips ansehen.
+   Erwartet: **acht** Chips, jeder mit einer zweiten, kleineren Zeile
+   darunter — etwa „Streetwear & lässig" mit „Baggy, Oversized, Sneaker".
+   Kein Chip ohne diese zweite Zeile.
+
+5. **Demo-Analyse im entdeckenden Modus.** Zurück auf die Startseite, „Neue
+   Analyse", **„Neuen Look entdecken"** wählen, Fotos machen, Analyse starten.
+   Erwartet im Report: **ganz oben** eine hervorgehobene Karte „Dein neuer
+   Look" mit zwei bis drei Sätzen — noch **über** dem Block „Deine Richtung".
+   In jedem Kapitel ist die **erste** Sektion „Dein neuer Look".
+
+6. **Demo-Analyse im verfeinernden Modus.** Dasselbe noch einmal, diesmal mit
+   „Meinen Look verfeinern". Erwartet: **keine** Karte „Dein neuer Look",
+   keine Sektion dieses Namens, der Report sieht aus wie vor dem Update.
+
+7. **Der Verlauf sagt, was war.** „Verlauf" öffnen. Erwartet: An **jedem**
+   Eintrag steht neben dem Datum ein kleines Etikett — „Neuer Look" oder
+   „Verfeinert". Auch an alten Einträgen von vor dem Update (dort steht
+   „Verfeinert").
+
+8. **Die Wahl gilt pro Analyse.** Nach Schritt 5 noch einmal „Neue Analyse"
+   antippen. Erwartet: Die Moduswahl steht wieder auf „Meinen Look
+   verfeinern", nicht auf dem, was du zuletzt gewählt hast.
+
+9. **Alte Auswahl geht nicht verloren.** Nur relevant, wenn du vor dem
+   Update schon Chips gewählt hattest. „Deine Richtung" öffnen. Erwartet: Es
+   sind Chips gesetzt — die Nachfolger deiner alten Auswahl, nicht ein leeres
+   Feld. „Gepflegter" ist jetzt „Clean & gepflegt", „Seriöser" und „Reifer"
+   sind „Smart & hochwertig", „Jünger wirken" ist „Streetwear & lässig".
+
+10. **Auf Englisch.** Einstellungen → Sprache auf Englisch, dann Schritte 1,
+    4 und 5 wiederholen. Erwartet: „Discover a new look", „Your new look",
+    „Streetwear & casual" mit „Baggy, oversized, sneakers". **Kein einziges
+    deutsches Wort** in Karten, Chips oder Untertexten.
+
+### B · Mit Kontingent — Lauf 1: „Neuen Look entdecken", auf Deutsch
+
+Ein echter Lauf. Sprache auf Deutsch, Modus „Neuen Look entdecken", Module
+mindestens Basis und „Stil & Kleiderschrank", bei „Deine Richtung" **zwei**
+Chips setzen, die sich reiben — etwa „Streetwear & lässig" und „Smart &
+hochwertig".
+
+1. **Der Vorspann steht oben.** Erwartet: Karte „Dein neuer Look" mit zwei
+   bis drei Sätzen, die eine Richtung beschreiben — nicht eine Aufzählung
+   der Kapitel und kein Rückblick auf den alten Look.
+
+2. **Jeder Vorschlag hat einen Namen.** Erwartet: Im Kapitel „Gesicht, Haare
+   & Bart" steht in der ersten Sektion ein **Frisurname**, den man einem
+   Friseur sagen kann (Textured Crop, Curtains, Fade, Slick Back …), kein
+   „etwas Kürzeres" und kein „moderner".
+
+3. **Die Begründung nennt ein Merkmal.** Erwartet: Zu jedem Vorschlag ein
+   Satz, der etwas Sichtbares benennt — Gesichtsform, Kieferlinie,
+   Stirnhöhe, Haarstruktur. *Kriterium:* Ein Satz, der genauso für jeden
+   anderen stimmen würde, ist ein Fund.
+
+4. **Der Satz für den Friseur.** Erwartet: Bei Frisur und Bart je ein Satz in
+   direkter Rede, den man im Salon vorlesen kann — mit Längen und Übergang.
+
+5. **Es steht drin, was bleibt.** Erwartet: Mindestens eine Stelle sagt, was
+   am jetzigen Look schon stark ist und bleiben soll.
+
+6. **Der Ton stimmt.** Erwartet: Kein Satz sagt, was du bisher falsch gemacht
+   hast. *Kriterium:* Jeder Satz, der mit einer Kritik am jetzigen Aussehen
+   beginnt, ist ein Fund.
+
+7. **Die Wahl ist sichtbar.** Erwartet: Man erkennt am Report, dass du
+   „Streetwear & lässig" **und** „Smart & hochwertig" gewählt hast — die
+   Kleidungsvorschläge nennen Teile aus beiden Welten, und irgendwo steht ein
+   Satz, wie beides zusammengeht. *Kriterium:* Ein Report, der zu jeder
+   beliebigen Auswahl gepasst hätte, ist ein Fund.
+
+8. **Der Plan gehört zum neuen Look.** „Plan erstellen" öffnen. Erwartet: Die
+   Tagesaufgaben pflegen den **neuen** Schnitt und den **neuen** Bartstil.
+   *Kriterium:* Eine Aufgabe für einen Bart, der abrasiert werden soll, ist
+   ein Fund.
+
+9. **Übergangszeit.** Erwartet: Wenn der Vorschlag Herauswachsen oder
+   Herausfärben braucht, steht das offen da — samt Aufgaben für diese Zeit.
+
+10. **Kosten notieren.** Wie in Abschnitt 12:
+
+    ```bash
+    firebase functions:log --only analysiere --project trueglow-b2c1c
+    ```
+
+    Die Zeile „Verbrauch gemini-…: Eingabe …, Ausgabe …, davon Denken …"
+    hierher übertragen. **Erwartung:** Die Eingabe liegt etwa ein Drittel
+    über einem verfeinernden Lauf — der Prompt ist in diesem Modus länger.
+
+### C · Mit Kontingent — Lauf 2: „Meinen Look verfeinern", auf Englisch
+
+Der zweite und letzte echte Lauf. Sprache vorher auf Englisch stellen.
+
+1. **Nichts vom neuen Modus.** Erwartet: **kein** „Your new look" — weder als
+   Karte noch als Sektion. Der Report sieht aus wie vor dem Update.
+
+2. **Alles auf Englisch.** Erwartet: Kein deutsches Wort im Report. Die
+   Abschnittsnamen heißen „Hair", „Beard", „Colours".
+
+3. **Die Richtung kommt an.** Vorher einen Chip setzen. Erwartet: Der Report
+   nimmt erkennbar darauf Bezug.
+
+4. **Kosten notieren**, wie oben.
+
+### D · Was ein Fund ist
+
+Zusätzlich zur Tabelle unten gilt für diesen Abschnitt:
+
+| Fund | Reaktion |
+|---|---|
+| Ein Vorschlag ohne Namen („etwas Kürzeres") | Blocker. Der Modus hat dann seinen Zweck verfehlt. |
+| Ein Vorschlag, den der Haartyp nicht hergibt | Blocker. |
+| Ein Satz, der das jetzige Aussehen abwertet | Blocker. |
+| Der Report sieht in beiden Modi gleich aus | Blocker. |
+| Ein Chip ohne Untertext | Vor dem Launch beheben. |
+| Alte Chip-Auswahl ist nach dem Update leer | Blocker — die Überführung greift dann nicht. |
+| Der Vorschlag ist gut, aber nicht dein Geschmack | **Kein Fund.** Dafür gibt es den zweiten Modus. |
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |
