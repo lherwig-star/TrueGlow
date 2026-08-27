@@ -2350,6 +2350,104 @@ statt sie anzusehen.
 
 **Preis:** Die Liste ist höher als vorher. Wer alle acht sehen will, scrollt.
 
+## 62 · Der helle Modus wird das Geschwister des dunklen
+
+Der helle Modus war noch „Mocha Light": flaches Beige, Kaffeebraun als
+Akzent. Neben dem überarbeiteten Dunkelmodus sah er nicht aus wie derselbe
+Look bei Tag, sondern wie eine andere App.
+
+**Jetzt teilen sich beide die Farbfamilie.** Das dunkle Petrol, das im
+Dunkelmodus die Fläche trägt, ist im hellen die Tinte und die Buttonfarbe;
+das Gold steht an genau denselben Stellen. Kein Braun mehr, nirgends — ein
+Test zählt die Rollen durch und besteht darauf, dass in keiner mehr Rot über
+Blau liegt (Warnung und Gold ausgenommen, die müssen warm sein).
+
+| Rolle | hell | Herkunft |
+|---|---|---|
+| hintergrund → hintergrundTief | `#F7F9F8` → `#E0E9E7` | Vorgabe |
+| flaeche (Karten) | `#FCFEFD` | Vorgabe |
+| flaecheHoch | `#EDF3F2` | abgeleitet |
+| textPrimaer | `#10262E` | Vorgabe |
+| akzent (Buttons) | `#143C4A` | Vorgabe |
+| aufAkzent | `#F5F8F7` | Vorgabe |
+| akzentZwei / erfolg | `#2E6E85` | abgeleitet |
+| textSekundaer | `#43606A` | abgeleitet |
+| rand | `#B7CBC8` | abgeleitet |
+| warnung | `#A8442A` | abgeleitet |
+| kartenrand | Petrol bei 10 % | Vorgabe |
+
+**Karten sind heller als der Hintergrund, nicht dunkler.** Im Dunkelmodus
+hebt sich eine Fläche nach oben ab; auf hellem Grund muss sie das auch, sonst
+wirkt sie wie ein Loch. Die Vertiefung liegt entsprechend eine Spur unter der
+Karte — gleiche Logik, gespiegelte Werte.
+
+### Das Gold braucht zwei Werte
+
+Der Vorschlag nannte Text-Gold `#B27F26` und Füll-Gold `#C58F31`. **Als Text
+trägt `#B27F26` nicht:** Es erreicht 3,3:1 auf dem Hintergrund und 3,5:1 auf
+der Karte, gefordert sind 4,5:1 — und das Gold trägt in dieser App
+tatsächlich kleine Schrift (die 12-Punkt-Zeile „Geschafft!" auf der
+Challenge-Karte, 13 Punkt in der Streak-Karte). Auf dunklem Grund fiel das
+nie auf, weil dort derselbe Ton beides kann.
+
+Statt die Schwelle zu senken, bekommt das Gold **zwei Rollen mit je eigener
+Schwelle**:
+
+- `erreicht` — Text und Icons, `#865F1B`, ≥ 4,5:1 auf allen vier Flächen.
+- `erreichtFlaeche` — gefüllte Haken, Fortschrittssegmente, Schrittpunkte,
+  `#B27F26`, also **genau der vorgeschlagene Ton**, ≥ 3:1 auf Karte und
+  Vertiefung. Das ist die Schwelle für grafische Elemente, und das sind sie.
+
+Damit ist das Gold, das man auf dem Vergleichsbild sieht — Ringe, Balken,
+Abzeichen, Haken — exakt der vorgeschlagene Wert. Nur die kleine Schrift
+darin ist eine Spur tiefer.
+
+Dazu kommt `aufErreicht`: was auf der goldenen Fläche liegt. Hell ist das die
+Tinte (`#10262E`, 4,2:1 auf dem Gold); `aufAkzent` wäre dort fast weiß und
+nicht zu sehen.
+
+### Was beide Modi berührt hat
+
+Das Paket verlangt, gemeinsame Stellen zu benennen statt still zu ändern.
+Es sind drei, und alle drei sind im Dunkelmodus **folgenlos**:
+
+1. **Zwei neue Farbrollen** (`erreichtFlaeche`, `aufErreicht`). Im
+   Dunkelmodus tragen sie exakt die Werte, die dort vorher schon galten
+   (`#E8BE6E` und `#173C3B`) — gerendert wird Pixel für Pixel dasselbe.
+2. **Die Aufrufstellen der Füllungen** wechseln auf die neue Rolle: die
+   Haken in Auswahl-Chip und Modul-Karte, die Fortschrittssegmente in
+   Aufnahme- und Check-in-Strecke, die Punkte im Onboarding, sowie
+   Checkbox, Radio und Segment-Button im Theme. Dunkel lösen sie sich auf
+   dieselbe Farbe auf wie zuvor.
+3. **Eine Zusicherung im Kamera-Test** stand als „Buttontext *ist* der
+   Hintergrundton". Hell weicht er jetzt um zwei Stufen ab (`#F5F8F7` statt
+   `#F7F9F8`) — das ist die Vorgabe aus dem Vergleichsbild und mit bloßem
+   Auge nicht zu unterscheiden. Der Test sagt jetzt „praktisch derselbe
+   Ton" (Toleranz 4 von 255); eine Fremdfarbe fällt weiterhin durch, und im
+   Dunkelmodus sind die Werte weiter exakt gleich.
+
+**Ein Test friert den Dunkelmodus ein.** Alle vierzehn Werte stehen dort als
+Zahl abgeschrieben, nicht als Verweis auf `AppColors.dunkel` — sonst prüfte
+er sich an sich selbst und ginge jede Änderung stillschweigend mit. Dazu die
+abgeleitete Startfläche `#122C31`, an der der native Splash hängt
+(DECISIONS 53).
+
+**Nur Farben.** Layout, Rundungen, Abstände und Micro-Animationen sind
+unverändert — in beiden Modi.
+
+**Umgesetzt über die Rollen, nicht über Einzelstellen.** Alle Bildschirme
+holen ihre Farben über `context.farben`; der bestehende Test gegen fest
+verdrahtete Farbwerte greift unverändert. Deshalb reicht das Ändern einer
+einzigen Konstante, und deshalb sind Album, Rückblick, Fehlerseiten und
+Dialoge automatisch mit dabei.
+
+**Was nicht übernommen wurde:** Die Legende des Vergleichsbildes nennt für
+den Dunkelmodus `#E8B556`. Die App behält `#E8BE6E` — der Dunkelmodus wird
+nicht angefasst, und das gilt auch für einen Wert, der nur in der Legende
+eines Vorschlags steht.
+
+**Preis:** Zwei Farbrollen mehr, die jedes künftige Schema mitliefern muss.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

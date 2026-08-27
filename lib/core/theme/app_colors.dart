@@ -22,6 +22,8 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.warnung,
     required this.erfolg,
     required this.erreicht,
+    required this.erreichtFlaeche,
+    required this.aufErreicht,
     required this.kartenrand,
   });
 
@@ -82,6 +84,25 @@ class AppColors extends ThemeExtension<AppColors> {
   /// deshalb im Sand-Ton von [akzent].
   final Color erreicht;
 
+  /// Dasselbe Gold als **Flaeche** – gefuellte Haken, Fortschrittssegmente,
+  /// Schrittpunkte.
+  ///
+  /// Warum zwei Werte (DECISIONS 62): Auf dunklem Grund darf derselbe Ton
+  /// beides – im Dunkelmodus sind [erreicht] und [erreichtFlaeche] deshalb
+  /// identisch, dort aendert sich durch diese Rolle nichts. Auf hellem Grund
+  /// geht es nicht: Ein Gold, das als kleiner Text die noetigen 4,5:1
+  /// erreicht, ist als Flaeche schon fast braun; ein Gold, das als Flaeche
+  /// leuchtet, traegt keinen 12-Punkt-Text mehr. Also zwei Werte, jeder mit
+  /// seiner eigenen Schwelle: [erreicht] 4,5:1 als Text, [erreichtFlaeche]
+  /// 3:1 als Flaeche.
+  final Color erreichtFlaeche;
+
+  /// Was auf [erreichtFlaeche] liegt – der Haken im gefuellten Kaestchen.
+  ///
+  /// Im Dunkelmodus derselbe Wert wie [aufAkzent]; hell muss er ein anderer
+  /// sein, denn dort ist [aufAkzent] fast weiss und auf Gold nicht zu sehen.
+  final Color aufErreicht;
+
   /// Die hauchduenne helle Kontur einer Karte.
   ///
   /// Seit DECISIONS 50 setzt sich eine Karte darueber ab und nicht mehr ueber
@@ -125,30 +146,58 @@ class AppColors extends ThemeExtension<AppColors> {
     // Gedaempftes Gold. Hell genug fuer 4,7:1 auf der Karte – der kleinste
     // Text in dieser Farbe ist die 12-Punkt-Zeile "Geschafft!".
     erreicht: Color(0xFFE8BE6E),
+    // Auf dunklem Grund traegt derselbe Ton Text und Flaeche. Die beiden
+    // Rollen sind hier bewusst wertgleich – so aendert die Trennung aus
+    // DECISIONS 62 am Dunkelmodus kein einziges Pixel.
+    erreichtFlaeche: Color(0xFFE8BE6E),
+    aufErreicht: Color(0xFF173C3B),
     // Off-White bei 10 % – Licht, kein Rahmen.
     kartenrand: Color(0x1AF2EEE6),
   );
 
-  /// Hell – "Mocha Light".
+  /// Hell – "Petrol Light", das helle Geschwister des Dunkelmodus.
+  ///
+  /// Bis DECISIONS 62 war der helle Modus eine eigene Welt: flaches Beige,
+  /// Kaffeebraun als Akzent. Er sah nicht aus wie derselbe Look bei Tag,
+  /// sondern wie eine andere App. Jetzt teilt er sich die Farbfamilie mit
+  /// dem Dunkelmodus – **dieselben Rollen an denselben Stellen, nur andere
+  /// Werte**: Das dunkle Petrol, das dort die Flaeche traegt, ist hier die
+  /// Tinte und die Buttonfarbe; das Gold steht an genau denselben Stellen.
+  ///
+  /// Kein Braun mehr, nirgends.
   static const hell = AppColors(
-    hintergrund: Color(0xFFF7F2E9),
-    hintergrundTief: Color(0xFFEDE3D2),
-    flaeche: Color(0xFFEFE7D8),
-    flaecheHoch: Color(0xFFE5DAC7),
-    rand: Color(0xFFDDD2BE),
-    akzent: Color(0xFF6B4F3A),
-    aufAkzent: Color(0xFFF7F2E9),
-    akzentZwei: Color(0xFFA8794F),
-    textPrimaer: Color(0xFF2B241C),
-    textSekundaer: Color(0xFF6E6353),
-    warnung: Color(0xFFB85C3A),
-    erfolg: Color(0xFFA8794F),
-    // Dasselbe Gold, dunkel genug fuer den hellen Grund (5,4:1) und ohne
-    // jeden Blauanteil – sonst waere es vom Mocha-Akzent kaum zu
-    // unterscheiden, und genau das darf es nicht sein.
-    erreicht: Color(0xFF7A5200),
-    // Auf hellem Grund traegt weniger: 7 % der Textfarbe.
-    kartenrand: Color(0x122B241C),
+    // Fast Weiss mit einem kuehlen Petrol-Hauch, nach unten ins helle
+    // Grau-Gruen – derselbe sanfte Verlauf wie dunkel, nur anders herum
+    // gedacht.
+    hintergrund: Color(0xFFF7F9F8),
+    hintergrundTief: Color(0xFFE0E9E7),
+    // Karten sind heller als der Hintergrund, nicht dunkler: Auf hellem
+    // Grund hebt sich eine Flaeche nach oben ab, nicht nach unten.
+    flaeche: Color(0xFFFCFEFD),
+    // Und die Vertiefung wieder eine Spur tiefer als die Karte.
+    flaecheHoch: Color(0xFFEDF3F2),
+    rand: Color(0xFFB7CBC8),
+    // Dunkles Petrol aus der Familie des Dunkelmodus – hier Buttonfarbe.
+    akzent: Color(0xFF143C4A),
+    aufAkzent: Color(0xFFF5F8F7),
+    akzentZwei: Color(0xFF2E6E85),
+    // Die Tinte: noch eine Spur tiefer als der Button.
+    textPrimaer: Color(0xFF10262E),
+    textSekundaer: Color(0xFF43606A),
+    // Gedecktes Terrakotta, dunkel genug fuer hellen Grund.
+    warnung: Color(0xFFA8442A),
+    erfolg: Color(0xFF2E6E85),
+    // Das Gold als Text: 4,5:1 auf jeder Flaeche, bis hinunter zum unteren
+    // Ende des Seitenverlaufs. Der Vorschlag nannte hier #B27F26 – der
+    // kommt als Text nur auf 3,3:1 und traegt die 12-Punkt-Zeile
+    // „Geschafft!" nicht (DECISIONS 62).
+    erreicht: Color(0xFF865F1B),
+    // Als Flaeche dagegen genau der vorgeschlagene Ton.
+    erreichtFlaeche: Color(0xFFB27F26),
+    aufErreicht: Color(0xFF10262E),
+    // Das Gegenstueck zur 10-%-Kontur im Dunkelmodus: dieselbe Deckkraft,
+    // nur in Petrol statt in Off-White.
+    kartenrand: Color(0x1A143C4A),
   );
 
   /// Die flache Fläche, mit der der Start beginnt.
@@ -178,6 +227,8 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? warnung,
     Color? erfolg,
     Color? erreicht,
+    Color? erreichtFlaeche,
+    Color? aufErreicht,
     Color? kartenrand,
   }) {
     return AppColors(
@@ -194,6 +245,8 @@ class AppColors extends ThemeExtension<AppColors> {
       warnung: warnung ?? this.warnung,
       erfolg: erfolg ?? this.erfolg,
       erreicht: erreicht ?? this.erreicht,
+      erreichtFlaeche: erreichtFlaeche ?? this.erreichtFlaeche,
+      aufErreicht: aufErreicht ?? this.aufErreicht,
       kartenrand: kartenrand ?? this.kartenrand,
     );
   }
@@ -216,6 +269,9 @@ class AppColors extends ThemeExtension<AppColors> {
       warnung: Color.lerp(warnung, other.warnung, t)!,
       erfolg: Color.lerp(erfolg, other.erfolg, t)!,
       erreicht: Color.lerp(erreicht, other.erreicht, t)!,
+      erreichtFlaeche:
+          Color.lerp(erreichtFlaeche, other.erreichtFlaeche, t)!,
+      aufErreicht: Color.lerp(aufErreicht, other.aufErreicht, t)!,
       kartenrand: Color.lerp(kartenrand, other.kartenrand, t)!,
     );
   }

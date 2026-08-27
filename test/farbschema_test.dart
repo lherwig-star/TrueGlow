@@ -107,11 +107,48 @@ void main() {
       }
     });
 
-    test('Light Mode bleibt "Mocha Light"', () {
-      expect(AppColors.hell.hintergrund, const Color(0xFFF7F2E9));
-      expect(AppColors.hell.flaeche, const Color(0xFFEFE7D8));
-      expect(AppColors.hell.akzent, const Color(0xFF6B4F3A));
-      expect(AppColors.hell.textPrimaer, const Color(0xFF2B241C));
+    test('Light Mode ist "Petrol Light" – dieselbe Familie, helle Werte', () {
+      // Vorgabe aus dem Vergleichsbild (DECISIONS 62).
+      expect(AppColors.hell.hintergrund, const Color(0xFFF7F9F8));
+      expect(AppColors.hell.hintergrundTief, const Color(0xFFE0E9E7));
+      expect(AppColors.hell.flaeche, const Color(0xFFFCFEFD));
+      expect(AppColors.hell.akzent, const Color(0xFF143C4A));
+      expect(AppColors.hell.aufAkzent, const Color(0xFFF5F8F7));
+      expect(AppColors.hell.textPrimaer, const Color(0xFF10262E));
+      expect(AppColors.hell.erreichtFlaeche, const Color(0xFFB27F26));
+    });
+
+    test('kein Braun ist uebrig geblieben', () {
+      // Der alte helle Modus war Kaffeebraun. „Kein Beige mehr, kein
+      // Mocha" heisst: In keiner Rolle steht mehr ein Ton, in dem Rot
+      // deutlich ueber Blau liegt – ausser bei Warnung und Gold, die
+      // warm sein muessen.
+      const warmErlaubt = {'warnung', 'erreicht', 'erreichtFlaeche'};
+      final rollen = <String, Color>{
+        'hintergrund': AppColors.hell.hintergrund,
+        'hintergrundTief': AppColors.hell.hintergrundTief,
+        'flaeche': AppColors.hell.flaeche,
+        'flaecheHoch': AppColors.hell.flaecheHoch,
+        'rand': AppColors.hell.rand,
+        'akzent': AppColors.hell.akzent,
+        'aufAkzent': AppColors.hell.aufAkzent,
+        'akzentZwei': AppColors.hell.akzentZwei,
+        'textPrimaer': AppColors.hell.textPrimaer,
+        'textSekundaer': AppColors.hell.textSekundaer,
+        'erfolg': AppColors.hell.erfolg,
+        'aufErreicht': AppColors.hell.aufErreicht,
+      };
+
+      for (final rolle in rollen.entries) {
+        if (warmErlaubt.contains(rolle.key)) continue;
+        final rot = (rolle.value.r * 255).round();
+        final blau = (rolle.value.b * 255).round();
+        expect(
+          rot,
+          lessThanOrEqualTo(blau),
+          reason: '${rolle.key} ist waermer als kalt – Braun-Rest?',
+        );
+      }
     });
   });
 
@@ -136,6 +173,51 @@ void main() {
             reason: 'erreicht auf ${flaeche.key} (${schema.key})',
           );
         }
+      }
+    });
+
+    test('als Flaeche gilt die Flaechen-Schwelle: 3:1', () {
+      // Ein gefuellter Haken oder ein Fortschrittssegment traegt keinen
+      // Text – dort reicht die Schwelle fuer grafische Elemente. Deshalb
+      // darf [erreichtFlaeche] leuchtender sein als [erreicht]
+      // (DECISIONS 62).
+      for (final schema in {'dunkel': AppColors.dunkel, 'hell': AppColors.hell}.entries) {
+        final farben = schema.value;
+        for (final flaeche in {
+          'Karte': farben.flaeche,
+          'Vertiefung': farben.flaecheHoch,
+        }.entries) {
+          expect(
+            _kontrast(flaeche.value, farben.erreichtFlaeche),
+            greaterThanOrEqualTo(3.0),
+            reason: 'erreichtFlaeche auf ${flaeche.key} (${schema.key})',
+          );
+        }
+      }
+    });
+
+    test('und was darauf liegt, ist darauf zu sehen', () {
+      for (final schema in {'dunkel': AppColors.dunkel, 'hell': AppColors.hell}.entries) {
+        expect(
+          _kontrast(schema.value.erreichtFlaeche, schema.value.aufErreicht),
+          greaterThanOrEqualTo(3.0),
+          reason: 'aufErreicht auf erreichtFlaeche (${schema.key})',
+        );
+      }
+    });
+
+    test('im Dunkelmodus sind Text- und Flaechen-Gold derselbe Ton', () {
+      // Auf dunklem Grund braucht es die Trennung nicht – und genau
+      // deshalb aendert sie am Dunkelmodus nichts.
+      expect(AppColors.dunkel.erreichtFlaeche, AppColors.dunkel.erreicht);
+      expect(AppColors.dunkel.aufErreicht, AppColors.dunkel.aufAkzent);
+    });
+
+    test('im hellen Modus sind sie verschieden – und beide Gold', () {
+      expect(AppColors.hell.erreichtFlaeche, isNot(AppColors.hell.erreicht));
+      // Beide warm: Rot deutlich ueber Blau.
+      for (final gold in [AppColors.hell.erreicht, AppColors.hell.erreichtFlaeche]) {
+        expect((gold.r * 255).round(), greaterThan((gold.b * 255).round() + 60));
       }
     });
 

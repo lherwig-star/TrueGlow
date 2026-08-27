@@ -174,7 +174,9 @@ class _Fortschritt extends StatelessWidget {
               height: 4,
               margin: EdgeInsets.only(right: i == gesamt - 1 ? 0 : 6),
               decoration: BoxDecoration(
-                color: i <= seite ? farben.erreicht : farben.kartenrand,
+                color: i <= seite
+                    ? farben.erreichtFlaeche
+                    : farben.kartenrand,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),

@@ -190,7 +190,7 @@ class _Haken extends StatelessWidget {
       width: 26,
       height: 26,
       decoration: BoxDecoration(
-        color: aktiv ? farben.erreicht : Colors.transparent,
+        color: aktiv ? farben.erreichtFlaeche : Colors.transparent,
         border: Border.all(
           color: aktiv ? farben.erreicht : farben.textSekundaer,
           width: 1.6,
@@ -198,7 +198,7 @@ class _Haken extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: aktiv
-          ? Icon(Icons.check, size: 18, color: farben.aufAkzent)
+          ? Icon(Icons.check, size: 18, color: farben.aufErreicht)
           : null,
     );
   }

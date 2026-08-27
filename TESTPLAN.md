@@ -1399,6 +1399,76 @@ Deutsch.
 | Ein Chip ist breiter als die anderen | Vor dem Launch beheben. |
 | Text im Chip abgeschnitten (besonders Englisch) | Vor dem Launch beheben. |
 
+## 27 · Der helle Modus
+
+Prüft die Überarbeitung aus DECISIONS 62. **Kein Analyse-Lauf nötig** — alles
+im Demo-Modus:
+
+```bash
+flutter run --dart-define=TRUEGLOW_MOCK=true
+```
+
+**Vorbereitung:** Einstellungen → Design → **Hell**. (Die Gegenprobe am Ende
+stellt wieder zurück.)
+
+1. **Kein Braun mehr.** Startseite ansehen. Erwartet: Der Hintergrund ist ein
+   sehr helles Grau-Grün, das nach unten eine Spur dunkler wird. Karten sind
+   fast weiß. Der Button „Plan ansehen" ist **dunkles Petrol**, nicht braun.
+   *Kriterium:* Jede beige oder braune Fläche ist ein Fund.
+
+2. **Das Gold steht, wo es dunkel auch steht.** Erwartet: goldene
+   Streak-Zahl, goldene Flamme, goldener Fortschrittsbalken der Challenge,
+   goldene Joker-Schilde. Nichts anderes ist gold.
+
+3. **Karten heben sich ab.** Erwartet: Jede Karte ist heller als der
+   Hintergrund und hat eine hauchdünne dunkle Kontur. Kein Schlagschatten.
+
+4. **Haken sind gefüllt und lesbar.** „Neue Analyse" → Modulauswahl. Ein
+   Modul antippen. Erwartet: Das Kästchen füllt sich gold, der Haken darin
+   ist **dunkel** und deutlich zu sehen — nicht weiß auf Gold.
+
+5. **Die Schrittpunkte.** Weiter bis zur Aufnahme-Strecke. Erwartet: Die
+   erledigten Schritte sind goldene Punkte, die offenen grau.
+
+6. **Kleine goldene Schrift ist lesbar.** Plan öffnen, eine Challenge
+   abhaken oder die Streak-Karte ansehen. Erwartet: Die kleine goldene
+   Zeile („Geschafft!", „Joker") ist ohne Anstrengung zu lesen.
+   *Kriterium:* Wenn du blinzeln musst, ist es ein Fund.
+
+7. **Durch alle Bildschirme.** Der Reihe nach: Plan, Analyse-Report,
+   Check-in, Album, Wochen-Rückblick, Einstellungen, Verlauf. Erwartet:
+   überall dieselbe helle Welt. *Kriterium:* Ein einzelner Bildschirm, der
+   noch beige oder braun ist, ist ein Fund — dann hängt dort eine Farbe
+   nicht an den Rollen.
+
+8. **Fehlerseiten.** Flugmodus an, Analyse starten. Erwartet: Die
+   Fehlerkarte ist ebenfalls hell und lesbar, die Warnfarbe ein gedecktes
+   Terrakotta.
+
+9. **Auf Englisch.** Sprache umstellen, Schritte 1 und 7 kurz wiederholen.
+   Erwartet: dieselben Farben.
+
+10. **Die Gegenprobe: Der Dunkelmodus ist unverändert.** Einstellungen →
+    Design → **Dunkel**. Erwartet: **exakt** das Bild von vorher. Halte,
+    wenn du magst, einen alten Screenshot daneben. *Kriterium:* Jede
+    Abweichung ist ein Blocker — der Dunkelmodus sollte nicht angefasst
+    werden.
+
+11. **Und der Wechsel selbst.** Zwei-, dreimal zwischen Hell und Dunkel
+    umschalten. Erwartet: Die Oberfläche wechselt vollständig, nichts bleibt
+    in der alten Welt stehen.
+
+### Was ein Fund ist
+
+| Fund | Reaktion |
+|---|---|
+| Irgendwo noch Beige oder Braun | Blocker — die Farbe hängt nicht an den Rollen. |
+| Der Dunkelmodus sieht anders aus als vorher | Blocker. |
+| Weißer Haken auf goldenem Kästchen | Blocker — dann greift `aufErreicht` nicht. |
+| Kleine goldene Schrift schwer lesbar | Blocker. |
+| Ein Bildschirm bleibt hell, wenn du auf Dunkel stellst | Blocker. |
+| Der Farbton gefällt dir nicht ganz | Kein Blocker — Nuancen lassen sich nachziehen. |
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

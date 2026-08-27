@@ -249,7 +249,9 @@ class _Fortschritt extends StatelessWidget {
               margin: EdgeInsets.only(right: i == gesamt - 1 ? 0 : 4),
               decoration: BoxDecoration(
                 // Zurueckgelegte Schritte sind Erreichtes (DECISIONS 51).
-                color: i <= aktuell ? farben.erreicht : farben.kartenrand,
+                color: i <= aktuell
+                    ? farben.erreichtFlaeche
+                    : farben.kartenrand,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),

@@ -159,8 +159,24 @@ void main() {
     });
 
     test('Text auf Primaer-Buttons stammt aus derselben Palette', () {
-      expect(AppColors.dunkel.aufAkzent, AppColors.dunkel.hintergrund);
-      expect(AppColors.hell.aufAkzent, AppColors.hell.hintergrund);
+      // Was diese Regel schuetzt: Auf einem Button steht kein fremdes Weiss
+      // und kein fremdes Schwarz, sondern der Hintergrundton des Schemas.
+      // Im Dunkelmodus ist das derselbe Wert; hell weicht er seit
+      // DECISIONS 62 um zwei Stufen ab (#F5F8F7 statt #F7F9F8) – das ist
+      // die Vorgabe aus dem Vergleichsbild und mit blossem Auge nicht zu
+      // unterscheiden. Deshalb steht hier jetzt „praktisch derselbe Ton"
+      // statt „exakt derselbe" – eine Fremdfarbe faellt weiterhin durch.
+      for (final farben in [AppColors.dunkel, AppColors.hell]) {
+        final a = farben.aufAkzent;
+        final b = farben.hintergrund;
+        for (final kanal in [
+          [(a.r * 255).round(), (b.r * 255).round()],
+          [(a.g * 255).round(), (b.g * 255).round()],
+          [(a.b * 255).round(), (b.b * 255).round()],
+        ]) {
+          expect((kanal.first - kanal.last).abs(), lessThanOrEqualTo(4));
+        }
+      }
     });
   });
 }

@@ -169,17 +169,17 @@ class AppTheme {
       checkboxTheme: CheckboxThemeData(
         fillColor: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.selected)
-              ? farben.erreicht
+              ? farben.erreichtFlaeche
               : Colors.transparent,
         ),
-        checkColor: WidgetStatePropertyAll(farben.aufAkzent),
+        checkColor: WidgetStatePropertyAll(farben.aufErreicht),
         side: BorderSide(color: farben.textSekundaer, width: 1.6),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       ),
       radioTheme: RadioThemeData(
         fillColor: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.selected)
-              ? farben.erreicht
+              ? farben.erreichtFlaeche
               : farben.textSekundaer,
         ),
       ),
@@ -193,17 +193,19 @@ class AppTheme {
         style: ButtonStyle(
           backgroundColor: WidgetStateProperty.resolveWith(
             (states) => states.contains(WidgetState.selected)
-                ? farben.erreicht
+                ? farben.erreichtFlaeche
                 : Colors.transparent,
           ),
+          // Auf der gefuellten Gold-Flaeche, nicht auf dem Akzent – im
+          // Dunkelmodus derselbe Wert, hell ein anderer (DECISIONS 62).
           foregroundColor: WidgetStateProperty.resolveWith(
             (states) => states.contains(WidgetState.selected)
-                ? farben.aufAkzent
+                ? farben.aufErreicht
                 : farben.textPrimaer,
           ),
           iconColor: WidgetStateProperty.resolveWith(
             (states) => states.contains(WidgetState.selected)
-                ? farben.aufAkzent
+                ? farben.aufErreicht
                 : farben.textSekundaer,
           ),
           side: WidgetStatePropertyAll(BorderSide(color: farben.kartenrand)),
