@@ -65,6 +65,7 @@ class Sektion {
     required this.einschaetzung,
     required this.empfehlungen,
     required this.produkte,
+    this.bildSuchbegriff,
   });
 
   final String titel;
@@ -72,11 +73,25 @@ class Sektion {
   final List<String> empfehlungen;
   final List<Produkt> produkte;
 
+  /// Womit die App echte Beispielfotos zu diesem Vorschlag sucht.
+  ///
+  /// Kommt vom Modell, ist immer englisch und wird dem Nutzer nie gezeigt –
+  /// er sieht nur die Bilder (DECISIONS 69). `null` heisst „hier hilft kein
+  /// Foto": eine Pflegeroutine, eine Haltungsuebung. Dann fehlt die
+  /// Bilderreihe, und das ist der vorgesehene Fall, kein Fehler.
+  ///
+  /// Alte Reports haben das Feld nicht. Sie zeigen deshalb keine Bilder und
+  /// brauchen keine Wanderung.
+  final String? bildSuchbegriff;
+
+  bool get zeigtBilder => (bildSuchbegriff ?? '').isNotEmpty;
+
   Map<String, dynamic> toJson() => {
         'titel': titel,
         'einschaetzung': einschaetzung,
         'empfehlungen': empfehlungen,
         'produkte': produkte.map((p) => p.toJson()).toList(),
+        if (bildSuchbegriff != null) 'bildSuchbegriff': bildSuchbegriff,
       };
 
   factory Sektion.fromJson(Map<String, dynamic> json) => Sektion(
@@ -84,6 +99,10 @@ class Sektion {
         einschaetzung: _text(json['einschaetzung']),
         empfehlungen: _textListe(json['empfehlungen']),
         produkte: _liste(json['produkte']).map(Produkt.fromJson).toList(),
+        bildSuchbegriff: switch (json['bildSuchbegriff']) {
+          final String s when s.trim().isNotEmpty => s.trim(),
+          _ => null,
+        },
       );
 }
 

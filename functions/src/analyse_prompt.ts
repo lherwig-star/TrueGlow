@@ -131,6 +131,7 @@ ${zielRegeln(daten.richtung, sprache)}${entdecken ? `
 ${planRegeln()}` : ''}
 ${QUALITAET}
 ${gesamtbildRegeln(daten.modus, sprache)}
+${bildRegeln(ausrichtung)}
 ${entdecken ? `${entdeckenRegeln()}
 ` : ''}${ankerRegeln(sprache)}
 Antworte AUSSCHLIESSLICH mit einem JSON-Objekt nach diesem Schema. Kein
@@ -146,6 +147,7 @@ Fließtext davor oder danach, keine Markdown-Codefences:
       "sektionen": [
         {
           "titel": "kurzer Bereichsname",
+          "bildSuchbegriff": "englischer Suchbegriff für Beispielfotos, sonst null",
           "einschaetzung": "2-3 Sätze, was auffällt und warum das relevant ist",
           "empfehlungen": ["konkreter Schritt", "konkreter Schritt"],
           "produkte": [
@@ -185,6 +187,8 @@ Vorgaben zum Inhalt:
 - "titel" ist Anzeigetext und steht deshalb in der Zielsprache, genau wie
   jedes andere Textfeld. ${AUSGABESPRACHE_KURZ[sprache]}
 - "sektionen": ${entdecken ? 3 : 2} bis ${entdecken ? 5 : 4} pro Kapitel.
+- "bildSuchbegriff": ein kurzer englischer Suchbegriff oder null – dafür gilt
+  die Regel weiter oben.
 - "empfehlungen": 2 bis 4 pro Sektion.
 - "produkte": 0 bis 3 pro Sektion, "affiliateUrl" immer null.
 - "habits": 4 bis 7 pro Kapitel, jeder unter 80 Zeichen. Jeder Eintrag ist eine
@@ -273,6 +277,64 @@ const QUALITAET = `Qualität der Empfehlungen – daran wird dieser Report gemes
   wie ein Ratgebertext, der für alle gilt.
 - Keine Empfehlung und keine Tagesaufgabe wiederholt eine andere, auch nicht
   in anderer Formulierung oder in einem anderen Kapitel.`;
+
+/**
+ * Das Wort, mit dem ein Suchbegriff die Person benennt.
+ *
+ * Ohne dieses Wort liefert eine Fotobibliothek zu "french crop haircut"
+ * ueberwiegend Maenner – auch fuer eine Nutzerin. Bei "neutral" bleibt es
+ * weg: Dort hat die Person ausdruecklich keine Angabe gemacht, und ein
+ * geratenes Wort machte die Bilderreihe zu einer Behauptung.
+ */
+const BILDWORT: Record<Ausrichtung, string> = {
+  maennlich: 'men',
+  weiblich: 'women',
+  neutral: '',
+};
+
+/**
+ * Der Suchbegriff, mit dem die App echte Beispielfotos holt (DECISIONS 69).
+ *
+ * Warum ueberhaupt: "Textured Crop mit mittelhohem Fade" ist fuer jemanden,
+ * der das noch nie gesehen hat, kein Bild im Kopf, sondern eine Vokabel.
+ * Drei echte Fotos daneben sind es.
+ *
+ * Warum das Modell den Begriff schreibt und nicht die App: Der Titel der
+ * Sektion ("Frisur") taugt nicht als Suchbegriff, der Empfehlungstext ist zu
+ * lang, und aus beidem einen zu bauen hiesse, den Vorschlag auf dem Client
+ * noch einmal zu verstehen. Das Modell weiss bereits, was es vorschlaegt.
+ *
+ * Die Beispiele sind wie beim Gesamtbild als Muster fuer die FORM markiert
+ * (DECISIONS 36): Ohne diese Markierung schriebe das Modell sie woertlich ab
+ * und jeder Report zeigte Fotos desselben Haarschnitts.
+ */
+function bildRegeln(ausrichtung: Ausrichtung): string {
+  const wort = BILDWORT[ausrichtung];
+  const person = wort === '' ? '' : ` ${wort}`;
+
+  return `Beispielbilder – die Regel für "bildSuchbegriff" in jeder Sektion:
+- Die App sucht damit echte Fotos in einer Fotobibliothek und stellt sie unter
+  den Vorschlag. Der Nutzer sieht den Begriff nie, nur die Bilder.
+- IMMER auf ENGLISCH, egal in welcher Sprache der Report geschrieben ist.
+- Wie in ein Suchfeld getippt: zwei bis sechs Wörter, kein ganzer Satz, keine
+  Bildbeschreibung, keine Anführungszeichen.
+- Generisch. Keine Marke, kein Laden, keine Kollektion, kein Personenname und
+  kein Prominenter – auch nicht als Vergleich.${wort === '' ? '' : `
+- Häng das Wort "${wort}" an, damit die Bilder zur Person passen.`}
+- Bei Frisur und Bart: der Name des Schnitts bzw. der Bartform.
+- Bei Stil und Kleidung: das ganze Ensemble, nicht ein einzelnes Teil. Was
+  zusammen getragen wird, macht den Look aus – nenn Schnitt, Art und, wenn es
+  den Look ausmacht, die Farbfamilie.
+- null, wenn ein Foto nichts zeigen könnte: eine Pflegeroutine, eine
+  Putztechnik, eine Haltungsübung, eine Ernährungsregel. Lieber keine
+  Bilderreihe als eine beliebige.
+- So sieht es aus (Muster für die FORM, nicht für den Inhalt – übernimm
+  keinen dieser Begriffe, wenn du etwas anderes vorschlägst):
+  Frisur:  "french crop haircut${person}"
+  Bart:    "short stubble beard${person}"
+  Stil:    "relaxed streetwear outfit${person} earth tones"
+  Routine: null`;
+}
 
 /**
  * Der Wenn-dann-Anker an jeder Tagesaufgabe.

@@ -52,6 +52,59 @@ const FLOSKELN: RegExp[] = [
   /^(apply |wear )?sunscreen$/,
 ];
 
+/**
+ * Woraus ein brauchbarer Bild-Suchbegriff bestehen darf.
+ *
+ * Buchstaben ohne Akzente, Ziffern, Leerzeichen und die drei Zeichen, die in
+ * englischen Begriffen wirklich vorkommen. Ein Umlaut oder ein Sonderzeichen
+ * heisst, dass das Modell die Regel "immer Englisch" ueberlesen hat.
+ *
+ * **Umgekehrt gilt das nicht.** "kurzer Vollbart" kommt hier durch – es
+ * steht kein Umlaut drin. Das ist Absicht und keine Luecke, die noch zu
+ * schliessen waere: Eine Spracherkennung auf zwei bis sechs Woertern raet
+ * mehr, als sie erkennt, und ein faelschlich verworfener Begriff kostet eine
+ * Bilderreihe, die es haette geben koennen. Was durchkommt, faengt die
+ * naechste Stufe ab: Ein deutscher Begriff findet in einer internationalen
+ * Fotobibliothek nichts, und ohne Treffer faellt die Reihe weg (DECISIONS 69).
+ */
+const SUCHBEGRIFF = /^[a-z0-9][a-z0-9 '&-]*$/i;
+
+/** Mehr als das ist keine Sucheingabe mehr, sondern eine Beschreibung. */
+const SUCHBEGRIFF_MAX_WOERTER = 6;
+const SUCHBEGRIFF_MAX_ZEICHEN = 60;
+
+/** Anfuehrungszeichen in allen Formen, die ein Modell schreibt. */
+const ANFUEHRUNG = /["\u00ab\u00bb\u201c\u201d\u201e\u2018\u2019]/g;
+
+/**
+ * Putzt einen Bild-Suchbegriff oder wirft ihn weg.
+ *
+ * Liefert `undefined`, wenn nichts Brauchbares uebrig bleibt. Wegwerfen ist
+ * hier die richtige Reaktion und nicht bloss das Bequemste: Ein unsauberer
+ * Begriff fuehrt zu Fotos, die nicht zum Vorschlag passen, und ein falsches
+ * Bild ist schlechter als gar keins (DECISIONS 69).
+ */
+export function putzeSuchbegriff(roh: unknown): string | undefined {
+  if (typeof roh !== 'string') return undefined;
+
+  const rein = roh
+    .replace(ANFUEHRUNG, ' ')
+    .replace(/[.,;:!?]+$/, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (rein.length === 0 || rein.length > SUCHBEGRIFF_MAX_ZEICHEN) {
+    return undefined;
+  }
+  if (rein.split(' ').length > SUCHBEGRIFF_MAX_WOERTER) return undefined;
+  if (!SUCHBEGRIFF.test(rein)) return undefined;
+
+  // Kleingeschrieben, weil der Begriff der Schluessel des Server-Caches ist:
+  // "French Crop Haircut Men" und "french crop haircut men" sollen nicht
+  // zwei Eintraege und zwei Anfragen an die Fotobibliothek werden.
+  return rein.toLowerCase();
+}
+
 /** Ob eine Aufgabe aus nichts als einem Gemeinplatz besteht. */
 export function istFloskel(habit: string): boolean {
   const rein = habit
@@ -79,6 +132,8 @@ export interface Nachbereitet {
   falscheSprache?: Sprache;
   /** Namen, die in einem Kapitel stehen und schon im Gesamtbild vorkommen. */
   doppelteNamen: string[];
+  /** Bild-Suchbegriffe, die verworfen wurden. Nur gezaehlt. */
+  verworfeneSuchbegriffe: string[];
 }
 
 export function nachbereiten(
@@ -143,7 +198,33 @@ export function nachbereiten(
     kapitel.push(k);
   }
 
-  const ergebnis: Record<string, unknown> = { ...roh, kapitel };
+  // Die Suchbegriffe zum Schluss und in einem eigenen Durchgang: So werden
+  // sie in jedem Zweig gleich behandelt – auch in dem, der oben schon
+  // Sektionen entfernt hat.
+  const verworfeneSuchbegriffe: string[] = [];
+  const gesaeubert = kapitel.map((eintrag) => {
+    const k = objekt(eintrag);
+    const sektionen = liste(k.sektionen).map((s) => {
+      const sektion = { ...objekt(s) };
+      const gegeben = sektion.bildSuchbegriff;
+      if (gegeben === undefined) return sektion;
+
+      const begriff = putzeSuchbegriff(gegeben);
+      if (begriff === undefined) {
+        // `null` ist die vorgesehene Antwort fuer "hier hilft kein Foto" und
+        // deshalb kein Fund. Alles andere ist einer.
+        if (gegeben !== null) verworfeneSuchbegriffe.push(kurz(gegeben));
+        delete sektion.bildSuchbegriff;
+        return sektion;
+      }
+
+      sektion.bildSuchbegriff = begriff;
+      return sektion;
+    });
+    return { ...k, sektionen };
+  });
+
+  const ergebnis: Record<string, unknown> = { ...roh, kapitel: gesaeubert };
 
   if (ohneBart && ergebnis.plan !== undefined) {
     ergebnis.plan = planOhneBart(ergebnis.plan);
@@ -159,6 +240,7 @@ export function nachbereiten(
     entfernteSektionen,
     entfernteHabits,
     doppelteNamen,
+    verworfeneSuchbegriffe,
     floskeln: alleHabits(kapitel).filter(istFloskel),
     zielkapitelFehlt:
       mitZielkapitel &&
@@ -203,6 +285,15 @@ export function melde(befund: Nachbereitet, vorgabe: { sprache: Sprache }): void
     console.warn(
       'Nachbereitung: Diese Namen stehen im Gesamtbild UND im Kapitel – das ' +
         `Gesamtbild soll sie nicht nennen (${befund.doppelteNamen.join(', ')})`,
+    );
+  }
+  if (befund.verworfeneSuchbegriffe.length > 0) {
+    // Auch das nur gemeldet: Die betroffene Sektion zeigt dann einfach keine
+    // Bilderreihe, der Report bleibt vollstaendig. Die Zahl sagt uns, ob die
+    // Prompt-Regel greift (DECISIONS 69).
+    console.warn(
+      'Nachbereitung: unbrauchbare Bild-Suchbegriffe verworfen ' +
+        `(${befund.verworfeneSuchbegriffe.join(' | ')})`,
     );
   }
   if (befund.floskeln.length > 0) {
@@ -303,6 +394,12 @@ function alleHabits(kapitel: unknown[]): string[] {
   return kapitel.flatMap((k) =>
     liste(objekt(k).habits).filter((h): h is string => typeof h === 'string'),
   );
+}
+
+/** Fuer die Logzeile: lang genug zum Erkennen, kurz genug fuer eine Zeile. */
+function kurz(wert: unknown): string {
+  const s = typeof wert === 'string' ? wert : JSON.stringify(wert);
+  return s.length > 60 ? `${s.slice(0, 57)}...` : s;
 }
 
 function liste(roh: unknown): unknown[] {

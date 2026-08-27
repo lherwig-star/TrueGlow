@@ -138,6 +138,7 @@ describe('Flache Tagesaufgaben werden erkannt', () => {
         floskeln: ['Wasser trinken'],
         zielkapitelFehlt: false,
         doppelteNamen: [],
+        verworfeneSuchbegriffe: [],
       },
       { sprache: 'de' },
     );
