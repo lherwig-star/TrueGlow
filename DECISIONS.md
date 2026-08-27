@@ -2062,6 +2062,78 @@ Geld kostet.
 **Preis:** Der Prompt wird im entdeckenden Modus rund ein Drittel länger.
 Das kostet Eingabe-Tokens bei jedem Lauf dieses Modus.
 
+## 58 · Stilrichtungen, die 16- bis 25-Jährige auch so nennen
+
+Die alte Auswahl bei „Deine Richtung" hieß: Maskuliner, Weicher, Markanter,
+Gepflegter, Seriöser, Jünger wirken, Reifer wirken, Natürlicher, Auffälliger,
+Sportlicher. Zwei Probleme daran.
+
+**Sie beschrieb Wirkungen, keine Stile.** „Seriöser wirken" ist ein Ziel für
+ein Vorstellungsgespräch, keine Richtung, die man morgens vor dem Schrank
+wählt. Und für die Zielgruppe war die Liste zu brav: Jugendliche Stile kamen
+überhaupt nicht vor. Wer Baggy-Hosen und Oversize trägt, fand sich in zehn
+Optionen kein einziges Mal wieder.
+
+**Neu sind acht Stile, jeder mit drei bis sechs Wörtern Untertext:**
+Clean & gepflegt · Markant & maskulin · Natürlich & entspannt · Weich &
+elegant · Streetwear & lässig · Smart & hochwertig · Sportlich & funktional ·
+Kreativ & auffällig.
+
+Das Paket schlug sieben vor. Der achte ist „Weich & elegant" und steht da,
+weil sonst die alte Option „Weicher / Sanfter" keinen Nachfolger gehabt
+hätte — und die Liste damit nur noch eine Richtung für alle gehabt hätte, die
+es nicht kantig mögen.
+
+**Der Untertext ist kein Schmuck.** „Smart & hochwertig" ist ohne
+Modewissen eine leere Hülle; mit „Polo, Strick, klare Silhouetten" weiß man,
+worauf man tippt. Dafür wird aus dem runden Chip eine kleine Karte: Zwei
+Zeilen in einer Pille zu stapeln sieht aus wie ein Fehler, und die Rundung
+frisst die Ecken der zweiten Zeile. `AuswahlChip` schaltet die Form deshalb
+um, sobald ein Untertext da ist — der Stil-Fragebogen bleibt rund.
+
+**Alte Werte werden überführt, nicht weggeworfen.** Jeder der zehn alten
+Namen zeigt auf seinen nächsten Nachbarn, und das an **zwei** Stellen:
+`Richtungsziel.ausName` liest die gespeicherte Auswahl auf dem Gerät um, und
+`normalisiereRichtungsziele` fängt auf dem Server den anderen Fall ab — eine
+App-Fassung, die noch nicht aktualisiert wurde und weiter die alten Namen
+schickt. Ohne die zweite Stelle wäre deren Richtung stillschweigend aus dem
+Prompt gefallen: Der Nutzer hätte etwas gewählt, das nirgends ankommt.
+
+Zwei Zuordnungen sind ehrliche Näherungen und keine Übersetzungen: `juenger`
+wird zu „Streetwear & lässig" — die jugendliche Richtung, die diese Liste
+überhaupt erst eingeführt hat — und `reifer` zu „Smart & hochwertig". Beides
+ist das Nächstgelegene, nicht dasselbe. Wer das anders sieht, ändert es mit
+zwei Tipps. Und weil „Seriöser" und „Reifer" beide auf demselben Nachfolger
+landen, werden aus zwei alten Haken ein neuer statt zwei gleicher.
+
+**Die Wahl wird jetzt übersetzt statt nur genannt.** Vorher stand im Prompt
+eine Zeile „Gewählte Richtung: Markanter" und die Bitte, die Empfehlungen
+daran auszurichten. Für ein Modell ist das eine Stimmung, keine Vorgabe — am
+fertigen Report war nicht zu erkennen, ob jemand „Streetwear" oder „Smart"
+angetippt hatte. `RICHTUNGSVORGABE` sagt es deshalb aus: Zu jeder Richtung
+steht im Prompt, was sie für **Frisur, Bart und Kleidung** konkret heißt, in
+beiden Sprachen. Ein Test besteht darauf, dass jede der drei in jedem Eintrag
+vorkommt.
+
+Dazu zwei Regeln: Die Richtung ist eine Vorgabe und keine Stimmung — ein
+Report, dem man die Wahl nicht ansieht, hat sie ignoriert. Und bei mehreren
+Richtungen wird verbunden, nicht gemittelt; wo zwei sich widersprechen, muss
+das Modell sich sichtbar entscheiden und sagen, warum.
+
+**Ohne Auswahl bleibt der Prompt Wort für Wort derselbe.** Sonst kostete die
+neue Zeile Tokens für nichts.
+
+**Was hier bewusst nicht angefasst wurde:** die Stilziele im Fragebogen des
+Moduls „Stil & Kleiderschrank" (`STILZIEL`: klassisch, minimalistisch,
+sportlich, smart casual, kreativ, rockig). Sie überschneiden sich jetzt
+teilweise mit dieser Liste. Das Paket hat sie nicht genannt, und ein zweiter
+Umbau am selben Tag wäre schwer zu prüfen gewesen — der Punkt gehört auf die
+Liste für später.
+
+**Preis:** Der Prompt wächst pro gewählter Richtung um rund drei Zeilen. Wer
+alle acht antippt, verlängert ihn spürbar — das ist der Preis dafür, dass die
+Wahl im Report ankommt.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

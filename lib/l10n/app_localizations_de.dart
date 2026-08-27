@@ -292,6 +292,54 @@ class LDe extends L {
   String get neuerLookTitel => 'Dein neuer Look';
 
   @override
+  String get richtungszielClean => 'Clean & gepflegt';
+
+  @override
+  String get richtungszielCleanUnter => 'Aufgeräumt, zeitlos, nichts zu viel';
+
+  @override
+  String get richtungszielMarkant => 'Markant & maskulin';
+
+  @override
+  String get richtungszielMarkantUnter => 'Kantig, klare Konturen';
+
+  @override
+  String get richtungszielNatuerlich => 'Natürlich & entspannt';
+
+  @override
+  String get richtungszielNatuerlichUnter => 'Unaufgeregt, wenig Aufwand';
+
+  @override
+  String get richtungszielWeich => 'Weich & elegant';
+
+  @override
+  String get richtungszielWeichUnter => 'Fließend, ruhig, feine Linien';
+
+  @override
+  String get richtungszielStreetwear => 'Streetwear & lässig';
+
+  @override
+  String get richtungszielStreetwearUnter => 'Baggy, Oversized, Sneaker';
+
+  @override
+  String get richtungszielSmart => 'Smart & hochwertig';
+
+  @override
+  String get richtungszielSmartUnter => 'Polo, Strick, klare Silhouetten';
+
+  @override
+  String get richtungszielSportlich => 'Sportlich & funktional';
+
+  @override
+  String get richtungszielSportlichUnter => 'Athletisch, praktisch, robust';
+
+  @override
+  String get richtungszielKreativ => 'Kreativ & auffällig';
+
+  @override
+  String get richtungszielKreativUnter => 'Statement-Teile, mutige Farben';
+
+  @override
   String get richtungTitel => 'Deine Richtung';
 
   @override
@@ -929,36 +977,6 @@ class LDe extends L {
 
   @override
   String get pflegeaufwandHoch => 'Ich investiere gern Zeit';
-
-  @override
-  String get richtungszielMaskuliner => 'Maskuliner';
-
-  @override
-  String get richtungszielWeicher => 'Weicher / Sanfter';
-
-  @override
-  String get richtungszielMarkanter => 'Markanter';
-
-  @override
-  String get richtungszielGepflegter => 'Gepflegter';
-
-  @override
-  String get richtungszielSerioeser => 'Seriöser / Professioneller';
-
-  @override
-  String get richtungszielJuenger => 'Jünger wirken';
-
-  @override
-  String get richtungszielReifer => 'Reifer wirken';
-
-  @override
-  String get richtungszielNatuerlicher => 'Natürlicher';
-
-  @override
-  String get richtungszielAuffaelliger => 'Auffälliger / Mutiger';
-
-  @override
-  String get richtungszielSportlicher => 'Sportlicher';
 
   @override
   String get fotoproblemKeinGesichtTitel => 'Kein Gesicht erkannt';

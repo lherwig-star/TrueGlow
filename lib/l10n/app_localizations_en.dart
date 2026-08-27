@@ -290,6 +290,54 @@ class LEn extends L {
   String get neuerLookTitel => 'Your new look';
 
   @override
+  String get richtungszielClean => 'Clean & groomed';
+
+  @override
+  String get richtungszielCleanUnter => 'Tidy, timeless, nothing excessive';
+
+  @override
+  String get richtungszielMarkant => 'Striking & masculine';
+
+  @override
+  String get richtungszielMarkantUnter => 'Angular, sharp outlines';
+
+  @override
+  String get richtungszielNatuerlich => 'Natural & relaxed';
+
+  @override
+  String get richtungszielNatuerlichUnter => 'Understated, low effort';
+
+  @override
+  String get richtungszielWeich => 'Soft & elegant';
+
+  @override
+  String get richtungszielWeichUnter => 'Flowing, calm, fine lines';
+
+  @override
+  String get richtungszielStreetwear => 'Streetwear & casual';
+
+  @override
+  String get richtungszielStreetwearUnter => 'Baggy, oversized, sneakers';
+
+  @override
+  String get richtungszielSmart => 'Smart & refined';
+
+  @override
+  String get richtungszielSmartUnter => 'Polo, knitwear, clean silhouettes';
+
+  @override
+  String get richtungszielSportlich => 'Sporty & functional';
+
+  @override
+  String get richtungszielSportlichUnter => 'Athletic, practical, hard-wearing';
+
+  @override
+  String get richtungszielKreativ => 'Creative & bold';
+
+  @override
+  String get richtungszielKreativUnter => 'Statement pieces, brave colours';
+
+  @override
   String get richtungTitel => 'Your direction';
 
   @override
@@ -927,36 +975,6 @@ class LEn extends L {
 
   @override
   String get pflegeaufwandHoch => 'I\'m happy to put time in';
-
-  @override
-  String get richtungszielMaskuliner => 'More masculine';
-
-  @override
-  String get richtungszielWeicher => 'Softer / gentler';
-
-  @override
-  String get richtungszielMarkanter => 'More striking';
-
-  @override
-  String get richtungszielGepflegter => 'Better groomed';
-
-  @override
-  String get richtungszielSerioeser => 'More serious / professional';
-
-  @override
-  String get richtungszielJuenger => 'Look younger';
-
-  @override
-  String get richtungszielReifer => 'Look more mature';
-
-  @override
-  String get richtungszielNatuerlicher => 'More natural';
-
-  @override
-  String get richtungszielAuffaelliger => 'Bolder';
-
-  @override
-  String get richtungszielSportlicher => 'More athletic';
 
   @override
   String get fotoproblemKeinGesichtTitel => 'No face detected';

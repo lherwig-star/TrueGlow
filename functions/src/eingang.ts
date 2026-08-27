@@ -1,5 +1,11 @@
 import { fehler } from './fehler';
-import { AUFNAHMEN, istModul, moduleFuer, type Modul } from './labels';
+import {
+  AUFNAHMEN,
+  istModul,
+  moduleFuer,
+  normalisiereRichtungsziele,
+  type Modul,
+} from './labels';
 import { leseSprache } from './sprache';
 import { leseAusrichtung, type Ausrichtung } from './ausrichtung';
 import { leseModus } from './modus';
@@ -159,7 +165,11 @@ function leseStil(roh: unknown): Stilangaben {
 export function leseRichtung(roh: unknown): Richtungsangaben {
   const richtung = objektOderLeer(roh);
   return {
-    ziele: namensliste(richtung.ziele),
+    // Alte Namen werden hier ueberfuehrt, nicht weggeworfen: Eine App, die
+    // noch nicht aktualisiert wurde, schickt weiterhin `markanter` – und
+    // deren Nutzer soll seine Richtung trotzdem im Report wiederfinden
+    // (DECISIONS 58).
+    ziele: normalisiereRichtungsziele(namensliste(richtung.ziele)),
     freitext: gekuerzt(richtung.freitext, MAX_FREITEXT),
   };
 }

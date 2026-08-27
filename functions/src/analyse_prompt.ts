@@ -11,6 +11,7 @@ import {
   PFLEGEAUFWAND,
   PRODUKTKATEGORIEN,
   sektion,
+  RICHTUNGSVORGABE,
   RICHTUNGSZIEL,
   STILZIEL,
   ZEIT,
@@ -345,6 +346,16 @@ function ziele(richtung: Richtungsangaben, sprache: Sprache): string {
   const zeilen: string[] = [];
   if (gewaehlt.length > 0) {
     zeilen.push(`- Gewählte Richtung: ${gewaehlt.join(', ')}`);
+    // Und was das heisst. Ohne diese Zeilen war die Wahl nur Stimmung: Am
+    // fertigen Report liess sich nicht erkennen, ob jemand „Streetwear" oder
+    // „Smart" angetippt hatte (DECISIONS 58).
+    zeilen.push('- Was diese Richtung konkret bedeutet:');
+    for (const name of richtung.ziele) {
+      const titel = label(RICHTUNGSZIEL, name, sprache);
+      const vorgabe = label(RICHTUNGSVORGABE, name, sprache);
+      if (titel === undefined || vorgabe === undefined) continue;
+      zeilen.push(`  • ${titel}: ${vorgabe}`);
+    }
   }
   if (freitext.length > 0) {
     zeilen.push(
@@ -364,8 +375,14 @@ function zielRegeln(richtung: Richtungsangaben, sprache: Sprache): string {
   if (!hatZiele) return '';
 
   return `- Richte ALLE Empfehlungen in sämtlichen Kapiteln an den persönlichen Zielen
-  aus und nimm dort, wo es passt, ausdrücklich Bezug darauf ("Da du markanter
-  wirken möchtest, ...").
+  aus und nimm dort, wo es passt, ausdrücklich Bezug darauf.
+- Die gewählte Richtung ist eine Vorgabe, keine Stimmung. Setz die oben
+  genannten Punkte zu Frisur, Bart und Kleidung wirklich um: Ein Report, dem
+  man die Wahl nicht ansieht, hat sie ignoriert. Sind mehrere Richtungen
+  gewählt, verbinde sie zu einem stimmigen Bild und erkläre in einem Satz,
+  wie du das gemacht hast.
+- Widersprechen sich zwei gewählte Richtungen an einem Punkt, entscheide dich
+  sichtbar für eine und sag, warum – nicht die Mitte aus beiden.
 - Wenn ein Ziel dem widerspricht, was auf den Fotos zu sehen ist, wäge beides
   offen ab und erkläre den Zielkonflikt – ignoriere das Ziel nicht und rede es
   auch nicht klein.

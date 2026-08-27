@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:trueglow/core/l10n/texte.dart';
 import 'package:trueglow/core/router/app_router.dart';
 import 'package:trueglow/core/storage/key_value_store.dart';
 import 'package:trueglow/core/l10n/sprache.dart';
@@ -47,7 +48,7 @@ void main() {
   group('Richtung (Modell)', () {
     test('ueberlebt den Weg durch JSON', () {
       const original = Richtung(
-        ziele: {Richtungsziel.markanter, Richtungsziel.serioeser},
+        ziele: {Richtungsziel.markantMaskulin, Richtungsziel.smartHochwertig},
         freitext: 'Ich will im Bewerbungsgespräch souverän wirken.',
       );
 
@@ -55,8 +56,8 @@ void main() {
 
       expect(zurueck, original);
       expect(zurueck.sortierteZiele, [
-        Richtungsziel.markanter,
-        Richtungsziel.serioeser,
+        Richtungsziel.markantMaskulin,
+        Richtungsziel.smartHochwertig,
       ]);
     });
 
@@ -66,7 +67,7 @@ void main() {
         'freitext': 'x',
       });
 
-      expect(gelesen.ziele, {Richtungsziel.markanter});
+      expect(gelesen.ziele, {Richtungsziel.markantMaskulin});
     });
 
     test('zu langer Freitext wird auf das Limit geschnitten', () {
@@ -82,7 +83,7 @@ void main() {
       expect(Richtung.leer.istLeer, isTrue);
       expect(const Richtung(freitext: '   ').istLeer, isTrue);
       expect(const Richtung(freitext: 'was').istLeer, isFalse);
-      expect(const Richtung(ziele: {Richtungsziel.reifer}).istLeer, isFalse);
+      expect(const Richtung(ziele: {Richtungsziel.smartHochwertig}).istLeer, isFalse);
     });
 
     test('die Kurzfassung kuerzt lange Texte fuer die Report-Karte', () {
@@ -102,12 +103,12 @@ void main() {
       final store = MemoryStore();
       final ctrl = DirectionController(store);
 
-      ctrl.umschalten(Richtungsziel.maskuliner);
-      ctrl.umschalten(Richtungsziel.sportlicher);
-      ctrl.umschalten(Richtungsziel.maskuliner); // wieder abwaehlen
+      ctrl.umschalten(Richtungsziel.markantMaskulin);
+      ctrl.umschalten(Richtungsziel.sportlichFunktional);
+      ctrl.umschalten(Richtungsziel.markantMaskulin); // wieder abwaehlen
       ctrl.setzeFreitext('Mehr Struktur im Alltag.');
 
-      expect(ctrl.state.ziele, {Richtungsziel.sportlicher});
+      expect(ctrl.state.ziele, {Richtungsziel.sportlichFunktional});
 
       // Frischer Controller auf demselben Speicher: gleicher Stand.
       expect(DirectionController(store).state, ctrl.state);
@@ -149,25 +150,25 @@ void main() {
     test('Chips und Freitext landen in der Nutzlast', () {
       final richtung = anfrageMit(
         const Richtung(
-          ziele: {Richtungsziel.markanter, Richtungsziel.gepflegter},
+          ziele: {Richtungsziel.markantMaskulin, Richtungsziel.cleanGepflegt},
           freitext: 'Weniger Bart, mehr Kante.',
         ),
       )['richtung'] as Map;
 
       // Stabile Enum-Namen, keine fertigen Prompt-Texte: Die Function setzt
       // die Beschriftungen selbst ein und ignoriert alles Unbekannte.
-      expect(richtung['ziele'], ['markanter', 'gepflegter']);
+      expect(richtung['ziele'], ['cleanGepflegt', 'markantMaskulin']);
       expect(richtung['freitext'], 'Weniger Bart, mehr Kante.');
     });
 
     test('Ziele gehen in Deklarationsreihenfolge raus', () {
       final richtung = anfrageMit(
         const Richtung(
-          ziele: {Richtungsziel.sportlicher, Richtungsziel.maskuliner},
+          ziele: {Richtungsziel.sportlichFunktional, Richtungsziel.markantMaskulin},
         ),
       )['richtung'] as Map;
 
-      expect(richtung['ziele'], ['maskuliner', 'sportlicher']);
+      expect(richtung['ziele'], ['markantMaskulin', 'sportlichFunktional']);
     });
 
     test('die Nutzlast enthaelt weder Pfade noch den Zustimmungsstatus', () {
@@ -182,7 +183,7 @@ void main() {
 
   group('Richtung am Ergebnis', () {
     const richtung = Richtung(
-      ziele: {Richtungsziel.natuerlicher},
+      ziele: {Richtungsziel.natuerlichEntspannt},
       freitext: 'Nichts Auffälliges.',
     );
 
@@ -234,6 +235,102 @@ void main() {
     });
   });
 
+  group('Alte Werte werden ueberfuehrt (DECISIONS 58)', () {
+    test('jeder Name der alten Liste findet seinen Nachfolger', () {
+      // Die alte Liste beschrieb Wirkungen („Seriöser wirken"), die neue
+      // beschreibt Stile. Wer etwas gewaehlt hatte, soll es wiederfinden –
+      // nicht ein leeres Feld.
+      const karte = {
+        'maskuliner': Richtungsziel.markantMaskulin,
+        'markanter': Richtungsziel.markantMaskulin,
+        'weicher': Richtungsziel.weichElegant,
+        'gepflegter': Richtungsziel.cleanGepflegt,
+        'serioeser': Richtungsziel.smartHochwertig,
+        'reifer': Richtungsziel.smartHochwertig,
+        'juenger': Richtungsziel.streetwearLaessig,
+        'natuerlicher': Richtungsziel.natuerlichEntspannt,
+        'auffaelliger': Richtungsziel.kreativAuffaellig,
+        'sportlicher': Richtungsziel.sportlichFunktional,
+      };
+
+      for (final eintrag in karte.entries) {
+        expect(
+          Richtungsziel.ausName(eintrag.key),
+          eintrag.value,
+          reason: eintrag.key,
+        );
+      }
+    });
+
+    test('eine gespeicherte alte Auswahl kommt neu zurueck', () {
+      final gelesen = Richtung.fromJson({
+        'ziele': ['markanter', 'gepflegter'],
+        'freitext': 'Weniger Bart, mehr Kante.',
+      });
+
+      expect(gelesen.ziele, {
+        Richtungsziel.markantMaskulin,
+        Richtungsziel.cleanGepflegt,
+      });
+      expect(gelesen.freitext, 'Weniger Bart, mehr Kante.');
+    });
+
+    test('zwei alte Namen mit demselben Nachfolger werden einer', () {
+      // „Seriöser" und „Reifer" landen beide auf „Smart & hochwertig".
+      final gelesen = Richtung.fromJson({
+        'ziele': ['serioeser', 'reifer'],
+      });
+
+      expect(gelesen.ziele, {Richtungsziel.smartHochwertig});
+    });
+
+    test('erfundene Namen fallen weiterhin weg', () {
+      final gelesen = Richtung.fromJson({
+        'ziele': ['gibtsNicht', 'cleanGepflegt'],
+      });
+
+      expect(gelesen.ziele, {Richtungsziel.cleanGepflegt});
+    });
+  });
+
+  group('Die Liste ist ohne Modewissen lesbar', () {
+    test('sechs bis acht Optionen, jede mit Untertext', () {
+      expect(Richtungsziel.values.length, greaterThanOrEqualTo(6));
+      expect(Richtungsziel.values.length, lessThanOrEqualTo(8));
+
+      final englisch = lookupL(const Locale('en'));
+      for (final ziel in Richtungsziel.values) {
+        for (final l in [texte, englisch]) {
+          expect(ziel.label(l), isNotEmpty, reason: ziel.name);
+          final unter = ziel.untertext(l);
+          expect(unter, isNotEmpty, reason: ziel.name);
+          // Drei bis sechs Woerter – laenger passt nicht auf einen Chip.
+          final woerter = unter.split(RegExp(r'[ ,]+')).where(
+                (w) => w.isNotEmpty,
+              );
+          expect(woerter.length, inInclusiveRange(2, 6), reason: ziel.name);
+        }
+      }
+    });
+
+    testWidgets('der Bildschirm zeigt Label und Untertext', (tester) async {
+      handyGroesse(tester, hoehe: 2600);
+      final container = await _appMitDashboard(tester);
+
+      container.read(routerProvider).push(Routes.richtung);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(Richtungsziel.streetwearLaessig.label(texte)),
+        findsOneWidget,
+      );
+      expect(
+        find.text(Richtungsziel.streetwearLaessig.untertext(texte)),
+        findsOneWidget,
+      );
+    });
+  });
+
   group('Flow und Report', () {
     testWidgets('die Modul-Auswahl fuehrt in den Richtungs-Schritt',
         (tester) async {
@@ -257,7 +354,7 @@ void main() {
       container.read(routerProvider).push(Routes.richtung);
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text(Richtungsziel.markanter.label(texte)));
+      await tester.tap(find.text(Richtungsziel.markantMaskulin.label(texte)));
       await tester.pumpAndSettle();
 
       await tester.enterText(
@@ -267,7 +364,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final richtung = container.read(directionControllerProvider);
-      expect(richtung.ziele, {Richtungsziel.markanter});
+      expect(richtung.ziele, {Richtungsziel.markantMaskulin});
       expect(richtung.freitext, 'Ich will seriöser wirken.');
       // Der Zaehler zeigt den Stand an.
       expect(
@@ -298,25 +395,25 @@ void main() {
           langfristig: [],
           taeglicheHabits: [],
         ),
-        richtung: const Richtung(ziele: {Richtungsziel.gepflegter}),
+        richtung: const Richtung(ziele: {Richtungsziel.cleanGepflegt}),
       );
       await container.read(analysenProvider.notifier).speichern(gespeichert);
 
       // Gleicher Stand wie im Report: kein Angebot zum Neuberechnen.
       container
           .read(directionControllerProvider.notifier)
-          .umschalten(Richtungsziel.gepflegter);
+          .umschalten(Richtungsziel.cleanGepflegt);
       container.read(routerProvider).push('${Routes.result}/report1');
       await tester.pumpAndSettle();
 
       expect(find.text(texte.richtungTitel), findsOneWidget);
-      expect(find.text(Richtungsziel.gepflegter.label(texte)), findsOneWidget);
+      expect(find.text(Richtungsziel.cleanGepflegt.label(texte)), findsOneWidget);
       expect(find.text(texte.richtungAktualisieren), findsNothing);
 
       // Richtung aendern -> der Report bietet die Neuberechnung an.
       container
           .read(directionControllerProvider.notifier)
-          .umschalten(Richtungsziel.sportlicher);
+          .umschalten(Richtungsziel.sportlichFunktional);
       await tester.pumpAndSettle();
 
       expect(find.text(texte.richtungAktualisieren), findsOneWidget);

@@ -6,42 +6,94 @@ import '../../../core/l10n/texte.dart';
 // Auswahl plus ein freier Text. Beides ist optional und fliesst als eigener
 // Abschnitt in den Prompt ein.
 
-/// Die angebotenen Richtungen. Bewusst wertfrei formuliert – es geht um
-/// Richtung und Stil, nicht um "besser" oder "schlechter".
+/// Die angebotenen Stilrichtungen.
+///
+/// Bewusst wertfrei formuliert – es geht um Richtung und Stil, nicht um
+/// „besser" oder „schlechter".
+///
+/// **Überarbeitet in DECISIONS 58.** Die alte Liste („maskuliner", „weicher",
+/// „markanter", „seriöser" …) beschrieb *Wirkungen* und traf damit die
+/// Zielgruppe nicht: Für jemanden zwischen 16 und 25 ist „Seriöser wirken"
+/// keine Stilrichtung, und jugendliche Stile kamen überhaupt nicht vor.
+/// Die neue Liste beschreibt *Stile*, die man auch außerhalb dieser App so
+/// nennt – und jeder trägt einen kurzen Untertext, damit sie auch ohne
+/// Modewissen verständlich sind.
+///
+/// Alte gespeicherte Werte gehen dabei nicht verloren: [ausName] führt sie
+/// auf ihren nächsten Nachfolger über.
 enum Richtungsziel {
-  maskuliner,
-  weicher,
-  markanter,
-  gepflegter,
-  serioeser,
-  juenger,
-  reifer,
-  natuerlicher,
-  auffaelliger,
-  sportlicher;
+  cleanGepflegt,
+  markantMaskulin,
+  natuerlichEntspannt,
+  weichElegant,
+  streetwearLaessig,
+  smartHochwertig,
+  sportlichFunktional,
+  kreativAuffaellig;
 
-  /// Liest einen gespeicherten Namen; unbekannte Namen fallen weg.
+  /// Was aus den Werten der alten Liste geworden ist.
+  ///
+  /// Der Grundsatz: der **nächste vorhandene Nachbar**, nie ein Wegfall. Wer
+  /// „Gepflegter" gewählt hatte, findet seine Auswahl als „Clean & gepflegt"
+  /// wieder und muss nicht rätseln, warum sie leer ist.
+  ///
+  /// Zwei Fälle sind ehrliche Näherungen und keine Übersetzungen:
+  /// `juenger` wird zu „Streetwear & lässig" – die jugendliche Richtung, die
+  /// die neue Liste überhaupt erst eingeführt hat –, und `reifer` zu
+  /// „Smart & hochwertig". Beides ist das Nächstgelegene, nicht dasselbe.
+  /// Wer das anders sieht, ändert es mit zwei Tipps im Bildschirm „Deine
+  /// Richtung".
+  static const _alteNamen = {
+    'maskuliner': Richtungsziel.markantMaskulin,
+    'markanter': Richtungsziel.markantMaskulin,
+    'weicher': Richtungsziel.weichElegant,
+    'gepflegter': Richtungsziel.cleanGepflegt,
+    'serioeser': Richtungsziel.smartHochwertig,
+    'reifer': Richtungsziel.smartHochwertig,
+    'juenger': Richtungsziel.streetwearLaessig,
+    'natuerlicher': Richtungsziel.natuerlichEntspannt,
+    'auffaelliger': Richtungsziel.kreativAuffaellig,
+    'sportlicher': Richtungsziel.sportlichFunktional,
+  };
+
+  /// Liest einen gespeicherten Namen – auch einen aus der alten Liste.
+  /// Unbekannte Namen fallen weg.
   static Richtungsziel? ausName(Object? name) {
     for (final ziel in values) {
       if (ziel.name == name) return ziel;
     }
-    return null;
+    return _alteNamen[name];
   }
 }
 
 // Anzeigetexte als Erweiterung – Begruendung in `onboarding_profile.dart`.
 extension RichtungszielText on Richtungsziel {
   String label(L texte) => switch (this) {
-        Richtungsziel.maskuliner => texte.richtungszielMaskuliner,
-        Richtungsziel.weicher => texte.richtungszielWeicher,
-        Richtungsziel.markanter => texte.richtungszielMarkanter,
-        Richtungsziel.gepflegter => texte.richtungszielGepflegter,
-        Richtungsziel.serioeser => texte.richtungszielSerioeser,
-        Richtungsziel.juenger => texte.richtungszielJuenger,
-        Richtungsziel.reifer => texte.richtungszielReifer,
-        Richtungsziel.natuerlicher => texte.richtungszielNatuerlicher,
-        Richtungsziel.auffaelliger => texte.richtungszielAuffaelliger,
-        Richtungsziel.sportlicher => texte.richtungszielSportlicher,
+        Richtungsziel.cleanGepflegt => texte.richtungszielClean,
+        Richtungsziel.markantMaskulin => texte.richtungszielMarkant,
+        Richtungsziel.natuerlichEntspannt => texte.richtungszielNatuerlich,
+        Richtungsziel.weichElegant => texte.richtungszielWeich,
+        Richtungsziel.streetwearLaessig => texte.richtungszielStreetwear,
+        Richtungsziel.smartHochwertig => texte.richtungszielSmart,
+        Richtungsziel.sportlichFunktional => texte.richtungszielSportlich,
+        Richtungsziel.kreativAuffaellig => texte.richtungszielKreativ,
+      };
+
+  /// Drei bis sechs Wörter, die den Stil greifbar machen.
+  ///
+  /// Ohne sie ist „Smart & hochwertig" für jemanden ohne Modewissen eine
+  /// leere Hülle. Mit „Polo, Strick, klare Silhouetten" weiß man, worauf man
+  /// tippt.
+  String untertext(L texte) => switch (this) {
+        Richtungsziel.cleanGepflegt => texte.richtungszielCleanUnter,
+        Richtungsziel.markantMaskulin => texte.richtungszielMarkantUnter,
+        Richtungsziel.natuerlichEntspannt =>
+          texte.richtungszielNatuerlichUnter,
+        Richtungsziel.weichElegant => texte.richtungszielWeichUnter,
+        Richtungsziel.streetwearLaessig => texte.richtungszielStreetwearUnter,
+        Richtungsziel.smartHochwertig => texte.richtungszielSmartUnter,
+        Richtungsziel.sportlichFunktional => texte.richtungszielSportlichUnter,
+        Richtungsziel.kreativAuffaellig => texte.richtungszielKreativUnter,
       };
 }
 

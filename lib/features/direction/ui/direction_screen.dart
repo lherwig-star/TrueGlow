@@ -111,6 +111,9 @@ class _DirectionScreenState extends ConsumerState<DirectionScreen> {
             for (final ziel in Richtungsziel.values)
               AuswahlChip(
                 label: ziel.label(texte),
+                // Ohne den Untertext ist „Smart & hochwertig" fuer jemanden
+                // ohne Modewissen eine leere Huelle (DECISIONS 58).
+                untertext: ziel.untertext(texte),
                 aktiv: richtung.ziele.contains(ziel),
                 onTap: () => ctrl.umschalten(ziel),
               ),

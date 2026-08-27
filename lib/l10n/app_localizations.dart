@@ -607,6 +607,102 @@ abstract class L {
   /// **'Dein neuer Look'**
   String get neuerLookTitel;
 
+  /// No description provided for @richtungszielClean.
+  ///
+  /// In de, this message translates to:
+  /// **'Clean & gepflegt'**
+  String get richtungszielClean;
+
+  /// No description provided for @richtungszielCleanUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgeräumt, zeitlos, nichts zu viel'**
+  String get richtungszielCleanUnter;
+
+  /// No description provided for @richtungszielMarkant.
+  ///
+  /// In de, this message translates to:
+  /// **'Markant & maskulin'**
+  String get richtungszielMarkant;
+
+  /// No description provided for @richtungszielMarkantUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Kantig, klare Konturen'**
+  String get richtungszielMarkantUnter;
+
+  /// No description provided for @richtungszielNatuerlich.
+  ///
+  /// In de, this message translates to:
+  /// **'Natürlich & entspannt'**
+  String get richtungszielNatuerlich;
+
+  /// No description provided for @richtungszielNatuerlichUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Unaufgeregt, wenig Aufwand'**
+  String get richtungszielNatuerlichUnter;
+
+  /// No description provided for @richtungszielWeich.
+  ///
+  /// In de, this message translates to:
+  /// **'Weich & elegant'**
+  String get richtungszielWeich;
+
+  /// No description provided for @richtungszielWeichUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Fließend, ruhig, feine Linien'**
+  String get richtungszielWeichUnter;
+
+  /// No description provided for @richtungszielStreetwear.
+  ///
+  /// In de, this message translates to:
+  /// **'Streetwear & lässig'**
+  String get richtungszielStreetwear;
+
+  /// No description provided for @richtungszielStreetwearUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Baggy, Oversized, Sneaker'**
+  String get richtungszielStreetwearUnter;
+
+  /// No description provided for @richtungszielSmart.
+  ///
+  /// In de, this message translates to:
+  /// **'Smart & hochwertig'**
+  String get richtungszielSmart;
+
+  /// No description provided for @richtungszielSmartUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Polo, Strick, klare Silhouetten'**
+  String get richtungszielSmartUnter;
+
+  /// No description provided for @richtungszielSportlich.
+  ///
+  /// In de, this message translates to:
+  /// **'Sportlich & funktional'**
+  String get richtungszielSportlich;
+
+  /// No description provided for @richtungszielSportlichUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Athletisch, praktisch, robust'**
+  String get richtungszielSportlichUnter;
+
+  /// No description provided for @richtungszielKreativ.
+  ///
+  /// In de, this message translates to:
+  /// **'Kreativ & auffällig'**
+  String get richtungszielKreativ;
+
+  /// No description provided for @richtungszielKreativUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Statement-Teile, mutige Farben'**
+  String get richtungszielKreativUnter;
+
   /// No description provided for @richtungTitel.
   ///
   /// In de, this message translates to:
@@ -1764,66 +1860,6 @@ abstract class L {
   /// In de, this message translates to:
   /// **'Ich investiere gern Zeit'**
   String get pflegeaufwandHoch;
-
-  /// No description provided for @richtungszielMaskuliner.
-  ///
-  /// In de, this message translates to:
-  /// **'Maskuliner'**
-  String get richtungszielMaskuliner;
-
-  /// No description provided for @richtungszielWeicher.
-  ///
-  /// In de, this message translates to:
-  /// **'Weicher / Sanfter'**
-  String get richtungszielWeicher;
-
-  /// No description provided for @richtungszielMarkanter.
-  ///
-  /// In de, this message translates to:
-  /// **'Markanter'**
-  String get richtungszielMarkanter;
-
-  /// No description provided for @richtungszielGepflegter.
-  ///
-  /// In de, this message translates to:
-  /// **'Gepflegter'**
-  String get richtungszielGepflegter;
-
-  /// No description provided for @richtungszielSerioeser.
-  ///
-  /// In de, this message translates to:
-  /// **'Seriöser / Professioneller'**
-  String get richtungszielSerioeser;
-
-  /// No description provided for @richtungszielJuenger.
-  ///
-  /// In de, this message translates to:
-  /// **'Jünger wirken'**
-  String get richtungszielJuenger;
-
-  /// No description provided for @richtungszielReifer.
-  ///
-  /// In de, this message translates to:
-  /// **'Reifer wirken'**
-  String get richtungszielReifer;
-
-  /// No description provided for @richtungszielNatuerlicher.
-  ///
-  /// In de, this message translates to:
-  /// **'Natürlicher'**
-  String get richtungszielNatuerlicher;
-
-  /// No description provided for @richtungszielAuffaelliger.
-  ///
-  /// In de, this message translates to:
-  /// **'Auffälliger / Mutiger'**
-  String get richtungszielAuffaelliger;
-
-  /// No description provided for @richtungszielSportlicher.
-  ///
-  /// In de, this message translates to:
-  /// **'Sportlicher'**
-  String get richtungszielSportlicher;
 
   /// No description provided for @fotoproblemKeinGesichtTitel.
   ///

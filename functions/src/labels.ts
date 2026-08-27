@@ -330,19 +330,139 @@ export const PFLEGEAUFWAND: Beschriftungen = {
 // --- Richtung ----------------------------------------------------------
 
 export const RICHTUNGSZIEL: Beschriftungen = {
-  maskuliner: { de: 'Maskuliner', en: 'more masculine' },
-  weicher: { de: 'Weicher / Sanfter', en: 'softer / gentler' },
-  markanter: { de: 'Markanter', en: 'more striking' },
-  gepflegter: { de: 'Gepflegter', en: 'better groomed' },
-  serioeser: {
-    de: 'Seriöser / Professioneller',
-    en: 'more serious / professional',
+  cleanGepflegt: { de: 'Clean & gepflegt', en: 'clean & groomed' },
+  markantMaskulin: { de: 'Markant & maskulin', en: 'striking & masculine' },
+  natuerlichEntspannt: {
+    de: 'Natürlich & entspannt',
+    en: 'natural & relaxed',
   },
-  juenger: { de: 'Jünger wirken', en: 'look younger' },
-  reifer: { de: 'Reifer wirken', en: 'look more mature' },
-  natuerlicher: { de: 'Natürlicher', en: 'more natural' },
-  auffaelliger: { de: 'Auffälliger / Mutiger', en: 'bolder' },
-  sportlicher: { de: 'Sportlicher', en: 'more athletic' },
+  weichElegant: { de: 'Weich & elegant', en: 'soft & elegant' },
+  streetwearLaessig: { de: 'Streetwear & lässig', en: 'streetwear & casual' },
+  smartHochwertig: { de: 'Smart & hochwertig', en: 'smart & refined' },
+  sportlichFunktional: {
+    de: 'Sportlich & funktional',
+    en: 'sporty & functional',
+  },
+  kreativAuffaellig: { de: 'Kreativ & auffällig', en: 'creative & bold' },
+};
+
+/**
+ * Was aus den Werten der alten Liste geworden ist.
+ *
+ * Spiegelt `Richtungsziel._alteNamen` in `richtung.dart`. Der Client fuehrt
+ * seine gespeicherte Auswahl beim Lesen selbst ueber; diese Tabelle faengt
+ * den anderen Fall ab: eine App-Fassung, die noch nicht aktualisiert wurde
+ * und weiterhin die alten Namen schickt. Ohne sie fiele deren Richtung
+ * stillschweigend aus dem Prompt heraus – der Nutzer haette etwas gewaehlt,
+ * das nirgends ankommt.
+ */
+export const RICHTUNGSZIEL_ALT: Record<string, string> = {
+  maskuliner: 'markantMaskulin',
+  markanter: 'markantMaskulin',
+  weicher: 'weichElegant',
+  gepflegter: 'cleanGepflegt',
+  serioeser: 'smartHochwertig',
+  reifer: 'smartHochwertig',
+  juenger: 'streetwearLaessig',
+  natuerlicher: 'natuerlichEntspannt',
+  auffaelliger: 'kreativAuffaellig',
+  sportlicher: 'sportlichFunktional',
+};
+
+/** Fuehrt alte Namen ueber, wirft Unbekanntes und Dubletten weg. */
+export function normalisiereRichtungsziele(namen: string[]): string[] {
+  const gesehen = new Set<string>();
+  for (const name of namen) {
+    const neu = RICHTUNGSZIEL_ALT[name] ?? name;
+    if (neu in RICHTUNGSZIEL) gesehen.add(neu);
+  }
+  // Reihenfolge der Tabelle, nicht die der Klicks – damit dieselbe Auswahl
+  // immer denselben Prompt ergibt.
+  return Object.keys(RICHTUNGSZIEL).filter((n) => gesehen.has(n));
+}
+
+/**
+ * Was eine gewaehlte Richtung fuer Frisur, Bart und Kleidung konkret heisst.
+ *
+ * Der Anlass steht in DECISIONS 58: Die Wahl faerbte vorher nur den Ton der
+ * Fliesstexte ein. „Richte die Empfehlungen daran aus" ist fuer ein Modell
+ * eine Stimmung, keine Vorgabe – im fertigen Report war anschliessend nicht
+ * zu erkennen, ob jemand „Streetwear" oder „Smart" gewaehlt hatte.
+ *
+ * Jeder Eintrag nennt deshalb dieselben drei Dinge beim Namen: Frisur, Bart,
+ * Kleidung. Die Kleidungsstuecke sind Gattungsbegriffe, keine Marken.
+ */
+export const RICHTUNGSVORGABE: Beschriftungen = {
+  cleanGepflegt: {
+    de: 'Saubere Konturen und ein Schnitt, der ohne Styling in Form bleibt; '
+      + 'Bart kurz und exakt konturiert oder glatt rasiert; Kleidung '
+      + 'schlicht und gut sitzend, wenige Farben, keine Aufdrucke.',
+    en: 'Clean outlines and a cut that holds its shape without styling; '
+      + 'beard short and precisely lined or clean-shaven; clothing plain '
+      + 'and well-fitting, few colours, no prints.',
+  },
+  markantMaskulin: {
+    de: 'Kurze Seiten mit klarer Kante und Länge oben; ein Bart, der die '
+      + 'Kieferlinie betont; Kleidung mit Struktur in den Schultern, '
+      + 'kräftige Stoffe, dunkle und erdige Töne.',
+    en: 'Short sides with a defined edge and length on top; a beard that '
+      + 'emphasises the jawline; clothing with structure in the shoulders, '
+      + 'sturdy fabrics, dark and earthy tones.',
+  },
+  natuerlichEntspannt: {
+    de: 'Ein Schnitt, der mitwächst und keine tägliche Formgebung '
+      + 'braucht; Bart gepflegt, aber nicht scharf gezogen; Kleidung '
+      + 'bequem, weiche Stoffe, gedeckte Farben, nichts Auffälliges.',
+    en: 'A cut that grows out well and needs no daily styling; beard tidy '
+      + 'but not sharply lined; clothing comfortable, soft fabrics, muted '
+      + 'colours, nothing showy.',
+  },
+  weichElegant: {
+    de: 'Ein Schnitt mit weichen Übergängen statt harter Kanten, längere '
+      + 'Partien dürfen fallen; Bart weich konturiert oder glatt rasiert; '
+      + 'Kleidung mit fließendem Fall, feine Stoffe, helle und ruhige Töne.',
+    en: 'A cut with soft transitions instead of hard edges, longer sections '
+      + 'may fall freely; beard softly shaped or clean-shaven; clothing '
+      + 'with drape, fine fabrics, light and calm tones.',
+  },
+  streetwearLaessig: {
+    de: 'Schnitt mit sichtbarer Textur, gern länger oben oder im Nacken; '
+      + 'Bart locker gehalten; Kleidung weit geschnitten – Baggy- oder '
+      + 'Loose-Fit-Hosen, Oversize-Oberteile, Hoodies, Sneaker als '
+      + 'Mittelpunkt des Outfits.',
+    en: 'A cut with visible texture, happily longer on top or at the neck; '
+      + 'beard kept loose; clothing cut wide – baggy or loose-fit trousers, '
+      + 'oversized tops, hoodies, sneakers as the centre of the outfit.',
+  },
+  smartHochwertig: {
+    de: 'Eine sauber geschnittene, klassische Form, die immer ordentlich '
+      + 'aussieht; Bart kurz und exakt oder glatt; Kleidung in klaren '
+      + 'Silhouetten – Polo, Feinstrick, Hemd, gerade Hose, Ledersneaker '
+      + 'oder Loafer, gedeckte Farben, sichtbar gute Stoffe.',
+    en: 'A cleanly cut classic shape that always looks tidy; beard short '
+      + 'and precise or clean-shaven; clothing in clean silhouettes – '
+      + 'polo, fine knit, shirt, straight trousers, leather sneakers or '
+      + 'loafers, muted colours, visibly good fabrics.',
+  },
+  sportlichFunktional: {
+    de: 'Kurzer, pflegeleichter Schnitt, der Schweiß und Mütze '
+      + 'übersteht; Bart kurz; Kleidung mit Bewegungsfreiheit, '
+      + 'atmungsaktive und robuste Stoffe, technische Details, '
+      + 'Sportschuhe.',
+    en: 'A short, low-maintenance cut that survives sweat and a cap; beard '
+      + 'short; clothing with freedom of movement, breathable and '
+      + 'hard-wearing fabrics, technical details, athletic shoes.',
+  },
+  kreativAuffaellig: {
+    de: 'Ein Schnitt mit einer bewussten Besonderheit – asymmetrisch, '
+      + 'kontrastreich oder mit farblichem Akzent; Bart als Teil der Form; '
+      + 'Kleidung mit einem Statement-Teil pro Outfit, mutigere Schnitte, '
+      + 'Farbe oder Muster, der Rest ruhig dazu.',
+    en: 'A cut with one deliberate feature – asymmetric, high-contrast or '
+      + 'with a colour accent; beard as part of the shape; clothing with '
+      + 'one statement piece per outfit, braver cuts, colour or pattern, '
+      + 'the rest kept quiet.',
+  },
 };
 
 // --- Check-in ----------------------------------------------------------
