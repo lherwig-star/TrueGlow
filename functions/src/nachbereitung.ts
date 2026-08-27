@@ -77,6 +77,8 @@ export interface Nachbereitet {
   zielkapitelFehlt: boolean;
   /** Die geschaetzte Sprache, wenn sie nicht der Zielsprache entspricht. */
   falscheSprache?: Sprache;
+  /** Namen, die in einem Kapitel stehen und schon im Gesamtbild vorkommen. */
+  doppelteNamen: string[];
 }
 
 export function nachbereiten(
@@ -147,6 +149,8 @@ export function nachbereiten(
     ergebnis.plan = planOhneBart(ergebnis.plan);
   }
 
+  const doppelteNamen = namenImGesamtbild(ergebnis);
+
   const geschaetzt = spracheSchaetzen(textprobe(ergebnis));
 
   return {
@@ -154,6 +158,7 @@ export function nachbereiten(
     fremdeKapitel,
     entfernteSektionen,
     entfernteHabits,
+    doppelteNamen,
     floskeln: alleHabits(kapitel).filter(istFloskel),
     zielkapitelFehlt:
       mitZielkapitel &&
@@ -189,6 +194,15 @@ export function melde(befund: Nachbereitet, vorgabe: { sprache: Sprache }): void
       'Nachbereitung: Der Nutzer hat einen Freitext geschrieben, das ' +
         `Kapitel "${ZIELKAPITEL}" fehlt aber im Report. Seine Wuensche ` +
         'stehen dann nirgends in der Tagesliste.',
+    );
+  }
+  if (befund.doppelteNamen.length > 0) {
+    // Bewusst nur gemeldet, nicht repariert: Ein Name laesst sich aus einem
+    // Fliesstext nicht herausschneiden, ohne den Satz zu zerstoeren. Die
+    // Zahl sagt uns, ob die Prompt-Regel wirkt (DECISIONS 67).
+    console.warn(
+      'Nachbereitung: Diese Namen stehen im Gesamtbild UND im Kapitel – das ' +
+        `Gesamtbild soll sie nicht nennen (${befund.doppelteNamen.join(', ')})`,
     );
   }
   if (befund.floskeln.length > 0) {
@@ -267,7 +281,7 @@ function textprobe(ergebnis: Record<string, unknown>): string {
 
   // Der Einstiegstext des entdeckenden Modus gehoert dazu: Er ist der erste
   // Satz, den jemand liest, und faellt sonst durch die Sprachpruefung.
-  sammle(ergebnis.neuerLook, 0);
+  sammle(ergebnis.gesamtbild, 0);
   sammle(ergebnis.kapitel, 0);
   sammle(ergebnis.plan, 0);
   return teile.join(' ');
@@ -303,4 +317,95 @@ function objekt(roh: unknown): Record<string, unknown> {
 
 function text(roh: unknown): string {
   return typeof roh === 'string' ? roh : '';
+}
+
+
+/**
+ * Namen, die das Gesamtbild schon nennt, obwohl sie ins Kapitel gehoeren.
+ *
+ * Der Anlass steht in DECISIONS 67: Die Karte ganz oben zaehlte die
+ * konkreten Vorschlaege auf, und die Kapitel wiederholten sie.
+ *
+ * **Was hier erkannt wird und was nicht.** Gesucht werden Eigennamen – zwei
+ * oder drei grossgeschriebene Woerter hintereinander, mitten im Satz. Das
+ * trifft "Textured Crop", "Modern Mullet" oder "Smart Casual" und verfehlt
+ * "kuerzere Seiten": Eine Umschreibung ist keine Doppelung im Sinne der
+ * Regel, sondern hoechstens eine Unschoenheit. Bei freiem Text geht es nicht
+ * genauer, und die Hauptarbeit leistet ohnehin der Prompt.
+ *
+ * Satzanfaenge fallen heraus – im Deutschen steht dort jedes Wort gross, und
+ * "Deine Kieferlinie" waere sonst ein Treffer.
+ */
+function namenImGesamtbild(ergebnis: Record<string, unknown>): string[] {
+  const gesamtbild = text(ergebnis.gesamtbild);
+  if (gesamtbild.length === 0) return [];
+
+  const ausKapiteln = new Set<string>();
+  for (const eintrag of liste(ergebnis.kapitel)) {
+    for (const s of liste(objekt(eintrag).sektionen)) {
+      const sektion = objekt(s);
+      for (const feld of [
+        text(sektion.titel),
+        text(sektion.einschaetzung),
+        ...textliste(sektion.empfehlungen),
+      ]) {
+        for (const name of eigennamen(feld)) ausKapiteln.add(name);
+      }
+    }
+  }
+
+  return [...ausKapiteln].filter((name) => gesamtbild.includes(name)).sort();
+}
+
+/**
+ * Zwei bis drei grossgeschriebene Woerter am Stueck, nicht am Satzanfang.
+ *
+ * Bewusst ohne regulaeren Ausdruck: Das Muster braeuchte Umlaut-Klassen und
+ * eine Ausnahme fuer den Satzanfang, und beides ist als Zeichenkette
+ * schwerer zu lesen als die Schleife darunter.
+ */
+function eigennamen(satz: string): string[] {
+  const gross = (w: string) => w.length > 0 && w[0] === w[0].toUpperCase()
+      && w[0] !== w[0].toLowerCase();
+
+  const treffer: string[] = [];
+  const woerter = satz.split(/\s+/);
+  let satzanfang = true;
+  let lauf: string[] = [];
+
+  const abschliessen = () => {
+    // Zwei bis drei Woerter – ein einzelnes waere im Deutschen jedes
+    // Substantiv, vier hintereinander ist kein Name mehr.
+    if (lauf.length >= 2) {
+      for (let laenge = 2; laenge <= Math.min(3, lauf.length); laenge += 1) {
+        for (let i = 0; i + laenge <= lauf.length; i += 1) {
+          treffer.push(lauf.slice(i, i + laenge).join(' '));
+        }
+      }
+    }
+    lauf = [];
+  };
+
+  for (const roh of woerter) {
+    const wort = roh.replace(/^[(„"'»–-]+/u, '');
+    const rein = wort.replace(/[.,;:!?)”"'«]+$/u, '');
+    const satzende = /[.!?:]$/u.test(wort);
+
+    if (!satzanfang && rein.length > 1 && gross(rein)) {
+      lauf.push(rein);
+    } else {
+      abschliessen();
+    }
+
+    satzanfang = satzende;
+    if (satzende) abschliessen();
+  }
+  abschliessen();
+
+  return treffer;
+}
+
+/** Eine Liste von Texten, leere Eintraege fallen weg. */
+function textliste(roh: unknown): string[] {
+  return Array.isArray(roh) ? roh.map(text).filter((s) => s.length > 0) : [];
 }

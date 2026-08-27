@@ -207,31 +207,41 @@ void main() {
   });
 
   group('Der neue Look im Report', () {
-    test('das Feld kommt aus der Antwort – aber nur im richtigen Modus', () {
+    test('das Feld kommt in beiden Modi aus der Antwort', () {
+      // Seit DECISIONS 67 hat auch der verfeinernde Report einen Vorspann.
       final json = {
-        'neuerLook': 'Weg vom mittellangen Haar hin zu klarem Kontrast.',
+        'gesamtbild': 'Deine Grundlage trägt schon.',
         'kapitel': const [],
         'plan': const {},
       };
 
-      final entdeckt = AnalysisResult.vonApi(
-        json,
-        id: '1',
-        erstelltAm: DateTime(2026, 8, 27),
-        modus: AnalyseModus.entdecken,
-      );
-      expect(entdeckt.neuerLook, startsWith('Weg vom'));
-      expect(entdeckt.zeigtNeuenLook, isTrue);
+      for (final modus in AnalyseModus.values) {
+        final ergebnis = AnalysisResult.vonApi(
+          json,
+          id: modus.name,
+          erstelltAm: DateTime(2026, 8, 27),
+          modus: modus,
+        );
+        expect(ergebnis.gesamtbild, startsWith('Deine Grundlage'),
+            reason: modus.name);
+        expect(ergebnis.zeigtGesamtbild, isTrue, reason: modus.name);
+      }
+    });
 
-      // Liefert das Modell den Vorspann im verfeinernden Modus trotzdem mit,
-      // faellt er weg. Dort gibt es nichts zu entwerfen.
-      final verfeinert = AnalysisResult.vonApi(
-        json,
-        id: '2',
-        erstelltAm: DateTime(2026, 8, 27),
-      );
-      expect(verfeinert.neuerLook, isEmpty);
-      expect(verfeinert.zeigtNeuenLook, isFalse);
+    test('ein Report von vor der Umstellung behält seinen Vorspann', () {
+      // Damals hiess das Feld `neuerLook`. Wer einen solchen Report noch im
+      // Verlauf hat, soll ihn nicht leer vorfinden.
+      final alt = AnalysisResult.fromJson({
+        'id': '1',
+        'erstelltAm': '2026-08-27T10:00:00.000',
+        'kapitel': const [],
+        'plan': const {},
+        'modus': 'entdecken',
+        'neuerLook': 'Oben Struktur, an den Seiten kurz.',
+      });
+
+      expect(alt.gesamtbild, 'Oben Struktur, an den Seiten kurz.');
+      expect(alt.zeigtGesamtbild, isTrue);
     });
 
     test('ein fehlender Vorspann macht den Report nicht kaputt', () {
@@ -245,7 +255,7 @@ void main() {
       );
 
       expect(ohne.modus, AnalyseModus.entdecken);
-      expect(ohne.zeigtNeuenLook, isFalse);
+      expect(ohne.zeigtGesamtbild, isFalse);
     });
 
     test('er ueberlebt den Weg durch JSON', () {
@@ -255,11 +265,11 @@ void main() {
         kapitel: const [],
         plan: Plan.leer,
         modus: AnalyseModus.entdecken,
-        neuerLook: 'Oben Struktur, an den Seiten kurz.',
+        gesamtbild: 'Oben Struktur, an den Seiten kurz.',
       );
 
       expect(
-        AnalysisResult.fromJson(original.toJson()).neuerLook,
+        AnalysisResult.fromJson(original.toJson()).gesamtbild,
         'Oben Struktur, an den Seiten kurz.',
       );
     });
@@ -268,7 +278,7 @@ void main() {
       handyGroesse(tester, hoehe: 2400);
       final container = await _appMitDashboard(tester);
 
-      final report = _report('x', AnalyseModus.entdecken).copyMitLook(
+      final report = _report('x', AnalyseModus.entdecken).copyMitGesamtbild(
         'Oben Struktur und Länge, an den Seiten kurz.',
       );
       await container.read(analysenProvider.notifier).speichern(report);
@@ -289,17 +299,22 @@ void main() {
       expect(look, lessThan(richtung));
     });
 
-    testWidgets('im verfeinernden Report gibt es sie nicht', (tester) async {
+    testWidgets('der verfeinernde Report hat ihn auch – unter eigenem Namen',
+        (tester) async {
+      // Seit DECISIONS 67 gibt es das Gesamtbild in beiden Modi. Es heisst
+      // nur anders, weil es etwas anderes beschreibt.
       handyGroesse(tester, hoehe: 2400);
       final container = await _appMitDashboard(tester);
 
-      await container
-          .read(analysenProvider.notifier)
-          .speichern(_report('y', AnalyseModus.verfeinern));
+      await container.read(analysenProvider.notifier).speichern(
+            _report('y', AnalyseModus.verfeinern)
+                .copyMitGesamtbild('Deine Grundlage trägt schon.'),
+          );
 
       container.read(routerProvider).push('${Routes.result}/y');
       await tester.pumpAndSettle();
 
+      expect(find.text(texte.gesamtbildTitel), findsOneWidget);
       expect(find.text(texte.neuerLookTitel), findsNothing);
     });
   });
@@ -317,7 +332,7 @@ void main() {
         modus: AnalyseModus.entdecken,
       );
 
-      expect(ergebnis.zeigtNeuenLook, isTrue);
+      expect(ergebnis.zeigtGesamtbild, isTrue);
       expect(ergebnis.istVollstaendig, isTrue);
 
       // Jedes Kapitel faengt mit dem Vorschlag an – so wie es der Prompt
@@ -386,13 +401,13 @@ AnalysisResult _report(String id, AnalyseModus modus) => AnalysisResult(
 /// [AnalysisResult] bewusst nicht, weil ein Report nach dem Speichern nicht
 /// mehr veraendert wird.
 extension on AnalysisResult {
-  AnalysisResult copyMitLook(String text) => AnalysisResult(
+  AnalysisResult copyMitGesamtbild(String text) => AnalysisResult(
         id: id,
         erstelltAm: erstelltAm,
         kapitel: kapitel,
         plan: plan,
         richtung: richtung,
         modus: modus,
-        neuerLook: text,
+        gesamtbild: text,
       );
 }

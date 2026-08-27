@@ -1,3 +1,5 @@
+import { type Sprache, type Zweisprachig } from './sprache';
+
 /**
  * Mit welchem Auftrag die Analyse läuft.
  *
@@ -132,3 +134,90 @@ export function planRegeln(): string {
   konkrete Aufgaben. Eine verschwiegene Übergangszeit ist der häufigste
   Grund, warum jemand nach zwei Wochen aufgibt.`;
 }
+
+/**
+ * Die Regel fuer das Gesamtbild – DECISIONS 67.
+ *
+ * Der Anlass: In beiden Modi zaehlte die Karte ganz oben bereits die
+ * konkreten Vorschlaege auf – den Schnittnamen, den Bartstil, die
+ * Kleidungsstuecke – und die Kapitel darunter wiederholten dasselbe. Der
+ * Report las sich wie zweimal derselbe Text.
+ *
+ * Jede Information hat jetzt genau **ein** Zuhause: Das Gesamtbild
+ * beschreibt die Wirkung, die Kapitel nennen die Namen.
+ *
+ * Die Beispiele sind ausdruecklich als Muster fuer die **Form** markiert.
+ * Ohne diese Markierung schreibt ein Modell sie woertlich ab (DECISIONS 36) –
+ * und dann stuende in jedem Report derselbe Satz.
+ */
+export function gesamtbildRegeln(modus: Modus, sprache: Sprache): string {
+  const gut = BEISPIEL[modus].gut[sprache];
+  const schlecht = BEISPIEL[modus].schlecht[sprache];
+
+  const was = modus === 'entdecken'
+    ? 'die neue Richtung'
+    : 'den Weg, den die Verfeinerung nimmt';
+
+  return `Das Gesamtbild – die Regel für "gesamtbild":
+- 2 bis 4 Sätze, die ${was} als Bild im Kopf entstehen lassen: wie die Teile
+  zusammenwirken und was der Look ausstrahlt.
+- KEINE konkreten Einzelvorschläge. Kein Schnittname, keine
+  Bart-Bezeichnung, kein Kleidungsstück, kein Produktname, keine Längen-
+  oder Millimeterangabe. Diese Begriffe fallen im ganzen Report zum ersten
+  Mal im jeweiligen Kapitel.
+- Kein Aufzählen der Kapitel, keine Vorrede.
+- So sieht es aus (Muster für die FORM, nicht für den Inhalt – übernimm
+  keinen dieser Sätze und keines dieser Merkmale):
+  RICHTIG: "${gut}"
+  FALSCH:  "${schlecht}"
+- Und umgekehrt: Die Kapitel steigen direkt mit ihrem Vorschlag ein. Sie
+  fassen das Gesamtbild nicht noch einmal zusammen und wiederholen seine
+  Sätze nicht.
+- "gesamtbild" ist Anzeigetext und steht in der Zielsprache.`;
+}
+
+/**
+ * Je ein Muster pro Modus und Sprache.
+ *
+ * Das falsche Beispiel ist absichtlich das, was vorher wirklich
+ * herauskam – ein Gesamtbild, das den Schnitt beim Namen nennt.
+ */
+const BEISPIEL: Record<
+  Modus,
+  { gut: Zweisprachig; schlecht: Zweisprachig }
+> = {
+  entdecken: {
+    gut: {
+      de: 'Die Richtung geht weg vom Unauffälligen hin zu klaren Kanten: '
+        + 'oben mehr Kontur, unten mehr Ruhe. Das Ergebnis wirkt wacher und '
+        + 'entschiedener, ohne dass du morgens länger brauchst.',
+      en: 'The direction moves away from the unobtrusive towards clear '
+        + 'edges: more definition up top, more calm below. The result looks '
+        + 'more awake and more decided, without costing you extra minutes.',
+    },
+    schlecht: {
+      de: 'Ein Textured Crop mit mittelhohem Fade, dazu ein Vollbart auf '
+        + '6 mm und ein Overshirt in Oliv.',
+      en: 'A textured crop with a mid fade, plus a full beard at 6 mm and '
+        + 'an olive overshirt.',
+    },
+  },
+  verfeinern: {
+    gut: {
+      de: 'Deine Grundlage trägt bereits – klare Proportionen und ein '
+        + 'ruhiger Gesamteindruck. Die Verfeinerung setzt an den Kanten an: '
+        + 'sauberer, wo es unentschieden wirkt, und ein wenig mehr Halt '
+        + 'dort, wo der Tag ihn wegnimmt.',
+      en: 'Your foundation already works – clear proportions and a calm '
+        + 'overall impression. The refinement starts at the edges: cleaner '
+        + 'where it looks undecided, and a little more hold where the day '
+        + 'takes it away.',
+    },
+    schlecht: {
+      de: 'Die Seiten zwei Nummern kürzer, die Wangenlinie mit dem '
+        + 'Präzisionstrimmer nachziehen und eine matte Paste benutzen.',
+      en: 'Take the sides two grades shorter, redo the cheek line with a '
+        + 'precision trimmer and use a matte paste.',
+    },
+  },
+};

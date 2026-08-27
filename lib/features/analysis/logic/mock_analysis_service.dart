@@ -74,10 +74,12 @@ class MockAnalysisService implements AnalysisService {
         .where(module.contains)
         .map((m) => quelle[m]!)
         .join(',\n');
-    final vorspann = entdecken ? '  "neuerLook": $_neuerLook,\n' : '';
+    // Beide Modi bekommen ihren Vorspann – seit DECISIONS 67 gibt es das
+    // Feld nicht mehr nur beim entdeckenden.
+    final vorspann = entdecken ? _gesamtbildEntdecken : _gesamtbildVerfeinern;
     final plan = entdecken ? _planEntdecken : _plan;
 
-    return '```json\n{\n$vorspann  "kapitel": [\n$kapitel\n  ],\n'
+    return '```json\n{\n  "gesamtbild": $vorspann,\n  "kapitel": [\n$kapitel\n  ],\n'
         '  "plan": $plan\n}\n```';
   }
 
@@ -367,12 +369,24 @@ class MockAnalysisService implements AnalysisService {
   // Modus nur mit echtem Kontingent ansehen, und die Oberflaeche dafuer waere
   // nie geprueft worden, bevor sie Geld kostet.
 
-  static const String _neuerLook =
-      '"Weg vom gleichmäßig mittellangen Haar hin zu einem klaren Kontrast: '
-      'oben Struktur und Länge, an den Seiten kurz. Dazu ein kurzer, sauber '
-      'konturierter Vollbart und eine Garderobe aus wenigen hochwertigen '
-      'Teilen statt vieler funktionaler. Das Ergebnis wirkt wacher und '
-      'erwachsener, ohne dass du morgens länger brauchst als heute."';
+  /// Das Gesamtbild des entdeckenden Modus – Wirkung, keine Namen.
+  ///
+  /// Der Schnittname, der Bartstil und die Kleidungsstuecke fallen im Report
+  /// zum ersten Mal in ihrem Kapitel (DECISIONS 67).
+  static const String _gesamtbildEntdecken =
+      '"Die Richtung geht weg vom gleichmäßig Mittellangen hin zu einem '
+      'klaren Gegensatz: oben Struktur, an den Seiten Ruhe. Dazu eine '
+      'Garderobe, die auf wenige, sichtbar gute Stücke setzt statt auf '
+      'viele funktionale. Zusammen wirkt das wacher und erwachsener – und '
+      'kostet dich morgens keine Minute mehr als heute."';
+
+  /// Und das des verfeinernden.
+  static const String _gesamtbildVerfeinern =
+      '"Deine Grundlage trägt schon: klare Proportionen, ein ruhiger '
+      'Gesamteindruck und ein Haar, das mitmacht. Die Verfeinerung setzt '
+      'deshalb an den Kanten an – sauberer, wo es heute unentschieden '
+      'wirkt, und ein wenig mehr Halt dort, wo der Tag ihn wegnimmt. Es '
+      'geht nicht darum, anders auszusehen, sondern deutlicher wie du."';
 
   static const Map<AnalyseModul, String> _kapitelEntdecken = {
     AnalyseModul.basis: '''

@@ -29,6 +29,7 @@ import { kontextzeile, type Ausrichtung } from './ausrichtung';
 import {
   auftrag,
   entdeckenRegeln,
+  gesamtbildRegeln,
   kapitelZusatz,
   planRegeln,
   type Modus,
@@ -129,13 +130,14 @@ Verbindliche Regeln:
 ${zielRegeln(daten.richtung, sprache)}${entdecken ? `
 ${planRegeln()}` : ''}
 ${QUALITAET}
+${gesamtbildRegeln(daten.modus, sprache)}
 ${entdecken ? `${entdeckenRegeln()}
 ` : ''}${ankerRegeln(sprache)}
 Antworte AUSSCHLIESSLICH mit einem JSON-Objekt nach diesem Schema. Kein
 Fließtext davor oder danach, keine Markdown-Codefences:
 
 {
-${entdecken ? '  "neuerLook": "2-3 Sätze: die neue Richtung als Bild im Kopf",\n' : ''}\
+  "gesamtbild": "2-4 Sätze: die Richtung als Bild im Kopf, ohne Namen",
   "kapitel": [
     {
       "modul": "${gewaehlt[0]}",
@@ -175,11 +177,8 @@ ${gewaehlt
   .join('\n')}
 
 Vorgaben zum Inhalt:
-${entdecken ? `- "neuerLook" ist der Einstieg des ganzen Reports: 2-3 Sätze, die die neue
-  Richtung als Bild im Kopf entstehen lassen. Kein Aufzählen der Kapitel,
-  keine Vorrede, kein Rückblick auf den alten Look – ein Satz darüber, wie
-  diese Person mit dem neuen Look wirkt, und woran das liegt. Anzeigetext,
-  also in der Zielsprache.\n` : ''}\
+- "gesamtbild" ist der Einstieg des ganzen Reports. Dafuer gilt die Regel
+  weiter oben, und sie ist streng: Wirkung ja, Namen nein.
 - "modul" ist exakt einer der genannten Bezeichner – nicht übersetzen.
 - "kategorie" ist exakt einer der aufgezählten Bezeichner – kleingeschrieben,
   nicht übersetzen, nichts anderes. Das Wort dazu setzt die App.

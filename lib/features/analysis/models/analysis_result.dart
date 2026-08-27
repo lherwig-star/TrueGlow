@@ -207,7 +207,7 @@ class AnalysisResult {
     required this.plan,
     this.richtung = Richtung.leer,
     this.modus = AnalyseModus.standard,
-    this.neuerLook = '',
+    this.gesamtbild = '',
   });
 
   /// Eindeutige ID, gleichzeitig Schluessel in der lokalen Speicherung.
@@ -233,18 +233,21 @@ class AnalysisResult {
   /// Definition [AnalyseModus.verfeinern], weil es damals nichts anderes gab.
   final AnalyseModus modus;
 
-  /// Der Einstieg des Reports im Modus [AnalyseModus.entdecken]: die neue
-  /// Richtung in zwei, drei Sätzen.
+  /// Der Einstieg des Reports: die Richtung in zwei bis vier Sätzen.
   ///
-  /// Leer im verfeinernden Modus – dort gibt es nichts zu entwerfen, und der
-  /// Report beginnt wie bisher mit dem ersten Kapitel. Leer auch dann, wenn
-  /// das Modell das Feld vergisst: Der Report ist deswegen nicht kaputt, er
-  /// hat nur seinen Vorspann verloren. Die Karte fällt dann weg, statt eine
-  /// leere Fläche zu zeigen.
-  final String neuerLook;
+  /// **In beiden Modi** (DECISIONS 67) – im entdeckenden beschreibt er die
+  /// neue Richtung, im verfeinernden, was am jetzigen Look trägt und wohin
+  /// die Verfeinerung zielt. Beide Male ohne konkrete Namen: Schnitt, Bart
+  /// und Kleidungsstücke fallen zum ersten Mal im jeweiligen Kapitel.
+  ///
+  /// Leer, wenn das Modell das Feld vergisst oder der Report von vor
+  /// DECISIONS 67 stammt. Der Report ist deswegen nicht kaputt, er hat nur
+  /// seinen Vorspann verloren; die Karte fällt dann weg, statt eine leere
+  /// Fläche zu zeigen.
+  final String gesamtbild;
 
   /// Ob der Report seinen Vorspann wirklich hat.
-  bool get zeigtNeuenLook => modus.istEntdecken && neuerLook.isNotEmpty;
+  bool get zeigtGesamtbild => gesamtbild.isNotEmpty;
 
   /// Welche Module dieser Report abdeckt.
   Set<AnalyseModul> get module => kapitel.map((k) => k.modul).toSet();
@@ -294,7 +297,7 @@ class AnalysisResult {
       kapitel: sortiert,
       plan: planErgaenzung == null ? plan : plan.ergaenztUm(planErgaenzung),
       richtung: richtung ?? this.richtung,
-      neuerLook: neuerLook,
+      gesamtbild: gesamtbild,
       // Ein nachtraegliches Kapitel aendert den Auftrag des Reports nicht:
       // Wer erweitert, bekommt das neue Kapitel im Modus des Reports, in den
       // es eingehaengt wird.
@@ -309,7 +312,7 @@ class AnalysisResult {
         'plan': plan.toJson(),
         'richtung': richtung.toJson(),
         'modus': modus.name,
-        'neuerLook': neuerLook,
+        'gesamtbild': gesamtbild,
       };
 
   /// Liest eine bereits gespeicherte Analyse (inkl. ID und Datum).
@@ -329,7 +332,11 @@ class AnalysisResult {
             : Richtung.leer,
         // Dito: ohne Feld der Rueckfall, und der ist das bisherige Verhalten.
         modus: AnalyseModus.ausName(json['modus']),
-        neuerLook: _text(json['neuerLook']),
+        // Reports von vor DECISIONS 67 tragen das Feld unter seinem alten
+        // Namen. Sie behalten damit ihren Vorspann.
+        gesamtbild: _text(json['gesamtbild']).isNotEmpty
+            ? _text(json['gesamtbild'])
+            : _text(json['neuerLook']),
       );
 
   /// Liest die rohe KI-Antwort, die weder ID noch Datum enthaelt.
@@ -349,8 +356,12 @@ class AnalysisResult {
             : Plan.leer,
         richtung: richtung,
         modus: modus,
-        // Kommt aus der Antwort des Modells und nur im entdeckenden Modus.
-        neuerLook: modus.istEntdecken ? _text(json['neuerLook']) : '',
+        // Kommt aus der Antwort des Modells – seit DECISIONS 67 in beiden
+        // Modi. `neuerLook` ist der alte Feldname; ein Modell, das ihn noch
+        // liefert, soll seinen Vorspann nicht verlieren.
+        gesamtbild: _text(json['gesamtbild']).isNotEmpty
+            ? _text(json['gesamtbild'])
+            : _text(json['neuerLook']),
       );
 
   /// Minimalpruefung, ob die Antwort ueberhaupt brauchbar ist.

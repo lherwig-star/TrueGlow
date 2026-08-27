@@ -9,6 +9,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/datum.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
+import '../../analysis/models/analyse_modus.dart';
 import '../../analysis/models/analysis_result.dart';
 import '../../direction/logic/direction_controller.dart';
 import '../../direction/models/richtung.dart';
@@ -87,8 +88,11 @@ class ResultScreen extends ConsumerWidget {
         const SizedBox(height: AppTheme.gapM),
         // Ganz oben, noch vor der Richtung: Im entdeckenden Modus ist das
         // der Einstieg, auf den alles Weitere sich bezieht.
-        if (ergebnis.zeigtNeuenLook) ...[
-          _NeuerLookKarte(text: ergebnis.neuerLook),
+        if (ergebnis.zeigtGesamtbild) ...[
+          _GesamtbildKarte(
+            titel: ergebnis.modus.gesamtbildTitel(texte),
+            text: ergebnis.gesamtbild,
+          ),
           const SizedBox(height: AppTheme.gapM),
         ],
         _RichtungKarte(ergebnis: ergebnis),
@@ -146,7 +150,7 @@ class _Kopf extends StatelessWidget {
   }
 }
 
-/// Der Vorspann im Modus „Neuen Look entdecken".
+/// Der Vorspann des Reports – in beiden Modi (DECISIONS 67).
 ///
 /// Er steht ueber allem anderen, weil er alles andere zusammenhaelt: Die
 /// Kapitel darunter sind die Umsetzung dieser Richtung. Wer ihn ueberspringt,
@@ -155,14 +159,14 @@ class _Kopf extends StatelessWidget {
 /// Optisch abgesetzt und nicht als gewoehnliche Karte: Der Ton fuer
 /// Erreichtes umrandet ihn, derselbe, der das Etikett im Verlauf traegt.
 /// Das ist keine Wertung des anderen Modus – es ist Wiedererkennung.
-class _NeuerLookKarte extends StatelessWidget {
-  const _NeuerLookKarte({required this.text});
+class _GesamtbildKarte extends StatelessWidget {
+  const _GesamtbildKarte({required this.titel, required this.text});
 
+  final String titel;
   final String text;
 
   @override
   Widget build(BuildContext context) {
-    final texte = context.texte;
     final farben = context.farben;
 
     return Container(
@@ -188,7 +192,7 @@ class _NeuerLookKarte extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  texte.neuerLookTitel,
+                  titel,
                   style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w800,

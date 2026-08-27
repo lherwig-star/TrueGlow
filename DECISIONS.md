@@ -2767,6 +2767,79 @@ folgenlos.
 
 **Preis:** Keiner. Ein Test mehr und eine umsortierte Aufzählung.
 
+## 67 · Das Gesamtbild oben, die Namen erst im Kapitel
+
+Befund vom Gerät, in **beiden** Modi: Die Karte ganz oben zählte bereits die
+konkreten Vorschläge auf — den Schnitt mit Namen, den Bartstil, die
+Kleidungsstücke — und die Kapitel darunter wiederholten exakt dasselbe. Der
+Report las sich wie zweimal derselbe Text.
+
+**Jede Information hat jetzt genau ein Zuhause:**
+
+| | Gesamtbild oben | Kapitel |
+|---|---|---|
+| Was | Wirkung und Zusammenspiel | der Vorschlag mit Namen |
+| Wie lang | 2–4 Sätze | so lang wie nötig |
+| Namen | **keine** | hier zum ersten Mal |
+
+### Ein Feld für beide Modi
+
+Bis hierher gab es das Vorspann-Feld nur im entdeckenden Modus (`neuerLook`).
+Jetzt heißt es `gesamtbild` und existiert in beiden — im verfeinernden
+beschreibt es, was am jetzigen Look trägt und wohin die Verfeinerung zielt.
+Die Karte trägt je Modus eine eigene Überschrift, weil sie etwas anderes
+beschreibt: „Dein neuer Look" bzw. „Dein Gesamtbild".
+
+**Alte Reports behalten ihren Vorspann.** Beim Lesen wird `gesamtbild`
+bevorzugt und auf `neuerLook` zurückgefallen — ein Report von gestern steht
+also nicht plötzlich ohne Einstieg da.
+
+### Die Regel im Prompt
+
+Sie steht in beiden Prompt-Zweigen, mit je einem Positiv- und einem
+Negativbeispiel, in beiden Sprachen. Das Negativbeispiel ist absichtlich
+genau das, was vorher wirklich herauskam:
+
+> FALSCH: „Ein Textured Crop mit mittelhohem Fade, dazu ein Vollbart auf
+> 6 mm und ein Overshirt in Oliv."
+
+Die Beispiele sind ausdrücklich als **Muster für die Form** markiert, mit der
+Aufforderung, keinen ihrer Sätze zu übernehmen. Ohne diese Markierung
+schreibt ein Modell sie wörtlich ab (DECISIONS 36) — und dann stünde in jedem
+Report derselbe Satz. Die Beispiele beschreiben deshalb auch bewusst eine
+andere Person als die, die gerade analysiert wird.
+
+Dazu die Gegenrichtung, ohne die die Doppelung nur wandert: **Die Kapitel
+steigen direkt mit ihrem Vorschlag ein** und fassen das Gesamtbild nicht noch
+einmal zusammen.
+
+### Die maschinelle Absicherung
+
+Bei freiem Text lässt sich das nicht erzwingen; die Hauptarbeit leistet der
+Prompt. Die Nachbereitung erkennt aber den offensichtlichen Fall: **Ein Name,
+der in einem Kapitel steht und wörtlich schon im Gesamtbild vorkommt.**
+
+Gesucht werden Eigennamen — zwei oder drei großgeschriebene Wörter
+hintereinander, mitten im Satz. Das trifft „Textured Crop", „Modern Mullet"
+oder „Smart Casual" und verfehlt „kürzere Seiten": Eine Umschreibung ist
+keine Doppelung im Sinne der Regel, sondern höchstens eine Unschönheit.
+**Satzanfänge fallen heraus** — im Deutschen steht dort jedes Wort groß, und
+„Deine Kieferlinie" wäre sonst ein Treffer, der die Meldung wertlos machte.
+
+Gefundenes wird **nur protokolliert, nicht repariert**: Ein Name lässt sich
+aus einem Fließtext nicht herausschneiden, ohne den Satz zu zerstören. Die
+Zahl sagt uns, ob die Prompt-Regel wirkt.
+
+### Der Demo-Modus
+
+Beide Beispielantworten haben die neue Struktur — das entdeckende Gesamtbild
+nennt keinen Schnittnamen mehr, das verfeinernde ist neu dazugekommen. Damit
+lässt sich die Oberfläche in beiden Modi ohne Kontingent prüfen.
+
+**Preis:** Ein Feld mehr im Schema des verfeinernden Modus und rund 20 Zeilen
+Prompt in jedem Lauf. Das kostet Eingabe-Tokens — und spart dem Leser einen
+Text, den er zweimal liest.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

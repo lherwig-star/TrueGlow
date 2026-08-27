@@ -1705,6 +1705,80 @@ flutter run --dart-define=TRUEGLOW_MOCK=true
 | Der Punkt fehlt, obwohl nichts abgehakt ist | Vor dem Launch beheben. |
 | Der Punkt fehlt, wenn nur der Check-in erledigt ist | **Kein Fund** — ein Check-in ist kein Haken. |
 
+## 31 · Der Report ohne Doppelungen (beide Modi)
+
+Prüft DECISIONS 67. **Genau ZWEI echte Läufe** — zwingend einer je Modus.
+Alles andere im Demo-Modus:
+
+```bash
+flutter run --dart-define=TRUEGLOW_MOCK=true
+```
+
+### A · Ohne Kontingent (Demo-Modus)
+
+1. **Der verfeinernde Report hat jetzt auch einen Vorspann.** Demo-Analyse mit
+   „Meinen Look verfeinern", dann den Report öffnen. Erwartet: ganz oben eine
+   Karte **„Dein Gesamtbild"** mit zwei bis vier Sätzen.
+
+2. **Der entdeckende ebenso, unter eigenem Namen.** Dasselbe mit „Neuen Look
+   entdecken". Erwartet: Karte **„Dein neuer Look"**.
+
+3. **Im Vorspann steht kein einziger Name.** Beide Karten lesen. *Kriterium:*
+   Ein Schnittname, eine Bart-Bezeichnung, ein Kleidungsstück, ein
+   Produktname oder eine Millimeterangabe im Vorspann ist ein Fund.
+
+4. **Die Namen stehen im Kapitel.** Nach unten scrollen. Erwartet: Dort steht
+   der Vorschlag mit Namen, die Begründung und was zu tun ist.
+
+5. **Kein Satz kommt zweimal vor.** *Kriterium:* Findest du einen Satz oder
+   eine Formulierung aus dem Vorspann wörtlich im Kapitel wieder, ist das ein
+   Fund.
+
+6. **Alte Reports bleiben lesbar.** Einen Report von vor heute aus dem
+   Verlauf öffnen. Erwartet: Sein Vorspann steht noch da — er ist nicht leer.
+
+7. **Auf Englisch.** Sprache umstellen, Schritte 1 bis 3 wiederholen.
+
+### B · Mit Kontingent — Lauf 1: „Neuen Look entdecken"
+
+8. **Der Vorspann ist ein Bild, keine Liste.** Erwartet: 2–4 Sätze über
+   Wirkung und Zusammenspiel. Kein Schnittname, kein Bartstil, kein
+   Kleidungsstück.
+
+9. **Das Kapitel steigt direkt ein.** Erwartet: Die erste Sektion nennt den
+   Vorschlag beim Namen und fasst das Gesamtbild **nicht** noch einmal
+   zusammen.
+
+10. **Gegenprobe im Protokoll.** Meldet die Function eine Doppelung, steht
+    sie hier:
+
+    ```bash
+    firebase functions:log --only analysiere --project trueglow-b2c1c -n 1
+    ```
+
+    Gesucht: „Diese Namen stehen im Gesamtbild UND im Kapitel". *Kriterium:*
+    Steht dort etwas, hat der Prompt nicht gegriffen — notieren, aber kein
+    Blocker, solange der Report sonst stimmt.
+
+11. **Verbrauchszeile notieren**, wie in Abschnitt 12.
+
+### C · Mit Kontingent — Lauf 2: „Meinen Look verfeinern"
+
+12. **Dieselben Prüfungen 8 bis 11** für den verfeinernden Modus. Erwartet:
+    Der Vorspann sagt, was am jetzigen Look trägt und wohin es geht —
+    **ohne** konkrete Maßnahmen. Die stehen in den Kapiteln.
+
+### Was ein Fund ist
+
+| Fund | Reaktion |
+|---|---|
+| Schnitt-, Bart-, Kleidungs- oder Produktname im Vorspann | Blocker. |
+| Ein Satz steht wörtlich oben und im Kapitel | Blocker. |
+| Ein Modus hat gar keinen Vorspann | Blocker. |
+| Ein alter Report hat seinen Vorspann verloren | Blocker. |
+| Das Kapitel wiederholt die Richtung, bevor es einsteigt | Vor dem Launch beheben. |
+| Das Protokoll meldet einen doppelten Namen | Notieren — der Prompt greift dort nicht zuverlässig. |
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

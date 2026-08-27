@@ -146,6 +146,10 @@
   "@modusHinweis": {
     "description": "Nimmt die zwei haeufigsten Rueckfragen vorweg: Kosten und Fotos."
   },
+  "gesamtbildTitel": "Dein Gesamtbild",
+  "@gesamtbildTitel": {
+    "description": "Ueberschrift der Vorspann-Karte im verfeinernden Modus."
+  },
   "neuerLookTitel": "Dein neuer Look",
   "@neuerLookTitel": {
     "description": "Ueberschrift der Vorspann-Karte im Modus „Neuen Look entdecken\"."

@@ -89,9 +89,12 @@ describe('Der verfeinernde Modus bleibt, was er war', () => {
     );
   });
 
-  it('sein Schema hat kein zusaetzliches Feld', () => {
+  it('sein Schema hat seit DECISIONS 67 ebenfalls das Gesamtbild', () => {
+    // Es ist das einzige Feld, das der verfeinernde Modus dazubekommen
+    // hat – und es traegt dort denselben Namen wie im entdeckenden.
     const prompt = systemPrompt(daten('verfeinern'));
-    expect(prompt).toContain('{\n  "kapitel": [');
+    expect(prompt).toContain('{\n  "gesamtbild": ');
+    expect(prompt).not.toContain('"neuerLook"');
   });
 });
 
@@ -144,10 +147,10 @@ describe('Der entdeckende Modus', () => {
     expect(prompt).toContain('STANDARD-VORSCHLÄGE SIND VERBOTEN');
   });
 
-  it('setzt den neuen Look als erstes Feld ins Schema', () => {
+  it('setzt das Gesamtbild als erstes Feld ins Schema', () => {
     // Ganz oben, weil der Report von oben nach unten gelesen wird.
-    expect(prompt).toContain('{\n  "neuerLook": ');
-    expect(prompt.indexOf('"neuerLook"')).toBeLessThan(
+    expect(prompt).toContain('{\n  "gesamtbild": ');
+    expect(prompt.indexOf('"gesamtbild"')).toBeLessThan(
       prompt.indexOf('"kapitel": ['),
     );
   });

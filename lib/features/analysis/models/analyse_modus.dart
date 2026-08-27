@@ -62,6 +62,16 @@ extension AnalyseModusText on AnalyseModus {
         AnalyseModus.entdecken => texte.modusEntdeckenText,
       };
 
+  /// Die Überschrift der Vorspann-Karte im Report.
+  ///
+  /// Sie unterscheidet sich, weil das Gesamtbild in den beiden Modi etwas
+  /// anderes beschreibt: einmal die neue Richtung, einmal den Weg, den die
+  /// Verfeinerung nimmt (DECISIONS 67).
+  String gesamtbildTitel(L texte) => switch (this) {
+        AnalyseModus.verfeinern => texte.gesamtbildTitel,
+        AnalyseModus.entdecken => texte.neuerLookTitel,
+      };
+
   /// Das kurze Etikett am Verlaufseintrag.
   ///
   /// Absichtlich kürzer als [titel]: Es steht neben einem Datum und darf die

@@ -607,6 +607,12 @@ abstract class L {
   /// **'Beide Modi kosten genau einen Analyse-Lauf, und du machst in beiden dieselben Aufnahmen. Du entscheidest bei jeder Analyse neu.'**
   String get modusHinweis;
 
+  /// Ueberschrift der Vorspann-Karte im verfeinernden Modus.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Gesamtbild'**
+  String get gesamtbildTitel;
+
   /// Ueberschrift der Vorspann-Karte im Modus „Neuen Look entdecken".
   ///
   /// In de, this message translates to:
