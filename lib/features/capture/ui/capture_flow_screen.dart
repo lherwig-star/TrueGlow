@@ -194,7 +194,7 @@ class _FotoLeiste extends StatelessWidget {
                     color: istAktuell
                         ? farben.akzent
                         : foto != null
-                            ? farben.erreicht.withValues(alpha: 0.7)
+                            ? farben.erreichtFlaeche.withValues(alpha: 0.7)
                             : farben.kartenrand,
                     width: istAktuell ? 2 : 1,
                   ),

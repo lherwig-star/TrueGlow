@@ -212,12 +212,16 @@ class _GeprueftBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
         // Ein geprueftes Foto ist erledigt – dieselbe Farbe wie jeder
         // andere Haken in der App (DECISIONS 51).
-        border: Border.all(color: farben.erreicht),
+        border: Border.all(color: farben.erreichtFlaeche),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.check_circle, size: 14, color: farben.erreicht),
+          Icon(
+            Icons.check_circle,
+            size: 14,
+            color: farben.erreichtFlaeche,
+          ),
           const SizedBox(width: 6),
           Text(
             context.texte.fotoGeprueft,

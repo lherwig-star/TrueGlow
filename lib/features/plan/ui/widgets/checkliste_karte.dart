@@ -125,7 +125,9 @@ class _HakenState extends State<_Haken>
         widget.erledigt
             ? Icons.check_circle_rounded
             : Icons.radio_button_unchecked,
-        color: widget.erledigt ? farben.erreicht : farben.textSekundaer,
+        color: widget.erledigt
+            ? farben.erreichtFlaeche
+            : farben.textSekundaer,
         size: 22,
       ),
     );

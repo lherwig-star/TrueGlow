@@ -169,10 +169,10 @@ class _NeuerLookKarte extends StatelessWidget {
       padding: const EdgeInsets.all(AppTheme.gapM),
       decoration: BoxDecoration(
         color: Color.alphaBlend(
-          farben.erreicht.withValues(alpha: 0.08),
+          farben.erreichtFlaeche.withValues(alpha: 0.08),
           Theme.of(context).cardTheme.color ?? farben.flaeche,
         ),
-        border: Border.all(color: farben.erreicht, width: 1.4),
+        border: Border.all(color: farben.erreichtFlaeche, width: 1.4),
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
       ),
       child: Column(
@@ -180,7 +180,11 @@ class _NeuerLookKarte extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.explore_outlined, size: 18, color: farben.erreicht),
+              Icon(
+                Icons.explore_outlined,
+                size: 18,
+                color: farben.erreichtFlaeche,
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(

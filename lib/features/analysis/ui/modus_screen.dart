@@ -116,12 +116,14 @@ class _ModusKarte extends StatelessWidget {
             decoration: BoxDecoration(
               color: ausgewaehlt
                   ? Color.alphaBlend(
-                      farben.erreicht.withValues(alpha: 0.10),
+                      farben.erreichtFlaeche.withValues(alpha: 0.10),
                       karte,
                     )
                   : karte,
               border: Border.all(
-                color: ausgewaehlt ? farben.erreicht : farben.kartenrand,
+                color: ausgewaehlt
+                    ? farben.erreichtFlaeche
+                    : farben.kartenrand,
                 width: ausgewaehlt ? 1.6 : 1,
               ),
               borderRadius: BorderRadius.circular(AppTheme.radiusCard),
@@ -191,7 +193,7 @@ class _Punkt extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: aktiv ? farben.erreicht : farben.textSekundaer,
+          color: aktiv ? farben.erreichtFlaeche : farben.textSekundaer,
           width: aktiv ? 7 : 1.6,
         ),
       ),

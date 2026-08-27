@@ -145,7 +145,7 @@ class _Zeile extends StatelessWidget {
                 ? farben.akzent.withValues(alpha: 0.10)
                 : farben.flaeche,
             border: Border.all(
-              color: aktiv ? farben.erreicht : farben.kartenrand,
+              color: aktiv ? farben.erreichtFlaeche : farben.kartenrand,
             ),
             borderRadius: BorderRadius.circular(AppTheme.radiusCard),
           ),
@@ -161,7 +161,9 @@ class _Zeile extends StatelessWidget {
                 aktiv
                     ? Icons.radio_button_checked
                     : Icons.radio_button_unchecked,
-                color: aktiv ? farben.erreicht : farben.textSekundaer,
+                color: aktiv
+                    ? farben.erreichtFlaeche
+                    : farben.textSekundaer,
                 size: 22,
               ),
             ],

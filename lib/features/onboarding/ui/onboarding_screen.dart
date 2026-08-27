@@ -473,7 +473,7 @@ class _Chip extends StatelessWidget {
               ? farben.akzent.withValues(alpha: 0.14)
               : farben.flaeche,
           border: Border.all(
-            color: aktiv ? farben.erreicht : farben.kartenrand,
+            color: aktiv ? farben.erreichtFlaeche : farben.kartenrand,
           ),
           borderRadius: BorderRadius.circular(999),
         ),
@@ -519,7 +519,7 @@ class _Auswahlkarte extends StatelessWidget {
               ? farben.akzent.withValues(alpha: 0.10)
               : farben.flaeche,
           border: Border.all(
-            color: aktiv ? farben.erreicht : farben.kartenrand,
+            color: aktiv ? farben.erreichtFlaeche : farben.kartenrand,
           ),
           borderRadius: BorderRadius.circular(AppTheme.radiusCard),
         ),
@@ -551,7 +551,7 @@ class _Auswahlkarte extends StatelessWidget {
                   : (aktiv
                       ? Icons.radio_button_checked
                       : Icons.radio_button_unchecked),
-              color: aktiv ? farben.erreicht : farben.textSekundaer,
+              color: aktiv ? farben.erreichtFlaeche : farben.textSekundaer,
             ),
           ],
         ),

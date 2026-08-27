@@ -278,7 +278,7 @@ class _Bestaetigung extends StatelessWidget {
                     vertical: AppTheme.gapXs,
                   ),
                   decoration: BoxDecoration(
-                    color: farben.erreicht.withValues(alpha: 0.12),
+                    color: farben.erreichtFlaeche.withValues(alpha: 0.12),
                     borderRadius:
                         BorderRadius.circular(AppTheme.radiusButton),
                   ),
@@ -290,7 +290,7 @@ class _Bestaetigung extends StatelessWidget {
                         Icon(
                           Icons.check_circle_rounded,
                           size: 20,
-                          color: farben.erreicht,
+                          color: farben.erreichtFlaeche,
                         ),
                         const SizedBox(width: AppTheme.gapS),
                         Expanded(
@@ -407,7 +407,7 @@ class _JokerVorrat extends StatelessWidget {
                           : Icons.shield_moon_outlined,
                       size: 18,
                       color: i < uebrig
-                          ? farben.erreicht
+                          ? farben.erreichtFlaeche
                           : farben.textSekundaer.withValues(alpha: 0.4),
                     ),
                   ),

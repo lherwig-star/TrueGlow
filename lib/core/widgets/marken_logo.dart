@@ -45,7 +45,7 @@ class MarkenLogo extends StatelessWidget {
       child: CustomPaint(
         painter: _MarkenPainter(
           linien: farbe ?? farben.textPrimaer,
-          glut: glut ?? farben.erreicht,
+          glut: glut ?? farben.erreichtFlaeche,
         ),
         // Das Zeichen trägt keine Bedeutung, die ein Screenreader vorlesen
         // müsste: Der Name steht als Text daneben.

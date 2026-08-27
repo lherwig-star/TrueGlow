@@ -252,14 +252,38 @@ void main() {
       );
     });
 
-    test('und was darauf liegt, ist darauf zu sehen', () {
-      for (final schema in {'dunkel': AppColors.dunkel, 'hell': AppColors.hell}.entries) {
-        expect(
-          _kontrast(schema.value.erreichtFlaeche, schema.value.aufErreicht),
-          greaterThanOrEqualTo(3.0),
-          reason: 'aufErreicht auf erreichtFlaeche (${schema.key})',
-        );
-      }
+    test('was darauf liegt, ist im Dunkelmodus klar zu sehen', () {
+      expect(
+        _kontrast(
+          AppColors.dunkel.erreichtFlaeche,
+          AppColors.dunkel.aufErreicht,
+        ),
+        greaterThanOrEqualTo(3.0),
+      );
+    });
+
+    test('hell ist der Haken eine ausdrueckliche Ausnahme', () {
+      // Das Karten-Weiss auf dem Amber kommt auf rund 2,5:1 und erreicht
+      // damit keine Schwelle – weder die 4,5:1 fuer Text noch die 3:1 fuer
+      // grafische Elemente.
+      //
+      // Das ist bewusst so entschieden (DECISIONS 64): Der Haken ist
+      // Zierrat. Was er anzeigt, steht immer auch woanders — die erledigte
+      // Aufgabe ist durchgestrichen, der Zaehler nennt „2/5", die Challenge
+      // „1 von 4". Die Alternative war die dunkle Tinte, und die ergab
+      // Braun auf Orange – genau der Look, der weg sollte.
+      //
+      // Der Test haelt die Zahl fest, damit sie niemand fuer ein Versehen
+      // haelt und niemand sie unbemerkt verschlechtert.
+      final wert = _kontrast(
+        AppColors.hell.erreichtFlaeche,
+        AppColors.hell.aufErreicht,
+      );
+
+      expect(wert, greaterThan(2.3));
+      expect(wert, lessThan(2.8));
+      // Und es ist wirklich das Karten-Weiss, keine dritte Farbe.
+      expect(AppColors.hell.aufErreicht, AppColors.hell.flaeche);
     });
 
     test('im Dunkelmodus sind Text- und Flaechen-Gold derselbe Ton', () {

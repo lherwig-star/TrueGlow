@@ -365,7 +365,9 @@ class _Zeitleiste extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: aktiv ? farben.erreicht : farben.kartenrand,
+                        color: aktiv
+                            ? farben.erreichtFlaeche
+                            : farben.kartenrand,
                         width: aktiv ? 2 : 1,
                       ),
                     ),

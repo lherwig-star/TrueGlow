@@ -66,9 +66,11 @@ class AuswahlChip extends StatelessWidget {
         vertical: vollBreite ? 12 : 12,
       ),
       decoration: BoxDecoration(
-        color: aktiv ? farben.erreicht.withValues(alpha: 0.14) : farben.flaeche,
+        color: aktiv
+            ? farben.erreichtFlaeche.withValues(alpha: 0.14)
+            : farben.flaeche,
         border: Border.all(
-          color: aktiv ? farben.erreicht : farben.kartenrand,
+          color: aktiv ? farben.erreichtFlaeche : farben.kartenrand,
           width: aktiv ? 1.6 : 1,
         ),
         borderRadius: radius,
@@ -143,7 +145,7 @@ class _Haken extends StatelessWidget {
       decoration: BoxDecoration(
         color: aktiv ? farben.erreichtFlaeche : Colors.transparent,
         border: Border.all(
-          color: aktiv ? farben.erreicht : farben.textSekundaer,
+          color: aktiv ? farben.erreichtFlaeche : farben.textSekundaer,
           width: 1.6,
         ),
         borderRadius: BorderRadius.circular(7),

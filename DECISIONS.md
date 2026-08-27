@@ -2566,6 +2566,84 @@ weiter als abgeschriebene Zahl.
 **Preis:** Zwei Farbrollen mehr. Layout, Rundungen und Animationen sind in
 beiden Modi unverändert — es haben sich ausschließlich Farbwerte bewegt.
 
+## 64 · Ocker ist Schrift, Amber ist alles Sichtbare
+
+Nach der Umstellung auf Creme, Teal und Amber (DECISIONS 63) trugen alle
+kleinen Erreicht-Elemente das dunkle Ocker `#8F5500`: Haken, Joker-Schilde,
+gewählte Radio-Punkte, Abzeichen, Auswahlrahmen. Auf hellem Grund wirkt das
+schlammig statt golden — und es war mein Fehler: Ich hatte die Text-Rolle
+überall dort stehen lassen, wo vorher ein einziges Gold beides konnte.
+
+**Die Regel ist jetzt hart und ohne Ausnahme:**
+
+| Rolle | wo |
+|---|---|
+| `erreicht` `#8F5500` | **ausschließlich** in einem `TextStyle` |
+| `erreichtFlaeche` `#E59305` | jede Fläche, jeder Rahmen, jedes Symbol |
+
+Umgestellt wurden 31 Stellen in 16 Dateien: die Haken in Chip und
+Modul-Karte samt Rahmen, die Joker-Schilde, der Radio-Punkt der Moduswahl,
+die Radio-Symbole in Onboarding und Stil-Fragebogen, die Auswahlrahmen von
+Karten, Chips und Check-in-Listen, der Haken am geprüften Foto, die Karte
+„Dein neuer Look", der Jubel samt Konfetti, die Glut im Markenzeichen und die
+Abzeichen. Übrig geblieben sind elf Stellen — alle elf `color:` in einem
+`TextStyle`.
+
+**Der Haken ist jetzt Karten-Weiß** (`#FEFAF7`), wie im Referenzbild. Einen
+Commit lang stand dort die Tinte, weil sie 5,1:1 erreicht — das ergab
+dunkles Braun auf Orange, also genau den Look, der weg sollte.
+
+Das Karten-Weiß kommt auf dem Amber auf **2,5:1** und hält damit keine
+Schwelle, weder die 4,5:1 für Text noch die 3:1 für grafische Elemente. Das
+ist eine ausdrückliche Entscheidung: Der Haken ist Zierrat. Was er anzeigt,
+steht immer auch woanders — die erledigte Aufgabe ist durchgestrichen, der
+Zähler nennt „2/5", die Challenge „1 von 4". **Ein Test hält die Zahl fest**,
+mitsamt der Begründung, damit sie niemand für ein Versehen hält und niemand
+sie unbemerkt verschlechtert.
+
+**Ein Test hält auch die Regel selbst.** Er liest den Quelltext, weil sich
+das anders nicht prüfen lässt: Eine Farbe im Widgetbaum sagt nicht mehr,
+wofür sie gedacht war. Drei Prüfungen:
+
+1. `farben.erreicht` steht nur innerhalb eines `TextStyle`.
+2. `farben.erreichtFlaeche` steht in keinem `TextStyle` — Amber-Text käme
+   auf 2,4:1.
+3. Keine Datei außer der Palette schreibt eine der vier Amber-Zahlen von
+   Hand hin.
+
+Der Test hat sich beim ersten Lauf sofort bezahlt gemacht: Er fand den
+Zähler „1/9" über den Abzeichen, den ich versehentlich mit umgestellt hatte.
+
+**Abzeichen** brauchten keine eigene Behandlung. Sie rechnen ihren Kreis und
+den Zierring aus derselben Farbe (16 % und 70 %); mit dem Amber ergibt das
+auf der Karte einen warmen Creme-Amber-Kreis mit Amber-Icon — die
+`#FDECD6`-Familie aus der Vorgabe. Gesperrte bleiben neutral grau mit Schloss.
+
+### Der Dunkelmodus
+
+Alle 31 Stellen wechseln von `erreicht` auf `erreichtFlaeche` — und **dunkel
+sind beide Rollen derselbe Ton** `#E8BE6E`. Es rendert Pixel für Pixel
+dasselbe. Der Einfrier-Test mit den vierzehn abgeschriebenen Werten ist
+unverändert grün.
+
+### Was nicht umgesetzt wurde
+
+**Der Umschalter in den Einstellungen bleibt teal.** Er ist der einzige
+Punkt aus der Liste, den ich nicht umgestellt habe: Er zieht seine Farbe aus
+`colorScheme.primary`, also aus `akzent`. Ein eigenes `switchTheme` mit
+`erreichtFlaeche` würde ihn hell amber machen — **und dunkel von Sand
+`#D8C6AA` auf Gold `#E8BE6E**, also sichtbar. Das steht gegen die Regel, die
+über diesem Paket steht.
+
+Bemerkenswert ist der Befund trotzdem: Nach DECISIONS 51 ist Gold die Farbe
+für „jeden Zustand, den der Nutzer selbst eingeschaltet hat" — ein
+Umschalter ist genau das. Dass er im Dunkelmodus Sand trägt, ist eine alte
+Unstimmigkeit, keine Entscheidung. Wer sie aufräumen will, braucht ein Paket,
+das die Änderung am Dunkelmodus ausdrücklich erlaubt.
+
+**Preis:** Keiner an Laufzeit. Ein Test mehr, der Quelltext liest — der
+langsamste der Sammlung, mit rund einer Zehntelsekunde.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

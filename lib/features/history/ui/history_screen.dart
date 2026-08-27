@@ -180,12 +180,16 @@ class _ModusEtikett extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final farben = context.farben;
+    // Zwei Rollen, weil zwei Dinge: Die Flaeche traegt den Flaechen-Ton,
+    // die Schrift den Schrift-Ton (DECISIONS 64).
     final ton = modus.istEntdecken ? farben.erreicht : farben.textSekundaer;
+    final flaeche =
+        modus.istEntdecken ? farben.erreichtFlaeche : farben.textSekundaer;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: ton.withValues(alpha: 0.14),
+        color: flaeche.withValues(alpha: 0.14),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(

@@ -1539,6 +1539,79 @@ flutter run --dart-define=TRUEGLOW_MOCK=true
 | Der Zähler „2/5" ist grau statt amber | **Kein Fund.** Er färbt sich erst, wenn die Liste steht (DECISIONS 50). |
 | Der Farbton gefällt nicht ganz | Kein Blocker — Nuancen lassen sich nachziehen. |
 
+## 29 · Warmes Amber statt Ocker
+
+Ergänzt Abschnitt 28. **Kein Analyse-Lauf nötig:**
+
+```bash
+flutter run --dart-define=TRUEGLOW_MOCK=true
+```
+
+**Vorbereitung:** Einstellungen → Design → **Hell**.
+
+1. **Der gesetzte Haken.** Auf der Startseite eine Tagesaufgabe abhaken.
+   Erwartet: ein **amber gefüllter Kreis mit hellem Haken** — warm und
+   leuchtend. *Kriterium:* Ein dunkelbrauner Haken oder ein brauner Kreis
+   ist ein Fund.
+
+2. **Die Joker-Schilde.** Erwartet: amber, nicht braun.
+
+3. **Die Abzeichen.** Nach unten scrollen. Erwartet: Freigeschaltete
+   Abzeichen sitzen in einem zarten Creme-Amber-Kreis mit amberfarbenem
+   Ring und Icon. Gesperrte bleiben neutral grau mit Schloss. Der Zähler
+   „1/9" oben rechts ist dunkles Ocker — das ist **Schrift** und darf dunkel
+   sein.
+
+4. **Die Moduswahl.** „Neue Analyse" antippen. Erwartet: Die gewählte Karte
+   hat einen **amberfarbenen Rahmen** und einen amberfarbenen Punkt rechts,
+   dazu eine zarte amberne Tönung. Kein Braun.
+
+5. **Die Modulauswahl.** Weiter zu den Modulen, eins antippen. Erwartet:
+   amberner Rahmen, amber gefülltes Kästchen mit hellem Haken.
+
+6. **Deine Richtung.** Weiter, einen Chip antippen. Erwartet: amberner
+   Rahmen, amberne Tönung, amber gefülltes Kästchen. Der **Text** des Chips
+   darf dunkel bleiben — er ist Schrift.
+
+7. **Der Check-in.** Einen Check-in öffnen und eine Antwort wählen.
+   Erwartet: amberner Rahmen und amberfarbenes Symbol.
+
+8. **Das Foto-Häkchen.** In der Aufnahme-Strecke ein geprüftes Foto
+   ansehen. Erwartet: amberner Rahmen und amberfarbener Haken; die
+   Beschriftung daneben bleibt dunkles Ocker.
+
+9. **Gegen das Referenzbild halten.** Startseite und Moduswahl neben das
+   Bild legen. Erwartet: Die Erreicht-Elemente wirken warm und leuchtend.
+   *Kriterium:* Irgendwo dunkles Braun auf Orange oder Braun als Icon-Farbe
+   ist ein Fund.
+
+10. **Was dunkel bleiben darf.** Erwartet: Der Zählertext im Chip einer
+    fertigen Liste, die Beschriftung „Geprüft" am Foto, „Joker gerettet",
+    das Etikett im Verlauf — alles **Schrift** und deshalb im dunklen Ocker.
+    Das ist richtig so und kein Fund.
+
+11. **Die Gegenprobe: Dunkelmodus unverändert.** Einstellungen → Design →
+    **Dunkel**. Sieh dir besonders an: Haken, Joker-Schilde, Radio-Auswahl
+    in der Moduswahl, Abzeichen, Konfetti beim Jubel. Erwartet: **exakt** das
+    gewohnte Bild. *Kriterium:* Jede sichtbare Abweichung ist ein Blocker.
+
+12. **Der Umschalter in den Einstellungen** ist hell **teal**, nicht amber —
+    und dunkel weiter sandfarben. Das ist so gewollt und **kein Fund**: Ihn
+    umzustellen hätte den Dunkelmodus verändert. Die Begründung steht in
+    DECISIONS 64.
+
+### Was ein Fund ist
+
+| Fund | Reaktion |
+|---|---|
+| Brauner Haken, brauner Kreis, braunes Icon | Blocker — die Regel greift dort nicht. |
+| Dunkles Braun auf Orange | Blocker. |
+| Amberner Text auf heller Fläche | Blocker — der wäre nicht lesbar. |
+| Freigeschaltetes Abzeichen grau oder beige | Blocker. |
+| Der Dunkelmodus sieht anders aus | Blocker. |
+| Ocker-Schrift im Zähler oder an „Geprüft" | **Kein Fund** — das ist Schrift. |
+| Der Umschalter ist teal | **Kein Fund** — siehe Schritt 12. |
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

@@ -222,9 +222,14 @@ class AppColors extends ThemeExtension<AppColors> {
     erreicht: Color(0xFF8F5500),
     // Und als Flaeche das Amber aus dem Referenzbild.
     erreichtFlaeche: Color(0xFFE59305),
-    // Was auf dem Amber liegt: die Tinte, 5,1:1. Das Referenzbild zeigt dort
-    // Weiss – das kaeme auf 2,5:1 und waere selbst als Haken zu schwach.
-    aufErreicht: Color(0xFF12383F),
+    // Was auf dem Amber liegt: das Karten-Weiss – wie im Referenzbild.
+    //
+    // Es erreicht dort 2,5:1 und damit keine Textschwelle. Das ist eine
+    // bewusste, ausdrueckliche Ausnahme (DECISIONS 64): Der Haken ist
+    // Zierrat, den Zustand tragen Durchstreichung und Zaehlerstand. Die
+    // Tinte stand hier einen Commit lang und ergab dunkles Braun auf
+    // Orange – genau der Look, der weg sollte.
+    aufErreicht: Color(0xFFFEFAF7),
     erreichtLeer: Color(0xFFFDE9D2),
     erreichtChip: Color(0xFFF5DEB9),
     // Wie dunkel: die Textfarbe bei 10 %.

@@ -77,8 +77,11 @@ class _Abzeichen extends StatelessWidget {
     // Erreicht: Gold. Gesperrt: derselbe Grauton wie jeder Sekundärtext,
     // zusätzlich abgedunkelt. Kein Rot, kein Durchgestrichenes – gesperrt
     // heißt „noch nicht", nicht „verpasst".
+    // Freigeschaltet: das warme Amber – Kreis, Zierring und Icon
+    // entstehen daraus (DECISIONS 64). Gesperrt: derselbe Grauton wie
+    // jeder Sekundaertext, zusaetzlich abgedunkelt.
     final farbe = erreicht
-        ? farben.erreicht
+        ? farben.erreichtFlaeche
         : farben.textSekundaer.withValues(alpha: 0.55);
 
     return Tooltip(

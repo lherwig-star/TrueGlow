@@ -39,7 +39,11 @@ class ChallengeKarte extends ConsumerWidget {
             ? Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.check_circle, size: 18, color: farben.erreicht),
+                  Icon(
+                    Icons.check_circle,
+                    size: 18,
+                    color: farben.erreichtFlaeche,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     texte.challengeGeschafft,

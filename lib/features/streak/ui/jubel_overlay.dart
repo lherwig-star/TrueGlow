@@ -80,7 +80,7 @@ class _JubelDialogState extends State<_JubelDialog>
                       // was auf der Startseite golden leuchtet – ein frisch
                       // freigeschaltetes Abzeichen (DECISIONS 50).
                       farben: [
-                        farben.erreicht,
+                        farben.erreichtFlaeche,
                         farben.akzent,
                         farben.akzentZwei,
                         farben.textPrimaer,
@@ -135,13 +135,20 @@ class _Karte extends StatelessWidget {
                 width: 96,
                 height: 96,
                 decoration: BoxDecoration(
-                  color: farben.erreicht.withValues(alpha: 0.16),
+                  color: farben.erreichtFlaeche.withValues(alpha: 0.16),
                   shape: BoxShape.circle,
-                  border: Border.all(color: farben.erreicht, width: 2),
+                  border: Border.all(
+                    color: farben.erreichtFlaeche,
+                    width: 2,
+                  ),
                 ),
                 // Dasselbe Abzeichen, dieselbe Farbe wie danach in der Reihe
                 // auf der Startseite.
-                child: Icon(abzeichen.icon, size: 46, color: farben.erreicht),
+                child: Icon(
+                  abzeichen.icon,
+                  size: 46,
+                  color: farben.erreichtFlaeche,
+                ),
               ),
               const SizedBox(height: AppTheme.gapM),
               Text(

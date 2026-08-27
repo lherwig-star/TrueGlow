@@ -210,11 +210,11 @@ class _Sprachumschalter extends ConsumerWidget {
                   ),
                   decoration: BoxDecoration(
                     color: sprache == aktiv
-                        ? farben.erreicht.withValues(alpha: 0.16)
+                        ? farben.erreichtFlaeche.withValues(alpha: 0.16)
                         : Colors.transparent,
                     border: Border.all(
                       color: sprache == aktiv
-                          ? farben.erreicht
+                          ? farben.erreichtFlaeche
                           : farben.kartenrand,
                     ),
                     borderRadius: BorderRadius.circular(999),
