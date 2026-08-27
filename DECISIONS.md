@@ -3044,6 +3044,111 @@ nichts — und ohne Treffer fällt die Reihe ohnehin weg.
 in Firestore, ein weiterer Schlüssel, der gepflegt werden muss. Und ein
 Report, der beim Scrollen Bilder nachlädt, statt sofort fertig dazustehen.
 
+## 70 · „Heute" folgt dem Tag, nicht dem Kapitel
+
+Befund vom Gerät: Innerhalb eines Kapitels sprangen die Aufgaben wild durch
+den Tag. „Haare & Bart" las sich als
+
+> nach dem Aufstehen → nach dem Duschen → nach dem Zähneputzen → vor dem
+> Schlafengehen → **nach dem Frühstück**
+
+Wer die Liste von oben nach unten abarbeitet, landet nach dem Zubettgehen
+wieder beim Frühstück. Die Sortierung nach Thema ist beim Nachlesen richtig
+und beim Abhaken falsch.
+
+**Der Heute-Tab gruppiert jetzt nach Tagesabschnitt:** „Morgens",
+„Tagsüber", „Abends", „Bei Bedarf" — in dieser Reihenfolge, leere Abschnitte
+fallen weg.
+
+### Sortiert wird nach dem Anker, den es längst gibt
+
+Seit DECISIONS 44 trägt jede Tagesaufgabe einen Wenn-dann-Anker: „Nach dem
+Aufstehen: Gesicht waschen". Der Anker sagt, *wann* etwas passiert — also
+kann er die Liste auch ordnen. Es musste dafür nichts Neues in den Report.
+
+Die Zuordnung steht an genau **einer** Stelle
+(`lib/features/plan/logic/tagesabschnitt.dart`), und die Reihenfolge in der
+Tabelle ist zugleich die Reihenfolge innerhalb des Abschnitts:
+
+| Abschnitt | Anker, in dieser Reihenfolge |
+|---|---|
+| Morgens | nach dem Aufstehen · beim Duschen · nach dem Duschen · nach dem Frühstück · nach dem Zähneputzen |
+| Abends | nach dem Abendessen · vor dem Schlafengehen |
+
+Beide Sprachen stehen nebeneinander, weil der Anker in der Sprache im Report
+steht, in der er entstanden ist. Wer die App danach umstellt, behält seine
+alten Aufgaben — und die müssen weiter einsortiert werden.
+
+**„Nach dem Zähneputzen" steht morgens**, obwohl auch abends Zähne geputzt
+werden. Den Anker gibt es nur einmal; morgens ist er der letzte Griff vor dem
+Haus, der Punkt, an dem „Haare richten" sitzt. Abends gibt es dafür „vor dem
+Schlafengehen".
+
+### Drei Fälle, drei Antworten
+
+| Was in der Aufgabe steht | Wohin sie geht |
+|---|---|
+| ein bekannter Anker | sein Abschnitt, an seiner Stelle |
+| ein unbekannter Anker („Bei Rauchverlangen: …") | **Bei Bedarf** |
+| gar kein Anker (Report von vor DECISIONS 44) | **Tagsüber** |
+
+Der mittlere Fall ist kein Fehler: Der Prompt lässt für die Aufgaben aus dem
+Freitext ausdrücklich eine *Situation* als Auslöser zu, und die hat keine
+Tageszeit. Der untere ist die Rückfalls-Sicherheit — alte Aufgaben
+verschwinden nicht, sie stehen in der Mitte des Tages.
+
+Ein Anker ist höchstens 45 Zeichen lang. Ohne diese Schranke läse
+„Zähne putzen, und zwar wirklich sehr gründlich und ohne Eile: zwei Minuten"
+als unbekannter Anker und landete bei Bedarf.
+
+### Das Thema bleibt sichtbar
+
+Die Überschrift nennt jetzt die Tageszeit, also muss das Thema woanders
+stehen: als **kleines Symbol am Ende der Zeile** — das Icon des Kapitels, in
+der Sekundärfarbe, nicht antippbar. Für die Sprachausgabe trägt es den Namen
+des Bereichs; ein Symbol allein ist für einen Screenreader nichts.
+
+### Was ausdrücklich gleich bleibt
+
+- **Die Streak-Logik.** Erster Haken sichert den Tag, Serie, Joker,
+  Challenge, der „Tag gesichert!"-Moment — nichts davon wurde angefasst. Der
+  Fortschritt hängt weiterhin am Aufgabentext, nicht an ihrer Position.
+- **Die Herkunft.** Eine Aufgabe kann per Konstruktion nur aus einem Kapitel
+  des Reports kommen und damit nur aus einem gewählten Modul. Die
+  Gruppierung ordnet um, sie holt nichts dazu.
+- **Der Plan-Tab.** Er behält seine thematische Gliederung. Thema dort,
+  Tagesablauf hier — nichts doppelt sich.
+- **Der volle Aufgabentext samt Anker.** Er bleibt stehen. Unter „Morgens"
+  ist „Nach dem Aufstehen:" nicht überflüssig, sondern die Gewohnheit selbst
+  (DECISIONS 44) — und die einzige Stelle, an der die Reihenfolge nachprüfbar
+  ist.
+
+### Zwei Fallen, die im Test stehen
+
+**Dart sortiert nicht stabil.** Ohne einen mitgeführten Laufindex tauschen
+gleichrangige Aufgaben bei jedem Bauen die Plätze — eine Liste, die beim
+Scrollen die Reihenfolge wechselt, ist unbenutzbar. Ein Test baut dieselbe
+Liste sechsmal und vergleicht.
+
+**Ein Anker, den niemand einsortiert, verschwindet nicht — er landet still
+bei Bedarf.** Deshalb steht die Ankerliste im Test noch einmal abgeschrieben:
+Kommt in `functions/src/labels.ts` einer dazu, schlägt der Test fehl, statt
+dass es niemandem auffällt.
+
+### Der Demo-Modus
+
+Beide Beispielantworten wurden umgeschrieben, damit dort **alle vier
+Abschnitte und alle sieben Anker** vorkommen — samt einer situativen Aufgabe
+und einer ganz ohne Anker. Der verfeinernde Beispiel-Report trug noch
+Aufgaben aus der Zeit vor DECISIONS 44 („Haare morgens mit Paste in Form
+bringen"); ohne Anker wäre die neue Sortierung dort gar nicht zu sehen
+gewesen.
+
+**Preis:** Der Heute-Tab und der Report sind nicht mehr gleich sortiert. Wer
+im Report eine Aufgabe sieht und sie in der Tagesliste sucht, muss wissen,
+zu welcher Tageszeit sie gehört. Dafür ist die Liste einmal von oben nach
+unten abarbeitbar.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

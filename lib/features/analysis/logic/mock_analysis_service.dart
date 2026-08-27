@@ -100,10 +100,11 @@ class MockAnalysisService implements AnalysisService {
       "modul": "basis",
       "einleitung": "Ovale Grundform mit klarer Kieferlinie und leicht höherer Stirn. Diese Form ist unkompliziert: fast jede Frisur funktioniert, solange oben etwas Volumen bleibt und die Seiten nicht zu breit werden.",
       "habits": [
-        "Haare morgens mit Paste in Form bringen",
-        "Bartkontur an den Wangen nachziehen",
-        "Abends Bartöl einarbeiten",
-        "Kopfhaut beim Waschen kurz massieren"
+        "Nach dem Aufstehen: Deckhaar mit den Fingern nach vorn richten",
+        "Beim Duschen: Kopfhaut eine halbe Minute mit den Fingerkuppen massieren",
+        "Nach dem Duschen: Paste ins handtuchtrockene Haar einarbeiten",
+        "Nach dem Zähneputzen: Bartkontur an Wange und Hals kontrollieren",
+        "Vor dem Schlafengehen: Bartöl in Bart und Haut einarbeiten"
       ],
       "sektionen": [
         {
@@ -149,11 +150,10 @@ class MockAnalysisService implements AnalysisService {
       "modul": "hautFarbtyp",
       "einleitung": "Die Haut wirkt in der T-Zone leicht glänzend, an den Wangen eher trocken – eine typische Mischhaut. Der Unterton ist warm, mit einem leichten Goldstich.",
       "habits": [
-        "Morgens mit mildem Gel reinigen",
-        "Direkt danach eincremen",
-        "Sonnenschutz LSF 30 auftragen",
-        "Abends Gesicht reinigen",
-        "Zu warmen Farbtönen greifen"
+        "Nach dem Aufstehen: Gesicht mit mildem Gel reinigen",
+        "Nach dem Duschen: Creme auf die noch feuchte Haut auftragen",
+        "Nach dem Frühstück: Sonnenschutz LSF 30 auf Stirn, Schläfen und Ohren",
+        "Vor dem Schlafengehen: Gesicht reinigen und nachcremen"
       ],
       "sektionen": [
         {
@@ -197,11 +197,10 @@ class MockAnalysisService implements AnalysisService {
       "modul": "makeupAusstrahlung",
       "einleitung": "Klare Augenpartie, mitteldichte Brauen, gleichmäßiger Teint mit warmem Unterton. Das ist eine gute Ausgangslage für einen Alltags-Look, der wenige Handgriffe braucht und trotzdem wirkt.",
       "habits": [
-        "Brauen morgens in Form bürsten",
-        "Getönte Tagescreme statt Foundation",
-        "Wimpern tuschen, nur oben",
-        "Lippenpflege mit leichtem Ton",
-        "Abends alles gründlich abnehmen"
+        "Nach dem Aufstehen: Brauen nach oben außen in Form bürsten",
+        "Nach dem Duschen: Getönte Tagescreme dünn auftragen",
+        "Nach dem Frühstück: Wimpern nur am Oberlid tuschen",
+        "Vor dem Schlafengehen: Alles gründlich abnehmen"
       ],
       "sektionen": [
         {
@@ -240,10 +239,10 @@ class MockAnalysisService implements AnalysisService {
       "modul": "zaehneLaecheln",
       "einleitung": "Das Lächeln wirkt offen und symmetrisch. Die Zahnfarbe liegt im natürlichen Bereich mit einem leichten Gelbstich, wie er bei Kaffee- und Teetrinkern üblich ist.",
       "habits": [
-        "Abends Zahnseide benutzen",
-        "Nach Kaffee mit Wasser nachspülen",
-        "Zweimal täglich zwei Minuten putzen",
-        "Einmal Interdentalbürste durchziehen"
+        "Nach dem Aufstehen: Zwei Minuten putzen, mit Timer",
+        "Nach dem Frühstück: Nach dem Kaffee mit Wasser nachspülen",
+        "Nach dem Abendessen: Interdentalbürste durchziehen",
+        "Vor dem Schlafengehen: Zahnseide durch alle Zwischenräume ziehen"
       ],
       "sektionen": [
         {
@@ -279,10 +278,10 @@ class MockAnalysisService implements AnalysisService {
       "modul": "figurPassform",
       "einleitung": "Die Silhouette zeigt gleichmäßig verteilte Proportionen mit leicht breiteren Schultern als Hüfte – eine dankbare Ausgangslage für die meisten Schnitte.",
       "habits": [
-        "30 Sekunden Brustöffner im Türrahmen",
+        "Nach dem Aufstehen: Eine Minute mit dem Rücken zur Wand stellen",
+        "Wenn die Schultern nach vorn kippen: 30 Sekunden Brustöffner im Türrahmen",
         "Bildschirm auf Augenhöhe prüfen",
-        "Bewusst aufrecht hinsetzen",
-        "Abends Nacken fünf Minuten lockern"
+        "Nach dem Abendessen: Nacken fünf Minuten lockern"
       ],
       "sektionen": [
         {
@@ -312,10 +311,10 @@ class MockAnalysisService implements AnalysisService {
       "modul": "stilKleiderschrank",
       "einleitung": "Die gezeigten Outfits sind funktional und zurückhaltend. Zum angegebenen Stilziel fehlt vor allem Struktur in der obersten Schicht.",
       "habits": [
-        "Outfit am Abend vorher rauslegen",
-        "Ein Teil pro Woche kritisch prüfen",
+        "Beim Ankleiden: Passform der Schulternaht am Spiegel prüfen",
         "Schuhe nach dem Tragen auslüften",
-        "Neues Teil gegen drei vorhandene testen"
+        "Nach dem Abendessen: Ein Teil im Schrank kritisch prüfen",
+        "Vor dem Schlafengehen: Outfit für morgen rauslegen"
       ],
       "sektionen": [
         {
@@ -404,6 +403,7 @@ class MockAnalysisService implements AnalysisService {
       "habits": [
         "Nach dem Duschen: Haar antrocknen und Paste einarbeiten",
         "Nach dem Aufstehen: Deckhaar mit den Fingern nach vorn richten",
+        "Beim Duschen: Kopfhaut eine halbe Minute massieren",
         "Nach dem Zähneputzen: Bartkontur am Hals kontrollieren",
         "Vor dem Schlafengehen: Bartöl in Bart und Haut einarbeiten"
       ],
@@ -583,7 +583,7 @@ class MockAnalysisService implements AnalysisService {
       "einleitung": "Gleichmäßig verteilte Proportionen mit leicht breiteren Schultern als Hüfte. Das ist die Figur, mit der die klaren Silhouetten des neuen Looks am einfachsten funktionieren – sie brauchen genau diese Schulterlinie.",
       "habits": [
         "Nach dem Aufstehen: 30 Sekunden Brustöffner im Türrahmen",
-        "Nach dem Frühstück: Bildschirmhöhe prüfen",
+        "Wenn die Schultern nach vorn kippen: kurz aufrichten",
         "Nach dem Abendessen: Nacken fünf Minuten lockern",
         "Vor dem Schlafengehen: Outfit für morgen auf Passform prüfen"
       ],
@@ -617,7 +617,7 @@ class MockAnalysisService implements AnalysisService {
       "habits": [
         "Vor dem Schlafengehen: Outfit für morgen rauslegen",
         "Nach dem Abendessen: Ein Teil im Schrank kritisch prüfen",
-        "Nach dem Frühstück: Schuhe vom Vortag auslüften",
+        "Schuhe vom Vortag auslüften",
         "Nach dem Duschen: Passform am Spiegel kurz kontrollieren"
       ],
       "sektionen": [

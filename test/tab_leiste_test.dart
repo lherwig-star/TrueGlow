@@ -17,7 +17,7 @@ import 'package:trueglow/features/onboarding/logic/onboarding_controller.dart';
 import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
 import 'package:trueglow/features/plan/logic/plan_progress_repository.dart';
 import 'package:trueglow/features/plan/ui/widgets/challenge_karte.dart';
-import 'package:trueglow/features/plan/ui/widgets/checkliste_karte.dart';
+import 'package:trueglow/features/plan/ui/widgets/tagesliste_karte.dart';
 import 'package:trueglow/features/streak/ui/widgets/abzeichen_sektion.dart';
 import 'package:trueglow/features/streak/ui/widgets/streak_karte.dart';
 import 'package:trueglow/main.dart';
@@ -146,7 +146,7 @@ void main() {
         for (final typ in <Type>[
           StreakKarte,
           ChallengeKarte,
-          ChecklisteKarte,
+          AbschnittKarte,
           CheckinKarte,
           PhaseKarte,
           AbzeichenSektion,
@@ -172,7 +172,7 @@ void main() {
       // Und die Verteilung ist die aus DECISIONS 65.
       expect(gefunden[StreakKarte], [HomeTab.heute]);
       expect(gefunden[ChallengeKarte], [HomeTab.heute]);
-      expect(gefunden[ChecklisteKarte], [HomeTab.heute]);
+      expect(gefunden[AbschnittKarte], [HomeTab.heute]);
       expect(gefunden[CheckinKarte], [HomeTab.plan]);
       expect(gefunden[PhaseKarte], [HomeTab.plan]);
       expect(gefunden[AbzeichenSektion], [HomeTab.fortschritt]);
@@ -184,7 +184,7 @@ void main() {
       handyGroesse(tester, hoehe: 2200);
       await _app(tester);
 
-      for (final typ in <Type>[StreakKarte, ChallengeKarte, ChecklisteKarte]) {
+      for (final typ in <Type>[StreakKarte, ChallengeKarte, AbschnittKarte]) {
         expect(
           find.descendant(of: find.byType(HeuteTab), matching: find.byType(typ)),
           findsOneWidget,

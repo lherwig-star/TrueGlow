@@ -751,6 +751,36 @@ abstract class L {
   /// **'Fortschritt'**
   String get tabFortschritt;
 
+  /// No description provided for @abschnittMorgens.
+  ///
+  /// In de, this message translates to:
+  /// **'Morgens'**
+  String get abschnittMorgens;
+
+  /// No description provided for @abschnittTagsueber.
+  ///
+  /// In de, this message translates to:
+  /// **'Tagsüber'**
+  String get abschnittTagsueber;
+
+  /// No description provided for @abschnittAbends.
+  ///
+  /// In de, this message translates to:
+  /// **'Abends'**
+  String get abschnittAbends;
+
+  /// No description provided for @abschnittBeiBedarf.
+  ///
+  /// In de, this message translates to:
+  /// **'Bei Bedarf'**
+  String get abschnittBeiBedarf;
+
+  /// Vorlesetext des Themen-Abzeichens an einer Tagesaufgabe.
+  ///
+  /// In de, this message translates to:
+  /// **'Bereich: {thema}'**
+  String abschnittThema(String thema);
+
   /// Wenn der Report keine Tagesaufgaben hatte.
   ///
   /// In de, this message translates to:

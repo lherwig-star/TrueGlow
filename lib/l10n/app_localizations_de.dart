@@ -368,6 +368,23 @@ class LDe extends L {
   String get tabFortschritt => 'Fortschritt';
 
   @override
+  String get abschnittMorgens => 'Morgens';
+
+  @override
+  String get abschnittTagsueber => 'Tagsüber';
+
+  @override
+  String get abschnittAbends => 'Abends';
+
+  @override
+  String get abschnittBeiBedarf => 'Bei Bedarf';
+
+  @override
+  String abschnittThema(String thema) {
+    return 'Bereich: $thema';
+  }
+
+  @override
   String get heuteKeineAufgabenTitel => 'Heute nichts abzuhaken';
 
   @override

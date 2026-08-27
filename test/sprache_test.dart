@@ -341,6 +341,12 @@ void main() {
         'lib/core/firebase/einrichtung_hinweis.dart',
         'lib/features/analysis/logic/mock_analysis_service.dart',
         'lib/features/legal/logic/rechtstexte.dart',
+        // Die Ankertabelle in `tagesabschnitt.dart` ist aus demselben Grund
+        // ausgenommen wie die Mock-Analyse: Dort stehen keine Anzeigetexte,
+        // sondern die Zeichenketten, die das Modell in den Report schreibt.
+        // Sie muessen woertlich passen und stehen deshalb in beiden Sprachen
+        // nebeneinander (DECISIONS 70).
+        'lib/features/plan/logic/tagesabschnitt.dart',
       ];
 
       final umlaut = RegExp('[äöüÄÖÜß]');

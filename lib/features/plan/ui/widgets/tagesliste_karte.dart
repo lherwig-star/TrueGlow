@@ -7,20 +7,25 @@ import '../../../../core/widgets/section_card.dart';
 import '../../../../core/l10n/texte.dart';
 import '../../../modules/models/analyse_modul.dart';
 import '../../../onboarding/logic/onboarding_controller.dart';
-import '../../../analysis/models/analysis_result.dart';
 import '../../../checkin/logic/checkin_controller.dart';
 import '../../logic/plan_progress_repository.dart';
+import '../../logic/tagesabschnitt.dart';
 
-/// Tages-Checkliste eines Report-Kapitels.
+/// Die Aufgaben eines Tagesabschnitts – „Morgens", „Abends", …
 ///
-/// Eine Karte pro Kapitel statt einer gemeinsamen Liste: so kann per
-/// Konstruktion keine Aufgabe aus einem nicht gewaehlten Modul auftauchen –
-/// die Punkte haengen am Kapitel, und ein nicht gewaehltes Modul hat gar kein
-/// Kapitel.
-class ChecklisteKarte extends ConsumerWidget {
-  const ChecklisteKarte({super.key, required this.kapitel});
+/// Bis DECISIONS 70 stand hier eine Karte je Kapitel. Das war ordentlich
+/// sortiert nach Thema und unbrauchbar sortiert nach Tag: Innerhalb von
+/// „Haare & Bart" sprang die Liste vom Zubettgehen zurueck zum Fruehstueck.
+/// Jetzt gruppiert der Wenn-dann-Anker, und das Thema steht als Abzeichen an
+/// der Zeile.
+///
+/// Was sich **nicht** geaendert hat: Eine Aufgabe kann weiterhin nur aus
+/// einem Kapitel des Reports stammen und damit nur aus einem gewaehlten
+/// Modul. Die Gruppierung ordnet um, sie holt nichts dazu.
+class AbschnittKarte extends ConsumerWidget {
+  const AbschnittKarte({super.key, required this.gruppe});
 
-  final Kapitel kapitel;
+  final Abschnittsgruppe gruppe;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,14 +33,16 @@ class ChecklisteKarte extends ConsumerWidget {
     final farben = context.farben;
     final fortschritt = ref.watch(planFortschrittProvider);
     final neueHabits = ref.watch(neueHabitsProvider);
+    final ausrichtung = ref.watch(ausrichtungProvider);
 
-    final erledigt =
-        kapitel.habits.where(fortschritt.erledigt.contains).length;
-    final alleErledigt = erledigt == kapitel.habits.length;
+    final erledigt = gruppe.aufgaben
+        .where((a) => fortschritt.erledigt.contains(a.text))
+        .length;
+    final alleErledigt = erledigt == gruppe.aufgaben.length;
 
     return SectionCard(
-      title: kapitel.modul.checkliste(texte, ref.watch(ausrichtungProvider)),
-      icon: kapitel.modul.icon,
+      title: gruppe.abschnitt.titel(texte),
+      icon: gruppe.abschnitt.icon,
       trailing: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
         decoration: BoxDecoration(
@@ -45,25 +52,28 @@ class ChecklisteKarte extends ConsumerWidget {
           borderRadius: BorderRadius.circular(999),
         ),
         child: Text(
-          '$erledigt/${kapitel.habits.length}',
+          '$erledigt/${gruppe.aufgaben.length}',
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w800,
-            // Gold erst, wenn die Liste steht – ein halb voller Zaehler ist
-            // kein Erreichtes (DECISIONS 50).
+            // Gold erst, wenn der Abschnitt steht – ein halb voller Zaehler
+            // ist kein Erreichtes (DECISIONS 50).
             color: alleErledigt ? farben.erreicht : farben.textSekundaer,
           ),
         ),
       ),
       child: Column(
         children: [
-          for (final habit in kapitel.habits)
+          for (final aufgabe in gruppe.aufgaben)
             HabitZeile(
-              text: habit,
-              erledigt: fortschritt.erledigt.contains(habit),
-              hinweis: neueHabits[habit],
-              onTap: () =>
-                  ref.read(planFortschrittProvider.notifier).umschalten(habit),
+              text: aufgabe.text,
+              erledigt: fortschritt.erledigt.contains(aufgabe.text),
+              hinweis: neueHabits[aufgabe.text],
+              thema: aufgabe.modul,
+              themaName: aufgabe.modul.checkliste(texte, ausrichtung),
+              onTap: () => ref
+                  .read(planFortschrittProvider.notifier)
+                  .umschalten(aufgabe.text),
             ),
         ],
       ),
@@ -143,6 +153,8 @@ class HabitZeile extends StatelessWidget {
     required this.erledigt,
     required this.onTap,
     this.hinweis,
+    this.thema,
+    this.themaName,
   });
 
   final String text;
@@ -151,6 +163,17 @@ class HabitZeile extends StatelessWidget {
 
   /// Dezente Markierung frisch angepasster Aufgaben ("Neu ab heute").
   final String? hinweis;
+
+  /// Das Kapitel, aus dem die Aufgabe stammt – als kleines Abzeichen.
+  ///
+  /// Seit die Liste nach Tageszeit gruppiert, sagt die Ueberschrift nichts
+  /// mehr ueber das Thema. Das Abzeichen ist der Ersatz: nur zur
+  /// Orientierung, nicht antippbar (DECISIONS 70).
+  final AnalyseModul? thema;
+
+  /// Der Name des Kapitels – nur fuer die Sprachausgabe. Ein Symbol allein
+  /// ist fuer einen Screenreader nichts.
+  final String? themaName;
 
   @override
   Widget build(BuildContext context) {
@@ -175,6 +198,19 @@ class HabitZeile extends StatelessWidget {
                 ),
               ),
             ),
+            if (thema case final modul?) ...[
+              const SizedBox(width: AppTheme.gapXs),
+              Semantics(
+                label: themaName == null
+                    ? null
+                    : context.texte.abschnittThema(themaName!),
+                child: Icon(
+                  modul.icon,
+                  size: 16,
+                  color: farben.textSekundaer.withValues(alpha: 0.7),
+                ),
+              ),
+            ],
             if (hinweis case final text?) ...[
               const SizedBox(width: AppTheme.gapXs),
               Container(

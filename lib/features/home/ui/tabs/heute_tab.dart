@@ -7,8 +7,9 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/section_card.dart';
 import '../../../analysis/ui/unterbrochen_karte.dart';
 import '../../../history/logic/analysis_repository.dart';
+import '../../../plan/logic/tagesabschnitt.dart';
 import '../../../plan/ui/widgets/challenge_karte.dart';
-import '../../../plan/ui/widgets/checkliste_karte.dart';
+import '../../../plan/ui/widgets/tagesliste_karte.dart';
 import '../../../streak/ui/widgets/streak_karte.dart';
 import '../../logic/home_tab.dart';
 import '../widgets/tab_leiste.dart';
@@ -44,10 +45,11 @@ class HeuteTab extends ConsumerWidget {
         const SizedBox(height: AppTheme.gapS),
         const ChallengeKarte(),
         const SizedBox(height: AppTheme.gapM),
-        // Eine Checkliste pro Kapitel – die Ueberschrift nennt den Bereich.
-        // „Deine Ziele" ist eines davon und steht deshalb hier mit drin.
-        for (final kapitel in analyse.checklisten) ...[
-          ChecklisteKarte(kapitel: kapitel),
+        // Eine Karte je Tagesabschnitt, von morgens bis abends – nicht
+        // mehr eine je Kapitel (DECISIONS 70). Leere Abschnitte entstehen
+        // gar nicht erst.
+        for (final gruppe in tagesliste(analyse.checklisten)) ...[
+          AbschnittKarte(gruppe: gruppe),
           const SizedBox(height: AppTheme.gapS),
         ],
         if (analyse.checklisten.isEmpty)

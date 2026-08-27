@@ -365,6 +365,23 @@ class LEn extends L {
   String get tabFortschritt => 'Progress';
 
   @override
+  String get abschnittMorgens => 'Morning';
+
+  @override
+  String get abschnittTagsueber => 'During the day';
+
+  @override
+  String get abschnittAbends => 'Evening';
+
+  @override
+  String get abschnittBeiBedarf => 'When it comes up';
+
+  @override
+  String abschnittThema(String thema) {
+    return 'Area: $thema';
+  }
+
+  @override
   String get heuteKeineAufgabenTitel => 'Nothing to tick today';
 
   @override

@@ -188,6 +188,19 @@
   "@tabFortschritt": {
     "description": "Beschriftung des vierten Tabs."
   },
+  "abschnittMorgens": "Morgens",
+  "abschnittTagsueber": "Tagsüber",
+  "abschnittAbends": "Abends",
+  "abschnittBeiBedarf": "Bei Bedarf",
+  "abschnittThema": "Bereich: {thema}",
+  "@abschnittThema": {
+    "description": "Vorlesetext des Themen-Abzeichens an einer Tagesaufgabe.",
+    "placeholders": {
+      "thema": {
+        "type": "String"
+      }
+    }
+  },
   "heuteKeineAufgabenTitel": "Heute nichts abzuhaken",
   "@heuteKeineAufgabenTitel": {
     "description": "Wenn der Report keine Tagesaufgaben hatte."

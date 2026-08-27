@@ -93,8 +93,10 @@ void main() {
 
     // „Heute" zeigt jetzt die Tagesliste statt des leeren Zustands.
     expect(find.text(texte.homeLeerTitel), findsNothing);
-    // Eine Checkliste pro Kapitel – bei reiner Basis-Analyse genau eine.
-    expect(find.text(AnalyseModul.basis.checkliste(texte, Ausrichtung.maennlich)), findsOneWidget);
+    // Seit DECISIONS 70 gruppiert die Liste nach Tageszeit, nicht nach
+    // Kapitel: Die Basis-Aufgaben verteilen sich auf Morgens und Abends.
+    expect(find.text(texte.abschnittMorgens), findsOneWidget);
+    expect(find.text(texte.abschnittAbends), findsOneWidget);
 
     // Die Zusammenfassung liegt seit DECISIONS 65 im Plan-Tab.
     container2.read(homeTabProvider.notifier).state = HomeTab.plan;
