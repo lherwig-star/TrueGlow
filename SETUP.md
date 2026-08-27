@@ -627,6 +627,73 @@ und veröffentlicht, Indizes angelegt
 firebase deploy --only firestore:rules,firestore:indexes --project DEINE-PROJEKT-ID
 ```
 
+☐ **5.7 Pexels-Schlüssel für die Beispielbilder** — noch offen
+
+Seit DECISIONS 69 steht unter jedem konkreten Vorschlag im Report eine Reihe
+echter Beispielfotos. Sie kommen von **Pexels**: kostenlos, ohne
+Kreditkarte, mit einer Lizenz, die die Nutzung erlaubt. Ohne diesen
+Schlüssel funktioniert die App vollständig — es fehlen nur die Bilderreihen.
+
+**Schritt 1 — Konto anlegen.** <https://www.pexels.com/join/> öffnen und mit
+E-Mail-Adresse registrieren. Ein normales, kostenloses Konto genügt; es
+werden keine Zahlungsdaten verlangt.
+
+**Schritt 2 — Schlüssel holen.** <https://www.pexels.com/api/new/> öffnen.
+Pexels fragt, wofür der Schlüssel gedacht ist:
+
+| Feld | Was eintragen |
+|---|---|
+| *What are you building?* | Mobile App |
+| *Description* | `TrueGlow – a personal styling app. Shows a few example photos next to each styling suggestion, with photographer credit and a link back to Pexels.` |
+| *App/Website URL* | Wenn noch keine Seite existiert: den Play-Store-Eintrag oder die Datenschutzseite eintragen |
+
+Danach steht der Schlüssel direkt auf der Seite — eine lange Zeichenkette
+aus Buchstaben und Ziffern. **Kopieren.**
+
+**Schritt 3 — Schlüssel ablegen.** Genau wie beim Gemini-Schlüssel in den
+Secret Manager, nicht in den Code:
+
+```bash
+firebase functions:secrets:set PEXELS_API_KEY --project trueglow-b2c1c
+```
+
+Unter Windows nimmt die versteckte Eingabe keinen eingefügten Text an — dann
+dieselbe Zeile wie in 5.2, nur mit dem anderen Namen. **Erst** diese Zeile
+einfügen, **dann** bei Pexels den Schlüssel kopieren, **dann** Enter:
+
+```powershell
+Get-Clipboard | Set-Content -NoNewline "$env:TEMP\pk.txt" -Encoding ascii; firebase functions:secrets:set PEXELS_API_KEY --data-file="$env:TEMP\pk.txt" --project trueglow-b2c1c; Remove-Item "$env:TEMP\pk.txt"
+```
+
+**Schritt 4 — Deployen.** Der Schlüssel wirkt erst nach einem Deploy:
+
+```bash
+firebase deploy --only functions --project trueglow-b2c1c
+```
+
+> **Der Schlüssel muss existieren, bevor irgendeine Function ausgerollt
+> werden kann.** `bilderSuchen` verlangt ihn beim Start; fehlt das Secret,
+> bricht der Deploy **aller** Functions ab. Das ist kein Nebeneffekt, den man
+> abstellen sollte: Eine Function, die ohne ihr Secret hochkommt, fällt erst
+> beim Nutzer auf.
+
+**Was kostet das?** Nichts. Der kostenlose Tarif erlaubt 200 Anfragen pro
+Stunde und 20 000 pro Monat. Die App fragt deutlich seltener: Jeder
+Suchbegriff wird 30 Tage lang zwischengespeichert, und „textured crop
+haircut men" schlägt das Modell vielen Nutzern vor — gesucht wird er
+trotzdem nur einmal im Monat. Zusätzlich hört der Server bei 150 Anfragen
+je Stunde von sich aus auf zu fragen.
+
+**Wenn das Limit doch erreicht wird:** Die betroffenen Bilderreihen fehlen,
+der Report bleibt vollständig. Es gibt keine Fehlermeldung, weil es kein
+Fehler des Nutzers ist. Im Protokoll steht dann
+`Bildersuche: Stundenlimit erreicht`.
+
+**Schlüssel wechseln oder zurückziehen:** neuen Schlüssel bei Pexels
+erzeugen, denselben `secrets:set`-Befehl noch einmal laufen lassen (er legt
+eine neue Version an), deployen. Der alte Wert lässt sich danach im Secret
+Manager deaktivieren.
+
 ---
 
 ## 6 · Erster echter Durchlauf gegen die Live-API

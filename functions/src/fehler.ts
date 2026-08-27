@@ -16,7 +16,8 @@ export type Fehlerfall =
   | 'kontingentMonat'
   | 'ungueltigeAntwort'
   | 'keinApiKey'
-  | 'fotosFehlen';
+  | 'fotosFehlen'
+  | 'ungueltigeAnfrage';
 
 /**
  * Welcher gRPC-Code zu welchem Fehlerfall gehoert.
@@ -35,6 +36,10 @@ const CODES: Record<Fehlerfall, FunctionsErrorCode> = {
   ungueltigeAntwort: 'internal',
   keinApiKey: 'failed-precondition',
   fotosFehlen: 'invalid-argument',
+  // Kennt die App nicht – sie faellt auf den Code zurueck. Das genuegt: Der
+  // einzige Aufruf, der so scheitern kann, ist die Bildersuche, und die
+  // zeigt einen Fehler ohnehin nie an (DECISIONS 69).
+  ungueltigeAnfrage: 'invalid-argument',
 };
 
 /**

@@ -138,6 +138,20 @@ describe('Security Rules', () => {
     );
   });
 
+  it('sperrt den Bilder-Cache fuer jeden Client', async () => {
+    // Der Cache gehoert keinem Konto und geht keinen Client etwas an. Er
+    // waere sonst eine Liste dessen, was die App gerade vorschlaegt
+    // (DECISIONS 69).
+    for (const db of [alsIch(), ohneAnmeldung()]) {
+      await assertFails(getDoc(doc(db, 'bildcache/abc')));
+      await assertFails(setDoc(doc(db, 'bildcache/abc'), { begriff: 'x' }));
+      await assertFails(getDoc(doc(db, 'bildkontingent/2026-08-27T22')));
+      await assertFails(
+        setDoc(doc(db, 'bildkontingent/2026-08-27T22'), { anfragen: 0 }),
+      );
+    }
+  });
+
   it('sperrt Sammlungen, die das Datenmodell nicht kennt', async () => {
     const db = alsIch();
 

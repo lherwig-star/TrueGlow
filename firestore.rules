@@ -58,5 +58,24 @@ service cloud.firestore {
         allow write: if false;
       }
     }
+
+    // Der Bilder-Cache und sein Stundenzaehler (DECISIONS 69). Beide gehoeren
+    // keinem Konto: Sie halten fest, welche Fotos zu einem englischen
+    // Suchbegriff gehoeren, und das ist fuer alle dasselbe. Es stehen dort
+    // ausschliesslich URLs, Fotografennamen und Zeitstempel -- nichts, was
+    // sich auf einen Nutzer zurueckfuehren liesse.
+    //
+    // Fuer jeden Client gesperrt, lesend wie schreibend. Geschrieben wird nur
+    // von der Cloud Function, deren Admin-Zugriff diese Regeln umgeht. Die
+    // Sperre stuende auch ohne diesen Block -- nicht aufgefuehrte Pfade sind
+    // verboten --, aber ein stiller Standard ist keine Aussage. Dieser Block
+    // ist eine.
+    match /bildcache/{eintrag} {
+      allow read, write: if false;
+    }
+
+    match /bildkontingent/{stunde} {
+      allow read, write: if false;
+    }
   }
 }

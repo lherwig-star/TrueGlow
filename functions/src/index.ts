@@ -3,6 +3,7 @@ import { defineSecret } from 'firebase-functions/params';
 import { onCall, type CallableRequest } from 'firebase-functions/v2/https';
 
 import * as analysePrompt from './analyse_prompt';
+import { bilderFuer, firestoreCache, leseBegriffe } from './bilder';
 import * as checkinPrompt from './checkin_prompt';
 import { fehler } from './fehler';
 import { frage } from './gemini';
@@ -45,6 +46,13 @@ initializeApp();
 const geminiKey = defineSecret('GEMINI_API_KEY');
 
 /**
+ * Der Schluessel der Fotobibliothek – aus demselben Grund im Secret Manager
+ * wie der von Gemini: In einem APK waere er auslesbar, und der Verbrauch
+ * ginge auf unser Konto (SETUP.md 4.4).
+ */
+const pexelsKey = defineSecret('PEXELS_API_KEY');
+
+/**
  * Gemeinsame Einstellungen beider Endpunkte.
  *
  * `maxInstances` ist ein zweiter Kostendeckel neben dem Kontingent: Selbst
@@ -61,6 +69,20 @@ const OPTIONEN = {
   // damit er die Zeitueberschreitung selbst meldet, statt in einen
   // abgebrochenen Aufruf zu laufen.
   timeoutSeconds: 300,
+  maxInstances: 10,
+};
+
+/**
+ * Dieselben Einstellungen, aber mit dem Pexels-Schluessel statt dem von
+ * Gemini und mit kleinerem Zuschnitt: Die Bildersuche schickt keine Bilder
+ * durch den Prozess, sondern holt ein paar hundert Byte JSON.
+ */
+const BILDER_OPTIONEN = {
+  region: 'europe-west3',
+  secrets: [pexelsKey],
+  enforceAppCheck: true,
+  memory: '256MiB' as const,
+  timeoutSeconds: 30,
   maxInstances: 10,
 };
 
@@ -93,6 +115,32 @@ export const analysiere = onCall(OPTIONEN, async (request) => {
   melde(befund, eingang.prompt);
 
   return { ergebnis: befund.ergebnis };
+});
+
+/**
+ * Sucht Beispielfotos zu den Vorschlaegen eines Kapitels.
+ *
+ * Zaehlt **nicht** gegen das Analyse-Kontingent: Einen fertigen Report
+ * anzusehen darf keine Analyse kosten. Gegen den Verbrauch bei Pexels
+ * stehen der Cache und der Stundenzaehler (siehe `bilder.ts`).
+ *
+ * Scheitert etwas, fehlen die Bilder – und sonst nichts.
+ */
+export const bilderSuchen = onCall(BILDER_OPTIONEN, async (request) => {
+  pruefeAnmeldung(request);
+  const begriffe = leseBegriffe(request.data);
+
+  const apiKey = pexelsKey.value().trim();
+  if (apiKey.length === 0) {
+    // Kein Abbruch mit Fehler: Ohne Schluessel gibt es eben keine Bilder,
+    // und der Report ist deswegen nicht kaputt. Die Zeile im Protokoll ist
+    // die Erinnerung, den Schluessel einzutragen.
+    console.warn('PEXELS_API_KEY ist leer – Bildersuche liefert nichts.');
+    return { treffer: {} };
+  }
+
+  const treffer = await bilderFuer(begriffe, apiKey, firestoreCache());
+  return { treffer };
 });
 
 /** Wertet einen Check-in aus und liefert die Planaenderungen. */
