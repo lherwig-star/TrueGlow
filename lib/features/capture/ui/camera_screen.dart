@@ -18,6 +18,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../onboarding/logic/onboarding_controller.dart';
 import '../../checkin/logic/checkin_controller.dart';
 import '../logic/auto_ausloeser.dart';
+import '../logic/kamerawahl.dart';
 import '../logic/capture_controller.dart';
 import '../logic/live_face_guide.dart';
 import '../logic/live_koerper_guide.dart';
@@ -220,10 +221,23 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
         return;
       }
 
-      final beschreibung = _kameras.firstWhere(
-        (k) => k.lensDirection == _richtung,
-        orElse: () => _kameras.first,
-      );
+      final beschreibung = waehleKamera(_kameras, _richtung);
+      if (beschreibung == null) {
+        _setzeFehler(_Kamerafehler.nichtVerfuegbar);
+        return;
+      }
+
+      if (beschreibung.lensDirection != _richtung) {
+        // Die eine Zeile, die den Fall aus DECISIONS 71 sichtbar macht: Sie
+        // nennt die gewuenschte Richtung und was das Geraet stattdessen
+        // anbietet. Ohne sie steht man vor einem Sucher, der in die falsche
+        // Richtung schaut, und weiss nicht, warum.
+        _protokoll(
+          'Kamera ${_richtung.name} nicht vorhanden, nehme '
+          '${beschreibung.lensDirection.name} '
+          '(vorhanden: ${_kameras.map((k) => k.lensDirection.name).join(', ')})',
+        );
+      }
       _richtung = beschreibung.lensDirection;
 
       final controller = CameraController(

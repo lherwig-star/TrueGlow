@@ -3149,6 +3149,72 @@ im Report eine Aufgabe sieht und sie in der Tagesliste sucht, muss wissen,
 zu welcher Tageszeit sie gehört. Dafür ist die Liste einmal von oben nach
 unten abarbeitbar.
 
+## 71 · Die Rückkamera startet auch wirklich
+
+Befund vom Gerät: Bei den beiden Ganzkörper-Aufnahmen und den drei
+Outfit-Fotos kam die **Selfie-Kamera** hoch. Man stellt das Handy ab, tritt
+drei Meter zurück — und der Sucher schaut in die falsche Richtung.
+
+Merkwürdig daran: `AufnahmeTyp.rueckkamera` steht dort seit jeher auf `true`,
+und der Kamerabildschirm liest es auch aus. Der Fehler lag eine Zeile
+weiter:
+
+```dart
+final beschreibung = _kameras.firstWhere(
+  (k) => k.lensDirection == _richtung,
+  orElse: () => _kameras.first,       // <- der stille Ausgang
+);
+```
+
+**`orElse` nimmt die erste Kamera der Liste — und die ist auf vielen Geräten
+die vordere.** Findet die Suche die gewünschte Richtung nicht, landet man
+also garantiert im Gegenteil. Ein Gerät, das seine Rückkamera nicht als
+`back`, sondern als `external` meldet — das gibt es —, fällt damit exakt in
+den beobachteten Fehler.
+
+### Die Wahl steht jetzt an einer prüfbaren Stelle
+
+`waehleKamera()` in `lib/features/capture/logic/kamerawahl.dart`, in drei
+Stufen:
+
+1. **Exakter Treffer** — der Normalfall, unabhängig von der Reihenfolge, in
+   der das Gerät seine Kameras aufzählt.
+2. **Kein Treffer:** die erste Kamera, die **nicht das Gegenteil** ist. Wer
+   nach hinten gefragt hat, bekommt lieber eine Kamera unbekannter Bauart
+   als die Selfie-Kamera — die zeigt garantiert das Falsche.
+3. **Nur das Gegenteil vorhanden** (ein Tablet ohne Rückkamera): dann ist
+   eine Kamera besser als keine. Der Wechsel-Knopf steht daneben.
+
+Am Gerät ließ sich das nur mit dem Gerät prüfen; als gewöhnliche Funktion
+lässt es sich mit jeder denkbaren Kameraliste prüfen. Genau das tun die
+Tests.
+
+### Und eine Zeile im Protokoll
+
+Weicht die gewählte Kamera von der gewünschten ab, steht das jetzt im
+Protokoll — mit der gewünschten Richtung, der genommenen und allem, was das
+Gerät anbietet:
+
+```
+TrueGlow/Aufnahme: Kamera back nicht vorhanden, nehme external
+(vorhanden: front, external)
+```
+
+**Ehrlich gesagt:** Ob genau das die Ursache am Testgerät war, ist damit
+nicht bewiesen — reproduzieren ließ es sich am Schreibtisch nicht. Die
+Zeile ist der Ersatz für den Beweis: Tritt es wieder auf, sagt sie in einem
+Satz, warum. Kommt sie nicht, war es diese Stelle.
+
+Der Wechsel-Knopf zur Frontkamera bleibt unverändert verfügbar. Ein Test
+hält fest, dass genau die fünf Aufnahmen mit der Rückkamera starten, für die
+man zurücktritt — und dass das dieselben fünf sind, die selbst auslösen
+(DECISIONS 68). Kein Zufall, sondern derselbe Grund: Wer drei Meter entfernt
+steht, erreicht weder den Auslöser noch die richtige Linse.
+
+**Preis:** Eine Datei mehr für eine Entscheidung, die vorher in eine Zeile
+passte. Dafür ist es die einzige Zeile im Aufnahme-Pfad, die stillschweigend
+etwas anderes tat als das, was danebenstand.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

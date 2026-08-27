@@ -358,7 +358,11 @@ void main() {
       // Anweisungen, deren Text nie jemand sieht. Sie reichen oft ueber
       // mehrere Zeilen, der Text steht dann nicht bei ihrem Schluesselwort –
       // deshalb wird ab hier bis zum Semikolon uebersprungen.
-      final unsichtbar = RegExp(r'throw |Error\(|Exception\(|debugPrint\(');
+      // `_protokoll(` gehoert dazu: Das ist die Protokollzeile der Aufnahme
+      // (Praefix `TrueGlow/Aufnahme`), die im Logcat landet und nie auf dem
+      // Bildschirm. Sie ist an uns gerichtet, nicht an den Nutzer.
+      final unsichtbar =
+          RegExp(r'throw |Error\(|Exception\(|debugPrint\(|_protokoll\(');
       final literale = RegExp('\'([^\'\n]{2,})\'|"([^"\n]{2,})"');
 
       final funde = <String>[];
