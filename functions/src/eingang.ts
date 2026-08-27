@@ -154,9 +154,22 @@ function leseFigur(roh: unknown): Figurangaben {
 
 function leseStil(roh: unknown): Stilangaben {
   const stil = objektOderLeer(objektOderLeer(roh).stil);
+
+  // Der frueher einzeln geschickte Dresscode. Eine App-Fassung, die noch
+  // nicht aktualisiert ist, schickt ihn weiter -- Buero und Business Casual
+  // werden zu "Arbeit / Nebenjob", der Rest hat keine naechstliegende
+  // Entsprechung und faellt weg (DECISIONS 72).
+  const alterDresscode = text(stil.dresscode);
+  const ausDresscode =
+    alterDresscode === 'buero' || alterDresscode === 'businessCasual'
+      ? ['arbeitNebenjob']
+      : [];
+
   return {
-    ziele: namensliste(stil.ziele),
-    dresscode: text(stil.dresscode),
+    // Dieselbe Ueberfuehrung wie bei der Richtung: Die Stilziele sind jetzt
+    // Richtungsziele, und die alten Namen stehen in derselben Tabelle.
+    ziele: normalisiereRichtungsziele(namensliste(stil.ziele)),
+    zwecke: [...new Set([...namensliste(stil.zwecke), ...ausDresscode])],
     budget: text(stil.budget),
     pflegeaufwand: text(stil.pflegeaufwand),
   };

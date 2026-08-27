@@ -1078,14 +1078,20 @@ abstract class L {
   /// No description provided for @stilZielText.
   ///
   /// In de, this message translates to:
-  /// **'Mehrfachauswahl möglich.'**
+  /// **'Mehrfachauswahl. Dieselben Richtungen wie bei „Deine Richtung“ – hier geht es nur um die Kleidung.'**
   String get stilZielText;
 
-  /// No description provided for @stilDresscode.
+  /// No description provided for @stilZweck.
   ///
   /// In de, this message translates to:
-  /// **'Was verlangt dein Alltag?'**
-  String get stilDresscode;
+  /// **'Wofür soll dein Style vor allem funktionieren?'**
+  String get stilZweck;
+
+  /// No description provided for @stilZweckText.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrfachauswahl. Du kannst die Frage auch überspringen.'**
+  String get stilZweckText;
 
   /// No description provided for @stilBudget.
   ///
@@ -1891,77 +1897,29 @@ abstract class L {
   /// **'Deine Angaben bei „Deine Richtung“'**
   String get modulBenoetigtZiele;
 
-  /// No description provided for @stilzielKlassisch.
+  /// No description provided for @zweckUniSchule.
   ///
   /// In de, this message translates to:
-  /// **'Klassisch'**
-  String get stilzielKlassisch;
+  /// **'Uni / Schule / Ausbildung'**
+  String get zweckUniSchule;
 
-  /// No description provided for @stilzielMinimalistisch.
+  /// No description provided for @zweckAusgehenDates.
   ///
   /// In de, this message translates to:
-  /// **'Minimalistisch'**
-  String get stilzielMinimalistisch;
+  /// **'Ausgehen & Dates'**
+  String get zweckAusgehenDates;
 
-  /// No description provided for @stilzielSportlich.
+  /// No description provided for @zweckArbeitNebenjob.
   ///
   /// In de, this message translates to:
-  /// **'Sportlich'**
-  String get stilzielSportlich;
+  /// **'Arbeit / Nebenjob'**
+  String get zweckArbeitNebenjob;
 
-  /// No description provided for @stilzielSmartCasual.
+  /// No description provided for @zweckGymSport.
   ///
   /// In de, this message translates to:
-  /// **'Smart Casual'**
-  String get stilzielSmartCasual;
-
-  /// No description provided for @stilzielKreativ.
-  ///
-  /// In de, this message translates to:
-  /// **'Kreativ'**
-  String get stilzielKreativ;
-
-  /// No description provided for @stilzielRockig.
-  ///
-  /// In de, this message translates to:
-  /// **'Rockig'**
-  String get stilzielRockig;
-
-  /// No description provided for @dresscodeBuero.
-  ///
-  /// In de, this message translates to:
-  /// **'Büro / formell'**
-  String get dresscodeBuero;
-
-  /// No description provided for @dresscodeBusinessCasual.
-  ///
-  /// In de, this message translates to:
-  /// **'Business Casual'**
-  String get dresscodeBusinessCasual;
-
-  /// No description provided for @dresscodeHandwerk.
-  ///
-  /// In de, this message translates to:
-  /// **'Handwerk / Arbeitskleidung'**
-  String get dresscodeHandwerk;
-
-  /// No description provided for @dresscodeHomeoffice.
-  ///
-  /// In de, this message translates to:
-  /// **'Homeoffice'**
-  String get dresscodeHomeoffice;
-
-  /// No description provided for @dresscodeUniform.
-  ///
-  /// In de, this message translates to:
-  /// **'Uniform / Dienstkleidung'**
-  String get dresscodeUniform;
-
-  /// No description provided for @dresscodeFrei.
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Vorgaben'**
-  String get dresscodeFrei;
+  /// **'Gym & Sport'**
+  String get zweckGymSport;
 
   /// No description provided for @kleidungsbudgetKlein.
   ///

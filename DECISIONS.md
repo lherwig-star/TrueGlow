@@ -3215,6 +3215,92 @@ steht, erreicht weder den Auslöser noch die richtige Linse.
 passte. Dafür ist es die einzige Zeile im Aufnahme-Pfad, die stillschweigend
 etwas anderes tat als das, was danebenstand.
 
+## 72 · Der Stil-Fragebogen: eine Liste, eine Frage weniger
+
+Die letzte Seite des Fragebogens stammte aus einer Zeit, in der die App noch
+niemandem zwischen 16 und 25 gehörte. In DECISIONS 58 stand sie schon als
+offener Punkt; hier wird er abgeräumt.
+
+### „Wohin soll's gehen?" — dieselbe Liste wie bei „Deine Richtung"
+
+Die alte Auswahl (klassisch, minimalistisch, sportlich, smart casual,
+kreativ, rockig) beschrieb **dieselbe Sache ein zweites Mal**. Zwei Listen
+sind zwei Pflegestellen — und im Prompt zwei Angaben, die sich widersprechen
+können: „Streetwear & lässig" bei der Richtung, „Klassisch" beim Stil, und
+das Modell muss sich etwas aussuchen.
+
+`Stilziel` als eigenes Enum gibt es deshalb nicht mehr. Der Fragebogen nimmt
+`Richtungsziel` — **eine gemeinsame Liste im Code**, auf dem Client wie auf
+dem Server (`STILZIEL` in `labels.ts` ist ersatzlos weg, `RICHTUNGSZIEL`
+trägt beides).
+
+**Vorbelegt, nicht bevormundet:** Ist bei „Deine Richtung" schon etwas
+gewählt, steht es hier markiert — und lässt sich ändern. Wichtig dabei:
+Vorbelegt heißt *gespeichert*, nicht nur *angezeigt*. Zeigte der Fragebogen
+die Richtung nur an, wäre der erste Tipp auf einen markierten Chip ein
+Abwählen von etwas, das nie gespeichert war — und beim nächsten Bauen wäre
+er wieder da. Das Übernehmen passiert deshalb einmal nach dem ersten Bild,
+nicht während des Bauens.
+
+Die Richtung selbst bleibt davon unberührt: Sie gilt für den ganzen Look,
+der Fragebogen nur für die Kleidung.
+
+### „Was verlangt dein Alltag?" wird kleiner und jünger
+
+| vorher (Dresscode, eine Antwort) | jetzt (Zweck, Mehrfachauswahl) |
+|---|---|
+| Büro / formell | Uni / Schule / Ausbildung |
+| Business Casual | Ausgehen & Dates |
+| **Handwerk / Arbeitskleidung** | Arbeit / Nebenjob |
+| Homeoffice | Gym & Sport |
+| **Uniform / Dienstkleidung** | |
+| Keine Vorgaben | |
+
+Die beiden fetten Zeilen fallen **ersatzlos** weg: Wer Arbeitskleidung
+gestellt bekommt, hat daran nichts zu entscheiden. Die Frage ist jetzt
+**überspringbar** — `istVollstaendig` zählt sie nicht mit.
+
+### Der Schwerpunkt liegt auf Ausgehen und Dates
+
+Unabhängig von der Antwort steht im Prompt des Stil-Kapitels jetzt: Outfits
+zum Ausgehen und für Dates sind der Schwerpunkt, der Alltag ist
+**Nebenbedingung** — die Vorschläge dürfen ihn nicht unmöglich machen, aber
+sie richten sich nicht nach ihm. Dafür wird dieser Report gelesen.
+
+Die Zweck-Angabe verschiebt also nicht den Schwerpunkt, sondern nur das,
+worauf zusätzlich Rücksicht genommen wird. Das steht ausdrücklich im Prompt,
+sonst zieht ein „Arbeit / Nebenjob" die Vorschläge doch wieder ins Büro.
+
+### Nichts darf brechen
+
+Beides wird an **zwei** Stellen überführt — auf dem Client beim Lesen und
+auf dem Server beim Empfangen. Der zweite Weg ist für eine App-Fassung, die
+noch nicht aktualisiert wurde und weiter alte Namen schickt (dasselbe
+Muster wie DECISIONS 58).
+
+| alt | neu |
+|---|---|
+| klassisch, smartCasual | Smart & hochwertig |
+| minimalistisch | Clean & gepflegt |
+| sportlich | Sportlich & funktional |
+| kreativ | Kreativ & auffällig |
+| rockig | Markant & maskulin |
+| Büro, Business Casual | Arbeit / Nebenjob |
+| Handwerk, Uniform, Homeoffice, keine Vorgaben | *leer* |
+
+Zwei alte Werte landen auf demselben neuen — eine Menge nimmt das ohne
+Dublette hin. Bei den vier letzten Dresscodes ist **leer** die ehrlichere
+Antwort als eine geratene: Es gibt keinen nächstliegenden Zweck, und die
+Frage darf ohnehin offen bleiben.
+
+Budget und Pflegeaufwand sind unverändert.
+
+**Preis:** Der Fragebogen heißt weiter „Vier kurze Fragen" und ist es auch —
+aber eine davon ist eine andere geworden. Wer den alten Dresscode
+beantwortet hatte, findet unter „Wofür soll dein Style funktionieren?"
+entweder „Arbeit / Nebenjob" oder gar nichts vor. Das ist gewollt: Die alte
+Antwort war für die neue Frage nur teilweise eine.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

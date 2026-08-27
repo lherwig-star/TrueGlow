@@ -297,22 +297,23 @@ export const FOKUS: Beschriftungen = {
 
 // --- Stil-Fragebogen ---------------------------------------------------
 
-export const STILZIEL: Beschriftungen = {
-  klassisch: { de: 'Klassisch', en: 'classic' },
-  minimalistisch: { de: 'Minimalistisch', en: 'minimalist' },
-  sportlich: { de: 'Sportlich', en: 'sporty' },
-  smartCasual: { de: 'Smart Casual', en: 'smart casual' },
-  kreativ: { de: 'Kreativ', en: 'creative' },
-  rockig: { de: 'Rockig', en: 'rock' },
-};
+// `STILZIEL` gibt es nicht mehr: Das Stilziel ist dieselbe Liste wie die
+// Richtung (`RICHTUNGSZIEL`). Zwei Listen fuer dieselbe Sache waren zwei
+// Pflegestellen – und im Prompt zwei Angaben, die sich widersprechen
+// konnten. Die alten Namen fuehrt `RICHTUNGSZIEL_ALT` ueber (DECISIONS 72).
 
-export const DRESSCODE: Beschriftungen = {
-  buero: { de: 'Büro / formell', en: 'office / formal' },
-  businessCasual: { de: 'Business Casual', en: 'business casual' },
-  handwerk: { de: 'Handwerk / Arbeitskleidung', en: 'trades / workwear' },
-  homeoffice: { de: 'Homeoffice', en: 'working from home' },
-  uniform: { de: 'Uniform / Dienstkleidung', en: 'uniform / service dress' },
-  frei: { de: 'Keine Vorgaben', en: 'no dress code' },
+/**
+ * Wofuer der Stil im Alltag vor allem funktionieren soll.
+ *
+ * Loest den frueheren `DRESSCODE` ab. "Handwerk / Arbeitskleidung" und
+ * "Uniform / Dienstkleidung" sind ersatzlos weg: Wer Arbeitskleidung
+ * gestellt bekommt, hat daran nichts zu entscheiden.
+ */
+export const ALLTAGSZWECK: Beschriftungen = {
+  uniSchule: { de: 'Uni / Schule / Ausbildung', en: 'uni / school / training' },
+  ausgehenDates: { de: 'Ausgehen & Dates', en: 'going out & dates' },
+  arbeitNebenjob: { de: 'Arbeit / Nebenjob', en: 'work / part-time job' },
+  gymSport: { de: 'Gym & Sport', en: 'gym & sport' },
 };
 
 export const KLEIDUNGSBUDGET: Beschriftungen = {
@@ -367,6 +368,14 @@ export const RICHTUNGSZIEL_ALT: Record<string, string> = {
   natuerlicher: 'natuerlichEntspannt',
   auffaelliger: 'kreativAuffaellig',
   sportlicher: 'sportlichFunktional',
+  // Und die Werte des frueheren, eigenen Stilziels (DECISIONS 72). Zwei
+  // davon landen auf demselben neuen Wert – eine Menge nimmt das hin.
+  klassisch: 'smartHochwertig',
+  smartCasual: 'smartHochwertig',
+  minimalistisch: 'cleanGepflegt',
+  sportlich: 'sportlichFunktional',
+  kreativ: 'kreativAuffaellig',
+  rockig: 'markantMaskulin',
 };
 
 /** Fuehrt alte Namen ueber, wirft Unbekanntes und Dubletten weg. */

@@ -24,7 +24,7 @@ function daten(sprache: Sprache, freitext = ''): AnalysePromptDaten {
     module: ['basis'],
     profil: { fokus: [] },
     figur: {},
-    stil: { ziele: [] },
+    stil: { ziele: [], zwecke: [] },
     richtung: { ziele: [], freitext },
   };
 }

@@ -61,8 +61,8 @@ void main() {
       eingaben: const ModulEingaben(
         figur: FigurAngaben(groesseCm: 182, gewichtKg: 78),
         stil: StilAngaben(
-          ziele: {Stilziel.smartCasual},
-          dresscode: Dresscode.businessCasual,
+          ziele: {Richtungsziel.smartHochwertig},
+          zwecke: {Alltagszweck.ausgehenDates, Alltagszweck.arbeitNebenjob},
           budget: Kleidungsbudget.mittel,
           pflegeaufwand: Pflegeaufwand.mittel,
         ),

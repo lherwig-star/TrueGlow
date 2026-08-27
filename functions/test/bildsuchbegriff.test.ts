@@ -20,7 +20,7 @@ function daten(ausrichtung: Ausrichtung = 'maennlich'): AnalysePromptDaten {
     module: ['basis', 'stilKleiderschrank'],
     profil: { fokus: [] },
     figur: {},
-    stil: { ziele: [] },
+    stil: { ziele: [], zwecke: [] },
     richtung: { ziele: [], freitext: '' },
   };
 }

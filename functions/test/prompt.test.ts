@@ -27,7 +27,7 @@ function analyseDaten(
     module,
     profil: { fokus: [] },
     figur: {},
-    stil: { ziele: [] },
+    stil: { ziele: [], zwecke: [] },
     richtung,
   };
 }

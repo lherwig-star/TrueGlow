@@ -32,7 +32,7 @@ function daten(
     module,
     profil: { fokus: [] },
     figur: {},
-    stil: { ziele: [] },
+    stil: { ziele: [], zwecke: [] },
     richtung: { ziele: [], freitext },
   };
 }

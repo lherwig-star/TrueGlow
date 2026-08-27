@@ -2,7 +2,7 @@ import {
   ALTER,
   AUFNAHMEN,
   BUDGET,
-  DRESSCODE,
+  ALLTAGSZWECK,
   FOKUS,
   KLEIDUNGSBUDGET,
   MODULE,
@@ -13,7 +13,6 @@ import {
   sektion,
   RICHTUNGSVORGABE,
   RICHTUNGSZIEL,
-  STILZIEL,
   ZEIT,
   ZIELKAPITEL,
   label,
@@ -59,8 +58,10 @@ export interface Figurangaben {
 }
 
 export interface Stilangaben {
+  /** Stilrichtungen – dieselben Namen wie bei der Richtung. */
   ziele: string[];
-  dresscode?: string;
+  /** Wofuer der Stil funktionieren soll. Darf leer sein. */
+  zwecke: string[];
   budget?: string;
   pflegeaufwand?: string;
 }
@@ -581,9 +582,15 @@ function kapitelVorgabe(
     case 'stilKleiderschrank':
       return (
         '- "stilKleiderschrank" – Stil & Kleiderschrank. Gleiche die ' +
-        'gezeigten Outfits mit dem Stilziel ab und gib konkrete ' +
-        'Look-Vorschläge unter Berücksichtigung von Budget, Dresscode ' +
-        'und Pflegeaufwand.'
+        'gezeigten Outfits mit der Stilrichtung ab und gib konkrete ' +
+        'Look-Vorschläge unter Berücksichtigung von Budget und ' +
+        'Pflegeaufwand. SCHWERPUNKT: Outfits zum Ausgehen und für Dates. ' +
+        'Genau dafür wird dieser Report gelesen. Der Alltag – Uni, Schule, ' +
+        'Arbeit, Sport – ist Nebenbedingung: Die Vorschläge dürfen ihn ' +
+        'nicht unmöglich machen, aber sie richten sich nicht nach ihm. ' +
+        'Auch wenn oben andere Zwecke angegeben sind, bleibt der ' +
+        'Schwerpunkt auf Ausgeh- und Date-Outfits; die Angabe verschiebt ' +
+        'nur, worauf du zusätzlich Rücksicht nimmst.'
       );
     case 'persoenlicheZiele':
       return [
@@ -661,12 +668,14 @@ function kontext(daten: AnalysePromptDaten, module: readonly Modul[]): string {
   }
 
   if (module.includes('stilKleiderschrank')) {
-    const stilziele = labels(STILZIEL, daten.stil.ziele, sprache);
+    const stilziele = labels(RICHTUNGSZIEL, daten.stil.ziele, sprache);
     if (stilziele.length > 0) {
-      zeilen.push(`- Stilziel: ${stilziele.join(', ')}`);
+      zeilen.push(`- Stilrichtung für Kleidung: ${stilziele.join(', ')}`);
     }
-    const dresscode = label(DRESSCODE, daten.stil.dresscode, sprache);
-    if (dresscode) zeilen.push(`- Alltag/Dresscode: ${dresscode}`);
+    const zwecke = labels(ALLTAGSZWECK, daten.stil.zwecke, sprache);
+    if (zwecke.length > 0) {
+      zeilen.push(`- Der Stil soll funktionieren für: ${zwecke.join(', ')}`);
+    }
 
     const kleidung = label(KLEIDUNGSBUDGET, daten.stil.budget, sprache);
     if (kleidung) zeilen.push(`- Budget pro Kleidungsstück: ${kleidung}`);

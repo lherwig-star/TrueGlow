@@ -1959,6 +1959,140 @@ ausgerollt (SETUP.md 5.7).
 | Die Fotos passen inhaltlich nicht zum Vorschlag | Notieren, mit dem Text daneben — das ist eine Prompt-Frage. |
 | Der Report ruckelt beim Scrollen spürbar stärker als vorher | Notieren, mit Gerätemodell. |
 
+## 34 · Tagesablauf, Rückkamera und der neue Stil-Fragebogen
+
+Prüft DECISIONS 70, 71 und 72. **Höchstens EIN echter Analyse-Lauf** — der
+letzte Abschnitt. Alles davor im Demo-Modus oder an einem Report, der schon
+da ist:
+
+```bash
+flutter run --dart-define=TRUEGLOW_MOCK=true
+```
+
+### A · Die Tagesliste (DECISIONS 70)
+
+1. **Vier Überschriften statt Themen.** Demo-Analyse mit allen Modulen,
+   dann den Tab **„Heute"** öffnen. Erwartet, in dieser Reihenfolge:
+   **Morgens**, **Tagsüber**, **Abends**, **Bei Bedarf**.
+
+2. **Innerhalb von „Morgens" geht es chronologisch.** Die Aufgaben lesen.
+   Erwartet: nach dem Aufstehen → beim Duschen → nach dem Duschen → nach dem
+   Frühstück → nach dem Zähneputzen. *Kriterium:* Steht irgendwo eine
+   spätere Tageszeit über einer früheren, ist das ein Fund.
+
+3. **Und bei „Abends" ebenso.** Erwartet: nach dem Abendessen → vor dem
+   Schlafengehen.
+
+4. **Jede Zeile trägt ein Themen-Symbol.** Rechts neben dem Aufgabentext.
+   Erwartet: eine Schere bei Haaren, ein Kleiderbügel bei Stil, ein
+   Zahn-Symbol bei Zähnen — dezent, in der gedämpften Textfarbe.
+
+5. **Je Abschnitt ein eigener Zähler.** Erwartet: oben rechts an jeder Karte
+   z. B. „0/5". Einen Haken setzen. Erwartet: Der Zähler dieses Abschnitts
+   springt auf 1, die anderen bleiben stehen.
+
+6. **Die Serie funktioniert wie vorher.** Nach dem ersten Haken erwartet:
+   derselbe „Tag gesichert!"-Moment wie bisher, dieselbe Streak-Karte.
+   *Kriterium:* Bleibt der Moment aus, ist das ein **Blocker**.
+
+7. **„Bei Bedarf" steht ganz unten.** Erwartet: dort die Aufgabe mit dem
+   situativen Auslöser („Wenn die Schultern nach vorn kippen: …").
+
+8. **„Tagsüber" fängt auf, was keinen Anker hat.** Erwartet: dort die
+   Aufgabe ohne Doppelpunkt („Bildschirm auf Augenhöhe prüfen").
+
+9. **Der Plan-Tab hat sich nicht verändert.** Tab **„Plan"** öffnen.
+   Erwartet: die gewohnte thematische Gliederung, **keine** Tagesliste.
+
+10. **Ein alter Report bleibt benutzbar.** Aus dem Verlauf einen Report von
+    vor heute öffnen und zu „Heute" wechseln. *Kriterium:* Fehlt eine
+    Aufgabe, die vorher da war, ist das ein **Blocker**.
+
+11. **Auf Englisch.** Sprache umstellen, Schritt 1 wiederholen. Erwartet:
+    Morning · During the day · Evening · When it comes up.
+
+### B · Die Rückkamera (DECISIONS 71)
+
+12. **Ganzkörper frontal.** Aufnahme starten. Erwartet: Der Sucher zeigt
+    **den Raum vor dir**, nicht dich. *Kriterium:* Siehst du dich selbst,
+    ist das der Fehler.
+
+13. **Dasselbe für Ganzkörper seitlich und alle drei Outfit-Fotos.**
+
+14. **Der Wechsel-Knopf geht weiter.** Das Symbol unten rechts antippen.
+    Erwartet: Umschalten auf die Frontkamera und zurück.
+
+15. **Die Portraits starten weiter vorn.** Schritt „Frontal" öffnen.
+    Erwartet: die Selfie-Kamera, wie gewohnt.
+
+16. **Falls doch die falsche kommt**, sagt diese Zeile, warum:
+
+    ```bash
+    adb logcat -d | grep "TrueGlow/Aufnahme"
+    ```
+
+    Gesucht: `Kamera back nicht vorhanden, nehme …`. Steht sie da, meldet
+    das Gerät seine Rückkamera unter einem anderen Namen — die Zeile nennt
+    ihn. Steht sie **nicht** da und die Kamera ist trotzdem falsch, liegt es
+    woanders; dann bitte melden.
+
+### C · Der Stil-Fragebogen (DECISIONS 72)
+
+17. **Acht Stilrichtungen statt sechs alter.** Aufnahme-Flow mit dem Modul
+    „Stil & Kleiderschrank" starten, bis zum Fragebogen durchgehen.
+    Erwartet unter „Wohin soll es gehen?": dieselben acht Chips wie bei
+    „Deine Richtung" (Clean & gepflegt … Kreativ & auffällig).
+    *Kriterium:* Taucht „Klassisch", „Smart Casual" oder „Rockig" auf, ist
+    das ein Fund.
+
+18. **Vorbelegt aus „Deine Richtung".** Vorher unter „Deine Richtung" etwas
+    wählen, dann den Fragebogen öffnen. Erwartet: dieselben Chips sind
+    markiert.
+
+19. **Und änderbar.** Einen markierten Chip antippen. Erwartet: Er geht aus
+    und bleibt aus. Zurück zu „Deine Richtung": Dort ist die Auswahl
+    **unverändert**.
+
+20. **Die neue zweite Frage.** Erwartet: **„Wofür soll dein Style vor allem
+    funktionieren?"** mit vier Chips — Uni / Schule / Ausbildung, Ausgehen &
+    Dates, Arbeit / Nebenjob, Gym & Sport. *Kriterium:* „Handwerk /
+    Arbeitskleidung" oder „Uniform / Dienstkleidung" sind ein Fund.
+
+21. **Überspringbar.** Keinen Zweck wählen und weitergehen. Erwartet: Der
+    Flow lässt dich durch.
+
+22. **Budget und Pflegeaufwand unverändert.**
+
+23. **Auf Englisch.** Sprache umstellen, Schritte 17 und 20 wiederholen.
+
+### D · Mit Kontingent — ein Lauf mit Stil-Modul
+
+24. **Der Report nimmt die Stilrichtung auf.** Erwartet: Das Kapitel „Stil &
+    Kleiderschrank" bezieht sich erkennbar auf die gewählte Richtung.
+
+25. **Der Schwerpunkt liegt auf Ausgehen und Dates.** *Kriterium:* Drehen
+    sich die Vorschläge überwiegend um Büro, Uni oder Sport, ist das ein
+    Fund — notieren, mit dem Text daneben.
+
+26. **Die neuen Aufgaben sind durchgetaktet.** Zurück zu „Heute". Erwartet:
+    frische Aufgaben, sauber auf Morgens/Abends verteilt, in
+    chronologischer Reihenfolge.
+
+27. **Verbrauchszeile notieren**, wie in Abschnitt 12.
+
+### Was ein Fund ist
+
+| Fund | Reaktion |
+|---|---|
+| Eine Aufgabe aus einem alten Report fehlt in der Liste | Blocker. |
+| Der „Tag gesichert!"-Moment bleibt aus | Blocker. |
+| Eine spätere Tageszeit steht über einer früheren | Blocker. |
+| Bei Ganzkörper oder Outfit kommt die Selfie-Kamera | Blocker. |
+| Ein Portrait startet plötzlich hinten | Blocker. |
+| Eine alte Fragebogen-Antwort ist spurlos weg | Blocker. |
+| „Klassisch"/„Rockig"/„Handwerk"/„Uniform" tauchen noch auf | Vor dem Launch beheben. |
+| Die Stil-Vorschläge drehen sich um den Alltag statt ums Ausgehen | Notieren — das ist eine Prompt-Frage. |
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

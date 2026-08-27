@@ -31,7 +31,7 @@ function daten(
     module: ['basis', 'stilKleiderschrank'],
     profil: { fokus: [] },
     figur: {},
-    stil: { ziele: [] },
+    stil: { ziele: [], zwecke: [] },
     richtung: { ziele, freitext: '' },
   };
 }
@@ -73,8 +73,9 @@ describe('Die Liste selbst', () => {
 
 describe('Alte Werte gehen nicht verloren', () => {
   it('jeder Name der alten Liste hat einen Nachfolger', () => {
-    // Zehn waren es. Keiner darf ins Leere zeigen.
-    expect(Object.keys(RICHTUNGSZIEL_ALT)).toHaveLength(10);
+    // Zehn aus der alten Richtungsliste, sechs aus dem frueheren eigenen
+    // Stilziel (DECISIONS 72). Keiner darf ins Leere zeigen.
+    expect(Object.keys(RICHTUNGSZIEL_ALT)).toHaveLength(16);
     for (const [alt, neu] of Object.entries(RICHTUNGSZIEL_ALT)) {
       expect(RICHTUNGSZIEL[neu], `${alt} -> ${neu}`).toBeDefined();
     }

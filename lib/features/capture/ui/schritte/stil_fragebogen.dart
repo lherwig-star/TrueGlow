@@ -6,15 +6,49 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/auswahl_chip.dart';
 import '../../../../core/widgets/section_card.dart';
+import '../../../direction/logic/direction_controller.dart';
+import '../../../direction/models/richtung.dart';
 import '../../../modules/logic/module_controller.dart';
 import '../../../modules/models/modul_eingaben.dart';
 
 /// Kurzer Fragebogen fuer "Stil & Kleiderschrank".
-class StilFragebogen extends ConsumerWidget {
+///
+/// Ueberarbeitet in DECISIONS 72: Die Stilrichtung ist dieselbe Liste wie bei
+/// „Deine Richtung", und aus dem Dresscode ist die Frage geworden, wofuer der
+/// Stil funktionieren soll.
+class StilFragebogen extends ConsumerStatefulWidget {
   const StilFragebogen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<StilFragebogen> createState() => _StilFragebogenState();
+}
+
+class _StilFragebogenState extends ConsumerState<StilFragebogen> {
+  @override
+  void initState() {
+    super.initState();
+    // Vorbelegen aus „Deine Richtung" – aber erst nach dem ersten Bild:
+    // Waehrend `build` laeuft, darf kein Provider beschrieben werden.
+    //
+    // Vorbelegen und nicht nur anzeigen: Sonst waere der erste Tipp auf einen
+    // schon markierten Chip ein Abwaehlen von etwas, das nie gespeichert war.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      final stil = ref.read(moduleControllerProvider).eingaben.stil;
+      if (stil.ziele.isNotEmpty) return;
+
+      final gewaehlt = ref.read(directionControllerProvider).ziele;
+      if (gewaehlt.isEmpty) return;
+
+      ref
+          .read(moduleControllerProvider.notifier)
+          .setzeStil(stil.copyWith(ziele: gewaehlt));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final texte = context.texte;
     final stil = ref.watch(moduleControllerProvider).eingaben.stil;
     final ctrl = ref.read(moduleControllerProvider.notifier);
@@ -34,18 +68,18 @@ class StilFragebogen extends ConsumerWidget {
         MutedText(texte.stilFragebogenText),
         const SizedBox(height: AppTheme.gapM),
 
-        // --- Stilziel: Mehrfachauswahl als Chips ---
+        // --- Stilrichtung: dieselbe Liste wie bei „Deine Richtung" ---
         _Frage(titel: texte.stilZiel, untertitel: texte.stilZielText),
         Wrap(
           spacing: AppTheme.gapS,
           runSpacing: AppTheme.gapS,
           children: [
-            for (final ziel in Stilziel.values)
+            for (final ziel in Richtungsziel.values)
               AuswahlChip(
                 label: ziel.label(texte),
                 aktiv: stil.ziele.contains(ziel),
                 onTap: () {
-                  final neu = Set<Stilziel>.from(stil.ziele);
+                  final neu = Set<Richtungsziel>.from(stil.ziele);
                   neu.contains(ziel) ? neu.remove(ziel) : neu.add(ziel);
                   ctrl.setzeStil(stil.copyWith(ziele: neu));
                 },
@@ -54,14 +88,24 @@ class StilFragebogen extends ConsumerWidget {
         ),
         const SizedBox(height: AppTheme.gapL),
 
-        // --- Dresscode ---
-        _Frage(titel: texte.stilDresscode),
-        for (final code in Dresscode.values)
-          _Zeile(
-            label: code.label(texte),
-            aktiv: stil.dresscode == code,
-            onTap: () => ctrl.setzeStil(stil.copyWith(dresscode: code)),
-          ),
+        // --- Wofuer der Stil funktionieren soll (ueberspringbar) ---
+        _Frage(titel: texte.stilZweck, untertitel: texte.stilZweckText),
+        Wrap(
+          spacing: AppTheme.gapS,
+          runSpacing: AppTheme.gapS,
+          children: [
+            for (final zweck in Alltagszweck.values)
+              AuswahlChip(
+                label: zweck.label(texte),
+                aktiv: stil.zwecke.contains(zweck),
+                onTap: () {
+                  final neu = Set<Alltagszweck>.from(stil.zwecke);
+                  neu.contains(zweck) ? neu.remove(zweck) : neu.add(zweck);
+                  ctrl.setzeStil(stil.copyWith(zwecke: neu));
+                },
+              ),
+          ],
+        ),
         const SizedBox(height: AppTheme.gapL),
 
         // --- Budget ---

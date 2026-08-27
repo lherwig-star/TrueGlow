@@ -25,7 +25,7 @@ function daten(freitext = ''): AnalysePromptDaten {
     module: ['basis', 'hautFarbtyp'],
     profil: { fokus: [] },
     figur: {},
-    stil: { ziele: [] },
+    stil: { ziele: [], zwecke: [] },
     richtung: { ziele: [], freitext },
   };
 }

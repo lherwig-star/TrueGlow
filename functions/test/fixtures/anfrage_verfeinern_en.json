@@ -24,9 +24,12 @@
     },
     "stil": {
       "ziele": [
-        "smartCasual"
+        "smartHochwertig"
       ],
-      "dresscode": "businessCasual",
+      "zwecke": [
+        "ausgehenDates",
+        "arbeitNebenjob"
+      ],
       "budget": "mittel",
       "pflegeaufwand": "mittel"
     }

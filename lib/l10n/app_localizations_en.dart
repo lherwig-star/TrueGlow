@@ -548,10 +548,15 @@ class LEn extends L {
   String get stilZiel => 'Where should it go?';
 
   @override
-  String get stilZielText => 'Pick as many as you like.';
+  String get stilZielText =>
+      'Pick as many as you like. Same directions as under \"Your direction\" — here it is only about clothes.';
 
   @override
-  String get stilDresscode => 'What does your day-to-day call for?';
+  String get stilZweck => 'What should your style work for, above all?';
+
+  @override
+  String get stilZweckText =>
+      'Pick as many as you like. You can also skip this one.';
 
   @override
   String get stilBudget => 'What do you spend per item?';
@@ -1002,40 +1007,16 @@ class LEn extends L {
   String get modulBenoetigtZiele => 'What you wrote under “Your direction”';
 
   @override
-  String get stilzielKlassisch => 'Classic';
+  String get zweckUniSchule => 'Uni / school / training';
 
   @override
-  String get stilzielMinimalistisch => 'Minimalist';
+  String get zweckAusgehenDates => 'Going out & dates';
 
   @override
-  String get stilzielSportlich => 'Sporty';
+  String get zweckArbeitNebenjob => 'Work / part-time job';
 
   @override
-  String get stilzielSmartCasual => 'Smart casual';
-
-  @override
-  String get stilzielKreativ => 'Creative';
-
-  @override
-  String get stilzielRockig => 'Rock';
-
-  @override
-  String get dresscodeBuero => 'Office / formal';
-
-  @override
-  String get dresscodeBusinessCasual => 'Business casual';
-
-  @override
-  String get dresscodeHandwerk => 'Trades / workwear';
-
-  @override
-  String get dresscodeHomeoffice => 'Working from home';
-
-  @override
-  String get dresscodeUniform => 'Uniform / service dress';
-
-  @override
-  String get dresscodeFrei => 'No dress code';
+  String get zweckGymSport => 'Gym & sport';
 
   @override
   String get kleidungsbudgetKlein => 'Up to €50 per item';

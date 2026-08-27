@@ -53,7 +53,11 @@ describe('Die Nutzlast der App kommt vollstaendig an', () => {
     expect(eingang.prompt.profil.alter).toBe('a25bis34');
     expect(eingang.prompt.profil.fokus).toEqual(['haut', 'haare']);
     expect(eingang.prompt.figur.groesseCm).toBe(182);
-    expect(eingang.prompt.stil.dresscode).toBe('businessCasual');
+    expect(eingang.prompt.stil.ziele).toEqual(['smartHochwertig']);
+    expect(eingang.prompt.stil.zwecke).toEqual([
+      'ausgehenDates',
+      'arbeitNebenjob',
+    ]);
     expect(eingang.prompt.richtung.ziele).toEqual([
       'streetwearLaessig',
       'smartHochwertig',
@@ -112,7 +116,8 @@ describe('Der ganze Weg bis zum Prompt', () => {
     // Die Angaben aus dem Onboarding und den Modulen.
     expect(prompt).toContain('25–34');
     expect(prompt).toContain('182 cm');
-    expect(prompt).toContain('Business Casual');
+    expect(prompt).toContain('Arbeit / Nebenjob');
+    expect(prompt).toContain('Ausgehen & Dates');
     // Und das Zielkapitel, weil ein Freitext da ist.
     expect(prompt).toContain('"persoenlicheZiele"');
   });

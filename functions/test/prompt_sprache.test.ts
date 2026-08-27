@@ -31,7 +31,7 @@ function daten(
     module: ['basis', 'makeupAusstrahlung', 'hautFarbtyp', 'figurPassform'],
     profil: { fokus: [] },
     figur: {},
-    stil: { ziele: [] },
+    stil: { ziele: [], zwecke: [] },
     richtung: { ziele: [], freitext: '' },
   };
 }

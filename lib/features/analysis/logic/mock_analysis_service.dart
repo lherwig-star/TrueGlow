@@ -309,7 +309,7 @@ class MockAnalysisService implements AnalysisService {
     AnalyseModul.stilKleiderschrank: '''
     {
       "modul": "stilKleiderschrank",
-      "einleitung": "Die gezeigten Outfits sind funktional und zurückhaltend. Zum angegebenen Stilziel fehlt vor allem Struktur in der obersten Schicht.",
+      "einleitung": "Die gezeigten Outfits sind funktional und zurückhaltend. Zur angegebenen Stilrichtung fehlt vor allem Struktur in der obersten Schicht.",
       "habits": [
         "Beim Ankleiden: Passform der Schulternaht am Spiegel prüfen",
         "Schuhe nach dem Tragen auslüften",
@@ -338,7 +338,7 @@ class MockAnalysisService implements AnalysisService {
         {
           "titel": "Alltagstauglichkeit",
           "bildSuchbegriff": "minimal capsule wardrobe men",
-          "einschaetzung": "Beide Outfits sind pflegeleicht und passen zum angegebenen Dresscode. Das ist eine gute Grundlage, um gezielt zu ergänzen statt neu anzufangen.",
+          "einschaetzung": "Beide Outfits sind pflegeleicht und alltagstauglich. Das ist eine gute Grundlage, um gezielt zu ergänzen statt neu anzufangen.",
           "empfehlungen": [
             "Erst ergänzen, dann aussortieren – so bleibt der Kleiderschrank benutzbar.",
             "Neue Teile immer gegen drei vorhandene testen: passt es zu mindestens zweien, kommt es mit."

@@ -2,25 +2,29 @@
 // Fotos brauchen. Fliessen wie das Onboarding-Profil in den Prompt ein.
 
 import '../../../core/l10n/texte.dart';
+import '../../direction/models/richtung.dart';
 
-/// Stilziel im Modul "Stil & Kleiderschrank".
-enum Stilziel {
-  klassisch,
-  minimalistisch,
-  sportlich,
-  smartCasual,
-  kreativ,
-  rockig,
-}
+// Das Stilziel ist kein eigenes Enum mehr: Es ist dieselbe Liste wie bei
+// „Deine Richtung" ([Richtungsziel]). Die alte Auswahl (klassisch,
+// minimalistisch, sportlich, smart casual, kreativ, rockig) beschrieb
+// dieselbe Sache ein zweites Mal und driftete davon ab – zwei Listen, zwei
+// Pflegestellen, und im Report zwei Angaben, die sich widersprechen konnten
+// (DECISIONS 72). Alte gespeicherte Werte fuehrt [_altesStilziel] ueber.
 
-/// Was der Alltag an Kleidung verlangt.
-enum Dresscode {
-  buero,
-  businessCasual,
-  handwerk,
-  homeoffice,
-  uniform,
-  frei,
+/// Wofuer der Stil im Alltag vor allem funktionieren soll.
+///
+/// Loest den frueheren `Dresscode` ab. „Handwerk / Arbeitskleidung" und
+/// „Uniform / Dienstkleidung" sind ersatzlos weg: Wer Arbeitskleidung
+/// gestellt bekommt, hat daran nichts zu entscheiden, und die App richtet
+/// sich an 16- bis 25-Jaehrige.
+///
+/// Mehrfachauswahl und ueberspringbar – anders als der Dresscode, der genau
+/// eine Antwort verlangte.
+enum Alltagszweck {
+  uniSchule,
+  ausgehenDates,
+  arbeitNebenjob,
+  gymSport,
 }
 
 /// Preisrahmen speziell fuer Kleidung – bewusst getrennt vom Pflegebudget
@@ -32,25 +36,12 @@ enum Pflegeaufwand { minimal, mittel, hoch }
 
 // Anzeigetexte als Erweiterungen – Begruendung in `onboarding_profile.dart`.
 
-extension StilzielText on Stilziel {
+extension AlltagszweckText on Alltagszweck {
   String label(L texte) => switch (this) {
-        Stilziel.klassisch => texte.stilzielKlassisch,
-        Stilziel.minimalistisch => texte.stilzielMinimalistisch,
-        Stilziel.sportlich => texte.stilzielSportlich,
-        Stilziel.smartCasual => texte.stilzielSmartCasual,
-        Stilziel.kreativ => texte.stilzielKreativ,
-        Stilziel.rockig => texte.stilzielRockig,
-      };
-}
-
-extension DresscodeText on Dresscode {
-  String label(L texte) => switch (this) {
-        Dresscode.buero => texte.dresscodeBuero,
-        Dresscode.businessCasual => texte.dresscodeBusinessCasual,
-        Dresscode.handwerk => texte.dresscodeHandwerk,
-        Dresscode.homeoffice => texte.dresscodeHomeoffice,
-        Dresscode.uniform => texte.dresscodeUniform,
-        Dresscode.frei => texte.dresscodeFrei,
+        Alltagszweck.uniSchule => texte.zweckUniSchule,
+        Alltagszweck.ausgehenDates => texte.zweckAusgehenDates,
+        Alltagszweck.arbeitNebenjob => texte.zweckArbeitNebenjob,
+        Alltagszweck.gymSport => texte.zweckGymSport,
       };
 }
 
@@ -99,32 +90,38 @@ class FigurAngaben {
 class StilAngaben {
   const StilAngaben({
     this.ziele = const {},
-    this.dresscode,
+    this.zwecke = const {},
     this.budget,
     this.pflegeaufwand,
   });
 
-  /// Mehrfachauswahl – die Chips im Fragebogen.
-  final Set<Stilziel> ziele;
-  final Dresscode? dresscode;
+  /// Die Stilrichtung – dieselbe Liste wie bei „Deine Richtung".
+  ///
+  /// Ist dort schon etwas gewaehlt, kommt der Fragebogen damit vorbelegt.
+  /// Aendern kann man es hier trotzdem: Die Richtung gilt fuer den ganzen
+  /// Look, hier geht es nur um die Kleidung.
+  final Set<Richtungsziel> ziele;
+
+  /// Wofuer der Stil vor allem funktionieren soll. Mehrfachauswahl und
+  /// ausdruecklich ueberspringbar.
+  final Set<Alltagszweck> zwecke;
+
   final Kleidungsbudget? budget;
   final Pflegeaufwand? pflegeaufwand;
 
+  /// [zwecke] zaehlt bewusst nicht mit: Die Frage darf uebersprungen werden.
   bool get istVollstaendig =>
-      ziele.isNotEmpty &&
-      dresscode != null &&
-      budget != null &&
-      pflegeaufwand != null;
+      ziele.isNotEmpty && budget != null && pflegeaufwand != null;
 
   StilAngaben copyWith({
-    Set<Stilziel>? ziele,
-    Dresscode? dresscode,
+    Set<Richtungsziel>? ziele,
+    Set<Alltagszweck>? zwecke,
     Kleidungsbudget? budget,
     Pflegeaufwand? pflegeaufwand,
   }) {
     return StilAngaben(
       ziele: ziele ?? this.ziele,
-      dresscode: dresscode ?? this.dresscode,
+      zwecke: zwecke ?? this.zwecke,
       budget: budget ?? this.budget,
       pflegeaufwand: pflegeaufwand ?? this.pflegeaufwand,
     );
@@ -132,7 +129,7 @@ class StilAngaben {
 
   Map<String, dynamic> toJson() => {
         'ziele': ziele.map((z) => z.name).toList(),
-        'dresscode': dresscode?.name,
+        'zwecke': zwecke.map((z) => z.name).toList(),
         'budget': budget?.name,
         'pflegeaufwand': pflegeaufwand?.name,
       };
@@ -140,13 +137,42 @@ class StilAngaben {
   factory StilAngaben.fromJson(Map<String, dynamic> json) => StilAngaben(
         ziele: {
           for (final n in (json['ziele'] as List? ?? const []))
-            ?_ausName(Stilziel.values, n),
+            ?_stilziel(n),
         },
-        dresscode: _ausName(Dresscode.values, json['dresscode']),
+        zwecke: {
+          for (final n in (json['zwecke'] as List? ?? const []))
+            ?_ausName(Alltagszweck.values, n),
+          // Der frueher einzeln gespeicherte Dresscode. Buero und Business
+          // Casual werden zu „Arbeit / Nebenjob"; Handwerk, Uniform,
+          // Homeoffice und „keine Vorgaben" haben keine naechstliegende
+          // Entsprechung und bleiben leer (DECISIONS 72).
+          if (json['dresscode'] == 'buero' ||
+              json['dresscode'] == 'businessCasual')
+            Alltagszweck.arbeitNebenjob,
+        },
         budget: _ausName(Kleidungsbudget.values, json['budget']),
         pflegeaufwand: _ausName(Pflegeaufwand.values, json['pflegeaufwand']),
       );
 }
+
+/// Was aus den Werten der alten Stilziel-Liste geworden ist.
+///
+/// Derselbe Grundsatz wie bei [Richtungsziel]: der naechste vorhandene
+/// Nachbar, nie ein Wegfall. Zwei alte Werte landen auf demselben neuen –
+/// eine Menge nimmt das ohne Dublette hin.
+const _altesStilziel = <String, Richtungsziel>{
+  'klassisch': Richtungsziel.smartHochwertig,
+  'smartCasual': Richtungsziel.smartHochwertig,
+  'minimalistisch': Richtungsziel.cleanGepflegt,
+  'sportlich': Richtungsziel.sportlichFunktional,
+  'kreativ': Richtungsziel.kreativAuffaellig,
+  'rockig': Richtungsziel.markantMaskulin,
+};
+
+/// Liest ein gespeichertes Stilziel – neu, alt oder aus der ganz alten
+/// Richtungsliste. Unbekanntes faellt weg.
+Richtungsziel? _stilziel(dynamic name) =>
+    Richtungsziel.ausName(name) ?? _altesStilziel[name];
 
 /// Sammelt alle Zusatzangaben der Module.
 class ModulEingaben {
