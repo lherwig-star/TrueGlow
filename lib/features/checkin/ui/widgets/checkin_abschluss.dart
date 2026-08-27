@@ -10,6 +10,7 @@ import '../../../onboarding/logic/onboarding_controller.dart';
 import '../../../../core/l10n/texte.dart';
 import '../../../../core/netz/wiederholung.dart';
 import '../../../../core/router/app_router.dart';
+import '../../../home/logic/home_tab.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/section_card.dart';
@@ -178,6 +179,10 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(context.texte.checkinDankeText)),
     );
+    // Zurueck auf „Heute", nicht auf den Tab, von dem der Check-in kam: Was
+    // er geaendert hat, sind die Tagesaufgaben – und die stehen dort
+    // (DECISIONS 65).
+    ref.read(homeTabProvider.notifier).state = HomeTab.heute;
     context.go(Routes.home);
   }
 

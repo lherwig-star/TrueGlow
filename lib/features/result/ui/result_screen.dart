@@ -68,7 +68,7 @@ class ResultScreen extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           FilledButton.icon(
-            onPressed: () => context.push(Routes.plan),
+            onPressed: () => context.go(Routes.plan),
             style: FilledButton.styleFrom(shape: const StadiumBorder()),
             icon: const Icon(Icons.checklist_rtl),
             label: Text(texte.ergebnisPlanErstellen),

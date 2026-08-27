@@ -2644,6 +2644,95 @@ das die Änderung am Dunkelmodus ausdrücklich erlaubt.
 **Preis:** Keiner an Laufzeit. Ein Test mehr, der Quelltext liest — der
 langsamste der Sammlung, mit rund einer Zehntelsekunde.
 
+## 65 · Vier Tabs statt einer sehr langen Startseite
+
+Die Startseite war eine einzige Liste: Serie, Challenge, Plan-Zusammenfassung,
+alle Checklisten, Abzeichen — und ganz unten der Knopf für eine neue Analyse.
+**Die Kernfunktion stand am Seitenende**, und wer nur abhaken wollte, scrollte
+an allem anderen vorbei.
+
+**Jeder Tab beantwortet jetzt eine Frage:**
+
+| Tab | Frage | Inhalt |
+|---|---|---|
+| Heute | Was mache ich jetzt? | Serie, Challenge, die vollständige Tagesliste |
+| Plan | Was steht drin? | Zusammenfassung, nächster Check-in, die drei Phasen |
+| Analyse | Neu vermessen | Kontingent, Start, Verlauf |
+| Fortschritt | Was habe ich geschafft? | Rückblick, Bilanz, Abzeichen, Foto-Album |
+
+Daraus folgt die Regel, an der sich jede künftige Karte messen lassen muss:
+**Kein Inhalt existiert doppelt.** Wer eine Karte auf zwei Tabs stellt, hat
+die Frage nicht beantwortet, sondern verdoppelt. Ein Test geht alle vier Tabs
+durch und zählt: Jede der sechs großen Karten steht auf genau einem.
+
+**Nur Umzug, kein Umbau.** Die Karten selbst sind unverändert; zwei wurden
+lediglich aus ihren alten Bildschirmen herausgelöst, weil sie dort privat
+waren: die Phasen-Karte aus `plan_screen.dart` und die Verlaufs-Karte aus
+`history_screen.dart`. Beide Bildschirme gibt es nicht mehr — ihr Inhalt sind
+jetzt Tabs.
+
+**Zwei Karten wurden neu geschrieben, und zwar bewusst:**
+
+- Die **Bilanz** im Fortschritt-Tab (laufende Serie und Rekord als zwei
+  Zahlen). Die Streak-Karte selbst bleibt auf „Heute": Sie fordert zum
+  Abhaken auf und gehört dorthin, wo abgehakt wird. Im Fortschritt-Tab
+  stünde sie als Aufforderung am falschen Ort — dort geht es ums Zurückblicken.
+- Der **Kontingent-Stand** im Analyse-Tab. Er stand bisher klein auf der
+  Modulauswahl, also einen Schritt zu spät: Wer wissen will, ob heute noch
+  ein Lauf frei ist, fragt das vor dem Start.
+
+### Die Leiste
+
+Handgebaut statt `NavigationBar`: Material 3 legt hinter das aktive Symbol
+eine gefüllte Pille in `secondaryContainer`, und die gibt es in diesem
+Farbsystem nicht. Nachgerüstet wäre es mehr Code als die Leiste selbst — und
+eine zweite Stelle, an der Farben entstehen.
+
+Sie trägt den Kartenton des jeweiligen Modus mit einer feinen Kontur nach
+oben. Der aktive Tab bekommt das Symbol in der Flächen-Farbe und die
+Beschriftung in der Schrift-Farbe — dieselbe Trennung wie überall
+(DECISIONS 64). Zusätzlich ist das aktive Symbol gefüllt und das inaktive ein
+Umriss: der Unterschied ist auch ohne Farbe zu sehen.
+
+**Der Punkt am „Heute"-Tab** steht, solange heute noch keine Aufgabe abgehakt
+ist. Zwei Dinge daran waren nicht selbstverständlich:
+
+- **Er ist im Akzentton, nicht im Amber.** Auf dem aktiven Tab ist das Symbol
+  selbst schon amber; ein amberner Punkt darauf war schlicht unsichtbar. Und
+  inhaltlich stimmt es auch besser: Der Punkt sagt „hier ist noch etwas
+  offen" — das ist kein Erreichtes.
+- **Er zählt nur echte Tagesaufgaben.** Im selben Satz steht auch die Marke
+  eines erledigten Check-ins, und die ist kein Haken. Dieselbe Rechnung wie
+  in der Streak-Karte, damit Punkt und Kartentext nicht auseinanderlaufen.
+
+Am Gerät fiel dabei ein dritter Punkt auf: Der Punkt lag zunächst außerhalb
+der `Stack`-Grenzen und wurde abgeschnitten — im Widget-Baum war er da, auf
+dem Bildschirm nicht. Der Test prüft deshalb jetzt die **gezeichnete Fläche**
+und nicht nur, dass das Widget existiert.
+
+### Die Wege dorthin
+
+Die Pfade `/plan` und `/history` bleiben, obwohl es die Bildschirme nicht mehr
+gibt: Benachrichtigungen, der Check-in und ältere Wege zeigen darauf. Sie
+setzen den Tab und leiten auf `/` weiter, statt eine zweite Hülle
+aufzumachen — nur so gibt es genau **eine**, und die behält ihre vier
+Scroll-Positionen.
+
+Das **Verlaufs-Symbol oben rechts** öffnet keinen eigenen Bildschirm mehr,
+sondern springt in den Analyse-Tab. Eine zweite Liste derselben Einträge wäre
+genau die Doppelung, die die Regel oben verbietet.
+
+Nach einem abgeschlossenen **Check-in** landet man auf „Heute" und nicht auf
+dem Tab, von dem der Check-in kam: Was er geändert hat, sind die
+Tagesaufgaben.
+
+**Die Zurück-Taste** führt aus einem anderen Tab erst nach „Heute" und erst
+von dort aus der App. Ohne das wäre ein Tabwechsel eine Einbahnstraße — die
+Leiste kennt keinen Verlauf, die Taste schon.
+
+**Preis:** Eine Hülle mehr und vier Dateien statt zweier Bildschirme. Dafür
+ist die längste Liste der App nur noch so lang wie die Tagesaufgaben.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

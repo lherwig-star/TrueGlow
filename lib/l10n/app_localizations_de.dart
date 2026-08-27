@@ -345,6 +345,53 @@ class LDe extends L {
   String get richtungszielKreativUnter => 'Statement-Teile, mutige Farben';
 
   @override
+  String get tabHeute => 'Heute';
+
+  @override
+  String get tabPlan => 'Plan';
+
+  @override
+  String get tabAnalyse => 'Analyse';
+
+  @override
+  String get tabFortschritt => 'Fortschritt';
+
+  @override
+  String get heuteKeineAufgabenTitel => 'Heute nichts abzuhaken';
+
+  @override
+  String get heuteKeineAufgabenText =>
+      'Dein Report hat keine Tagesaufgaben mitgebracht. Beim nächsten Check-in passen wir den Plan an.';
+
+  @override
+  String get planReportOeffnen => 'Ganzen Report öffnen';
+
+  @override
+  String get analyseTabTitel => 'Deine Analysen';
+
+  @override
+  String get analyseTabEinleitung =>
+      'Starte eine neue Analyse oder öffne eine frühere.';
+
+  @override
+  String kontingentMonatUebrig(int anzahl) {
+    return '$anzahl von 10 diesen Monat übrig';
+  }
+
+  @override
+  String get fortschrittTabHinweis =>
+      'Fortschritts-Fotos bleiben auf deinem Gerät. Sie gehen an keine Cloud.';
+
+  @override
+  String get fortschrittSerieTitel => 'Deine Serie';
+
+  @override
+  String get fortschrittSerieAktuell => 'Tage am Stück';
+
+  @override
+  String get fortschrittSerieRekord => 'Längste Serie';
+
+  @override
   String get richtungTitel => 'Deine Richtung';
 
   @override

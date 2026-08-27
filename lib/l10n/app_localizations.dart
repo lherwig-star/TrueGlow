@@ -709,6 +709,90 @@ abstract class L {
   /// **'Statement-Teile, mutige Farben'**
   String get richtungszielKreativUnter;
 
+  /// Beschriftung des ersten Tabs.
+  ///
+  /// In de, this message translates to:
+  /// **'Heute'**
+  String get tabHeute;
+
+  /// Beschriftung des zweiten Tabs.
+  ///
+  /// In de, this message translates to:
+  /// **'Plan'**
+  String get tabPlan;
+
+  /// Beschriftung des dritten Tabs.
+  ///
+  /// In de, this message translates to:
+  /// **'Analyse'**
+  String get tabAnalyse;
+
+  /// Beschriftung des vierten Tabs.
+  ///
+  /// In de, this message translates to:
+  /// **'Fortschritt'**
+  String get tabFortschritt;
+
+  /// Wenn der Report keine Tagesaufgaben hatte.
+  ///
+  /// In de, this message translates to:
+  /// **'Heute nichts abzuhaken'**
+  String get heuteKeineAufgabenTitel;
+
+  /// Dazu die Erklaerung.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Report hat keine Tagesaufgaben mitgebracht. Beim nächsten Check-in passen wir den Plan an.'**
+  String get heuteKeineAufgabenText;
+
+  /// Knopf auf dem Plan-Tab.
+  ///
+  /// In de, this message translates to:
+  /// **'Ganzen Report öffnen'**
+  String get planReportOeffnen;
+
+  /// Ueberschrift der Kontingent-Karte im Analyse-Tab.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Analysen'**
+  String get analyseTabTitel;
+
+  /// Wenn der Kontingentstand unbekannt ist.
+  ///
+  /// In de, this message translates to:
+  /// **'Starte eine neue Analyse oder öffne eine frühere.'**
+  String get analyseTabEinleitung;
+
+  /// Reststand des Monatskontingents.
+  ///
+  /// In de, this message translates to:
+  /// **'{anzahl} von 10 diesen Monat übrig'**
+  String kontingentMonatUebrig(int anzahl);
+
+  /// Fussnote unter dem Foto-Album.
+  ///
+  /// In de, this message translates to:
+  /// **'Fortschritts-Fotos bleiben auf deinem Gerät. Sie gehen an keine Cloud.'**
+  String get fortschrittTabHinweis;
+
+  /// Ueberschrift der Bilanz-Karte.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Serie'**
+  String get fortschrittSerieTitel;
+
+  /// Beschriftung der laufenden Serie.
+  ///
+  /// In de, this message translates to:
+  /// **'Tage am Stück'**
+  String get fortschrittSerieAktuell;
+
+  /// Beschriftung des Rekords.
+  ///
+  /// In de, this message translates to:
+  /// **'Längste Serie'**
+  String get fortschrittSerieRekord;
+
   /// No description provided for @richtungTitel.
   ///
   /// In de, this message translates to:

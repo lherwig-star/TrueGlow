@@ -13,6 +13,7 @@ import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
 import 'package:trueglow/features/plan/logic/plan_progress_repository.dart';
 import 'package:trueglow/features/streak/logic/streak_repository.dart';
 import 'package:trueglow/features/streak/models/abzeichen.dart';
+import 'package:trueglow/features/home/logic/home_tab.dart';
 import 'package:trueglow/main.dart';
 
 import 'hilfen.dart';
@@ -90,11 +91,18 @@ void main() {
       contains(Abzeichen.ersteAnalyse),
     );
 
-    // Dashboard zeigt jetzt den Plan statt des leeren Zustands.
+    // „Heute" zeigt jetzt die Tagesliste statt des leeren Zustands.
     expect(find.text(texte.homeLeerTitel), findsNothing);
-    expect(find.text('Dein Plan'), findsOneWidget);
     // Eine Checkliste pro Kapitel – bei reiner Basis-Analyse genau eine.
     expect(find.text(AnalyseModul.basis.checkliste(texte, Ausrichtung.maennlich)), findsOneWidget);
+
+    // Die Zusammenfassung liegt seit DECISIONS 65 im Plan-Tab.
+    container2.read(homeTabProvider.notifier).state = HomeTab.plan;
+    await tester.pumpAndSettle();
+    expect(find.text('Dein Plan'), findsOneWidget);
+
+    container2.read(homeTabProvider.notifier).state = HomeTab.heute;
+    await tester.pumpAndSettle();
 
     // Solange nichts abgehakt ist, bleibt die Serie bei null.
     expect(container2.read(streakProvider).aktuell, 0);

@@ -19,13 +19,12 @@ import '../../features/checkin/ui/checkin_screen.dart';
 import '../../features/direction/ui/direction_screen.dart';
 import '../../features/modules/models/analyse_modul.dart';
 import '../../features/modules/ui/module_selection_screen.dart';
-import '../../features/history/ui/history_screen.dart';
 import '../../features/checkin/ui/fortschritt_screen.dart';
+import '../../features/home/logic/home_tab.dart';
 import '../../features/home/ui/home_screen.dart';
 import '../../features/onboarding/logic/onboarding_controller.dart';
 import '../../features/onboarding/ui/onboarding_screen.dart';
 import '../../features/start/ui/splash_screen.dart';
-import '../../features/plan/ui/plan_screen.dart';
 import '../../features/result/ui/result_screen.dart';
 import '../../features/settings/ui/settings_screen.dart';
 import '../../core/l10n/texte.dart';
@@ -251,8 +250,26 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) =>
             ResultScreen(analyseId: state.pathParameters['id']!),
       ),
-      GoRoute(path: Routes.plan, builder: (context, state) => const PlanScreen()),
-      GoRoute(path: Routes.history, builder: (context, state) => const HistoryScreen()),
+      // Plan und Verlauf haben seit DECISIONS 65 keinen eigenen
+      // Bildschirm mehr – sie sind Tabs der Startseite. Die Pfade
+      // bleiben trotzdem: Benachrichtigungen, der Check-in und aeltere
+      // Wege zeigen darauf. Sie setzen den Tab und leiten weiter, statt
+      // eine zweite Huelle aufzumachen – nur so behaelt die eine ihre
+      // vier Scroll-Positionen.
+      GoRoute(
+        path: Routes.plan,
+        redirect: (context, state) {
+          ref.read(homeTabProvider.notifier).state = HomeTab.plan;
+          return Routes.home;
+        },
+      ),
+      GoRoute(
+        path: Routes.history,
+        redirect: (context, state) {
+          ref.read(homeTabProvider.notifier).state = HomeTab.analyse;
+          return Routes.home;
+        },
+      ),
       GoRoute(
         path: Routes.fortschritt,
         builder: (context, state) => const FortschrittScreen(),

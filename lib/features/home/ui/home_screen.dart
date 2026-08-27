@@ -5,33 +5,41 @@ import 'package:go_router/go_router.dart';
 import '../../../core/l10n/texte.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_theme.dart';
-import '../../../core/utils/datum.dart';
-import '../../../core/widgets/app_page.dart';
-import '../../../core/widgets/section_card.dart';
 import '../../analysis/logic/analysis_controller.dart';
 import '../../analysis/logic/modus_controller.dart';
-import '../../onboarding/logic/onboarding_controller.dart';
-import '../../onboarding/models/onboarding_profile.dart';
-import '../../analysis/models/analysis_result.dart';
-import '../../analysis/ui/unterbrochen_karte.dart';
 import '../../capture/logic/capture_controller.dart';
 import '../../checkin/logic/checkin_benachrichtigung.dart';
 import '../../checkin/logic/checkin_controller.dart';
-import '../../checkin/ui/widgets/checkin_karte.dart';
-import '../../modules/logic/module_controller.dart';
 import '../../history/logic/analysis_repository.dart';
-import '../../plan/ui/widgets/challenge_karte.dart';
-import '../../plan/ui/widgets/checkliste_karte.dart';
-import '../../plan/ui/widgets/wochen_rueckblick_karte.dart';
+import '../../modules/logic/module_controller.dart';
+import '../../onboarding/logic/onboarding_controller.dart';
+import '../../onboarding/models/onboarding_profile.dart';
+import '../../plan/logic/plan_progress_repository.dart';
 import '../../streak/logic/erinnerung_planer.dart';
 import '../../streak/logic/streak_repository.dart';
 import '../../streak/ui/jubel_overlay.dart';
-import '../../streak/ui/widgets/abzeichen_sektion.dart';
-import '../../streak/ui/widgets/streak_karte.dart';
+import '../logic/home_tab.dart';
+import 'tabs/analyse_tab.dart';
+import 'tabs/fortschritt_tab.dart';
+import 'tabs/heute_tab.dart';
+import 'tabs/plan_tab.dart';
+import 'widgets/tab_leiste.dart';
 
-/// Dashboard. Zeigt Serie, Abzeichen und entweder den Einstieg in die erste
-/// Analyse oder den aktuellen Plan mit den Tages-Checklisten.
+/// Die Hülle der Startseite: eine AppBar, vier Tabs, eine Leiste unten.
+///
+/// **Warum vier Tabs** (DECISIONS 65): Die Startseite war eine einzige sehr
+/// lange Liste — Serie, Challenge, Plan-Zusammenfassung, alle Checklisten,
+/// Abzeichen, und ganz unten der Knopf für eine neue Analyse. Die
+/// Kernfunktion stand am Seitenende, und wer nur abhaken wollte, scrollte an
+/// allem anderen vorbei.
+///
+/// Jeder Tab beantwortet jetzt eine Frage, und **kein Inhalt existiert
+/// doppelt** — die Regel steht in [HomeTab].
+///
+/// **Die Hülle hält die Zustände, nicht die Tabs.** Der Check-in-Termin, die
+/// Erinnerung und der Jubel-Moment hängen an der Sitzung, nicht an einem
+/// Tab. Ein `IndexedStack` hält alle vier am Leben; deshalb überlebt jede
+/// Scroll-Position den Wechsel.
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -116,7 +124,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// Der Modus gehoert ausdruecklich dazu: Er gilt pro Analyse und nicht als
   /// Vorliebe. Wer beim letzten Mal einen neuen Look wollte, bekommt die
   /// Frage beim naechsten Mal neu gestellt.
-  void _neueAnalyse(BuildContext context, WidgetRef ref) {
+  void _neueAnalyse() {
     ref.read(captureControllerProvider.notifier).alleVerwerfen();
     // Die Schwerpunkte aus dem Onboarding waehlen die passenden Module vor
     // (DECISIONS 60). Aendern kann der Nutzer sie auf dem naechsten
@@ -138,154 +146,85 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final texte = context.texte;
-    final analyse = ref.watch(aktuelleAnalyseProvider);
+    final farben = context.farben;
+    final aktiv = ref.watch(homeTabProvider);
 
     // Nach dem Frame pruefen: waehrend des Baus laesst sich kein Dialog
     // oeffnen, und der ausloesende Haken kommt aus einem anderen Widget.
     ref.watch(offenerJubelProvider);
     WidgetsBinding.instance.addPostFrameCallback((_) => _pruefeJubel());
 
-    return AppPage(
-      title: texte.appName,
-      showBackButton: false,
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.history),
-          tooltip: texte.verlaufTitel,
-          onPressed: () => context.push(Routes.history),
-        ),
-        IconButton(
-          icon: const Icon(Icons.settings_outlined),
-          tooltip: texte.einstellungenTitel,
-          onPressed: () => context.push(Routes.settings),
-        ),
-      ],
-      children: [
-        // Steht ganz oben und nur, wenn es etwas zu sagen gibt: Ein
-        // Programmlauf, der mitten in der Analyse endete, hinterlaesst sonst
-        // gar keine Spur.
-        const UnterbrochenKarte(),
-        ...analyse == null
-            ? _ohneAnalyse(context, ref)
-            : _mitAnalyse(context, ref, analyse),
-      ],
-    );
-  }
+    // Der Punkt am „Heute"-Tab: Solange heute noch keine Aufgabe abgehakt
+    // ist, gibt es etwas zu tun. Mit dem ersten Haken verschwindet er.
+    //
+    // Gezaehlt werden nur echte Tagesaufgaben – im selben Satz steht auch
+    // die Marke eines erledigten Check-ins, und die ist kein Haken. Dieselbe
+    // Rechnung wie in der Streak-Karte, damit Punkt und Kartentext nicht
+    // auseinanderlaufen.
+    final analyse = ref.watch(aktuelleAnalyseProvider);
+    final habits = analyse?.alleHabits ?? const <String>[];
+    final nochNichtsAbgehakt = analyse != null &&
+        !ref.watch(planFortschrittProvider).erledigt.any(habits.contains);
 
-  List<Widget> _ohneAnalyse(BuildContext context, WidgetRef ref) => [
-        const SizedBox(height: AppTheme.gapL),
-        Center(
-          child: Container(
-            width: 96,
-            height: 96,
-            decoration: BoxDecoration(
-              color: context.farben.akzent.withValues(alpha: 0.12),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.auto_awesome,
-              size: 42,
-              color: context.farben.akzent,
-            ),
+    return PopScope(
+      // Aus einem anderen Tab fuehrt die Zurueck-Taste erst nach „Heute" –
+      // und erst von dort aus der App. Ohne das waere ein Tabwechsel eine
+      // Einbahnstrasse: Die Leiste kennt keinen Verlauf, die Taste schon.
+      canPop: aktiv == HomeTab.heute,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        ref.read(homeTabProvider.notifier).state = HomeTab.heute;
+      },
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [farben.hintergrund, farben.hintergrundTief],
           ),
         ),
-        const SizedBox(height: AppTheme.gapM),
-        Text(
-          context.texte.homeLeerTitel,
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
-        ),
-        const SizedBox(height: AppTheme.gapS),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppTheme.gapM),
-          child: MutedText(context.texte.homeLeerText, align: TextAlign.center),
-        ),
-        const SizedBox(height: AppTheme.gapL),
-        FilledButton.icon(
-          onPressed: () => _neueAnalyse(context, ref),
-          icon: const Icon(Icons.photo_camera_outlined),
-          label: Text(context.texte.homeAnalyseStarten),
-        ),
-      ];
-
-  List<Widget> _mitAnalyse(
-    BuildContext context,
-    WidgetRef ref,
-    AnalysisResult analyse,
-  ) {
-    final texte = context.texte;
-
-    return [
-      const CheckinKarte(),
-      // Sonntagabend bis Montagabend, danach von selbst wieder weg.
-      const WochenRueckblickKarte(),
-      const StreakKarte(),
-      const SizedBox(height: AppTheme.gapS),
-      const ChallengeKarte(),
-      SectionCard(
-        title: texte.homeDeinPlan,
-        icon: Icons.flag_outlined,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            MutedText(
-              texte.homePlanZeile(
-                Datum.relativ(
-                  analyse.erstelltAm,
-                  texte.localeName,
-                  heute: texte.datumHeute,
-                  gestern: texte.datumGestern,
-                ),
-                analyse.anzahlEmpfehlungen,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            title: Text(texte.appName),
+            automaticallyImplyLeading: false,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.history),
+                tooltip: texte.verlaufTitel,
+                // Der Verlauf hat keinen eigenen Bildschirm mehr – er lebt
+                // im Analyse-Tab. Das Symbol fuehrt dorthin, statt eine
+                // zweite Liste derselben Eintraege zu oeffnen.
+                onPressed: () => ref.read(homeTabProvider.notifier).state =
+                    HomeTab.analyse,
               ),
-            ),
-            if (analyse.gesichtsform.isNotEmpty) ...[
-              const SizedBox(height: AppTheme.gapS),
-              Text(
-                analyse.gesichtsform,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(height: 1.5),
+              IconButton(
+                icon: const Icon(Icons.settings_outlined),
+                tooltip: texte.einstellungenTitel,
+                onPressed: () => context.push(Routes.settings),
               ),
             ],
-            const CheckinVorschau(),
-            const SizedBox(height: AppTheme.gapM),
-            Row(
+          ),
+          body: SafeArea(
+            top: false,
+            child: IndexedStack(
+              index: aktiv.index,
               children: [
-                Expanded(
-                  child: FilledButton(
-                    onPressed: () => context.push(Routes.plan),
-                    child: Text(context.texte.homePlanAnsehen),
-                  ),
-                ),
-                const SizedBox(width: AppTheme.gapS),
-                SizedBox(
-                  width: 120,
-                  child: OutlinedButton(
-                    onPressed: () =>
-                        context.push('${Routes.result}/${analyse.id}'),
-                    child: Text(texte.homeAnalyseKurz),
-                  ),
-                ),
+                HeuteTab(onNeueAnalyse: _neueAnalyse),
+                const PlanTab(),
+                AnalyseTab(onNeueAnalyse: _neueAnalyse),
+                const FortschrittTab(),
               ],
             ),
-          ],
+          ),
+          bottomNavigationBar: TabLeiste(
+            aktiv: aktiv,
+            punktAmHeute: nochNichtsAbgehakt,
+            onWechsel: (tab) =>
+                ref.read(homeTabProvider.notifier).state = tab,
+          ),
         ),
       ),
-      const SizedBox(height: AppTheme.gapM),
-      // Eine Checkliste pro Kapitel – Ueberschrift nennt den Bereich.
-      for (final kapitel in analyse.checklisten) ...[
-        ChecklisteKarte(kapitel: kapitel),
-        const SizedBox(height: AppTheme.gapS),
-      ],
-      const SizedBox(height: AppTheme.gapS),
-      const AbzeichenSektion(),
-      const SizedBox(height: AppTheme.gapM),
-      OutlinedButton.icon(
-        onPressed: () => _neueAnalyse(context, ref),
-        icon: const Icon(Icons.refresh),
-        label: Text(context.texte.homeNeueAnalyse),
-      ),
-    ];
+    );
   }
 }

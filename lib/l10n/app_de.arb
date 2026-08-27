@@ -166,6 +166,63 @@
   "richtungszielSportlichUnter": "Athletisch, praktisch, robust",
   "richtungszielKreativ": "Kreativ & auffällig",
   "richtungszielKreativUnter": "Statement-Teile, mutige Farben",
+  "tabHeute": "Heute",
+  "@tabHeute": {
+    "description": "Beschriftung des ersten Tabs."
+  },
+  "tabPlan": "Plan",
+  "@tabPlan": {
+    "description": "Beschriftung des zweiten Tabs."
+  },
+  "tabAnalyse": "Analyse",
+  "@tabAnalyse": {
+    "description": "Beschriftung des dritten Tabs."
+  },
+  "tabFortschritt": "Fortschritt",
+  "@tabFortschritt": {
+    "description": "Beschriftung des vierten Tabs."
+  },
+  "heuteKeineAufgabenTitel": "Heute nichts abzuhaken",
+  "@heuteKeineAufgabenTitel": {
+    "description": "Wenn der Report keine Tagesaufgaben hatte."
+  },
+  "heuteKeineAufgabenText": "Dein Report hat keine Tagesaufgaben mitgebracht. Beim nächsten Check-in passen wir den Plan an.",
+  "@heuteKeineAufgabenText": {
+    "description": "Dazu die Erklaerung."
+  },
+  "planReportOeffnen": "Ganzen Report öffnen",
+  "@planReportOeffnen": {
+    "description": "Knopf auf dem Plan-Tab."
+  },
+  "analyseTabTitel": "Deine Analysen",
+  "@analyseTabTitel": {
+    "description": "Ueberschrift der Kontingent-Karte im Analyse-Tab."
+  },
+  "analyseTabEinleitung": "Starte eine neue Analyse oder öffne eine frühere.",
+  "@analyseTabEinleitung": {
+    "description": "Wenn der Kontingentstand unbekannt ist."
+  },
+  "kontingentMonatUebrig": "{anzahl} von 10 diesen Monat übrig",
+  "@kontingentMonatUebrig": {
+    "description": "Reststand des Monatskontingents.",
+    "placeholders": { "anzahl": { "type": "int" } }
+  },
+  "fortschrittTabHinweis": "Fortschritts-Fotos bleiben auf deinem Gerät. Sie gehen an keine Cloud.",
+  "@fortschrittTabHinweis": {
+    "description": "Fussnote unter dem Foto-Album."
+  },
+  "fortschrittSerieTitel": "Deine Serie",
+  "@fortschrittSerieTitel": {
+    "description": "Ueberschrift der Bilanz-Karte."
+  },
+  "fortschrittSerieAktuell": "Tage am Stück",
+  "@fortschrittSerieAktuell": {
+    "description": "Beschriftung der laufenden Serie."
+  },
+  "fortschrittSerieRekord": "Längste Serie",
+  "@fortschrittSerieRekord": {
+    "description": "Beschriftung des Rekords."
+  },
   "richtungTitel": "Deine Richtung",
   "richtungEyebrow": "Optional",
   "richtungUeberschrift": "In welche Richtung soll sich dein Look entwickeln?",

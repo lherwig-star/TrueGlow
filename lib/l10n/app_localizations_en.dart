@@ -343,6 +343,53 @@ class LEn extends L {
   String get richtungszielKreativUnter => 'Statement pieces, brave colours';
 
   @override
+  String get tabHeute => 'Today';
+
+  @override
+  String get tabPlan => 'Plan';
+
+  @override
+  String get tabAnalyse => 'Analysis';
+
+  @override
+  String get tabFortschritt => 'Progress';
+
+  @override
+  String get heuteKeineAufgabenTitel => 'Nothing to tick today';
+
+  @override
+  String get heuteKeineAufgabenText =>
+      'Your report did not come with daily tasks. We will adjust the plan at the next check-in.';
+
+  @override
+  String get planReportOeffnen => 'Open the full report';
+
+  @override
+  String get analyseTabTitel => 'Your analyses';
+
+  @override
+  String get analyseTabEinleitung =>
+      'Start a new analysis or open an earlier one.';
+
+  @override
+  String kontingentMonatUebrig(int anzahl) {
+    return '$anzahl of 10 left this month';
+  }
+
+  @override
+  String get fortschrittTabHinweis =>
+      'Progress photos stay on your device. They never go to a cloud.';
+
+  @override
+  String get fortschrittSerieTitel => 'Your streak';
+
+  @override
+  String get fortschrittSerieAktuell => 'Days in a row';
+
+  @override
+  String get fortschrittSerieRekord => 'Longest streak';
+
+  @override
   String get richtungTitel => 'Your direction';
 
   @override

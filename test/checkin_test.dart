@@ -642,11 +642,12 @@ void main() {
           .read(checkinControllerProvider.notifier)
           .neuBeginnen(DateTime.now().subtract(const Duration(days: 8)));
 
-      container.read(routerProvider).go(Routes.home);
+      // Die Karte steht im Plan-Tab (DECISIONS 65) – der Pfad `/plan`
+      // fuehrt genau dorthin.
+      container.read(routerProvider).go(Routes.plan);
       await tester.pumpAndSettle();
       await _jubelWegtippen(tester);
 
-      // Die Karte steht auf der Startseite.
       expect(find.text(texte.checkinKarteTitel), findsOneWidget);
       await tester.tap(find.text(texte.checkinStarten));
       await tester.pumpAndSettle();
@@ -738,7 +739,7 @@ void main() {
           .read(checkinControllerProvider.notifier)
           .neuBeginnen(DateTime.now().subtract(const Duration(days: 2)));
 
-      container.read(routerProvider).go(Routes.home);
+      container.read(routerProvider).go(Routes.plan);
       await tester.pumpAndSettle();
       await _jubelWegtippen(tester);
 
