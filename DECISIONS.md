@@ -1992,6 +1992,76 @@ bekommt genau das, was er bisher bekommen hat.
 erste Aufnahme kommt. Das ist der Preis dafür, dass die Frage nicht
 untergeht.
 
+## 57 · Was „Neuen Look entdecken" vom Modell verlangt
+
+Der Modus aus DECISIONS 56 ist erst dann etwas wert, wenn die Antwort anders
+aussieht. „Schlag etwas Neues vor" allein beantwortet ein Modell mit „probier
+doch mal einen frischeren Schnitt" — und das ist nichts.
+
+**Der Auftrag wird ausgetauscht, nicht ergänzt.** Der Satz „Deine Aufgabe:
+eine konstruktive, motivierende Einschätzung …" ist im entdeckenden Modus
+weg. An seiner Stelle steht der Entwurfsauftrag. Ein Prompt, der beides
+verlangt, bekommt beides halb.
+
+**Acht Regeln, jede prüfbar an einer einzelnen Zeile des Reports:**
+
+| Regel | Wogegen sie geschrieben ist |
+|---|---|
+| NAME | „Etwas Kürzeres" statt „Textured Crop" |
+| BEGRÜNDUNG AM GESICHT | ein Trendtipp, der für jeden gilt |
+| MACHBAR | eine Frisur, die der Haartyp nicht hergibt |
+| BEIM FRISEUR SAGEN | ein Vorschlag, den man im Salon nicht erklären kann |
+| SICHTBAR ANDERS | derselbe Look mit anderen Worten |
+| WAS BLEIBT | „neu" als „alles anders" |
+| TON | ein Report, der erst sagt, was falsch war |
+| STANDARD-VORSCHLÄGE VERBOTEN | die Antwort, die für alle passt |
+
+Die Beispiele sind **beschrieben** und nicht als fertiger Satz zitiert — was
+der Prompt wörtlich nennt, schreibt das Modell wörtlich ab (DECISIONS 36).
+Frisurnamen sind die Ausnahme: „Textured Crop" heißt auf Englisch genauso.
+
+**Der Report bekommt einen Vorspann.** `neuerLook` steht als erstes Feld im
+Schema und als erste Karte im Report — noch vor „Deine Richtung". Die Kapitel
+darunter sind die Umsetzung dieser Richtung; wer den Vorspann überspringt,
+liest den Rest als lose Tipps. Fehlt das Feld, fällt die Karte weg statt leer
+dazustehen: Ein Report ohne Vorspann ist unvollständig, nicht kaputt.
+
+**Jedes Look-Kapitel bekommt eine eigene Vorschlags-Sektion an erster
+Stelle**, mit dem festen Titel „Dein neuer Look" / „Your new look" aus
+`SEKTIONEN`. Deshalb steigt die erlaubte Zahl der Sektionen in diesem Modus
+von 2–4 auf 3–5: Die Basis hat schon Frisur, Bart und Brillenform, und die
+Vorgabe hätte sonst mit ihrer eigenen Obergrenze kollidiert.
+
+**Das Zielkapitel bleibt außen vor.** Es gehört allein dem Freitext
+(DECISIONS 39). Ein Frisurvorschlag darin wäre genau die Vermischung, die
+dort abgeschafft wurde — auch im neuen Look ist „aufhören zu rauchen" kein
+Look-Thema.
+
+**Plan und Tagesaufgaben hängen am neuen Look.** Ohne eigene Regel dafür kam
+ein Plan zurück, der den alten Look pflegt: Der Vorschlag steht oben, und
+darunter steht „Bart abends in Form bringen" für einen Bart, der abrasiert
+werden soll. Dazu gehört auch, eine nötige Übergangszeit offen zu benennen —
+eine verschwiegene Übergangszeit ist der häufigste Grund, warum jemand nach
+zwei Wochen aufgibt.
+
+**Der verfeinernde Modus bleibt Wort für Wort derselbe.** Ein Test besteht
+darauf. Ohne diese Zusage ließe sich bei einer schlechteren Antwort nie
+sagen, ob es am neuen Modus liegt oder am Umbau.
+
+**Alle Leitplanken gelten weiter** — keine Scores, kein
+Attraktivitätsurteil, keine Diagnosen, die Wenn-dann-Anker, der
+Qualitätsblock. Der neue Modus ist ein anderer Auftrag, keine Ausnahme von
+den Regeln. Auch das steht als Test da.
+
+**Der Demo-Modus bekommt ein zweites vollständiges Beispiel.** Das ist
+Fleißarbeit — sechs Kapitel, ein eigener Plan, ein eigener Vorspann —, aber
+die Alternative wäre gewesen, den neuen Modus nur mit echtem Kontingent
+ansehen zu können. Dann wäre die Oberfläche erst geprüft worden, nachdem sie
+Geld kostet.
+
+**Preis:** Der Prompt wird im entdeckenden Modus rund ein Drittel länger.
+Das kostet Eingabe-Tokens bei jedem Lauf dieses Modus.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

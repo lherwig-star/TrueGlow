@@ -25,6 +25,13 @@ import {
   type Sprache,
 } from './sprache';
 import { kontextzeile, type Ausrichtung } from './ausrichtung';
+import {
+  auftrag,
+  entdeckenRegeln,
+  kapitelZusatz,
+  planRegeln,
+  type Modus,
+} from './modus';
 
 /**
  * Der System-Prompt der Analyse.
@@ -66,6 +73,8 @@ export interface AnalysePromptDaten {
   sprache: Sprache;
   /** Wonach die Empfehlungen ausgerichtet werden. */
   ausrichtung: Ausrichtung;
+  /** Ob der vorhandene Look verbessert oder ein neuer entworfen wird. */
+  modus: Modus;
   module: Modul[];
   profil: Profilangaben;
   figur: Figurangaben;
@@ -92,6 +101,7 @@ export function systemPrompt(daten: AnalysePromptDaten): string {
     : bestellt;
   const sprache = daten.sprache;
   const ausrichtung = daten.ausrichtung;
+  const entdecken = daten.modus === 'entdecken';
 
   return `Du bist ein erfahrener, freundlicher Styling- und Grooming-Coach. Du siehst
 mehrere Fotos derselben Person.
@@ -100,8 +110,7 @@ ${kontextzeile(ausrichtung, sprache)}
 
 ${kontext(daten, gewaehlt)}
 ${ziele(daten.richtung, sprache)}
-Deine Aufgabe: eine konstruktive, motivierende Einschätzung mit konkret
-umsetzbaren Empfehlungen – gegliedert in genau die unten genannten Kapitel.
+${auftrag(daten.modus)}
 
 Verbindliche Regeln:
 - Vergib KEINE Bewertungszahlen, Scores, Noten oder Rankings. Kein "7/10", kein
@@ -116,13 +125,16 @@ Verbindliche Regeln:
   der Person aus.
 - ${AUSGABESPRACHE[sprache]}
 - Jede Empfehlung ist ein konkreter Schritt, keine Allgemeinplatitüde.
-${zielRegeln(daten.richtung, sprache)}
+${zielRegeln(daten.richtung, sprache)}${entdecken ? `
+${planRegeln()}` : ''}
 ${QUALITAET}
-${ankerRegeln(sprache)}
+${entdecken ? `${entdeckenRegeln()}
+` : ''}${ankerRegeln(sprache)}
 Antworte AUSSCHLIESSLICH mit einem JSON-Objekt nach diesem Schema. Kein
 Fließtext davor oder danach, keine Markdown-Codefences:
 
 {
+${entdecken ? '  "neuerLook": "2-3 Sätze: die neue Richtung als Bild im Kopf",\n' : ''}\
   "kapitel": [
     {
       "modul": "${gewaehlt[0]}",
@@ -153,15 +165,26 @@ Fließtext davor oder danach, keine Markdown-Codefences:
 }
 
 Erzeuge GENAU diese Kapitel, in dieser Reihenfolge, und keine weiteren:
-${gewaehlt.map((m) => kapitelVorgabe(m, ausrichtung, sprache)).join('\n')}
+${gewaehlt
+  .map(
+    (m) =>
+      kapitelVorgabe(m, ausrichtung, sprache) +
+      zusatz(m, daten.modus, sprache),
+  )
+  .join('\n')}
 
 Vorgaben zum Inhalt:
+${entdecken ? `- "neuerLook" ist der Einstieg des ganzen Reports: 2-3 Sätze, die die neue
+  Richtung als Bild im Kopf entstehen lassen. Kein Aufzählen der Kapitel,
+  keine Vorrede, kein Rückblick auf den alten Look – ein Satz darüber, wie
+  diese Person mit dem neuen Look wirkt, und woran das liegt. Anzeigetext,
+  also in der Zielsprache.\n` : ''}\
 - "modul" ist exakt einer der genannten Bezeichner – nicht übersetzen.
 - "kategorie" ist exakt einer der aufgezählten Bezeichner – kleingeschrieben,
   nicht übersetzen, nichts anderes. Das Wort dazu setzt die App.
 - "titel" ist Anzeigetext und steht deshalb in der Zielsprache, genau wie
   jedes andere Textfeld. ${AUSGABESPRACHE_KURZ[sprache]}
-- "sektionen": 2 bis 4 pro Kapitel.
+- "sektionen": ${entdecken ? 3 : 2} bis ${entdecken ? 5 : 4} pro Kapitel.
 - "empfehlungen": 2 bis 4 pro Sektion.
 - "produkte": 0 bis 3 pro Sektion, "affiliateUrl" immer null.
 - "habits": 4 bis 7 pro Kapitel, jeder unter 80 Zeichen. Jeder Eintrag ist eine
@@ -516,6 +539,19 @@ function kapitelVorgabe(
           'etwas ändert; sonst eine leere Liste.',
       ].join('\n');
   }
+}
+
+/**
+ * Was im entdeckenden Modus zu jeder Kapitelvorgabe dazukommt.
+ *
+ * Das Zielkapitel bleibt aussen vor: Es gehoert allein dem Freitext
+ * (DECISIONS 39), und ein Frisurvorschlag darin waere genau die Vermischung,
+ * die dort abgeschafft wurde. Auch im neuen Look ist "aufhoeren zu rauchen"
+ * kein Look-Thema.
+ */
+function zusatz(modul: Modul, modus: Modus, sprache: Sprache): string {
+  if (modus !== 'entdecken' || modul === ZIELKAPITEL) return '';
+  return kapitelZusatz(sektion('neuerLook', sprache));
 }
 
 /** Uebersetzt Onboarding-Antworten und Modul-Eingaben in Prompt-Kontext. */

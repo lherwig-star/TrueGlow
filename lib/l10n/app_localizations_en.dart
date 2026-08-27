@@ -287,6 +287,9 @@ class LEn extends L {
       'Both modes cost exactly one analysis run, and you take the same photos either way. You choose again for every analysis.';
 
   @override
+  String get neuerLookTitel => 'Your new look';
+
+  @override
   String get richtungTitel => 'Your direction';
 
   @override

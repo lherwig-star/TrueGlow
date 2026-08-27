@@ -2,6 +2,7 @@ import { fehler } from './fehler';
 import { AUFNAHMEN, istModul, moduleFuer, type Modul } from './labels';
 import { leseSprache } from './sprache';
 import { leseAusrichtung, type Ausrichtung } from './ausrichtung';
+import { leseModus } from './modus';
 import type {
   AnalysePromptDaten,
   Figurangaben,
@@ -70,6 +71,7 @@ export function leseAnalyse(roh: unknown): AnalyseEingang {
     prompt: {
       sprache: leseSprache(daten.sprache),
       ausrichtung,
+      modus: leseModus(daten.modus),
       module,
       profil: leseProfil(daten.profil),
       figur: leseFigur(daten.eingaben),

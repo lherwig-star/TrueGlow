@@ -117,6 +117,7 @@ export const SEKTIONEN = {
   alltagsLook: { de: 'Alltags-Look', en: 'Everyday look' },
   farben: { de: 'Farben', en: 'Colours' },
   ziel: { de: 'Dein Ziel', en: 'Your goal' },
+  neuerLook: { de: 'Dein neuer Look', en: 'Your new look' },
 } as const satisfies Record<string, Zweisprachig>;
 
 export function sektion(

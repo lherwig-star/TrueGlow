@@ -265,6 +265,9 @@ function textprobe(ergebnis: Record<string, unknown>): string {
     }
   };
 
+  // Der Einstiegstext des entdeckenden Modus gehoert dazu: Er ist der erste
+  // Satz, den jemand liest, und faellt sonst durch die Sprachpruefung.
+  sammle(ergebnis.neuerLook, 0);
   sammle(ergebnis.kapitel, 0);
   sammle(ergebnis.plan, 0);
   return teile.join(' ');

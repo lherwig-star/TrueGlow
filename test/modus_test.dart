@@ -6,6 +6,8 @@ import 'package:trueglow/core/l10n/texte.dart';
 import 'package:trueglow/core/router/app_router.dart';
 import 'package:trueglow/core/storage/key_value_store.dart';
 import 'package:trueglow/features/analysis/logic/analyse_anfrage.dart';
+import 'package:trueglow/features/analysis/logic/json_extractor.dart';
+import 'package:trueglow/features/analysis/logic/mock_analysis_service.dart';
 import 'package:trueglow/features/analysis/logic/modus_controller.dart';
 import 'package:trueglow/features/analysis/models/analyse_modus.dart';
 import 'package:trueglow/features/analysis/models/analysis_result.dart';
@@ -204,6 +206,142 @@ void main() {
     });
   });
 
+  group('Der neue Look im Report', () {
+    test('das Feld kommt aus der Antwort – aber nur im richtigen Modus', () {
+      final json = {
+        'neuerLook': 'Weg vom mittellangen Haar hin zu klarem Kontrast.',
+        'kapitel': const [],
+        'plan': const {},
+      };
+
+      final entdeckt = AnalysisResult.vonApi(
+        json,
+        id: '1',
+        erstelltAm: DateTime(2026, 8, 27),
+        modus: AnalyseModus.entdecken,
+      );
+      expect(entdeckt.neuerLook, startsWith('Weg vom'));
+      expect(entdeckt.zeigtNeuenLook, isTrue);
+
+      // Liefert das Modell den Vorspann im verfeinernden Modus trotzdem mit,
+      // faellt er weg. Dort gibt es nichts zu entwerfen.
+      final verfeinert = AnalysisResult.vonApi(
+        json,
+        id: '2',
+        erstelltAm: DateTime(2026, 8, 27),
+      );
+      expect(verfeinert.neuerLook, isEmpty);
+      expect(verfeinert.zeigtNeuenLook, isFalse);
+    });
+
+    test('ein fehlender Vorspann macht den Report nicht kaputt', () {
+      // Das Modell vergisst ein Feld – der Report hat dann keinen Vorspann,
+      // aber alle Kapitel. Die Karte faellt weg, statt leer dazustehen.
+      final ohne = AnalysisResult.vonApi(
+        {'kapitel': const [], 'plan': const {}},
+        id: '1',
+        erstelltAm: DateTime(2026, 8, 27),
+        modus: AnalyseModus.entdecken,
+      );
+
+      expect(ohne.modus, AnalyseModus.entdecken);
+      expect(ohne.zeigtNeuenLook, isFalse);
+    });
+
+    test('er ueberlebt den Weg durch JSON', () {
+      final original = AnalysisResult(
+        id: '1',
+        erstelltAm: DateTime(2026, 8, 27),
+        kapitel: const [],
+        plan: Plan.leer,
+        modus: AnalyseModus.entdecken,
+        neuerLook: 'Oben Struktur, an den Seiten kurz.',
+      );
+
+      expect(
+        AnalysisResult.fromJson(original.toJson()).neuerLook,
+        'Oben Struktur, an den Seiten kurz.',
+      );
+    });
+
+    testWidgets('die Karte steht ganz oben im Report', (tester) async {
+      handyGroesse(tester, hoehe: 2400);
+      final container = await _appMitDashboard(tester);
+
+      final report = _report('x', AnalyseModus.entdecken).copyMitLook(
+        'Oben Struktur und Länge, an den Seiten kurz.',
+      );
+      await container.read(analysenProvider.notifier).speichern(report);
+
+      container.read(routerProvider).push('${Routes.result}/x');
+      await tester.pumpAndSettle();
+
+      expect(find.text(texte.neuerLookTitel), findsOneWidget);
+      expect(
+        find.text('Oben Struktur und Länge, an den Seiten kurz.'),
+        findsOneWidget,
+      );
+
+      // Ueber dem Richtungs-Block: Die Kapitel darunter sind die Umsetzung
+      // dieser Richtung, nicht umgekehrt.
+      final look = tester.getTopLeft(find.text(texte.neuerLookTitel)).dy;
+      final richtung = tester.getTopLeft(find.text(texte.richtungTitel)).dy;
+      expect(look, lessThan(richtung));
+    });
+
+    testWidgets('im verfeinernden Report gibt es sie nicht', (tester) async {
+      handyGroesse(tester, hoehe: 2400);
+      final container = await _appMitDashboard(tester);
+
+      await container
+          .read(analysenProvider.notifier)
+          .speichern(_report('y', AnalyseModus.verfeinern));
+
+      container.read(routerProvider).push('${Routes.result}/y');
+      await tester.pumpAndSettle();
+
+      expect(find.text(texte.neuerLookTitel), findsNothing);
+    });
+  });
+
+  group('Der Demo-Modus deckt beide Modi ab', () {
+    test('der entdeckende bringt Vorspann und Vorschlags-Sektionen', () {
+      final json = JsonExtractor.extrahiere(
+        MockAnalysisService.beispielAntwortEntdecken,
+      )!;
+
+      final ergebnis = AnalysisResult.vonApi(
+        json,
+        id: '1',
+        erstelltAm: DateTime(2026, 8, 27),
+        modus: AnalyseModus.entdecken,
+      );
+
+      expect(ergebnis.zeigtNeuenLook, isTrue);
+      expect(ergebnis.istVollstaendig, isTrue);
+
+      // Jedes Kapitel faengt mit dem Vorschlag an – so wie es der Prompt
+      // verlangt.
+      for (final kapitel in ergebnis.kapitel) {
+        expect(
+          kapitel.sektionen.first.titel,
+          texte.neuerLookTitel,
+          reason: kapitel.modul.name,
+        );
+      }
+    });
+
+    test('und er ist nicht derselbe Text wie der verfeinernde', () {
+      // Ein gemeinsames Beispiel haette den Demo-Modus zur halben Wahrheit
+      // gemacht: Man saehe die Oberflaeche, aber nicht den Unterschied.
+      expect(
+        MockAnalysisService.beispielAntwortEntdecken,
+        isNot(MockAnalysisService.beispielAntwort),
+      );
+      expect(MockAnalysisService.beispielAntwort, isNot(contains('neuerLook')));
+    });
+  });
+
   group('Der Verlauf zeigt, welche Frage beantwortet wurde', () {
     testWidgets('an jedem Eintrag steht ein Etikett', (tester) async {
       handyGroesse(tester, hoehe: 2000);
@@ -243,3 +381,18 @@ AnalysisResult _report(String id, AnalyseModus modus) => AnalysisResult(
       ),
       modus: modus,
     );
+
+/// Kurzer Weg zu demselben Report mit Vorspann – `copyWith` gibt es an
+/// [AnalysisResult] bewusst nicht, weil ein Report nach dem Speichern nicht
+/// mehr veraendert wird.
+extension on AnalysisResult {
+  AnalysisResult copyMitLook(String text) => AnalysisResult(
+        id: id,
+        erstelltAm: erstelltAm,
+        kapitel: kapitel,
+        plan: plan,
+        richtung: richtung,
+        modus: modus,
+        neuerLook: text,
+      );
+}

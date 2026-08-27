@@ -28,6 +28,7 @@ function daten(options: {
   return {
     sprache: options.sprache ?? 'de',
     ausrichtung: options.ausrichtung ?? 'maennlich',
+    modus: 'verfeinern',
     module: ['basis'],
     profil: { fokus: [] },
     figur: {},

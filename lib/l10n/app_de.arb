@@ -137,6 +137,10 @@
   "@modusHinweis": {
     "description": "Nimmt die zwei haeufigsten Rueckfragen vorweg: Kosten und Fotos."
   },
+  "neuerLookTitel": "Dein neuer Look",
+  "@neuerLookTitel": {
+    "description": "Ueberschrift der Vorspann-Karte im Modus „Neuen Look entdecken\"."
+  },
   "richtungTitel": "Deine Richtung",
   "richtungEyebrow": "Optional",
   "richtungUeberschrift": "In welche Richtung soll sich dein Look entwickeln?",

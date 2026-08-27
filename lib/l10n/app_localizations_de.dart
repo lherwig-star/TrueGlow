@@ -289,6 +289,9 @@ class LDe extends L {
       'Beide Modi kosten genau einen Analyse-Lauf, und du machst in beiden dieselben Aufnahmen. Du entscheidest bei jeder Analyse neu.';
 
   @override
+  String get neuerLookTitel => 'Dein neuer Look';
+
+  @override
   String get richtungTitel => 'Deine Richtung';
 
   @override

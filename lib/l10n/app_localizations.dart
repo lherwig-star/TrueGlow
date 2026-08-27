@@ -601,6 +601,12 @@ abstract class L {
   /// **'Beide Modi kosten genau einen Analyse-Lauf, und du machst in beiden dieselben Aufnahmen. Du entscheidest bei jeder Analyse neu.'**
   String get modusHinweis;
 
+  /// Ueberschrift der Vorspann-Karte im Modus „Neuen Look entdecken".
+  ///
+  /// In de, this message translates to:
+  /// **'Dein neuer Look'**
+  String get neuerLookTitel;
+
   /// No description provided for @richtungTitel.
   ///
   /// In de, this message translates to:

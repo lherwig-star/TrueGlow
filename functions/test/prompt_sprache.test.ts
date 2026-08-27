@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { systemPrompt, type AnalysePromptDaten } from '../src/analyse_prompt';
 import { PRODUKTKATEGORIEN, SEKTIONEN } from '../src/labels';
 import type { Ausrichtung } from '../src/ausrichtung';
+import type { Modus } from '../src/modus';
 import type { Sprache } from '../src/sprache';
 
 /**
@@ -21,10 +22,12 @@ import type { Sprache } from '../src/sprache';
 function daten(
   sprache: Sprache,
   ausrichtung: Ausrichtung,
+  modus: Modus = 'verfeinern',
 ): AnalysePromptDaten {
   return {
     sprache,
     ausrichtung,
+    modus,
     module: ['basis', 'makeupAusstrahlung', 'hautFarbtyp', 'figurPassform'],
     profil: { fokus: [] },
     figur: {},
@@ -37,7 +40,9 @@ function daten(
 function vorgegebeneTitel(prompt: string): string[] {
   const zeilen = prompt
     .split('\n')
-    .filter((z) => z.includes('"titel" GENAU so lautet'));
+    // Der verfeinernde Modus schreibt "... GENAU so lautet", der
+    // entdeckende haengt seinen Abschnitt mit "... GENAU" an.
+    .filter((z) => z.includes('"titel" GENAU'));
   const namen: string[] = [];
   for (const zeile of zeilen) {
     for (const treffer of zeile.matchAll(/"([^"]+)"/g)) {
@@ -72,18 +77,37 @@ describe('Abschnittsnamen folgen der Zielsprache', () => {
     // Die eigentliche Pruefung: Sie faengt auch einen Namen, der spaeter
     // dazukommt und beim Uebersetzen vergessen wird.
     for (const ausrichtung of ['maennlich', 'weiblich', 'neutral'] as const) {
-      const titel = vorgegebeneTitel(systemPrompt(daten('en', ausrichtung)));
-      const deutsche = Object.values(SEKTIONEN).map((s) => s.de);
+      // Beide Modi: Der entdeckende bringt mit "Dein neuer Look" einen
+      // eigenen Abschnittsnamen mit, und der faellt sonst durch dieses Netz.
+      for (const modus of ['verfeinern', 'entdecken'] as const) {
+        const titel = vorgegebeneTitel(
+          systemPrompt(daten('en', ausrichtung, modus)),
+        );
+        const deutsche: string[] = Object.values(SEKTIONEN).map((s) => s.de);
 
-      for (const name of titel) {
-        expect(
-          deutsche.includes(name) &&
-            !Object.values(SEKTIONEN).some((s) => s.en === name),
-          `"${name}" ist der deutsche Name und steht im englischen Prompt ` +
-            `(Ausrichtung ${ausrichtung})`,
-        ).toBe(false);
+        for (const name of titel) {
+          expect(
+            deutsche.includes(name) &&
+              !Object.values(SEKTIONEN).some((s) => s.en === name),
+            `"${name}" ist der deutsche Name und steht im englischen Prompt ` +
+              `(Ausrichtung ${ausrichtung}, Modus ${modus})`,
+          ).toBe(false);
+        }
       }
     }
+  });
+
+  it('der neue Abschnitt folgt derselben Regel', () => {
+    const deutsch = vorgegebeneTitel(
+      systemPrompt(daten('de', 'maennlich', 'entdecken')),
+    );
+    const englisch = vorgegebeneTitel(
+      systemPrompt(daten('en', 'maennlich', 'entdecken')),
+    );
+
+    expect(deutsch).toContain('Dein neuer Look');
+    expect(englisch).toContain('Your new look');
+    expect(englisch).not.toContain('Dein neuer Look');
   });
 
   it('jeder Abschnittsname hat beide Sprachen und sie sind verschieden', () => {

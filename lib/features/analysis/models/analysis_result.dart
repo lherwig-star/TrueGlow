@@ -207,6 +207,7 @@ class AnalysisResult {
     required this.plan,
     this.richtung = Richtung.leer,
     this.modus = AnalyseModus.standard,
+    this.neuerLook = '',
   });
 
   /// Eindeutige ID, gleichzeitig Schluessel in der lokalen Speicherung.
@@ -231,6 +232,19 @@ class AnalysisResult {
   /// beantwortet hat. Alte Reports kennen das Feld nicht – sie sind per
   /// Definition [AnalyseModus.verfeinern], weil es damals nichts anderes gab.
   final AnalyseModus modus;
+
+  /// Der Einstieg des Reports im Modus [AnalyseModus.entdecken]: die neue
+  /// Richtung in zwei, drei Sätzen.
+  ///
+  /// Leer im verfeinernden Modus – dort gibt es nichts zu entwerfen, und der
+  /// Report beginnt wie bisher mit dem ersten Kapitel. Leer auch dann, wenn
+  /// das Modell das Feld vergisst: Der Report ist deswegen nicht kaputt, er
+  /// hat nur seinen Vorspann verloren. Die Karte fällt dann weg, statt eine
+  /// leere Fläche zu zeigen.
+  final String neuerLook;
+
+  /// Ob der Report seinen Vorspann wirklich hat.
+  bool get zeigtNeuenLook => modus.istEntdecken && neuerLook.isNotEmpty;
 
   /// Welche Module dieser Report abdeckt.
   Set<AnalyseModul> get module => kapitel.map((k) => k.modul).toSet();
@@ -280,6 +294,7 @@ class AnalysisResult {
       kapitel: sortiert,
       plan: planErgaenzung == null ? plan : plan.ergaenztUm(planErgaenzung),
       richtung: richtung ?? this.richtung,
+      neuerLook: neuerLook,
       // Ein nachtraegliches Kapitel aendert den Auftrag des Reports nicht:
       // Wer erweitert, bekommt das neue Kapitel im Modus des Reports, in den
       // es eingehaengt wird.
@@ -294,6 +309,7 @@ class AnalysisResult {
         'plan': plan.toJson(),
         'richtung': richtung.toJson(),
         'modus': modus.name,
+        'neuerLook': neuerLook,
       };
 
   /// Liest eine bereits gespeicherte Analyse (inkl. ID und Datum).
@@ -313,6 +329,7 @@ class AnalysisResult {
             : Richtung.leer,
         // Dito: ohne Feld der Rueckfall, und der ist das bisherige Verhalten.
         modus: AnalyseModus.ausName(json['modus']),
+        neuerLook: _text(json['neuerLook']),
       );
 
   /// Liest die rohe KI-Antwort, die weder ID noch Datum enthaelt.
@@ -332,6 +349,8 @@ class AnalysisResult {
             : Plan.leer,
         richtung: richtung,
         modus: modus,
+        // Kommt aus der Antwort des Modells und nur im entdeckenden Modus.
+        neuerLook: modus.istEntdecken ? _text(json['neuerLook']) : '',
       );
 
   /// Minimalpruefung, ob die Antwort ueberhaupt brauchbar ist.

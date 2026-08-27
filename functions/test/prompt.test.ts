@@ -5,6 +5,7 @@ import * as checkin from '../src/checkin_prompt';
 import type { Modul } from '../src/labels';
 import type { Sprache } from '../src/sprache';
 import type { Ausrichtung } from '../src/ausrichtung';
+import type { Modus } from '../src/modus';
 
 /**
  * Die Zusicherungen, die frueher in `test/richtung_test.dart` und
@@ -17,10 +18,12 @@ function analyseDaten(
   module: Modul[] = ['basis'],
   sprache: Sprache = 'de',
   ausrichtung: Ausrichtung = 'maennlich',
+  modus: Modus = 'verfeinern',
 ): analyse.AnalysePromptDaten {
   return {
     sprache,
     ausrichtung,
+    modus,
     module,
     profil: { fokus: [] },
     figur: {},

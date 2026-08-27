@@ -20,6 +20,7 @@ function daten(sprache: Sprache, freitext = ''): AnalysePromptDaten {
   return {
     sprache,
     ausrichtung: 'maennlich',
+    modus: 'verfeinern',
     module: ['basis'],
     profil: { fokus: [] },
     figur: {},

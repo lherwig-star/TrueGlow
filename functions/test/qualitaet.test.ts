@@ -21,6 +21,7 @@ function daten(freitext = ''): AnalysePromptDaten {
   return {
     sprache: 'de',
     ausrichtung: 'maennlich',
+    modus: 'verfeinern',
     module: ['basis', 'hautFarbtyp'],
     profil: { fokus: [] },
     figur: {},
