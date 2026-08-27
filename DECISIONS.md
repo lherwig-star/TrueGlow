@@ -2908,6 +2908,142 @@ etwa vier Bilder je Sekunde, dieselbe Taktung wie bei der Figur. Das kostet
 Rechenzeit und Wärme auf schwachen Geräten, in einem Schritt, der bisher
 ganz ohne auskam. Dafür entfällt der Weg zum Handy und zurück, drei Mal.
 
+## 69 · Beispielbilder unter den Vorschlägen
+
+„Ein Textured Crop mit mittelhohem Fade" ist für jemanden, der das noch nie
+gesehen hat, kein Bild im Kopf, sondern eine Vokabel. Der Report beschreibt
+mit Worten, was man ansehen müsste. Unter jedem konkreten Vorschlag steht
+jetzt eine Reihe echter Fotos — antippbar, zum Vergrößern.
+
+**Echte Fotos, keine erzeugten.** Quelle ist **Pexels**: kostenlos, mit
+freier Lizenz, ohne Kreditkarte. Ausdrücklich **keine** KI-Bildgenerierung —
+ein erzeugtes Gesicht mit dem vorgeschlagenen Schnitt wäre eine Behauptung
+darüber, wie der Nutzer damit aussieht. Und ausdrücklich keine allgemeine
+Bildersuche: Deren Ergebnisse sind rechtlich nicht geklärt.
+
+### Drei Teile, drei Commits
+
+**1 · Der Suchbegriff kommt vom Modell.** Jede Sektion trägt ein Feld
+`bildSuchbegriff` — zwei bis sechs englische Wörter, wie man sie in ein
+Suchfeld tippt.
+
+Warum das Modell und nicht die App: Der Sektionstitel („Frisur") taugt nicht
+als Suchbegriff, der Empfehlungstext ist zu lang, und aus beidem einen zu
+bauen hieße, den Vorschlag auf dem Client noch einmal zu verstehen. Das
+Modell weiß bereits, was es vorschlägt.
+
+Die Regeln im Prompt:
+
+| Regel | Warum |
+|---|---|
+| immer Englisch | Eine internationale Fotobibliothek findet zu „kurzer Vollbart" nichts |
+| generisch, keine Marke, kein Prominenter | sonst steht die App für eine Empfehlung, die sie nicht gibt |
+| „men" / „women" je nach Ausrichtung | ohne das Wort liefert Pexels zu „french crop haircut" überwiegend Männer — auch für eine Nutzerin |
+| bei Stil das ganze Ensemble | ein einzelnes Kleidungsstück ist kein Look |
+| `null`, wo ein Foto nichts zeigt | eine Pflegeroutine, eine Haltungsübung |
+
+Die Beispiele im Prompt sind wie beim Gesamtbild als **Muster für die FORM**
+markiert (DECISIONS 36). Ohne diese Markierung schriebe das Modell sie
+wörtlich ab, und jeder Report zeigte Fotos desselben Haarschnitts.
+
+**2 · Die Suche läuft über den Server.** Neue Function `bilderSuchen`. Der
+Pexels-Schlüssel liegt im Secret Manager — dasselbe Argument wie beim
+Gemini-Proxy: In einem APK wäre er auslesbar und der Verbrauch ginge auf
+unser Konto. Anleitung in SETUP.md 5.7.
+
+Die Function zählt **nicht** gegen das Analyse-Kontingent. Einen fertigen
+Report anzusehen darf keine Analyse kosten.
+
+**3 · Die Reihe in der App.** Unter jedem Vorschlag, ganz unten: erst lesen,
+was empfohlen wird, dann sehen, wie es aussieht. Antippen öffnet ein
+Vollbild mit Wischen, Fotografennamen und Link zurück zu Pexels.
+
+### Die wichtigste Eigenschaft: Sie verschwindet
+
+Kein Netz, kein Treffer, kein Schlüssel, ein Serverfehler, ein altes
+Report-Dokument ohne Suchbegriffe — **die Reihe fehlt einfach.** Keine
+Fehlermeldung, keine leere Fläche, keine Lücke im Layout.
+
+Das ist keine Bequemlichkeit, sondern die richtige Reaktion: Der Report ist
+ohne Bilder vollständig. Eine Fehlermeldung würde etwas als kaputt melden,
+das der Nutzer nie bestellt hat. Nur während des Ladens stehen Platzhalter —
+damit die Karte nicht springt, sobald die Bilder da sind.
+
+### Zwei Bremsen vor der Fotobibliothek
+
+Pexels erlaubt im kostenlosen Tarif **200 Anfragen je Stunde**, 20 000 im
+Monat.
+
+1. **Ein Cache in Firestore, 30 Tage.** „textured crop haircut men" schlägt
+   das Modell vielen Nutzern vor — gesucht wird er trotzdem nur einmal im
+   Monat. Gespeichert werden ausschließlich URLs, Fotografennamen und ein
+   Zeitstempel; **keine Bilddateien**. Die Sammlung gehört keinem Konto und
+   ist für jeden Client gesperrt.
+2. **Ein Zähler je Stunde, Grenze 150.** Der Server hört von sich aus auf zu
+   fragen, statt in die Sperre bei 200 zu laufen. Der Abstand ist der Puffer
+   für Anfragen, die gerade unterwegs sind.
+
+**Der Unterschied zwischen „nichts gefunden" und „Anfrage gescheitert" ist
+der Kern des Caches.** Nur das erste wird gemerkt. Sonst gälte ein
+Netzaussetzer dreißig Tage lang als „zu diesem Begriff gibt es keine
+Bilder".
+
+### Die Lizenz
+
+Die Pexels-Lizenz erlaubt die Nutzung; die Nennung des Fotografen mit Link
+zur Quelle ist erwünscht. Sie steht fest am unteren Rand des Vollbilds.
+
+**Ein Bild ohne Fotografennamen oder ohne Quellseite kommt gar nicht erst
+durch** — zweimal geprüft, auf dem Server und noch einmal beim Lesen in der
+App. Die Regel steht damit auch an der Stelle, an der sie angezeigt wird.
+Nur `https`.
+
+### Was der Demo-Modus zeigt — und was nicht
+
+Im Demo-Modus läuft kein Firebase (`main.dart`), also gibt es dort keine
+Bildersuche. Statt die Reihe wegzulassen, liefert `DemoBilderDienst` drei
+Einträge **ohne Bilddatei**: Die Reihe steht da, lässt sich antippen,
+durchwischen, und die Nennung ist zu sehen — nur die Fotos selbst sind
+gezeichnete Platzhalter.
+
+**Damit ist ausdrücklich nicht bewiesen, dass ein echtes Foto lädt und
+sitzt.** Das braucht einen Report vom Server. Der Alternativweg wären
+mitgelieferte Beispielfotos im APK gewesen; dagegen sprach, dass sie in
+jedem Release mitreisen, obwohl sie nur im Demo-Modus vorkommen.
+
+### Was das kostet
+
+**Bei Gemini:** Die Regel im Prompt sind 1 241 Zeichen, rund 350
+Eingabe-Tokens je Lauf. Dazu je Sektion ein kurzes Feld — bei einem vollen
+Report mit dreißig Sektionen etwa 240 Ausgabe-Tokens. Bei den derzeit für
+Flash üblichen Preisen liegt das zusammen **deutlich unter 0,1 Cent pro
+Analyse**; die Zahl ist eine Schätzung, weil die Preisliste sich ändert. Die
+Größenordnung ändert sich dadurch nicht: Es ist ein Bruchteil dessen, was
+die elf Bilder einer Analyse kosten. Die Verbrauchszeile im Protokoll zeigt
+den tatsächlichen Wert.
+
+**Bei Pexels:** nichts, der Tarif ist kostenlos.
+
+**Bei Firestore:** ein Dokument je Suchbegriff und eines je Stunde. Beides
+im Bereich weniger Kilobyte.
+
+**Wenn das Pexels-Limit erreicht wird:** Die betroffenen Bilderreihen
+fehlen, alles andere bleibt unberührt. Im Protokoll steht
+`Bildersuche: Stundenlimit erreicht`.
+
+### Die Grenze, die bleibt
+
+Der Zeichenfilter für Suchbegriffe fängt Umlaute — „kurzer Vollbart" ohne
+Umlaut kommt durch. Das ist festgehalten und kein Versehen: Eine
+Spracherkennung auf sechs Wörtern rät mehr, als sie erkennt, und ein
+fälschlich verworfener Begriff kostet eine Bilderreihe, die es hätte geben
+können. Was durchkommt, findet in einer internationalen Fotobibliothek
+nichts — und ohne Treffer fällt die Reihe ohnehin weg.
+
+**Preis:** Ein Feld mehr im Schema, eine Function mehr, eine Sammlung mehr
+in Firestore, ein weiterer Schlüssel, der gepflegt werden muss. Und ein
+Report, der beim Scrollen Bilder nachlädt, statt sofort fertig dazustehen.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

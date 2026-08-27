@@ -1579,6 +1579,33 @@ class LDe extends L {
   }
 
   @override
+  String get beispielbilderTitel => 'So sieht das aus';
+
+  @override
+  String get beispielbilderHinweis =>
+      'Beispielfotos von Pexels – zum Vergrößern antippen.';
+
+  @override
+  String get beispielbildOeffnen => 'Beispielfoto vergrößern';
+
+  @override
+  String beispielbildFotograf(String fotograf) {
+    return 'Foto: $fotograf · Pexels';
+  }
+
+  @override
+  String get beispielbildQuelle => 'Bei Pexels ansehen';
+
+  @override
+  String get beispielbildDemo =>
+      'Platzhalter – im Demo-Modus gibt es keine echten Fotos.';
+
+  @override
+  String beispielbildZaehler(int nummer, int gesamt) {
+    return '$nummer von $gesamt';
+  }
+
+  @override
   String get figurBleibtLokalTitel => 'Bleibt auf dem Gerät';
 
   @override

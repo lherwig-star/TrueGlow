@@ -20,6 +20,7 @@ import 'package:trueglow/features/consent/logic/einwilligung_controller.dart';
 import 'package:trueglow/features/consent/models/einwilligung.dart';
 import 'package:trueglow/features/onboarding/logic/onboarding_controller.dart';
 import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
+import 'package:trueglow/features/result/logic/bilder_dienst.dart';
 import 'package:trueglow/features/start/ui/splash_screen.dart';
 import 'package:trueglow/main.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -118,6 +119,11 @@ List<Override> dienstOverrides({AuthRepository? anmeldung}) => [
       authRepositoryProvider.overrideWithValue(
         anmeldung ?? FakeAuthRepository.angemeldet(),
       ),
+      // Die Beispielbilder gehen ueber eine Cloud Function. Ohne diesen
+      // Override baut der Report-Screen einen `FunctionsClient` und der
+      // sucht Firebase, das es im Widget-Test nicht gibt. Die Demo-Fassung
+      // liefert Eintraege ohne Bilddatei – genau das, was ein Test braucht.
+      bilderDienstProvider.overrideWithValue(const DemoBilderDienst()),
       // Die Bildpruefung haengt an ML Kit und am Dateisystem des Geraets –
       // beides gibt es im Widget-Test nicht. Ohne diesen Override bleibt
       // etwa `fotosLoeschen()` haengen, weil der Plattformkanal nie antwortet.

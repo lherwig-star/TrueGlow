@@ -15,6 +15,9 @@ import '../../direction/logic/direction_controller.dart';
 import '../../direction/models/richtung.dart';
 import '../../history/logic/analysis_repository.dart';
 import '../../modules/logic/module_controller.dart';
+import '../logic/bilder_dienst.dart';
+import '../models/beispielbild.dart';
+import 'widgets/beispielbilder.dart';
 import '../../modules/models/analyse_modul.dart';
 import '../../onboarding/logic/onboarding_controller.dart';
 import '../../modules/ui/widgets/modul_karte.dart';
@@ -334,6 +337,16 @@ class _KapitelBlock extends ConsumerWidget {
     final farben = context.farben;
     final ausrichtung = ref.watch(ausrichtungProvider);
 
+    // Die Beispielbilder eines ganzen Kapitels in einem Aufruf – ausgeloest
+    // dadurch, dass das Kapitel gebaut wird. Ein Kapitel ohne einen einzigen
+    // Suchbegriff fragt gar nicht erst (DECISIONS 69).
+    final begriffe = [
+      for (final sektion in kapitel.sektionen) ?sektion.bildSuchbegriff,
+    ];
+    final bilder = begriffe.isEmpty
+        ? null
+        : ref.watch(kapitelBilderProvider(bilderSchluessel(begriffe)));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -366,7 +379,7 @@ class _KapitelBlock extends ConsumerWidget {
         ],
         const SizedBox(height: AppTheme.gapS),
         for (final sektion in kapitel.sektionen) ...[
-          _SektionKarte(sektion: sektion),
+          _SektionKarte(sektion: sektion, bilder: bilder),
           const SizedBox(height: AppTheme.gapS),
         ],
       ],
@@ -415,9 +428,13 @@ class _Erweitern extends ConsumerWidget {
 }
 
 class _SektionKarte extends StatelessWidget {
-  const _SektionKarte({required this.sektion});
+  const _SektionKarte({required this.sektion, this.bilder});
 
   final Sektion sektion;
+
+  /// Die Bilder des ganzen Kapitels, nach Suchbegriff. `null`, solange
+  /// niemand danach gefragt hat – dann bleibt die Reihe weg.
+  final AsyncValue<Map<String, List<Beispielbild>>>? bilder;
 
   /// Passendes Symbol zum Sektionstitel – faellt auf ein neutrales zurueck,
   /// falls das Modell einen unerwarteten Titel liefert.
@@ -498,6 +515,14 @@ class _SektionKarte extends StatelessWidget {
             const SizedBox(height: AppTheme.gapXs),
             for (final produkt in sektion.produkte) _ProduktZeile(produkt),
           ],
+          // Ganz unten: Erst lesen, was vorgeschlagen wird, dann sehen, wie
+          // es aussieht.
+          if (sektion.bildSuchbegriff case final begriff? when bilder != null)
+            Beispielbilder(
+              bilder: bilder!.whenData(
+                (tabelle) => tabelle[begriff] ?? const <Beispielbild>[],
+              ),
+            ),
         ],
       ),
     );

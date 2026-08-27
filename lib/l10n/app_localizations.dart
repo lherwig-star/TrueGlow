@@ -2905,6 +2905,48 @@ abstract class L {
   /// **'Schritt {nummer} von {gesamt}'**
   String flowSchritt(int nummer, int gesamt);
 
+  /// No description provided for @beispielbilderTitel.
+  ///
+  /// In de, this message translates to:
+  /// **'So sieht das aus'**
+  String get beispielbilderTitel;
+
+  /// No description provided for @beispielbilderHinweis.
+  ///
+  /// In de, this message translates to:
+  /// **'Beispielfotos von Pexels – zum Vergrößern antippen.'**
+  String get beispielbilderHinweis;
+
+  /// No description provided for @beispielbildOeffnen.
+  ///
+  /// In de, this message translates to:
+  /// **'Beispielfoto vergrößern'**
+  String get beispielbildOeffnen;
+
+  /// Nennung im Vollbild. Die Pexels-Lizenz verlangt Fotograf und Link zur Quelle.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto: {fotograf} · Pexels'**
+  String beispielbildFotograf(String fotograf);
+
+  /// No description provided for @beispielbildQuelle.
+  ///
+  /// In de, this message translates to:
+  /// **'Bei Pexels ansehen'**
+  String get beispielbildQuelle;
+
+  /// No description provided for @beispielbildDemo.
+  ///
+  /// In de, this message translates to:
+  /// **'Platzhalter – im Demo-Modus gibt es keine echten Fotos.'**
+  String get beispielbildDemo;
+
+  /// Position im Vollbild-Betrachter.
+  ///
+  /// In de, this message translates to:
+  /// **'{nummer} von {gesamt}'**
+  String beispielbildZaehler(int nummer, int gesamt);
+
   /// No description provided for @figurBleibtLokalTitel.
   ///
   /// In de, this message translates to:

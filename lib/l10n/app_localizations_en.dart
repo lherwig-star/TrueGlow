@@ -1572,6 +1572,32 @@ class LEn extends L {
   }
 
   @override
+  String get beispielbilderTitel => 'What this looks like';
+
+  @override
+  String get beispielbilderHinweis =>
+      'Example photos from Pexels – tap to enlarge.';
+
+  @override
+  String get beispielbildOeffnen => 'Enlarge example photo';
+
+  @override
+  String beispielbildFotograf(String fotograf) {
+    return 'Photo: $fotograf · Pexels';
+  }
+
+  @override
+  String get beispielbildQuelle => 'View on Pexels';
+
+  @override
+  String get beispielbildDemo => 'Placeholder – demo mode has no real photos.';
+
+  @override
+  String beispielbildZaehler(int nummer, int gesamt) {
+    return '$nummer of $gesamt';
+  }
+
+  @override
   String get figurBleibtLokalTitel => 'Stays on your device';
 
   @override
