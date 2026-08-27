@@ -1612,6 +1612,99 @@ flutter run --dart-define=TRUEGLOW_MOCK=true
 | Ocker-Schrift im Zähler oder an „Geprüft" | **Kein Fund** — das ist Schrift. |
 | Der Umschalter ist teal | **Kein Fund** — siehe Schritt 12. |
 
+## 30 · Tabs und dunkler Standard
+
+Prüft DECISIONS 65 und 66. **Kein Analyse-Lauf nötig:**
+
+```bash
+flutter run --dart-define=TRUEGLOW_MOCK=true
+```
+
+### A · Die vier Tabs
+
+1. **Die Leiste ist da.** App öffnen. Erwartet: unten vier Tabs — Heute,
+   Plan, Analyse, Fortschritt. „Heute" ist offen, sein Symbol gefüllt und in
+   der Erreicht-Farbe, die anderen sind ruhige Umrisse.
+
+2. **Heute = machen.** Erwartet: Serie, Challenge der Woche und die
+   vollständige Tagesliste über alle Kapitel, „Deine Ziele" eingeschlossen.
+   *Kriterium:* Eine Karte, die nichts mit dem heutigen Abhaken zu tun hat,
+   ist hier ein Fund.
+
+3. **Plan = wissen was.** Auf „Plan" tippen. Erwartet: die Zusammenfassung
+   der Analyse (Gesichtsform-Text), der nächste Check-in mit der Möglichkeit
+   ihn zu starten, und die drei Phasen (Sofort / 30 Tage / Langfristig).
+   **Keine** Tagesliste.
+
+4. **Analyse = neu vermessen.** Auf „Analyse" tippen. Erwartet: ganz oben der
+   Kontingentstand („Heute noch 2 von 3 Analysen frei"), darunter der
+   Startknopf, darunter der Verlauf mit allen früheren Analysen.
+
+5. **Fortschritt = belohnt werden.** Auf „Fortschritt" tippen. Erwartet:
+   Rückblick (nur sonntags bis montags), laufende Serie und Rekord als zwei
+   Zahlen, das Abzeichen-Regal und das Foto-Album.
+
+6. **Kein Inhalt doppelt.** Geh alle vier Tabs durch. *Kriterium:* Findest du
+   dieselbe Karte auf zwei Tabs, ist das ein Fund.
+
+7. **Der Punkt am Heute-Tab.** Wechsle auf „Plan", solange heute noch **keine
+   einzige** Aufgabe abgehakt ist. Erwartet: Am Heute-Symbol sitzt rechts
+   oben ein kleiner Punkt in der Akzentfarbe. Hak eine Aufgabe ab — er ist
+   weg. *Hinweis:* Ein erledigter Check-in zählt nicht als Haken; der Punkt
+   bleibt dann.
+
+8. **Die Scroll-Position bleibt.** Auf „Heute" ein Stück nach unten scrollen,
+   auf „Plan" wechseln und zurück. Erwartet: Du stehst wieder an derselben
+   Stelle.
+
+9. **Die Zurück-Taste.** Auf „Fortschritt" wechseln, dann die
+   Android-Zurück-Taste. Erwartet: Du landest auf „Heute", die App bleibt
+   offen. Noch einmal drücken: Jetzt verlässt sie sich.
+
+10. **Das Verlaufs-Symbol oben rechts.** Antippen. Erwartet: Der Analyse-Tab
+    öffnet sich — kein eigener Verlaufsbildschirm.
+
+11. **Nach dem Check-in.** Einen Check-in vom Plan-Tab aus starten und
+    abschließen. Erwartet: Du landest auf „Heute", wo die angepassten
+    Aufgaben stehen.
+
+12. **Einstellungen** sind weiterhin oben rechts erreichbar, aus jedem Tab.
+
+### B · Der dunkle Standard
+
+13. **Frische Einrichtung.** Einstellungen → **Alle Daten löschen** →
+    bestätigen. Erwartet: Die App ist danach **dunkel**, auch wenn dein Handy
+    auf Hell steht.
+
+    > Achtung: Das löscht auch die Fortschritts-Fotos. Mach das nur, wenn du
+    > damit einverstanden bist — sonst überspring diesen Schritt.
+
+14. **Der erste Eindruck.** Stell dein Handy systemweit auf **Hell**, beende
+    die App und starte sie neu. Erwartet: Der Start-Bildschirm ist dunkel,
+    das Onboarding ist dunkel, die App bleibt dunkel. *Kriterium:* Ein helles
+    Aufblitzen beim Start ist ein Fund.
+
+15. **Die Wahl bleibt.** Einstellungen → Design → **Hell**. App beenden und
+    neu starten. Erwartet: Sie ist hell — eine getroffene Wahl wird
+    respektiert. Danach wieder auf **Dunkel** stellen.
+
+16. **„Wie das System" gibt es weiterhin.** Erwartet: In der Auswahl stehen
+    drei Punkte, und zwar in der Reihenfolge **Dunkel, Hell, Wie das
+    System**.
+
+### Was ein Fund ist
+
+| Fund | Reaktion |
+|---|---|
+| Eine Karte steht auf zwei Tabs | Blocker. |
+| Ein Tab ist leer, obwohl es Inhalt gäbe | Blocker. |
+| Zurück-Taste verlässt die App aus einem anderen Tab | Blocker. |
+| Scroll-Position springt beim Tabwechsel | Vor dem Launch beheben. |
+| Die App startet hell ohne eigene Wahl | Blocker. |
+| Helles Aufblitzen beim Start | Blocker. |
+| Der Punkt fehlt, obwohl nichts abgehakt ist | Vor dem Launch beheben. |
+| Der Punkt fehlt, wenn nur der Check-in erledigt ist | **Kein Fund** — ein Check-in ist kein Haken. |
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

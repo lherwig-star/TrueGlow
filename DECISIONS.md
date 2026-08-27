@@ -2733,6 +2733,40 @@ Leiste kennt keinen Verlauf, die Taste schon.
 **Preis:** Eine Hülle mehr und vier Dateien statt zweier Bildschirme. Dafür
 ist die längste Liste der App nur noch so lang wie die Tagesaufgaben.
 
+## 66 · Der Dunkelmodus ist der Standard — und das steht jetzt fest
+
+Die App soll dunkel starten, unabhängig davon, wie das Handy eingestellt ist.
+**Das war schon so.** `ThemeController.standard` steht seit dem Umbau des
+Erscheinungsbilds auf `dunkel`, und `_lade` fällt auf ihn zurück, sobald
+nichts oder Unlesbares gespeichert ist. Auch der native Splash war bereits
+festgenagelt: Die Farbe `splashHintergrund` hat bewusst **kein** Gegenstück
+unter `values-night/`, und alle vier Style-Dateien nennen denselben Ton.
+
+Was fehlte, war der **Nachweis**. Ohne ihn kann eine einzelne Zeile den
+Standard still auf „Wie das System" zurückdrehen, und aufgefallen wäre es
+erst auf einem hell gestellten Handy — vermutlich beim Nutzer, nicht bei uns.
+Deshalb hält ein Test jetzt fünf Dinge fest:
+
+1. Ohne eigene Wahl ist es `dunkel`, nicht `system`.
+2. Auch ein kaputter Eintrag (alter Wert, halber Sync, `null`) landet dort.
+3. Eine getroffene Wahl übersteht den Neustart — auch „Wie das System",
+   das ist eine bewusste Option und kein Unfall.
+4. Erst „Alle Daten löschen" bringt den Standard zurück.
+5. Der native Start-Bildschirm trägt in **allen vier** Style-Dateien
+   denselben Ton, und `values-night/colors.xml` existiert nicht. Sonst
+   startet ein hell gestelltes Handy hell und springt beim ersten
+   Flutter-Frame ins Dunkle — genau der Sprung, den DECISIONS 53 abgeschafft
+   hat.
+
+**Eine echte Änderung gab es doch:** Die Auswahl in den Einstellungen zeigt
+`Erscheinungsbild.values` der Reihe nach, und die Reihe begann mit „Hell".
+Was voreingestellt ist, soll auch zuerst stehen — die Reihenfolge ist jetzt
+Dunkel, Hell, Wie das System. Gespeichert wird der `name` und nicht der
+Index; für alles, was schon auf einem Gerät liegt, ist das Umsortieren
+folgenlos.
+
+**Preis:** Keiner. Ein Test mehr und eine umsortierte Aufzählung.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`
