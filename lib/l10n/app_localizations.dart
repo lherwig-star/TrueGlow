@@ -364,7 +364,7 @@ abstract class L {
   /// No description provided for @koerperNichtGanz.
   ///
   /// In de, this message translates to:
-  /// **'Ganz ins Bild – Kopf und Füße'**
+  /// **'Ganz ins Bild – mindestens bis zu den Oberschenkeln'**
   String get koerperNichtGanz;
 
   /// No description provided for @koerperZuWeitWeg.
@@ -388,19 +388,19 @@ abstract class L {
   /// No description provided for @koerperTippAbstand.
   ///
   /// In de, this message translates to:
-  /// **'Etwas weiter weg – Kopf und Füße müssen ins Bild passen'**
+  /// **'Etwas weiter weg – Kopf bis Oberschenkel müssen sichtbar sein'**
   String get koerperTippAbstand;
 
   /// No description provided for @koerperAutoHinweis.
   ///
   /// In de, this message translates to:
-  /// **'Stell dein Handy auf und tritt zurück, bis du von Kopf bis Fuß im Bild bist. Wo du stehst, ist egal. Dann zählt die App herunter und löst selbst aus – von Hand geht es jederzeit auch.'**
+  /// **'Stell dein Handy auf und tritt zurück, bis du vom Kopf bis mindestens zu den Oberschenkeln im Bild bist. Wo du stehst, ist egal, Füße sind kein Muss. Dann zählt die App herunter und löst selbst aus – von Hand geht es jederzeit auch.'**
   String get koerperAutoHinweis;
 
   /// No description provided for @outfitAutoHinweis.
   ///
   /// In de, this message translates to:
-  /// **'Stell dein Handy auf, tritt zurück und stell dich mittig ins Bild. Sobald du ganz zu sehen bist – Kopf und Füße –, zählt die App herunter und löst selbst aus. Liegt das Outfit ausgelegt da, springt nichts an: Dann löst du wie gewohnt von Hand aus.'**
+  /// **'Stell dein Handy auf und tritt zurück, bis du vom Kopf bis mindestens zu den Oberschenkeln im Bild bist. Dann zählt die App herunter und löst selbst aus. Liegt das Outfit ausgelegt da, springt nichts an: Dann löst du wie gewohnt von Hand aus.'**
   String get outfitAutoHinweis;
 
   /// No description provided for @kameraKeineBerechtigungTitel.
@@ -2518,7 +2518,7 @@ abstract class L {
   /// No description provided for @aufnahmeGanzkoerperFrontalHinweis.
   ///
   /// In de, this message translates to:
-  /// **'Ganzer Körper im Bild, gerade stehen, Arme locker seitlich. Eng anliegende Kleidung zeigt die Silhouette am besten.'**
+  /// **'Vom Kopf bis mindestens zu den Oberschenkeln im Bild, gerade stehen, Arme locker seitlich. Füße sind kein Muss. Eng anliegende Kleidung zeigt die Silhouette am besten.'**
   String get aufnahmeGanzkoerperFrontalHinweis;
 
   /// No description provided for @aufnahmeGanzkoerperSeitlichLabel.
@@ -4090,19 +4090,19 @@ abstract class L {
   /// No description provided for @geschlechtHinweisWeiblich.
   ///
   /// In de, this message translates to:
-  /// **'Make-up & Ausstrahlung ist dabei, Bart-Empfehlungen entfallen, und die Umrisse für die Ganzkörperfotos zeigen eine weibliche Figur.'**
+  /// **'Make-up & Ausstrahlung ist dabei, Bart-Empfehlungen entfallen.'**
   String get geschlechtHinweisWeiblich;
 
   /// No description provided for @geschlechtHinweisMaennlich.
   ///
   /// In de, this message translates to:
-  /// **'Bart und Konturen gehören zur Basis, die Umrisse für die Ganzkörperfotos zeigen eine männliche Figur.'**
+  /// **'Bart und Konturen gehören zur Basis, Make-up bleibt draußen.'**
   String get geschlechtHinweisMaennlich;
 
   /// No description provided for @geschlechtHinweisNeutral.
   ///
   /// In de, this message translates to:
-  /// **'Alle Module stehen zur Wahl – Bart ebenso wie Make-up. Die Umrisse für die Ganzkörperfotos bleiben neutral.'**
+  /// **'Alle Module stehen zur Wahl – Bart ebenso wie Make-up.'**
   String get geschlechtHinweisNeutral;
 
   /// No description provided for @geschlechtHinweisOffen.

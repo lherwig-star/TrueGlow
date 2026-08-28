@@ -149,7 +149,8 @@ class LDe extends L {
       'Stell dich ins Bild – oder löse von Hand aus';
 
   @override
-  String get koerperNichtGanz => 'Ganz ins Bild – Kopf und Füße';
+  String get koerperNichtGanz =>
+      'Ganz ins Bild – mindestens bis zu den Oberschenkeln';
 
   @override
   String get koerperZuWeitWeg => 'Ein paar Schritte näher';
@@ -162,15 +163,15 @@ class LDe extends L {
 
   @override
   String get koerperTippAbstand =>
-      'Etwas weiter weg – Kopf und Füße müssen ins Bild passen';
+      'Etwas weiter weg – Kopf bis Oberschenkel müssen sichtbar sein';
 
   @override
   String get koerperAutoHinweis =>
-      'Stell dein Handy auf und tritt zurück, bis du von Kopf bis Fuß im Bild bist. Wo du stehst, ist egal. Dann zählt die App herunter und löst selbst aus – von Hand geht es jederzeit auch.';
+      'Stell dein Handy auf und tritt zurück, bis du vom Kopf bis mindestens zu den Oberschenkeln im Bild bist. Wo du stehst, ist egal, Füße sind kein Muss. Dann zählt die App herunter und löst selbst aus – von Hand geht es jederzeit auch.';
 
   @override
   String get outfitAutoHinweis =>
-      'Stell dein Handy auf, tritt zurück und stell dich mittig ins Bild. Sobald du ganz zu sehen bist – Kopf und Füße –, zählt die App herunter und löst selbst aus. Liegt das Outfit ausgelegt da, springt nichts an: Dann löst du wie gewohnt von Hand aus.';
+      'Stell dein Handy auf und tritt zurück, bis du vom Kopf bis mindestens zu den Oberschenkeln im Bild bist. Dann zählt die App herunter und löst selbst aus. Liegt das Outfit ausgelegt da, springt nichts an: Dann löst du wie gewohnt von Hand aus.';
 
   @override
   String get kameraKeineBerechtigungTitel => 'Kamerazugriff nötig';
@@ -1357,7 +1358,7 @@ class LDe extends L {
 
   @override
   String get aufnahmeGanzkoerperFrontalHinweis =>
-      'Ganzer Körper im Bild, gerade stehen, Arme locker seitlich. Eng anliegende Kleidung zeigt die Silhouette am besten.';
+      'Vom Kopf bis mindestens zu den Oberschenkeln im Bild, gerade stehen, Arme locker seitlich. Füße sind kein Muss. Eng anliegende Kleidung zeigt die Silhouette am besten.';
 
   @override
   String get aufnahmeGanzkoerperSeitlichLabel => 'Ganzkörper seitlich';
@@ -2388,15 +2389,15 @@ class LDe extends L {
 
   @override
   String get geschlechtHinweisWeiblich =>
-      'Make-up & Ausstrahlung ist dabei, Bart-Empfehlungen entfallen, und die Umrisse für die Ganzkörperfotos zeigen eine weibliche Figur.';
+      'Make-up & Ausstrahlung ist dabei, Bart-Empfehlungen entfallen.';
 
   @override
   String get geschlechtHinweisMaennlich =>
-      'Bart und Konturen gehören zur Basis, die Umrisse für die Ganzkörperfotos zeigen eine männliche Figur.';
+      'Bart und Konturen gehören zur Basis, Make-up bleibt draußen.';
 
   @override
   String get geschlechtHinweisNeutral =>
-      'Alle Module stehen zur Wahl – Bart ebenso wie Make-up. Die Umrisse für die Ganzkörperfotos bleiben neutral.';
+      'Alle Module stehen zur Wahl – Bart ebenso wie Make-up.';
 
   @override
   String get geschlechtHinweisOffen =>

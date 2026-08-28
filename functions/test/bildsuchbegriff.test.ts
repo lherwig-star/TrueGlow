@@ -244,3 +244,31 @@ describe('Die Nachbereitung räumt die Begriffe auf', () => {
     expect(befund.verworfeneSuchbegriffe).toEqual([]);
   });
 });
+
+describe('Der Umfang der Ganzkörper- und Outfit-Fotos', () => {
+  // DECISIONS 76: Die Fotos heissen "Ganzkörper", zeigen aber den Körper vom
+  // Kopf bis mindestens zu den Oberschenkeln. Ohne diesen Satz schreibt das
+  // Modell einen Hinweis auf das fehlende Bild statt einer Empfehlung.
+  function mitModulen(module: ('basis' | 'figurPassform' | 'stilKleiderschrank')[]) {
+    return systemPrompt({ ...daten(), module });
+  }
+
+  it('steht im Prompt, sobald Figur oder Stil dabei sind', () => {
+    for (const module of [
+      ['basis', 'figurPassform'],
+      ['basis', 'stilKleiderschrank'],
+    ] as const) {
+      const prompt = mitModulen([...module]);
+      expect(prompt, module.join('+')).toContain(
+        'mindestens zu den Oberschenkeln',
+      );
+      expect(prompt, module.join('+')).toContain('KEIN Mangel');
+    }
+  });
+
+  it('und fehlt, wenn es keins von beiden gibt', () => {
+    // Ein Prompt ohne die betroffenen Kapitel soll Wort fuer Wort derselbe
+    // bleiben wie vorher.
+    expect(mitModulen(['basis'])).not.toContain('Oberschenkeln');
+  });
+});

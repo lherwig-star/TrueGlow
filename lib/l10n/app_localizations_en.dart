@@ -147,7 +147,7 @@ class LEn extends L {
   String get koerperNiemandFrei => 'Step into the frame – or shoot manually';
 
   @override
-  String get koerperNichtGanz => 'All of you — head and feet';
+  String get koerperNichtGanz => 'All of you — at least down to your thighs';
 
   @override
   String get koerperZuWeitWeg => 'A few steps closer';
@@ -160,15 +160,15 @@ class LEn extends L {
 
   @override
   String get koerperTippAbstand =>
-      'Step back a little — head and feet have to fit in frame';
+      'Step back a little — head down to your thighs has to be visible';
 
   @override
   String get koerperAutoHinweis =>
-      'Prop your phone up and step back until you are in frame from head to toe. Where you stand does not matter. The app then counts down and takes the photo itself — manual still works at any time.';
+      'Prop your phone up and step back until you are in frame from your head down to at least your thighs. Where you stand does not matter, and feet are optional. The app then counts down and takes the photo itself — manual still works at any time.';
 
   @override
   String get outfitAutoHinweis =>
-      'Prop your phone up, step back and stand in the middle of the frame. Once you are fully visible – head to feet – the app counts down and takes the photo itself. If the outfit is laid out instead, nothing starts: just shoot manually as usual.';
+      'Prop your phone up and step back until you are in frame from your head down to at least your thighs. The app then counts down and takes the photo itself. If the outfit is laid out instead, nothing starts: just shoot manually as usual.';
 
   @override
   String get kameraKeineBerechtigungTitel => 'Camera access needed';
@@ -1352,7 +1352,7 @@ class LEn extends L {
 
   @override
   String get aufnahmeGanzkoerperFrontalHinweis =>
-      'Your whole body in frame, standing straight, arms relaxed at your sides. Close-fitting clothes show your silhouette best.';
+      'In frame from your head down to at least your thighs, standing straight, arms relaxed at your sides. Feet are optional. Close-fitting clothes show your silhouette best.';
 
   @override
   String get aufnahmeGanzkoerperSeitlichLabel => 'Full body, side';
@@ -2376,15 +2376,15 @@ class LEn extends L {
 
   @override
   String get geschlechtHinweisWeiblich =>
-      'Make-up & presence is included, beard advice is dropped, and the full-body framing guides show a female figure.';
+      'Make-up & presence is included, beard advice is dropped.';
 
   @override
   String get geschlechtHinweisMaennlich =>
-      'Beard and contours are part of the core module, and the full-body framing guides show a male figure.';
+      'Beard and contours are part of the core module, make-up stays out.';
 
   @override
   String get geschlechtHinweisNeutral =>
-      'Every module is available — beard as well as make-up. The full-body framing guides stay neutral.';
+      'Every module is available — beard as well as make-up.';
 
   @override
   String get geschlechtHinweisOffen =>

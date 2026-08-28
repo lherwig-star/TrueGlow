@@ -124,7 +124,7 @@ Verbindliche Regeln:
   auffällt, das fachlich abgeklärt gehört, verweise freundlich an eine
   dermatologische bzw. zahnärztliche Praxis.
 - Bleib bei dem, was auf den Fotos wirklich zu sehen ist. Rate nicht.
-- Richte Aufwand und Preisniveau der Empfehlungen am Budget und am Zeitbudget
+${fotoumfangRegel(gewaehlt)}- Richte Aufwand und Preisniveau der Empfehlungen am Budget und am Zeitbudget
   der Person aus.
 - ${AUSGABESPRACHE[sprache]}
 - Jede Empfehlung ist ein konkreter Schritt, keine Allgemeinplatitüde.
@@ -278,6 +278,32 @@ const QUALITAET = `Qualität der Empfehlungen – daran wird dieser Report gemes
   wie ein Ratgebertext, der für alle gilt.
 - Keine Empfehlung und keine Tagesaufgabe wiederholt eine andere, auch nicht
   in anderer Formulierung oder in einem anderen Kapitel.`;
+
+/**
+ * Was die Ganzkoerper- und Outfit-Fotos wirklich zeigen.
+ *
+ * Sie heissen "Ganzkoerper", zeigen aber seit DECISIONS 76 den Koerper vom
+ * Kopf bis mindestens zu den Oberschenkeln – die Fuesse sind kein Kriterium
+ * mehr, weil man dafuer unangenehm weit weg stehen musste.
+ *
+ * Ohne diesen Satz stolpert das Modell darueber: Es sieht ein Foto, das
+ * "Ganzkoerper frontal" heisst und unten abgeschnitten ist, und schreibt
+ * einen Hinweis auf das fehlende Bild statt einer Empfehlung.
+ *
+ * Nur wenn es die betroffenen Kapitel ueberhaupt gibt – ein Prompt ohne sie
+ * soll Wort fuer Wort derselbe bleiben wie vorher.
+ */
+function fotoumfangRegel(module: readonly Modul[]): string {
+  const betroffen =
+    module.includes('figurPassform') || module.includes('stilKleiderschrank');
+  if (!betroffen) return '';
+
+  return `- Die Ganzkörper- und Outfit-Fotos zeigen die Person vom Kopf bis
+  mindestens zu den Oberschenkeln. Fehlende Füße oder Unterschenkel sind
+  KEIN Mangel: Beurteile Silhouette, Proportionen und Passform aus dem, was
+  zu sehen ist, und weise nicht darauf hin, dass etwas fehlt.
+`;
+}
 
 /**
  * Das Wort, mit dem ein Suchbegriff die Person benennt.

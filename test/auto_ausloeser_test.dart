@@ -341,6 +341,7 @@ void main() {
       double mitteX = 0.5,
       double mitteY = 0.5,
       bool kopf = true,
+      bool huefte = true,
       bool fuesse = true,
     }) {
       final hoehe = bild.height * hoeheAnteil;
@@ -351,6 +352,7 @@ void main() {
           height: hoehe,
         ),
         kopfSichtbar: kopf,
+        hueftenSichtbar: huefte,
         fuesseSichtbar: fuesse,
       );
     }
@@ -369,11 +371,11 @@ void main() {
       );
     });
 
-    test('angeschnitten sagt „ganz ins Bild", nicht „zu nah"', () {
+    test('ohne Kopf oder Huefte sagt es „ganz ins Bild", nicht „zu nah"', () {
       // Der Unterschied zaehlt: Das eine sagt, was zu tun ist, das andere
       // laesst raten.
       expect(
-        guide.bewerte(lage: lage(fuesse: false), bildGroesse: bild),
+        guide.bewerte(lage: lage(huefte: false), bildGroesse: bild),
         KoerperHinweis.nichtGanz,
       );
       expect(
@@ -382,9 +384,19 @@ void main() {
       );
     });
 
+    test('fehlende Fuesse sind kein Hindernis', () {
+      // Der Kern von DECISIONS 76: Fuer die Fuesse musste man unangenehm
+      // weit weg stehen, und fuer Silhouette und Passform tragen sie nichts
+      // bei. Kopf bis Oberschenkel reicht.
+      expect(
+        guide.bewerte(lage: lage(fuesse: false), bildGroesse: bild),
+        KoerperHinweis.bereit,
+      );
+    });
+
     test('zu klein und zu gross werden unterschieden', () {
       expect(
-        guide.bewerte(lage: lage(hoeheAnteil: 0.35), bildGroesse: bild),
+        guide.bewerte(lage: lage(hoeheAnteil: 0.2), bildGroesse: bild),
         KoerperHinweis.zuWeitWeg,
       );
       expect(
@@ -406,10 +418,9 @@ void main() {
       }
     });
 
-    test('aber oben oder unten angeschnitten nicht', () {
-      // Der Rand ist das, was von der alten Obergrenze uebrig ist: ML Kit
-      // erkennt Nase und Knoechel, nicht Scheitel und Zehen. Wer mit dem
-      // Knoechel auf der Bildkante steht, hat die Fuesse abgeschnitten.
+    test('oben angeschnitten aber schon', () {
+      // ML Kit erkennt die Nase, nicht den Scheitel. Wer die Nase an der
+      // Bildkante hat, hat den Kopf nicht drauf.
       expect(
         guide.bewerte(
           lage: lage(hoeheAnteil: 0.9, mitteY: 0.1),
@@ -417,18 +428,24 @@ void main() {
         ),
         KoerperHinweis.zuNah,
       );
+    });
+
+    test('unten angeschnitten dagegen nicht mehr', () {
+      // Seit DECISIONS 76 ist das der Normalfall: Der Koerper geht unten aus
+      // dem Bild, und genau das soll er duerfen.
       expect(
         guide.bewerte(
           lage: lage(hoeheAnteil: 0.9, mitteY: 0.9),
           bildGroesse: bild,
         ),
-        KoerperHinweis.zuNah,
+        KoerperHinweis.bereit,
       );
     });
 
-    test('die halbe Bildhoehe reicht', () {
-      // Von 0,55 auf 0,50 gesenkt: Die fehlenden fuenf Prozent waren der
-      // Unterschied zwischen "loest aus" und "loest nie aus".
+    test('ein knappes Drittel der Bildhoehe reicht', () {
+      // 0,30 laesst denselben Abstand zu wie die alte Regel: Dort musste der
+      // ganze Koerper 50 % fuellen, und Kopf bis Huefte ist ungefaehr die
+      // halbe Koerperhoehe.
       expect(
         guide.bewerte(
           lage: lage(hoeheAnteil: LiveKoerperGuide.minHoehe + 0.01),
@@ -436,7 +453,7 @@ void main() {
         ),
         KoerperHinweis.bereit,
       );
-      expect(LiveKoerperGuide.minHoehe, lessThanOrEqualTo(0.5));
+      expect(LiveKoerperGuide.minHoehe, lessThanOrEqualTo(0.3));
     });
 
     test('zu dunkel geht allem voraus', () {

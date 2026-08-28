@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trueglow/features/capture/logic/kamerawahl.dart';
-import 'package:trueglow/features/capture/models/aufnahme_typ.dart';
 
 /// Welche Kamera eine Aufnahme startet – DECISIONS 71.
 ///

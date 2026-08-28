@@ -3481,6 +3481,77 @@ einem Satz beantwortet, die vorher zwei Pakete gekostet hat.
 Verwechslung gekostet hat. Der Eintrag steht hier, damit sie nicht ein
 drittes Mal aufkommt.
 
+## 76 · Oberschenkel aufwärts reicht
+
+Befund vom Gerät: Der Auslöser verlangte Kopf **und** Füße. Dafür muss man
+unangenehm weit weg stehen — in einem normalen Zimmer oft weiter, als der
+Raum hergibt. Und für den Zweck der Analyse (Silhouette, Proportionen,
+Passform) tragen die Füße nichts bei.
+
+**Die Füße sind keine Pflicht mehr.** Der Auto-Auslöser feuert, sobald die
+Person vom Kopf bis mindestens zu den **Oberschenkeln** im Bild ist. Sind
+die Füße mit drauf: umso besser, aber kein Kriterium. Gilt für Ganzkörper
+frontal, seitlich und die Outfit-Fotos gleichermaßen.
+
+### Woran „bis zu den Oberschenkeln" gemessen wird
+
+An den **beiden Hüftpunkten** der Posenerkennung — dort fangen die
+Oberschenkel an. Beide, nicht einer: Steht nur einer im Bild, ist die Person
+seitlich angeschnitten. Beim seitlichen Foto liegen sie übereinander, und
+ML Kit meldet trotzdem beide, weil es die verdeckte Seite mitschätzt.
+
+| | vorher | jetzt |
+|---|---|---|
+| unten | beide Knöchel | **beide Hüftpunkte** |
+| oben | Nase, 2 % Rand | unverändert |
+| unten Rand | 2 % | **entfällt** — unten abgeschnitten ist der Normalfall |
+| Mindesthöhe | 50 % der Bildhöhe | **30 %** |
+
+**Die 30 % sind hergeleitet, nicht geraten** — aber auch nicht gemessen. Die
+alte Regel ließ einen Abstand zu, bei dem der ganze Körper 50 % der Bildhöhe
+füllte. Kopf bis Hüfte ist ungefähr die halbe Körperhöhe, also rund 26 %. Mit
+30 % bleibt etwas Luft, ohne dass jemand aus dem Nebenzimmer auslöst. Der
+endgültige Wert kommt aus der Protokollzeile, die jetzt auch die Hüfte
+mitschreibt:
+
+```
+Haltung nichtGanz, … [hoehe 41%, oben 8%, unten 0%,
+  kopf true, huefte false, fuesse false]
+```
+
+Die 1-Sekunde-Regel aus DECISIONS 74 bleibt unverändert.
+
+### Die Texte sagen jetzt dasselbe
+
+„Ganz ins Bild – **mindestens bis zu den Oberschenkeln**", und nach zwölf
+Sekunden „Etwas weiter weg – **Kopf bis Oberschenkel** müssen sichtbar
+sein". Beide Sprachen. Ebenso die Erklärungen im Foto-Schritt und der
+Hinweis „So klappt das Foto".
+
+Nebenbei aufgeräumt: Die Geschlechts-Hinweise im Onboarding versprachen noch
+„Umrisse für die Ganzkörperfotos … zeigen eine weibliche Figur". Die gibt es
+seit DECISIONS 74 nicht mehr; der Satz ist raus.
+
+### Und der Prompt muss es wissen
+
+Die Fotos heißen weiter „Ganzkörper frontal" — im Prompt wie in der App.
+Ohne einen Satz dazu stolpert das Modell darüber: Es sieht ein Foto, das so
+heißt und unten abgeschnitten ist, und schreibt einen Hinweis auf das
+fehlende Bild statt einer Empfehlung. Deshalb steht jetzt in den
+verbindlichen Regeln:
+
+> Die Ganzkörper- und Outfit-Fotos zeigen die Person vom Kopf bis mindestens
+> zu den Oberschenkeln. Fehlende Füße oder Unterschenkel sind KEIN Mangel.
+
+Nur wenn „Figur & Passform" oder „Stil & Kleiderschrank" überhaupt gewählt
+sind — ein Prompt ohne diese Kapitel bleibt Wort für Wort derselbe wie
+vorher.
+
+**Preis:** Das Foto zeigt weniger. Für Schnitte, die bis zum Knöchel gehen —
+Hosenlängen, Schuhe zum Outfit — steht dem Modell jetzt weniger Bild zur
+Verfügung. Das ist der bewusste Tausch: ein Foto, das zustande kommt, gegen
+eines, das vollständig wäre, wenn der Raum größer wäre.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

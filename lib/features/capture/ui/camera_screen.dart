@@ -426,7 +426,8 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
     return ' [hoehe ${anteil(lage.umriss.height / groesse.height)}%, '
         'oben ${anteil(lage.umriss.top / groesse.height)}%, '
         'unten ${anteil(1 - lage.umriss.bottom / groesse.height)}%, '
-        'kopf ${lage.kopfSichtbar}, fuesse ${lage.fuesseSichtbar}]';
+        'kopf ${lage.kopfSichtbar}, huefte ${lage.hueftenSichtbar}, '
+        'fuesse ${lage.fuesseSichtbar}]';
   }
 
   /// Uebersetzt die ML-Kit-Pose in die Form, mit der [LiveKoerperGuide]
@@ -461,8 +462,11 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
     return Koerperlage(
       umriss: Rect.fromLTRB(links, oben, rechts, unten),
       kopfSichtbar: sicher(PoseLandmarkType.nose),
-      // Beide Knoechel: Steht nur einer im Bild, ist die Person angeschnitten
-      // oder verdreht – in beiden Faellen taugt das Foto nicht.
+      // Beide Hueftpunkte: Steht nur einer im Bild, ist die Person seitlich
+      // angeschnitten. Beim seitlichen Foto liegen sie uebereinander, und
+      // ML Kit meldet trotzdem beide – es schaetzt die verdeckte Seite mit.
+      hueftenSichtbar: sicher(PoseLandmarkType.leftHip) &&
+          sicher(PoseLandmarkType.rightHip),
       fuesseSichtbar: sicher(PoseLandmarkType.leftAnkle) &&
           sicher(PoseLandmarkType.rightAnkle),
     );
