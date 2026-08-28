@@ -21,11 +21,12 @@ void main() {
   final t0 = DateTime(2026, 8, 25, 12);
 
   group('AutoAusloeser', () {
-    // Ohne Stabilisierung, weil es hier um den Countdown geht: Die Sekunde
-    // Ruhe davor hat ihre eigene Gruppe. Ein Test, der beides zugleich
-    // prueft, sagt bei einem Fehlschlag nicht, welches der beiden kaputt ist.
+    // Ohne Stabilisierung und mit drei statt fuenf Sekunden, weil es hier um
+    // den Ablauf geht und nicht um die Dauer: Beides hat seine eigene
+    // Gruppe. Ein Test, der alles zugleich prueft, sagt bei einem Fehlschlag
+    // nicht, welches Stueck kaputt ist.
     test('zaehlt bei guter Haltung von 3 herunter und loest aus', () {
-      final ausloeser = AutoAusloeser(stabil: Duration.zero);
+      final ausloeser = AutoAusloeser(sekunden: 3, stabil: Duration.zero);
 
       expect(
         ausloeser.melde(bereit: true, jetzt: t0),
@@ -57,7 +58,7 @@ void main() {
     test('die erste Sekunde zeigt voll „3", nicht sofort „2"', () {
       // Abgerundet spraenge die Anzeige beim ersten Frame auf 2 und der
       // Countdown fuehlte sich um eine Sekunde zu kurz an.
-      final ausloeser = AutoAusloeser(stabil: Duration.zero);
+      final ausloeser = AutoAusloeser(sekunden: 3, stabil: Duration.zero);
       ausloeser.melde(bereit: true, jetzt: t0);
 
       expect(
@@ -72,7 +73,7 @@ void main() {
     });
 
     test('ohne gute Haltung passiert nichts', () {
-      final ausloeser = AutoAusloeser(stabil: Duration.zero);
+      final ausloeser = AutoAusloeser(sekunden: 3, stabil: Duration.zero);
 
       expect(
         ausloeser.melde(bereit: false, jetzt: t0),
@@ -91,7 +92,7 @@ void main() {
       // Der wichtigste Fall: Die Posenerkennung ist unstet, ein einzelner
       // Frame ohne sichere Knoechel genuegt. Ohne Nachsicht kaeme der
       // Countdown nie durch.
-      final ausloeser = AutoAusloeser(stabil: Duration.zero);
+      final ausloeser = AutoAusloeser(sekunden: 3, stabil: Duration.zero);
 
       ausloeser.melde(bereit: true, jetzt: t0);
       final waehrendFlackern = ausloeser.melde(
@@ -111,7 +112,7 @@ void main() {
     });
 
     test('anhaltender Haltungsverlust bricht ab und setzt zurueck', () {
-      final ausloeser = AutoAusloeser(stabil: Duration.zero);
+      final ausloeser = AutoAusloeser(sekunden: 3, stabil: Duration.zero);
 
       ausloeser.melde(bereit: true, jetzt: t0);
       expect(
@@ -153,7 +154,7 @@ void main() {
       // Genau so verhaelt sich die Posenerkennung aus drei Metern: Ein
       // einzelner Frame ohne sichere Knoechel genuegt, und der faellt mit
       // einiger Wahrscheinlichkeit auf die letzte Sekunde.
-      final ausloeser = AutoAusloeser(stabil: Duration.zero);
+      final ausloeser = AutoAusloeser(sekunden: 3, stabil: Duration.zero);
 
       ausloeser.melde(bereit: true, jetzt: t0);
       expect(
@@ -189,7 +190,7 @@ void main() {
       // Der Ablauf, wie er am Geraet stattfindet: vier ausgewertete Frames je
       // Sekunde, dazwischen zweifelt die Erkennung gelegentlich. Am Ende muss
       // genau ein Ausloesen stehen, nicht keines und nicht drei.
-      final ausloeser = AutoAusloeser(stabil: Duration.zero);
+      final ausloeser = AutoAusloeser(sekunden: 3, stabil: Duration.zero);
 
       // Jeder vierte Frame faellt aus – ein einzelner Aussetzer, nie zwei
       // hintereinander, also immer innerhalb der Nachsicht.
@@ -222,7 +223,7 @@ void main() {
 
     test('nach dem Ausloesen bleibt es dabei, bis zurueckgesetzt wird', () {
       // Sonst schiesst die Kamera waehrend der Vorschau munter weiter.
-      final ausloeser = AutoAusloeser(stabil: Duration.zero);
+      final ausloeser = AutoAusloeser(sekunden: 3, stabil: Duration.zero);
 
       ausloeser.melde(bereit: true, jetzt: t0);
       ausloeser.melde(bereit: true, jetzt: t0.add(const Duration(seconds: 4)));
@@ -244,6 +245,74 @@ void main() {
             .melde(bereit: true, jetzt: t0.add(const Duration(seconds: 6)))
             .verbleibend,
         3,
+      );
+    });
+  });
+
+  group('Der Countdown dauert fuenf Sekunden', () {
+    test('und zwar festgenagelt, nicht zufaellig', () {
+      // Drei waren es bis DECISIONS 77. Der Wert steht hier, damit ihn
+      // niemand beilaeufig aendert: Er haengt daran, wie lange man braucht,
+      // um sich nach dem Zuruecktreten hinzustellen.
+      expect(AutoAusloeser.standardSekunden, 5);
+      expect(AutoAusloeser().sekunden, 5);
+    });
+
+    test('er zaehlt sichtbar von 5 herunter', () {
+      final ausloeser = AutoAusloeser(stabil: Duration.zero);
+      final gesehen = <int>[];
+
+      for (var ms = 0; ms <= 5000; ms += 500) {
+        final zustand = ausloeser.melde(
+          bereit: true,
+          jetzt: t0.add(Duration(milliseconds: ms)),
+        );
+        if (zustand.phase == AutoPhase.zaehlt) gesehen.add(zustand.verbleibend);
+      }
+
+      // Jede Ziffer kommt vor, in dieser Reihenfolge, und keine wird
+      // uebersprungen.
+      expect(gesehen.toSet().toList()..sort(), [1, 2, 3, 4, 5]);
+      expect(gesehen.first, 5);
+      expect(gesehen.last, 1);
+    });
+
+    test('und loest erst danach aus', () {
+      final ausloeser = AutoAusloeser(stabil: Duration.zero);
+
+      for (var ms = 0; ms < 5000; ms += 250) {
+        expect(
+          ausloeser
+              .melde(bereit: true, jetzt: t0.add(Duration(milliseconds: ms)))
+              .phase,
+          AutoPhase.zaehlt,
+          reason: 'nach $ms ms',
+        );
+      }
+
+      expect(
+        ausloeser
+            .melde(bereit: true, jetzt: t0.add(const Duration(seconds: 5)))
+            .phase,
+        AutoPhase.ausgeloest,
+      );
+    });
+
+    test('wer das Bild verlaesst, faengt wieder bei 5 an', () {
+      // "Abbruch und Neustart beim Verlassen des Bildes" – der Countdown
+      // setzt nicht dort fort, wo er aufgehoert hat.
+      final ausloeser = AutoAusloeser(stabil: Duration.zero);
+
+      ausloeser.melde(bereit: true, jetzt: t0);
+      ausloeser.melde(bereit: true, jetzt: t0.add(const Duration(seconds: 3)));
+
+      // Laenger weg als die Nachsicht.
+      ausloeser.melde(bereit: false, jetzt: t0.add(const Duration(seconds: 4)));
+      ausloeser.melde(bereit: false, jetzt: t0.add(const Duration(seconds: 6)));
+
+      expect(
+        ausloeser.melde(bereit: true, jetzt: t0.add(const Duration(seconds: 7))),
+        const AutoZustand(AutoPhase.zaehlt, 5),
       );
     });
   });
@@ -275,7 +344,7 @@ void main() {
           bereit: true,
           jetzt: t0.add(const Duration(milliseconds: 1000)),
         ),
-        const AutoZustand(AutoPhase.zaehlt, 3),
+        const AutoZustand(AutoPhase.zaehlt, 5),
       );
     });
 
@@ -305,7 +374,7 @@ void main() {
           bereit: true,
           jetzt: t0.add(const Duration(milliseconds: 2600)),
         ),
-        const AutoZustand(AutoPhase.zaehlt, 3),
+        const AutoZustand(AutoPhase.zaehlt, 5),
       );
     });
 
@@ -326,7 +395,7 @@ void main() {
           bereit: true,
           jetzt: t0.add(const Duration(milliseconds: 1050)),
         ),
-        const AutoZustand(AutoPhase.zaehlt, 3),
+        const AutoZustand(AutoPhase.zaehlt, 5),
       );
     });
   });

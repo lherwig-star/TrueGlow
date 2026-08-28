@@ -3552,6 +3552,49 @@ Hosenlängen, Schuhe zum Outfit — steht dem Modell jetzt weniger Bild zur
 Verfügung. Das ist der bewusste Tausch: ein Foto, das zustande kommt, gegen
 eines, das vollständig wäre, wenn der Raum größer wäre.
 
+## 77 · Der Countdown dauert fünf Sekunden
+
+Beauftragt waren fünf, gelaufen sind drei. Jetzt fünf — und ein Test nagelt
+den Wert fest, damit er nicht wieder beiläufig verschwindet.
+
+**Warum er durchgerutscht ist, so genau ich es sagen kann:** In keinem der
+Arbeitspakete, die hier ankamen, standen fünf Sekunden. Der Auto-Auslöser
+entstand aus einer kurzen Nachricht („bei den Outfit-Bildern muss auch ein
+Auto-Auslöser rein, gleiches Problem gleiche Lösung") und übernahm die drei
+Sekunden, die die Figur-Fotos schon hatten. Das Kamera-Paket davor schrieb
+sogar ausdrücklich „dann Countdown/Auslösung **wie bisher**" — was ich als
+Bestätigung der drei Sekunden gelesen habe.
+
+Das ist eine Erklärung, keine Entlastung: Der Punkt stand offenbar in einer
+Bestellung, und in meinen Berichten wurde er nie erwähnt — auch nicht als
+Rückfrage. Der Test ist die Konsequenz daraus.
+
+### Was die fünf Sekunden abdecken
+
+Man stellt das Handy auf, dreht sich um, tritt zurück und muss sich noch
+hinstellen. Drei Sekunden reichen dafür nicht; der Auslöser erwischt einen
+beim Umdrehen. Die fünf sind das Fenster zwischen „die Haltung sitzt" und
+„das Foto ist gemacht" — zusätzlich zu der Sekunde Ruhe davor
+(DECISIONS 74), die den Countdown überhaupt erst startet.
+
+### Vier Tests, jeder für eine Zusage
+
+| Test | Zusage |
+|---|---|
+| `standardSekunden == 5` | der Wert selbst, festgenagelt |
+| zählt 5-4-3-2-1 | sichtbar herunterzählend, keine Ziffer übersprungen |
+| löst erst nach 5 s aus | nicht früher |
+| nach Verlassen wieder bei 5 | Abbruch **und Neustart**, kein Fortsetzen |
+
+Die bestehenden Ablauf-Tests laufen weiter mit drei Sekunden — ausdrücklich
+per Parameter. Dort geht es um Nachsicht, Flackern und Zurücksetzen, nicht um
+die Dauer; ein Test, der alles zugleich prüft, sagt bei einem Fehlschlag
+nicht, welches Stück kaputt ist.
+
+**Preis:** Zwei Sekunden länger stillhalten. Für jemanden, der ohnehin gerade
+drei Meter zurückgetreten ist, sind das zwei Sekunden — und für den, der es
+nicht rechtzeitig geschafft hätte, ein Foto statt eines zweiten Versuchs.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

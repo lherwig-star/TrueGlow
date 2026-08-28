@@ -2188,6 +2188,103 @@ einfach abbrechen.
 | Nach 12 Sekunden kommt kein anderer Hinweis | Vor dem Launch beheben. |
 | Es löst zu früh aus, obwohl die Füße fehlen | Notieren, mit den Zahlen aus Schritt 9. |
 
+## 36 · Frontkamera, Oberschenkel-Regel und der 5-Sekunden-Countdown
+
+Prüft DECISIONS 75, 76 und 77. **Kein Analyse-Lauf nötig** — die
+Aufnahme-Strecke lässt sich bis zum Auslösen prüfen. Danach abbrechen.
+
+### A · Die Kamera (DECISIONS 75)
+
+1. **Du siehst dich selbst.** Aufnahme „Ganzkörper seitlich" öffnen.
+   Erwartet: Der Sucher zeigt **dich**, nicht den Raum vor dir.
+   *Kriterium:* Zeigt er, was hinter dem Handy liegt, ist das ein
+   **Blocker** — dann ist die Umstellung nicht angekommen.
+
+2. **Dasselbe für Ganzkörper frontal und alle drei Outfit-Fotos.**
+
+3. **Und unverändert beim Gesicht.** „Frontal" öffnen: auch dort du selbst.
+
+4. **Der Wechsel-Knopf geht weiter.** Symbol unten rechts antippen —
+   umschalten auf die rückwärtige Kamera und zurück. Für alle, die sich
+   fotografieren lassen.
+
+5. **Schwarz auf weiß**, bei angeschlossenem Handy:
+
+   ```bash
+   adb logcat -d -s flutter | grep "TrueGlow/Aufnahme"
+   ```
+
+   Erwartet je geöffneter Aufnahme: `wuenscht front, nimmt front`.
+
+### B · Oberschenkel aufwärts (DECISIONS 76)
+
+6. **Der neue Hinweis steht da.** „Ganzkörper frontal" öffnen und zu nah ins
+   Bild treten. Erwartet in der Statuszeile: **„Ganz ins Bild – mindestens
+   bis zu den Oberschenkeln"**.
+
+7. **Ohne Füße löst es aus.** Handy aufstellen, davorstellen, so weit
+   zurücktreten, dass du vom Kopf bis etwa zur Mitte der Oberschenkel im Bild
+   bist — **die Füße bewusst außerhalb lassen**. Erwartet: „Steht – nicht
+   bewegen", nach einer Sekunde der Countdown, dann das Foto.
+   *Kriterium:* Passiert nichts, ist das ein **Blocker** — genau das war der
+   alte Fehler.
+
+8. **Der Kopf muss aber drauf sein.** So nah herangehen, dass der Kopf oben
+   abgeschnitten ist. Erwartet: **kein** Countdown.
+
+9. **Seitlich versetzt zählt weiter.** An den linken oder rechten Bildrand
+   stellen. Erwartet: löst genauso aus.
+
+10. **Der Hilfstext nach 12 Sekunden.** Zu nah stehen bleiben und warten.
+    Erwartet: **„Etwas weiter weg – Kopf bis Oberschenkel müssen sichtbar
+    sein"**.
+
+11. **Die Zahlen mitnehmen.** Direkt danach:
+
+    ```bash
+    adb logcat -d -s flutter | grep "TrueGlow/Aufnahme: Haltung"
+    ```
+
+    Dort steht jetzt auch die Hüfte:
+    `[hoehe 41%, oben 8%, unten 0%, kopf true, huefte false, fuesse false]`.
+    **Bitte je eine Zeile aus einem gescheiterten und einem gelungenen
+    Versuch schicken** — die Mindesthöhe steht auf 30 % und ist hergeleitet,
+    nicht gemessen.
+
+12. **Dasselbe für die Outfit-Fotos.**
+
+### C · Der Countdown (DECISIONS 77)
+
+13. **Er zählt von 5.** Erwartet: Die große Ziffer beginnt bei **5** und
+    zählt 5-4-3-2-1 herunter, je Sekunde ein Ton.
+
+14. **Verlassen bricht ab und startet neu.** Bei „3" aus dem Bild gehen,
+    kurz warten, wieder hineintreten. Erwartet: Der Countdown fängt wieder
+    bei **5** an, nicht bei 3.
+
+15. **Von Hand geht jederzeit.** Während des Countdowns den weißen Auslöser
+    tippen. Erwartet: Das Foto wird sofort aufgenommen.
+
+### D · Der Report stolpert nicht über fehlende Füße
+
+16. Beim **nächsten** echten Lauf mit „Figur & Passform" oder „Stil &
+    Kleiderschrank": Das Kapitel lesen. *Kriterium:* Steht dort ein Hinweis
+    wie „auf dem Foto sind die Füße nicht zu sehen", ist das ein Fund — der
+    Prompt sagt ausdrücklich, dass das kein Mangel ist. Notieren, kein
+    Blocker.
+
+### Was ein Fund ist
+
+| Fund | Reaktion |
+|---|---|
+| Ganzkörper oder Outfit startet mit der rückwärtigen Kamera | Blocker. |
+| Es löst nicht aus, obwohl Kopf bis Oberschenkel im Bild sind | Blocker — mit den Zahlen aus Schritt 11. |
+| Der Countdown beginnt bei 3 | Blocker. |
+| Nach dem Verlassen zählt er dort weiter, wo er war | Blocker. |
+| Es löst aus, obwohl der Kopf fehlt | Blocker. |
+| Der Report bemängelt fehlende Füße | Notieren — Prompt-Frage. |
+| Nach 12 Sekunden kommt kein anderer Hinweis | Vor dem Launch beheben. |
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

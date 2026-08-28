@@ -48,10 +48,17 @@ class AutoZustand {
 /// entfernt und sieht nichts.
 class AutoAusloeser {
   AutoAusloeser({
-    this.sekunden = 3,
+    this.sekunden = standardSekunden,
     this.nachsicht = const Duration(milliseconds: 700),
     this.stabil = const Duration(seconds: 1),
   }) : assert(sekunden > 0, 'Ein Countdown ohne Sekunden ist kein Countdown');
+
+  /// Dauer des Countdowns in Sekunden.
+  ///
+  /// Fuenf, nicht drei (DECISIONS 77): Man stellt das Handy auf, tritt
+  /// zurueck und muss sich noch hinstellen. Drei Sekunden reichen dafuer
+  /// nicht – der Ausloeser erwischt einen beim Umdrehen.
+  static const int standardSekunden = 5;
 
   /// Dauer des Countdowns.
   final int sekunden;
