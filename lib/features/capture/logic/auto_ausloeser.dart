@@ -50,10 +50,20 @@ class AutoAusloeser {
   AutoAusloeser({
     this.sekunden = 3,
     this.nachsicht = const Duration(milliseconds: 700),
+    this.stabil = const Duration(seconds: 1),
   }) : assert(sekunden > 0, 'Ein Countdown ohne Sekunden ist kein Countdown');
 
   /// Dauer des Countdowns.
   final int sekunden;
+
+  /// Wie lange die Haltung sitzen muss, bevor der Countdown ueberhaupt
+  /// anfaengt.
+  ///
+  /// Seit die Bedingung positionsunabhaengig ist (DECISIONS 74), ist sie
+  /// leichter zu erfuellen – auch versehentlich, im Vorbeigehen. Eine
+  /// Sekunde Ruhe davor kostet niemanden etwas und verhindert den Countdown,
+  /// der losplappert, waehrend man das Handy noch hinstellt.
+  final Duration stabil;
 
   /// Wie lange eine verlorene Haltung toleriert wird, bevor abgebrochen wird.
   ///
@@ -65,6 +75,9 @@ class AutoAusloeser {
   AutoPhase _phase = AutoPhase.warten;
   DateTime? _begonnen;
   DateTime? _schlechtSeit;
+
+  /// Seit wann die Haltung ununterbrochen sitzt – die Stabilisierung.
+  DateTime? _bereitSeit;
 
   AutoPhase get phase => _phase;
 
@@ -80,9 +93,17 @@ class AutoAusloeser {
 
     _schlechtSeit = null;
 
-    _begonnen ??= jetzt;
-    if (_phase == AutoPhase.warten) _phase = AutoPhase.zaehlt;
+    if (_phase == AutoPhase.warten) {
+      // Erst [stabil] lang ruhig stehen, dann faengt der Countdown an.
+      _bereitSeit ??= jetzt;
+      if (jetzt.difference(_bereitSeit!) < stabil) {
+        return const AutoZustand(AutoPhase.warten);
+      }
+      _phase = AutoPhase.zaehlt;
+      _begonnen = jetzt;
+    }
 
+    _begonnen ??= jetzt;
     return _abgelaufen(jetzt) ?? AutoZustand(AutoPhase.zaehlt, _verbleibend(jetzt));
   }
 
@@ -107,12 +128,21 @@ class AutoAusloeser {
   }
 
   AutoZustand _haltungVerloren(DateTime jetzt) {
+    final seit = _schlechtSeit ??= jetzt;
+
     if (_phase != AutoPhase.zaehlt) {
+      // Noch in der Stabilisierung. Dieselbe Nachsicht wie beim Countdown:
+      // Ein einzelner Aussetzer der Erkennung darf sie nicht zuruecksetzen,
+      // sonst faengt sie bei jedem Flackern von vorn an und die Sekunde
+      // kommt nie zusammen.
+      if (jetzt.difference(seit) >= nachsicht) {
+        _bereitSeit = null;
+        _schlechtSeit = null;
+      }
       _begonnen = null;
       return const AutoZustand(AutoPhase.warten);
     }
 
-    final seit = _schlechtSeit ??= jetzt;
     if (jetzt.difference(seit) < nachsicht) {
       // Noch in der Nachsicht: Countdown laeuft weiter, damit das Flackern der
       // Erkennung nicht als Zappeln beim Nutzer ankommt.
@@ -134,6 +164,7 @@ class AutoAusloeser {
 
     _phase = AutoPhase.warten;
     _begonnen = null;
+    _bereitSeit = null;
     _schlechtSeit = null;
     return const AutoZustand(AutoPhase.warten);
   }

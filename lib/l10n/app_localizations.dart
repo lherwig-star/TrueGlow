@@ -379,22 +379,22 @@ abstract class L {
   /// **'Ein paar Schritte zurück'**
   String get koerperZuNah;
 
-  /// No description provided for @koerperNichtMittig.
-  ///
-  /// In de, this message translates to:
-  /// **'Mittig hinstellen'**
-  String get koerperNichtMittig;
-
   /// No description provided for @koerperBereit.
   ///
   /// In de, this message translates to:
   /// **'Steht – nicht bewegen'**
   String get koerperBereit;
 
+  /// No description provided for @koerperTippAbstand.
+  ///
+  /// In de, this message translates to:
+  /// **'Etwas weiter weg – Kopf und Füße müssen ins Bild passen'**
+  String get koerperTippAbstand;
+
   /// No description provided for @koerperAutoHinweis.
   ///
   /// In de, this message translates to:
-  /// **'Stell dein Handy auf, tritt zurück und stell dich in den Umriss. Sobald du ganz im Bild stehst, zählt die App herunter und löst selbst aus. Du kannst auch jederzeit von Hand auslösen.'**
+  /// **'Stell dein Handy auf und tritt zurück, bis du von Kopf bis Fuß im Bild bist. Wo du stehst, ist egal. Dann zählt die App herunter und löst selbst aus – von Hand geht es jederzeit auch.'**
   String get koerperAutoHinweis;
 
   /// No description provided for @outfitAutoHinweis.

@@ -2093,6 +2093,101 @@ flutter run --dart-define=TRUEGLOW_MOCK=true
 | „Klassisch"/„Rockig"/„Handwerk"/„Uniform" tauchen noch auf | Vor dem Launch beheben. |
 | Die Stil-Vorschläge drehen sich um den Alltag statt ums Ausgehen | Notieren — das ist eine Prompt-Frage. |
 
+## 35 · Kamera-Richtung und der Ganzkörper-Auslöser
+
+Prüft DECISIONS 73 und 74. **Kein Analyse-Lauf nötig** — die Aufnahme-Strecke
+lässt sich bis zum Auslösen prüfen, ohne eine Analyse zu starten. Am Ende
+einfach abbrechen.
+
+### A · Welche Kamera startet (DECISIONS 73)
+
+1. **Der Handtest.** Aufnahme „Ganzkörper seitlich" öffnen und die Hand über
+   die **Rückseite** des Handys halten. Erwartet: Das Bild wird dunkel.
+   *Kriterium:* Wird es hell und dunkel erst, wenn du die Hand vor den
+   Bildschirm hältst, läuft die falsche Linse — das wäre ein **Blocker**.
+
+2. **Dasselbe für Ganzkörper frontal und ein Outfit-Foto.**
+
+3. **Und die Gegenprobe beim Portrait.** Aufnahme „Frontal" öffnen. Erwartet:
+   Du siehst dich selbst — dort ist die Selfie-Kamera richtig.
+
+4. **Schwarz auf weiß, falls Zweifel bleiben.** Bei angeschlossenem Handy:
+
+   ```bash
+   adb logcat -d -s flutter | grep "TrueGlow/Aufnahme"
+   ```
+
+   Erwartet, je geöffneter Aufnahme genau eine Zeile:
+
+   ```
+   figurGanzkoerperSeitlich: wuenscht back, nimmt back (0; …)
+   basisFrontal:             wuenscht front, nimmt front (1; …)
+   ```
+
+   *Kriterium:* Steht dort „wuenscht back, nimmt front", ist es ein Fehler
+   der App. Steht „nimmt back" und du siehst dich trotzdem — dann schaut die
+   Rückkamera in einen Spiegel, und das ist richtig so.
+
+5. **Der Wechsel-Knopf geht weiter.** Symbol unten rechts antippen: umschalten
+   und zurück.
+
+### B · Der Auslöser ohne Umriss (DECISIONS 74)
+
+6. **Kein Rahmen mehr.** „Ganzkörper frontal" öffnen. Erwartet: **keine**
+   gestrichelte Figur, nur das Kamerabild, der Hinweis unten und der
+   Auslöser. Dasselbe bei „Ganzkörper seitlich".
+
+7. **Die eigentliche Probe — vor dem Spiegel.** Handy so aufstellen oder
+   halten, dass die **Rückkamera** in den Spiegel zeigt. Zurücktreten, bis du
+   von Kopf bis Fuß im Spiegelbild zu sehen bist. Erwartet: Die Statuszeile
+   wandert über „Ein paar Schritte näher" zu **„Steht – nicht bewegen"**, nach
+   etwa einer Sekunde beginnt der Countdown 3-2-1, dann löst die App aus.
+
+8. **Seitlich versetzt zählt auch.** Nicht mittig hinstellen, sondern an den
+   linken oder rechten Bildrand. Erwartet: Es löst genauso aus. *Kriterium:*
+   Passiert nichts, obwohl du ganz im Bild bist, ist das ein **Blocker** —
+   genau das war der alte Fehler.
+
+9. **Die Zahlen mitnehmen.** Direkt nach dem Versuch:
+
+    ```bash
+    adb logcat -d -s flutter | grep "TrueGlow/Aufnahme: Haltung"
+    ```
+
+    Dort steht bei jeder Änderung, was gemessen wurde:
+    `[hoehe 44%, oben 21%, unten 35%, kopf true, fuesse true]`.
+    **Bitte die Zeilen aus einem gescheiterten und einem gelungenen Versuch
+    schicken** — daraus wird der endgültige Schwellwert abgeleitet. Er steht
+    heute auf 50 % und ist ausdrücklich ein Anfangswert.
+
+10. **Der Hilfstext nach 12 Sekunden.** Zu nah vor den Spiegel stellen, sodass
+    die Füße fehlen, und zwölf Sekunden warten. Erwartet: Die Statuszeile
+    wechselt auf **„Etwas weiter weg – Kopf und Füße müssen ins Bild
+    passen"**. *Kriterium:* Bleibt es bei „Ganz ins Bild", ist das ein Fund.
+
+11. **Von Hand geht immer.** Während nichts passt, den weißen Auslöser
+    tippen. Erwartet: Das Foto wird aufgenommen und geprüft wie sonst auch.
+
+12. **Kein Fehlauslöser beim Hinstellen.** Handy aufstellen und dabei kurz
+    selbst durchs Bild laufen. Erwartet: Der Countdown fängt **nicht** an,
+    solange du in Bewegung bist.
+
+13. **Die Outfit-Fotos verhalten sich gleich.** Dieselbe Probe mit „Outfit 1".
+
+14. **Auf Englisch.** Sprache umstellen, Schritte 6 und 10 wiederholen.
+
+### Was ein Fund ist
+
+| Fund | Reaktion |
+|---|---|
+| „wuenscht back, nimmt front" im Protokoll | Blocker. |
+| Bei Ganzkörper/Outfit reagiert die Vorderseite auf die Hand | Blocker. |
+| Es löst nicht aus, obwohl du ganz und groß genug im Bild bist | Blocker — mit den Zahlen aus Schritt 9. |
+| Der gestrichelte Umriss ist noch da | Blocker. |
+| Der Countdown läuft los, während du noch gehst | Vor dem Launch beheben. |
+| Nach 12 Sekunden kommt kein anderer Hinweis | Vor dem Launch beheben. |
+| Es löst zu früh aus, obwohl die Füße fehlen | Notieren, mit den Zahlen aus Schritt 9. |
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |

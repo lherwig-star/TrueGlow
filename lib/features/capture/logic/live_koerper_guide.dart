@@ -10,7 +10,6 @@ enum KoerperHinweis {
   nichtGanz,
   zuWeitWeg,
   zuNah,
-  nichtMittig,
   bereit;
 
   /// Nur hier laeuft der Auto-Ausloeser an.
@@ -31,7 +30,6 @@ extension KoerperHinweisText on KoerperHinweis {
         KoerperHinweis.nichtGanz => texte.koerperNichtGanz,
         KoerperHinweis.zuWeitWeg => texte.koerperZuWeitWeg,
         KoerperHinweis.zuNah => texte.koerperZuNah,
-        KoerperHinweis.nichtMittig => texte.koerperNichtMittig,
         KoerperHinweis.bereit => texte.koerperBereit,
       };
 }
@@ -59,12 +57,17 @@ class Koerperlage {
   final bool fuesseSichtbar;
 }
 
-/// Bewertet, ob jemand vollstaendig und mittig im Bild steht.
+/// Bewertet, ob jemand vollstaendig im Bild steht.
 ///
 /// Anders als beim Portrait entscheidet diese Bewertung nicht nur ueber einen
-/// Hinweistext, sondern loest am Ende selbst aus. Sie ist deshalb strenger
-/// gebaut: Im Zweifel „noch nicht", denn ein zu frueh geschossenes Foto
-/// kostet den ganzen Weg zurueck ans Handy.
+/// Hinweistext, sondern loest am Ende selbst aus.
+///
+/// **Ueberarbeitet in DECISIONS 74.** Vorher verlangte sie zusaetzlich, dass
+/// die Person mittig steht und mindestens 55 % der Bildhoehe fuellt – gedacht
+/// als Ergaenzung zur Silhouette, an der man sich ausrichten sollte. Am
+/// Geraet hiess das: Vor dem Spiegel stand man immer daneben, nie darin, und
+/// der Ausloeser sprang nie an. Jetzt zaehlt nur noch, ob jemand ganz im Bild
+/// ist und gross genug – wo, ist egal.
 class LiveKoerperGuide {
   const LiveKoerperGuide();
 
@@ -72,14 +75,21 @@ class LiveKoerperGuide {
   ///
   /// Darunter steht sie so weit weg, dass Proportionen und Haltung – der
   /// Grund fuer dieses Foto – kaum noch zu beurteilen sind.
-  static const double minHoehe = 0.55;
+  ///
+  /// Von 0,55 auf 0,50 gesenkt (DECISIONS 74): Vor einem Spiegel steht man
+  /// selten so, dass man fuenfundfuenfzig Prozent der Bildhoehe fuellt, und
+  /// die fehlenden fuenf Prozent waren der Unterschied zwischen „loest aus"
+  /// und „loest nie aus".
+  static const double minHoehe = 0.5;
 
-  /// Obergrenze. Darueber ist zu erwarten, dass Kopf oder Fuesse gleich aus
-  /// dem Bild laufen.
-  static const double maxHoehe = 0.94;
-
-  /// Zulaessige seitliche Abweichung der Koerpermitte, als Anteil der Breite.
-  static const double maxVersatz = 0.16;
+  /// Wie viel Luft ueber dem hoechsten und unter dem tiefsten erkannten
+  /// Punkt bleiben muss, als Anteil der Bildhoehe.
+  ///
+  /// Ersetzt die fruehere Obergrenze `maxHoehe`: Sie sagte dasselbe, nur
+  /// ungenauer. Der Rand ist der eigentliche Grund – ML Kit erkennt Nase und
+  /// Knoechel, nicht Scheitel und Zehenspitzen. Wer mit dem Knoechel auf der
+  /// Bildkante steht, hat die Fuesse abgeschnitten.
+  static const double rand = 0.02;
 
   /// [bildGroesse] ist die Groesse des aufgerichteten Bildes – also mit
   /// vertauschten Kanten, wenn der Frame um 90/270 Grad gedreht wurde.
@@ -108,10 +118,15 @@ class LiveKoerperGuide {
 
     final anteil = lage.umriss.height / bildGroesse.height;
     if (anteil < minHoehe) return KoerperHinweis.zuWeitWeg;
-    if (anteil > maxHoehe) return KoerperHinweis.zuNah;
 
-    final versatz = (lage.umriss.center.dx / bildGroesse.width - 0.5).abs();
-    if (versatz > maxVersatz) return KoerperHinweis.nichtMittig;
+    // Und genug Luft nach oben und unten. Mehr wird nicht verlangt: WO im
+    // Bild die Person steht, ist ausdruecklich egal (DECISIONS 74). Die
+    // frueher geforderte Mitte war der zweite Grund, aus dem der Ausloeser
+    // vor dem Spiegel nie ansprang – dort steht man neben dem Handy, nicht
+    // dahinter.
+    final oben = lage.umriss.top / bildGroesse.height;
+    final unten = 1 - lage.umriss.bottom / bildGroesse.height;
+    if (oben < rand || unten < rand) return KoerperHinweis.zuNah;
 
     return KoerperHinweis.bereit;
   }

@@ -3364,6 +3364,83 @@ nicht — der `orElse`-Zweig griff auf diesem Gerät nie, weil es eine
 Ausnahmefall. Ein paar Byte im Logcat gegen eine Frage, die zweimal einen
 halben Arbeitstag gekostet hat.
 
+## 74 · Der Silhouetten-Umriss fällt weg
+
+Befund vom Gerät: Der gestrichelte Umriss war nicht zu treffen. Man steht
+immer nur halb darin — und weil der Auto-Auslöser genau darauf wartete,
+feuerte er nie. Zwei Bildschirmfotos zeigen dasselbe: Person gut im Bild,
+Umriss trotzdem daneben.
+
+**Die Silhouette war eine Anweisung, die sich nicht befolgen lässt.** Sie
+setzte voraus, dass jemand das Handy aufstellt und sich davor in eine
+bestimmte Position bringt. Ein Ganzkörperfoto macht man aber allein, meist
+vor dem Spiegel — dort steht man **neben** dem Handy, nicht dahinter, und in
+dem Abstand, den der Raum hergibt.
+
+Sie entfällt bei Ganzkörper frontal **und** seitlich. Übrig bleibt der
+schlichte Hinweis unten — genau wie bei den Outfit-Fotos, die nie einen
+Rahmen hatten. Mit ihr gehen rund 370 Zeilen Zeichenlogik, die weibliche
+Zweitfassung (DECISIONS 57) und `overlayFuer` ersatzlos.
+
+### Die neue Bedingung: vollständig und groß genug, sonst nichts
+
+| vorher | jetzt |
+|---|---|
+| Kopf und Füße sichtbar | **unverändert** |
+| mindestens 55 % der Bildhöhe | mindestens **50 %** |
+| höchstens 94 % der Bildhöhe | **Rand von 2 %** oben und unten |
+| Körpermitte höchstens 16 % aus der Bildmitte | **entfällt** |
+| — | **1 Sekunde** ruhig stehen, dann Countdown |
+
+**Die Mitte-Regel war der eigentliche Übeltäter.** Vor einem Spiegel steht
+man seitlich versetzt; 16 % Toleranz reichen dafür nie. Wo im Bild jemand
+steht, ist jetzt egal — und ob frontal oder seitlich auch.
+
+**Der Rand ersetzt die Obergrenze.** Er sagt dasselbe, nur genauer: ML Kit
+erkennt Nase und Knöchel, nicht Scheitel und Zehenspitzen. Wer mit dem
+Knöchel auf der Bildkante steht, hat die Füße abgeschnitten — unabhängig
+davon, wie viel Prozent der Höhe er füllt.
+
+**Die 50 % sind ein Anfangswert, kein Messergebnis.** Ehrlich: Diese Zahl
+lässt sich nur vor einem echten Spiegel beurteilen, und dort steht niemand
+mit einem Debugger. Deshalb schreibt die App die gemessenen Werte jetzt bei
+jeder Änderung ins Protokoll:
+
+```
+TrueGlow/Aufnahme: Haltung zuWeitWeg, Countdown AutoZustand(warten, 0)
+  [hoehe 44%, oben 21%, unten 35%, kopf true, fuesse true]
+```
+
+Damit ist der nächste Wert keine Vermutung mehr, sondern eine Ablesung
+(TESTPLAN 35, Schritt 9).
+
+### Die Sekunde davor
+
+Die Bedingung ist jetzt leicht zu erfüllen — auch versehentlich, während man
+das Handy noch hinstellt. Eine Sekunde ruhig stehen kostet niemanden etwas
+und verhindert den Countdown, der losplappert, bevor man überhaupt
+zurückgetreten ist.
+
+Ein einzelner Aussetzer der Posenerkennung wirft sie **nicht** zurück — dort
+gilt dieselbe Nachsicht von 700 ms wie beim Countdown. Ohne das finge die
+Sekunde bei jedem Flackern von vorn an und käme nie zusammen; genau dieser
+Fehler hat den Auslöser schon einmal totgelegt.
+
+### Wenn trotzdem nichts passiert
+
+Nach **12 Sekunden ohne einen einzigen brauchbaren Moment** wechselt die
+Statuszeile auf „Etwas weiter weg – Kopf und Füße müssen ins Bild passen".
+Der häufigste Fall ist der zu kleine Abstand, und „Stell dich ins Bild" hilft
+dann nicht weiter. Sobald es einmal gepasst hat, kommt der Satz nicht wieder
+— er ist eine Starthilfe, keine Dauermeldung.
+
+Der manuelle Auslöser bleibt unverändert jederzeit drückbar. Er war es auch
+vorher schon; nur wusste das niemand, der auf den Countdown wartete.
+
+**Preis:** Ohne Umriss gibt es keine Vorschau mehr darauf, wie das Foto
+aussehen soll — wer nie ein Ganzkörperfoto gemacht hat, bekommt jetzt nur
+noch einen Satz statt eines Bildes. Dafür eines, das man befolgen kann.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

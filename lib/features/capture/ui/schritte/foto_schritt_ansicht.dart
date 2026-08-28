@@ -11,7 +11,6 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/section_card.dart';
 import '../../../modules/logic/module_controller.dart';
 import '../../logic/capture_controller.dart';
-import '../../../onboarding/logic/onboarding_controller.dart';
 import '../../models/aufnahme_typ.dart';
 import '../../models/captured_photo.dart';
 import '../../models/photo_check_result.dart';
@@ -133,9 +132,7 @@ class _Sucher extends ConsumerWidget {
                 ),
               )
             else
-              SilhouetteOverlay(
-                overlay: typ.overlayFuer(ref.watch(ausrichtungProvider)),
-              ),
+              SilhouetteOverlay(overlay: typ.overlay),
             if (foto != null)
               const Positioned(
                 top: AppTheme.gapS,

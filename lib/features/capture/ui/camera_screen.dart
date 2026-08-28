@@ -15,7 +15,6 @@ import '../../../core/diagnose/diagnose_dienst.dart';
 import '../../../core/l10n/texte.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../onboarding/logic/onboarding_controller.dart';
 import '../../checkin/logic/checkin_controller.dart';
 import '../logic/auto_ausloeser.dart';
 import '../logic/kamerawahl.dart';
@@ -112,6 +111,19 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
 
   /// Stand des Countdowns.
   AutoZustand _autoZustand = const AutoZustand(AutoPhase.warten);
+
+  /// Wann die Haltungsbewertung angefangen hat, und ob sie je gesessen hat.
+  DateTime? _koerperSeit;
+  bool _jeBereit = false;
+
+  /// Ob laenger als [_hilfeNach] nichts gepasst hat. Dann wechselt der
+  /// Hinweis auf den Satz, der die haeufigste Ursache nennt (DECISIONS 74) --
+  /// stumm dazustehen hilft niemandem, der drei Meter entfernt steht.
+  bool _langeNichtBereit = false;
+
+  /// So lange bekommt der Nutzer die gewoehnlichen Hinweise. Danach ist
+  /// erwiesen, dass sie nicht weiterhelfen.
+  static const _hilfeNach = Duration(seconds: 12);
 
   /// Die zuletzt vertonte Sekunde – ohne das kaeme bei vier Frames pro
   /// Sekunde viermal derselbe Ton.
@@ -350,13 +362,31 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
       helligkeit: helligkeit,
     );
 
+    // Der Hilfstext nach langem Warten: Ab hier zaehlt, wie lange die
+    // Bewertung schon laeuft, ohne je gesessen zu haben.
+    _koerperSeit ??= jetzt;
+    if (hinweis.loestAus) _jeBereit = true;
+    final lange = !_jeBereit &&
+        jetzt.difference(_koerperSeit!) > _hilfeNach;
+    if (lange != _langeNichtBereit) {
+      setState(() => _langeNichtBereit = lange);
+    }
+
     final zustand = _auto!.melde(bereit: hinweis.loestAus, jetzt: jetzt);
 
     if (hinweis != _koerperHinweis || zustand != _autoZustand) {
       // Nur bei Aenderung, sonst waeren es vier Zeilen je Sekunde. Damit ist
       // im Protokoll ablesbar, ob der Countdown ueberhaupt bis zum Ende lief
       // oder ob die Haltung kurz davor verloren ging.
-      _protokoll('Haltung ${hinweis.name}, Countdown $zustand');
+      // Mit den gemessenen Werten, nicht nur mit dem Urteil: Die
+      // Schwellwerte lassen sich nur vor einem echten Spiegel beurteilen,
+      // und dort steht niemand mit einem Debugger (DECISIONS 74). Diese
+      // Zeile ist die Messung, aus der sich der naechste Wert ableiten
+      // laesst.
+      _protokoll(
+        'Haltung ${hinweis.name}, Countdown $zustand'
+        '${_gemessen(_alsKoerperlage(posen), groesse)}',
+      );
       setState(() {
         _koerperHinweis = hinweis;
         _autoZustand = zustand;
@@ -379,6 +409,20 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
         _ton((ton) => ton.ausloesen());
         await _ausloesen();
     }
+  }
+
+  /// Die Zahlen hinter dem Urteil, fuer das Protokoll.
+  ///
+  /// Leer, wenn gar keine Pose da ist – dann gibt es nichts zu messen.
+  String _gemessen(Koerperlage? lage, Size groesse) {
+    if (lage == null || groesse.height <= 0) return '';
+
+    String anteil(double wert) => (wert * 100).toStringAsFixed(0);
+
+    return ' [hoehe ${anteil(lage.umriss.height / groesse.height)}%, '
+        'oben ${anteil(lage.umriss.top / groesse.height)}%, '
+        'unten ${anteil(1 - lage.umriss.bottom / groesse.height)}%, '
+        'kopf ${lage.kopfSichtbar}, fuesse ${lage.fuesseSichtbar}]';
   }
 
   /// Uebersetzt die ML-Kit-Pose in die Form, mit der [LiveKoerperGuide]
@@ -704,10 +748,12 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
     // bekommen hat, braucht diese Nachricht und nicht „Steht – nicht bewegen".
     final statustext = _fehlschlag ??
         (widget.typ.autoAusloeser
-            ? _koerperHinweis.text(
-                texte,
-                personOptional: widget.typ.personOptional,
-              )
+            ? (_langeNichtBereit
+                ? texte.koerperTippAbstand
+                : _koerperHinweis.text(
+                    texte,
+                    personOptional: widget.typ.personOptional,
+                  ))
             : _hinweis.text(texte));
 
     return Scaffold(
@@ -737,7 +783,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
               ),
             ),
             SilhouetteOverlay(
-              overlay: widget.typ.overlayFuer(ref.watch(ausrichtungProvider)),
+              overlay: widget.typ.overlay,
               farbe: bereit
                   ? farben.akzent
                   : Colors.white.withValues(alpha: 0.65),

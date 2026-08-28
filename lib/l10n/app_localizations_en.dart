@@ -156,14 +156,15 @@ class LEn extends L {
   String get koerperZuNah => 'A few steps back';
 
   @override
-  String get koerperNichtMittig => 'Stand in the middle';
-
-  @override
   String get koerperBereit => 'That’s it — hold still';
 
   @override
+  String get koerperTippAbstand =>
+      'Step back a little — head and feet have to fit in frame';
+
+  @override
   String get koerperAutoHinweis =>
-      'Prop your phone up, step back and line yourself up with the outline. Once you are fully in frame, the app counts down and takes the photo itself. You can also shoot manually at any time.';
+      'Prop your phone up and step back until you are in frame from head to toe. Where you stand does not matter. The app then counts down and takes the photo itself — manual still works at any time.';
 
   @override
   String get outfitAutoHinweis =>

@@ -432,21 +432,17 @@ void main() {
       expect(AufnahmeTyp.basisWinkel45.overlay, Overlaytyp.winkel45);
     });
 
-    test('die beiden Ganzkoerper-Aufnahmen haben eigene Umrisse', () {
-      // Frueher teilten sie sich einen Overlaytyp – das seitliche Foto zeigte
-      // also eine frontale Figur. Wer sich danach ausrichtet, steht falsch.
-      expect(
-        AufnahmeTyp.figurGanzkoerperFrontal.overlay,
-        Overlaytyp.ganzkoerperFrontal,
-      );
-      expect(
-        AufnahmeTyp.figurGanzkoerperSeitlich.overlay,
-        Overlaytyp.ganzkoerperSeitlich,
-      );
-      expect(
-        AufnahmeTyp.figurGanzkoerperFrontal.overlay,
-        isNot(AufnahmeTyp.figurGanzkoerperSeitlich.overlay),
-      );
+    test('Ganzkoerper und Outfit zeigen gar keine Hilfslinien', () {
+      // Die Silhouette ist weg (DECISIONS 74): Vor dem Spiegel liess sie
+      // sich nicht treffen, und der Auto-Ausloeser wartete auf eine Haltung,
+      // die nie eintrat. Uebrig bleiben die Gesichts-Umrisse.
+      for (final typ in AufnahmeTyp.values) {
+        expect(
+          typ.overlay == Overlaytyp.keins,
+          typ.autoAusloeser,
+          reason: typ.name,
+        );
+      }
     });
 
     test('die Profil-Hinweise nennen Drehrichtung und Gesichtshaelfte', () {

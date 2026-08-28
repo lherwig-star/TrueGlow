@@ -158,14 +158,15 @@ class LDe extends L {
   String get koerperZuNah => 'Ein paar Schritte zurück';
 
   @override
-  String get koerperNichtMittig => 'Mittig hinstellen';
-
-  @override
   String get koerperBereit => 'Steht – nicht bewegen';
 
   @override
+  String get koerperTippAbstand =>
+      'Etwas weiter weg – Kopf und Füße müssen ins Bild passen';
+
+  @override
   String get koerperAutoHinweis =>
-      'Stell dein Handy auf, tritt zurück und stell dich in den Umriss. Sobald du ganz im Bild stehst, zählt die App herunter und löst selbst aus. Du kannst auch jederzeit von Hand auslösen.';
+      'Stell dein Handy auf und tritt zurück, bis du von Kopf bis Fuß im Bild bist. Wo du stehst, ist egal. Dann zählt die App herunter und löst selbst aus – von Hand geht es jederzeit auch.';
 
   @override
   String get outfitAutoHinweis =>

@@ -20,23 +20,12 @@ enum Overlaytyp {
   /// Halb gedrehter Kopf fuer die 45-Grad-Aufnahme.
   winkel45,
 
-  /// Stehende Ganzkoerper-Silhouette von vorn.
-  ganzkoerperFrontal,
+  // Die Ganzkoerper-Silhouette gibt es nicht mehr (DECISIONS 74). Sie war
+  // eine Anweisung, die sich vor dem Spiegel nicht befolgen liess: Wer sein
+  // Handy aufstellt, steht immer nur halb darin – und der Auto-Ausloeser
+  // wartete auf eine Haltung, die nie eintrat.
 
-  /// Dieselbe Figur im Profil, Blickrichtung rechts.
-  ganzkoerperSeitlich,
-
-  /// Weibliche Fassung derselben beiden Umrisse.
-  ///
-  /// Warum ueberhaupt eine zweite Figur: Der Umriss ist eine Anweisung, wie
-  /// weit man zuruecktreten und wie man stehen soll. Wer sich an einer Figur
-  /// ausrichten soll, die anders gebaut ist als er selbst, richtet sich
-  /// schlechter aus – und die Schulter-Huefte-Verhaeltnisse sind genau das,
-  /// was das Ganzkoerperfoto zeigen soll.
-  ganzkoerperFrontalWeiblich,
-  ganzkoerperSeitlichWeiblich,
-
-  /// Freies Bild ohne Hilfslinien (Outfit-Fotos).
+  /// Freies Bild ohne Hilfslinien.
   keins,
 }
 
@@ -113,14 +102,14 @@ enum AufnahmeTyp {
   // --- Figur & Passform ---
   figurGanzkoerperFrontal(
     modul: AnalyseModul.figurPassform,
-    overlay: Overlaytyp.ganzkoerperFrontal,
+    overlay: Overlaytyp.keins,
     pruefung: Pruefprofil.ganzkoerper,
     rueckkamera: true,
     autoAusloeser: true,
   ),
   figurGanzkoerperSeitlich(
     modul: AnalyseModul.figurPassform,
-    overlay: Overlaytyp.ganzkoerperSeitlich,
+    overlay: Overlaytyp.keins,
     pruefung: Pruefprofil.ganzkoerper,
     rueckkamera: true,
     autoAusloeser: true,
@@ -161,10 +150,10 @@ enum AufnahmeTyp {
 
   final AnalyseModul modul;
 
-  /// Die Hilfslinien im Sucher – die neutrale Fassung.
+  /// Die Hilfslinien im Sucher.
   ///
-  /// Fuer die tatsaechlich gezeigte Fassung [overlayFuer] benutzen: Bei den
-  /// Ganzkoerperfotos haengt sie an der Ausrichtung.
+  /// Seit dem Wegfall der Ganzkoerper-Silhouette haengt sie an nichts
+  /// weiter – die Gesichts-Umrisse sind fuer alle dieselben (DECISIONS 74).
   final Overlaytyp overlay;
   final Pruefprofil pruefung;
 
@@ -188,21 +177,6 @@ enum AufnahmeTyp {
   /// gar nicht erst – und der Ausloeser bleibt druckbar wie immer
   /// (DECISIONS 68).
   final bool autoAusloeser;
-
-  /// Die Hilfslinien, die im Sucher wirklich liegen.
-  ///
-  /// Nur die beiden Ganzkoerper-Umrisse haben eine weibliche Fassung. Das
-  /// Gesichts-Oval hat keine: Gesichtsformen unterscheiden sich zwischen
-  /// Menschen mehr als zwischen Geschlechtern, und ein zweites Oval waere
-  /// eine Aussage ohne Grundlage.
-  Overlaytyp overlayFuer(Ausrichtung ausrichtung) {
-    if (ausrichtung != Ausrichtung.weiblich) return overlay;
-    return switch (overlay) {
-      Overlaytyp.ganzkoerperFrontal => Overlaytyp.ganzkoerperFrontalWeiblich,
-      Overlaytyp.ganzkoerperSeitlich => Overlaytyp.ganzkoerperSeitlichWeiblich,
-      _ => overlay,
-    };
-  }
 
   /// Ob die Live-Erkennung im Sucher sinnvoll ist.
   bool get mitLiveHilfe => pruefung.pruefeGesicht;

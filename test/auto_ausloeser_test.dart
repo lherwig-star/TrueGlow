@@ -7,7 +7,6 @@ import 'package:trueglow/features/capture/logic/live_face_guide.dart';
 import 'package:trueglow/features/capture/logic/live_koerper_guide.dart';
 import 'package:trueglow/features/capture/logic/signalton.dart';
 import 'package:trueglow/features/capture/models/aufnahme_typ.dart';
-import 'package:trueglow/features/capture/ui/widgets/silhouette_overlay.dart';
 
 /// Die deutschen Texte, gegen die geprueft wird.
 final texte = lookupL(const Locale('de'));
@@ -22,8 +21,11 @@ void main() {
   final t0 = DateTime(2026, 8, 25, 12);
 
   group('AutoAusloeser', () {
+    // Ohne Stabilisierung, weil es hier um den Countdown geht: Die Sekunde
+    // Ruhe davor hat ihre eigene Gruppe. Ein Test, der beides zugleich
+    // prueft, sagt bei einem Fehlschlag nicht, welches der beiden kaputt ist.
     test('zaehlt bei guter Haltung von 3 herunter und loest aus', () {
-      final ausloeser = AutoAusloeser();
+      final ausloeser = AutoAusloeser(stabil: Duration.zero);
 
       expect(
         ausloeser.melde(bereit: true, jetzt: t0),
@@ -55,7 +57,7 @@ void main() {
     test('die erste Sekunde zeigt voll „3", nicht sofort „2"', () {
       // Abgerundet spraenge die Anzeige beim ersten Frame auf 2 und der
       // Countdown fuehlte sich um eine Sekunde zu kurz an.
-      final ausloeser = AutoAusloeser();
+      final ausloeser = AutoAusloeser(stabil: Duration.zero);
       ausloeser.melde(bereit: true, jetzt: t0);
 
       expect(
@@ -70,7 +72,7 @@ void main() {
     });
 
     test('ohne gute Haltung passiert nichts', () {
-      final ausloeser = AutoAusloeser();
+      final ausloeser = AutoAusloeser(stabil: Duration.zero);
 
       expect(
         ausloeser.melde(bereit: false, jetzt: t0),
@@ -89,7 +91,7 @@ void main() {
       // Der wichtigste Fall: Die Posenerkennung ist unstet, ein einzelner
       // Frame ohne sichere Knoechel genuegt. Ohne Nachsicht kaeme der
       // Countdown nie durch.
-      final ausloeser = AutoAusloeser();
+      final ausloeser = AutoAusloeser(stabil: Duration.zero);
 
       ausloeser.melde(bereit: true, jetzt: t0);
       final waehrendFlackern = ausloeser.melde(
@@ -109,7 +111,7 @@ void main() {
     });
 
     test('anhaltender Haltungsverlust bricht ab und setzt zurueck', () {
-      final ausloeser = AutoAusloeser();
+      final ausloeser = AutoAusloeser(stabil: Duration.zero);
 
       ausloeser.melde(bereit: true, jetzt: t0);
       expect(
@@ -151,7 +153,7 @@ void main() {
       // Genau so verhaelt sich die Posenerkennung aus drei Metern: Ein
       // einzelner Frame ohne sichere Knoechel genuegt, und der faellt mit
       // einiger Wahrscheinlichkeit auf die letzte Sekunde.
-      final ausloeser = AutoAusloeser();
+      final ausloeser = AutoAusloeser(stabil: Duration.zero);
 
       ausloeser.melde(bereit: true, jetzt: t0);
       expect(
@@ -187,7 +189,7 @@ void main() {
       // Der Ablauf, wie er am Geraet stattfindet: vier ausgewertete Frames je
       // Sekunde, dazwischen zweifelt die Erkennung gelegentlich. Am Ende muss
       // genau ein Ausloesen stehen, nicht keines und nicht drei.
-      final ausloeser = AutoAusloeser();
+      final ausloeser = AutoAusloeser(stabil: Duration.zero);
 
       // Jeder vierte Frame faellt aus – ein einzelner Aussetzer, nie zwei
       // hintereinander, also immer innerhalb der Nachsicht.
@@ -220,7 +222,7 @@ void main() {
 
     test('nach dem Ausloesen bleibt es dabei, bis zurueckgesetzt wird', () {
       // Sonst schiesst die Kamera waehrend der Vorschau munter weiter.
-      final ausloeser = AutoAusloeser();
+      final ausloeser = AutoAusloeser(stabil: Duration.zero);
 
       ausloeser.melde(bereit: true, jetzt: t0);
       ausloeser.melde(bereit: true, jetzt: t0.add(const Duration(seconds: 4)));
@@ -246,6 +248,89 @@ void main() {
     });
   });
 
+  group('Die Sekunde Ruhe vor dem Countdown', () {
+    // Seit die Bedingung positionsunabhaengig ist (DECISIONS 74), ist sie
+    // leichter zu erfuellen – auch versehentlich, waehrend man das Handy
+    // noch hinstellt.
+
+    test('der Countdown faengt erst nach der Stabilisierung an', () {
+      final ausloeser = AutoAusloeser();
+
+      // Erst mal passiert nichts Sichtbares.
+      expect(
+        ausloeser.melde(bereit: true, jetzt: t0),
+        const AutoZustand(AutoPhase.warten),
+      );
+      expect(
+        ausloeser.melde(
+          bereit: true,
+          jetzt: t0.add(const Duration(milliseconds: 900)),
+        ),
+        const AutoZustand(AutoPhase.warten),
+      );
+
+      // Nach einer Sekunde geht es los – mit vollen drei Sekunden.
+      expect(
+        ausloeser.melde(
+          bereit: true,
+          jetzt: t0.add(const Duration(milliseconds: 1000)),
+        ),
+        const AutoZustand(AutoPhase.zaehlt, 3),
+      );
+    });
+
+    test('wer sich zwischendurch wegdreht, faengt von vorn an', () {
+      final ausloeser = AutoAusloeser();
+
+      ausloeser.melde(bereit: true, jetzt: t0);
+      // Laenger weg als die Nachsicht: Die halbe Sekunde ist verfallen.
+      ausloeser.melde(
+        bereit: false,
+        jetzt: t0.add(const Duration(milliseconds: 500)),
+      );
+      ausloeser.melde(
+        bereit: false,
+        jetzt: t0.add(const Duration(milliseconds: 1400)),
+      );
+
+      expect(
+        ausloeser.melde(
+          bereit: true,
+          jetzt: t0.add(const Duration(milliseconds: 1500)),
+        ),
+        const AutoZustand(AutoPhase.warten),
+      );
+      expect(
+        ausloeser.melde(
+          bereit: true,
+          jetzt: t0.add(const Duration(milliseconds: 2600)),
+        ),
+        const AutoZustand(AutoPhase.zaehlt, 3),
+      );
+    });
+
+    test('ein einzelner Aussetzer wirft sie nicht zurueck', () {
+      // Sonst faengt die Sekunde bei jedem Flackern der Posenerkennung von
+      // vorn an und kommt nie zusammen – derselbe Fehler wie beim Countdown
+      // vor DECISIONS 51.
+      final ausloeser = AutoAusloeser();
+
+      ausloeser.melde(bereit: true, jetzt: t0);
+      ausloeser.melde(
+        bereit: false,
+        jetzt: t0.add(const Duration(milliseconds: 400)),
+      );
+
+      expect(
+        ausloeser.melde(
+          bereit: true,
+          jetzt: t0.add(const Duration(milliseconds: 1050)),
+        ),
+        const AutoZustand(AutoPhase.zaehlt, 3),
+      );
+    });
+  });
+
   group('LiveKoerperGuide', () {
     const guide = LiveKoerperGuide();
     const bild = Size(1000, 2000);
@@ -254,13 +339,14 @@ void main() {
     Koerperlage lage({
       double hoeheAnteil = 0.70,
       double mitteX = 0.5,
+      double mitteY = 0.5,
       bool kopf = true,
       bool fuesse = true,
     }) {
       final hoehe = bild.height * hoeheAnteil;
       return Koerperlage(
         umriss: Rect.fromCenter(
-          center: Offset(bild.width * mitteX, bild.height / 2),
+          center: Offset(bild.width * mitteX, bild.height * mitteY),
           width: bild.width * 0.25,
           height: hoehe,
         ),
@@ -269,7 +355,7 @@ void main() {
       );
     }
 
-    test('mittig und vollstaendig ist bereit', () {
+    test('vollstaendig im Bild ist bereit', () {
       expect(
         guide.bewerte(lage: lage(), bildGroesse: bild),
         KoerperHinweis.bereit,
@@ -307,11 +393,50 @@ void main() {
       );
     });
 
-    test('seitlich versetzt loest nicht aus', () {
+    test('seitlich versetzt loest trotzdem aus', () {
+      // Das war der zweite Grund, aus dem der Ausloeser vor dem Spiegel nie
+      // ansprang: Dort steht man neben dem Handy, nicht dahinter
+      // (DECISIONS 74). Wo im Bild jemand steht, ist jetzt egal.
+      for (final x in [0.15, 0.5, 0.85]) {
+        expect(
+          guide.bewerte(lage: lage(mitteX: x), bildGroesse: bild),
+          KoerperHinweis.bereit,
+          reason: 'Mitte bei $x',
+        );
+      }
+    });
+
+    test('aber oben oder unten angeschnitten nicht', () {
+      // Der Rand ist das, was von der alten Obergrenze uebrig ist: ML Kit
+      // erkennt Nase und Knoechel, nicht Scheitel und Zehen. Wer mit dem
+      // Knoechel auf der Bildkante steht, hat die Fuesse abgeschnitten.
       expect(
-        guide.bewerte(lage: lage(mitteX: 0.80), bildGroesse: bild),
-        KoerperHinweis.nichtMittig,
+        guide.bewerte(
+          lage: lage(hoeheAnteil: 0.9, mitteY: 0.1),
+          bildGroesse: bild,
+        ),
+        KoerperHinweis.zuNah,
       );
+      expect(
+        guide.bewerte(
+          lage: lage(hoeheAnteil: 0.9, mitteY: 0.9),
+          bildGroesse: bild,
+        ),
+        KoerperHinweis.zuNah,
+      );
+    });
+
+    test('die halbe Bildhoehe reicht', () {
+      // Von 0,55 auf 0,50 gesenkt: Die fehlenden fuenf Prozent waren der
+      // Unterschied zwischen "loest aus" und "loest nie aus".
+      expect(
+        guide.bewerte(
+          lage: lage(hoeheAnteil: LiveKoerperGuide.minHoehe + 0.01),
+          bildGroesse: bild,
+        ),
+        KoerperHinweis.bereit,
+      );
+      expect(LiveKoerperGuide.minHoehe, lessThanOrEqualTo(0.5));
     });
 
     test('zu dunkel geht allem voraus', () {
@@ -354,117 +479,16 @@ void main() {
     });
   });
 
-  group('Ganzkoerper-Silhouette', () {
-    /// Vom sehr schmalen Handy bis zum Tablet. Der Galaxy A52 (20:9) ist das
-    /// Geraet, auf dem die gestreckte Figur aufgefallen ist.
-    const flaechen = <Size>[
-      Size(411, 914), // Galaxy A52, 20:9
-      Size(360, 640), // 16:9, das Format, fuer das die Figur entworfen ist
-      Size(430, 932), // grosses iPhone
-      Size(768, 1024), // Tablet, 3:4
-      Size(320, 800), // absichtlich extrem schmal
-    ];
-
-    /// Aussenmasse der Figur auf einer Flaeche dieser Groesse.
-    Rect umriss(Size flaeche, {required bool seitlich}) =>
-        SilhouetteOverlay.ganzkoerperUmriss(flaeche, seitlich: seitlich)
-            .getBounds();
-
-    for (final (name, seitlich) in [('frontal', false), ('seitlich', true)]) {
-      test('$name: Seitenverhaeltnis haengt nicht an der Bildschirmgroesse',
-          () {
-        // Der eigentliche Fehler: x-Werte hingen an der Bildschirmbreite,
-        // y-Werte an der Bildschirmhoehe. Auf einem 20:9-Handy wurde die
-        // Figur damit fast doppelt so schlank wie auf einem 16:9-Geraet.
-        final verhaeltnisse = [
-          for (final flaeche in flaechen)
-            umriss(flaeche, seitlich: seitlich).width /
-                umriss(flaeche, seitlich: seitlich).height,
-        ];
-
-        for (final v in verhaeltnisse) {
-          expect(
-            v,
-            closeTo(verhaeltnisse.first, 0.001),
-            reason: 'Figur wird je nach Bildschirmformat anders gestaucht',
-          );
-        }
-      });
-
-      test('$name: die Figur hat menschliche Proportionen', () {
-        for (final flaeche in flaechen) {
-          final grenzen = umriss(flaeche, seitlich: seitlich);
-          final schlankheit = grenzen.height / grenzen.width;
-
-          // Von vorn ist ein stehender Mensch grob viermal so hoch wie breit,
-          // im Profil rund sechsmal (Bauch bis Gesaess, Ferse bis Zehen).
-          // Achtmal so hoch wie breit ist ein Strich, kein Mensch.
-          expect(
-            schlankheit,
-            seitlich ? inInclusiveRange(5, 7.5) : inInclusiveRange(3.5, 5),
-            reason: '$flaeche: 1:${schlankheit.toStringAsFixed(1)}',
-          );
-        }
-      });
-
-      test('$name: die Figur liegt vollstaendig im Bild', () {
-        for (final flaeche in flaechen) {
-          final grenzen = umriss(flaeche, seitlich: seitlich);
-
-          expect(grenzen.left, greaterThanOrEqualTo(0), reason: '$flaeche');
-          expect(grenzen.right, lessThanOrEqualTo(flaeche.width),
-              reason: '$flaeche');
-          expect(grenzen.top, greaterThanOrEqualTo(0), reason: '$flaeche');
-
-          // Unten bleibt die Bedienleiste frei: Ausloeser, Galerie und
-          // Kamerawechsel brauchen rund ein Siebtel der Bildhoehe. Genau da
-          // liefen die Beine der alten Figur hinein.
-          expect(
-            grenzen.bottom,
-            lessThanOrEqualTo(flaeche.height * 0.85),
-            reason: '$flaeche: Fuesse ragen in die Bedienleiste',
-          );
-        }
-      });
-
-      test('$name: die Figur passt in das, was der Guide akzeptiert', () {
-        // Wer sich genau nach der Silhouette ausrichtet, muss den
-        // Auto-Ausloeser ausloesen koennen. Die Kameravorschau fuellt den
-        // Bildschirm in der Hoehe vollstaendig aus, deshalb ist der Anteil
-        // an der Bildhoehe direkt vergleichbar.
-        for (final flaeche in flaechen) {
-          final anteil = umriss(flaeche, seitlich: seitlich).height /
-              flaeche.height;
-
-          // Und zwar mit Abstand zu beiden Raendern: Die alte Figur fuellte
-          // 89 % der Bildhoehe, die Obergrenze liegt bei 94 %. Wer sich
-          // danach ausrichtete, stand am Rand des Erlaubten, und jedes
-          // Zittern der Posenerkennung kippte die Bewertung auf „zu nah".
-          const spanne = LiveKoerperGuide.maxHoehe - LiveKoerperGuide.minHoehe;
-          expect(
-            anteil,
-            inInclusiveRange(
-              LiveKoerperGuide.minHoehe + spanne * 0.25,
-              LiveKoerperGuide.maxHoehe - spanne * 0.25,
-            ),
-            reason: '$flaeche: Silhouette zielt auf den Rand dessen, was der '
-                'Guide akzeptiert',
-          );
-        }
-      });
-    }
-  });
-
   group('Der Auto-Ausloeser spricht bei den Outfit-Fotos anders', () {
-    test('die Erklaerung nennt dort keinen Umriss', () {
-      // Die Ganzkoerperfotos haben eine Silhouette, in die man sich stellt.
-      // Die Outfit-Fotos haben keine – „stell dich in den Umriss" schickte
-      // den Nutzer dort nach etwas suchen, was nicht da ist.
+    test('beide Erklaerungen nennen keinen Umriss', () {
+      // Es gibt keinen mehr (DECISIONS 74). Die Texte bleiben trotzdem zwei:
+      // Beim Outfit steht dazu, was passiert, wenn es ausgelegt ist.
       final koerper =
           AufnahmeTyp.figurGanzkoerperFrontal.autoHinweis(texte);
       final outfit = AufnahmeTyp.stilOutfitEins.autoHinweis(texte);
 
-      expect(koerper, contains('Umriss'));
+      // Seit DECISIONS 74 gibt es bei beiden keinen Umriss mehr.
+      expect(koerper, isNot(contains('Umriss')));
       expect(outfit, isNot(contains('Umriss')));
       expect(outfit, isNot(equals(koerper)));
     });
