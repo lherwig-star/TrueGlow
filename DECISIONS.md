@@ -3441,6 +3441,46 @@ vorher schon; nur wusste das niemand, der auf den Countdown wartete.
 aussehen soll — wer nie ein Ganzkörperfoto gemacht hat, bekommt jetzt nur
 noch einen Satz statt eines Bildes. Dafür eines, das man befolgen kann.
 
+## 75 · Alle Aufnahmen starten auf der Bildschirm-Seite
+
+**Erst die Aufklärung, weil sie sonst wieder aufleben würde:** Die beiden
+Aufträge „Rückkamera" (DECISIONS 71 und 73) beruhten auf einem
+**Begriffs-Dreher des Auftraggebers**. Gemeint war die ganze Zeit die Kamera
+auf der **Bildschirm-Seite** — die Selfie-Kamera —, genannt wurde sie
+„Rückkamera". Die App hat beide Male genau das gebaut, was bestellt war, und
+DECISIONS 73 hat es korrekt gemessen: `wuenscht back, nimmt back`. Die
+Aufträge waren falsch bestellt, nicht falsch gebaut. Die Spiegel-Vermutung
+aus DECISIONS 73 ist damit hinfällig.
+
+**Der wirkliche Anwendungsfall:** Handy aufstellen, davorstellen, sich
+selbst auf dem Bildschirm sehen, der Auto-Auslöser fotografiert. Kein
+Spiegel, keine zweite Person. Dafür braucht man die Linse auf derselben
+Seite wie das Bild — sonst weiß man nicht, ob man überhaupt drauf ist.
+
+### Was sich ändert
+
+Ganzkörper frontal, Ganzkörper seitlich und die drei Outfit-Fotos starten
+mit der **Frontkamera** — derselben wie das Gesichtsfoto. Damit startet
+**jede** Aufnahme dort, und das Feld `AufnahmeTyp.rueckkamera` hat keinen
+Träger mehr. Es fällt weg, statt auf `false` stehen zu bleiben: Ein Schalter,
+den nichts mehr umlegt, ist eine Einladung, ihn beim nächsten Mal falsch zu
+verstehen — und genau dieses Feld hat schon zweimal für eine falsche
+Voreinstellung gesorgt.
+
+Ein Test prüft das am Quelltext: Das Wort `rueckkamera` kommt in `lib/`
+nirgends mehr vor, und der Sucher startet mit `CameraLensDirection.front`.
+
+**Der Wechsel-Knopf bleibt** — für alle, die sich von jemandem fotografieren
+lassen. Und `waehleKamera` (DECISIONS 71) bleibt ebenfalls: Sie sucht jetzt
+die vordere Linse heraus, aus demselben Grund wie vorher die hintere.
+
+**Die Protokollzeile aus DECISIONS 73 bleibt drin.** Sie hat die Frage in
+einem Satz beantwortet, die vorher zwei Pakete gekostet hat.
+
+**Preis:** Keiner, den man messen könnte — außer den zwei Paketen, die die
+Verwechslung gekostet hat. Der Eintrag steht hier, damit sie nicht ein
+drittes Mal aufkommt.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

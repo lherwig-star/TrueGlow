@@ -104,14 +104,12 @@ enum AufnahmeTyp {
     modul: AnalyseModul.figurPassform,
     overlay: Overlaytyp.keins,
     pruefung: Pruefprofil.ganzkoerper,
-    rueckkamera: true,
     autoAusloeser: true,
   ),
   figurGanzkoerperSeitlich(
     modul: AnalyseModul.figurPassform,
     overlay: Overlaytyp.keins,
     pruefung: Pruefprofil.ganzkoerper,
-    rueckkamera: true,
     autoAusloeser: true,
   ),
 
@@ -120,21 +118,18 @@ enum AufnahmeTyp {
     modul: AnalyseModul.stilKleiderschrank,
     overlay: Overlaytyp.keins,
     pruefung: Pruefprofil.frei,
-    rueckkamera: true,
     autoAusloeser: true,
   ),
   stilOutfitZwei(
     modul: AnalyseModul.stilKleiderschrank,
     overlay: Overlaytyp.keins,
     pruefung: Pruefprofil.frei,
-    rueckkamera: true,
     autoAusloeser: true,
   ),
   stilOutfitDrei(
     modul: AnalyseModul.stilKleiderschrank,
     overlay: Overlaytyp.keins,
     pruefung: Pruefprofil.frei,
-    rueckkamera: true,
     optional: true,
     autoAusloeser: true,
   );
@@ -143,7 +138,6 @@ enum AufnahmeTyp {
     required this.modul,
     required this.overlay,
     required this.pruefung,
-    this.rueckkamera = false,
     this.optional = false,
     this.autoAusloeser = false,
   });
@@ -157,14 +151,10 @@ enum AufnahmeTyp {
   final Overlaytyp overlay;
   final Pruefprofil pruefung;
 
-  /// Startet die Kamera mit der Rueckkamera – bei Ganzkoerper- und
-  /// Outfit-Aufnahmen fotografiert ohnehin jemand anderes oder ein Spiegel.
-  final bool rueckkamera;
-
   /// Darf uebersprungen werden, ohne den Flow zu blockieren.
   final bool optional;
 
-  /// Ob die App selbst ausloest, sobald jemand vollstaendig im Bild steht.
+  /// Ob die App selbst ausloest, sobald jemand weit genug im Bild ist.
   ///
   /// Bei jeder Aufnahme, fuer die man das Handy abstellt und zuruecktritt:
   /// den beiden Ganzkoerperfotos und den drei Outfit-Fotos. Von dort ist der

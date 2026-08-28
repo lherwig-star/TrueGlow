@@ -97,9 +97,13 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
 
   CameraController? _controller;
   List<CameraDescription> _kameras = const [];
-  late CameraLensDirection _richtung = widget.typ.rueckkamera
-      ? CameraLensDirection.back
-      : CameraLensDirection.front;
+  /// Jede Aufnahme startet auf der Bildschirm-Seite (DECISIONS 75).
+  ///
+  /// Auch die Ganzkoerper- und Outfit-Fotos: Man stellt das Handy auf,
+  /// stellt sich davor und sieht sich selbst – ohne Bildschirm waere nicht
+  /// zu erkennen, ob man ueberhaupt im Bild ist. Der Wechsel-Knopf bleibt
+  /// fuer alle, die sich fotografieren lassen.
+  CameraLensDirection _richtung = CameraLensDirection.front;
 
   LiveHinweis _hinweis = LiveHinweis.keinGesicht;
   _Kamerafehler? _fehler;

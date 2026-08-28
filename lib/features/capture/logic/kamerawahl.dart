@@ -1,23 +1,18 @@
 import 'package:camera/camera.dart';
 
-/// Welche der vorhandenen Kameras eine Aufnahme benutzt – DECISIONS 71.
+/// Welche der vorhandenen Kameras eine Aufnahme benutzt.
 ///
-/// Der Anlass kam vom Geraet: Bei den Ganzkoerper- und Outfit-Aufnahmen
-/// startete die Vorderkamera, obwohl `AufnahmeTyp.rueckkamera` dort seit
-/// jeher `true` steht. Man stellt das Handy ab, tritt drei Meter zurueck –
-/// und sieht sich selbst nicht, weil die Kamera in die falsche Richtung
-/// schaut.
+/// Alle Aufnahmen starten auf der Bildschirm-Seite (DECISIONS 75); diese
+/// Funktion sucht die passende Linse heraus. Sie stammt aus DECISIONS 71 und
+/// bleibt aus dem Grund, aus dem sie geschrieben wurde: Vorher stand die
+/// Auswahl als `firstWhere(..., orElse: () => erste)` im Kamerabildschirm,
+/// und diese Zeile hat einen stillen Ausgang – findet sie die gewuenschte
+/// Richtung nicht, nimmt sie die **erste** Kamera der Liste. Auf einem
+/// Geraet, das seine Linsen anders meldet, landet man damit garantiert im
+/// Gegenteil.
 ///
-/// Vorher stand die Auswahl als `firstWhere(..., orElse: () => erste)` im
-/// Kamerabildschirm. Diese Zeile hat einen stillen Ausgang: Findet sie die
-/// gewuenschte Richtung nicht, nimmt sie die **erste** Kamera der Liste –
-/// und die ist auf vielen Geraeten die Selfie-Kamera. Ein Geraet, das seine
-/// Rueckkamera nicht als `back` meldet (es gibt sie als `external`), landet
-/// damit genau im beobachteten Fehler.
-///
-/// Deshalb steht die Wahl jetzt hier, als gewoehnliche Funktion mit Tests:
-/// Am Geraet laesst sie sich nur mit dem Geraet pruefen, hier mit jeder
-/// denkbaren Kameraliste.
+/// Als gewoehnliche Funktion laesst sich das mit jeder denkbaren
+/// Kameraliste pruefen; am Geraet ginge es nur mit dem Geraet.
 CameraDescription? waehleKamera(
   List<CameraDescription> kameras,
   CameraLensDirection wunsch,

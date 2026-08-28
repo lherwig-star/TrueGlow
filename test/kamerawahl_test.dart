@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trueglow/features/capture/logic/kamerawahl.dart';
@@ -73,29 +75,47 @@ void main() {
     });
   });
 
-  group('Wer mit der Rueckkamera startet', () {
-    test('sind genau die Aufnahmen, fuer die man zuruecktritt', () {
-      // Ganzkoerper und Outfit: Dort steht das Handy und der Nutzer mehrere
-      // Meter davor. Bei den Portraits haelt man es in der Hand und schaut
-      // hinein – dort ist die vordere richtig.
-      final hinten =
-          AufnahmeTyp.values.where((t) => t.rueckkamera).toSet();
+  group('Alle Aufnahmen starten auf der Bildschirm-Seite', () {
+    test('keine Aufnahme bringt mehr eine eigene Richtung mit', () {
+      // Es gibt kein `rueckkamera` mehr (DECISIONS 75): Jede Aufnahme
+      // startet vorn, auch die Ganzkoerper- und Outfit-Fotos. Man stellt das
+      // Handy auf, stellt sich davor und sieht sich selbst.
+      //
+      // Geprueft am Quelltext, weil die Startrichtung im Kamerabildschirm
+      // privat ist – und weil genau dieses Feld zweimal fuer eine falsche
+      // Voreinstellung gesorgt hat.
+      final quellen = Directory('lib')
+          .listSync(recursive: true)
+          .whereType<File>()
+          .where((f) => f.path.endsWith('.dart'));
 
-      expect(hinten, {
-        AufnahmeTyp.figurGanzkoerperFrontal,
-        AufnahmeTyp.figurGanzkoerperSeitlich,
-        AufnahmeTyp.stilOutfitEins,
-        AufnahmeTyp.stilOutfitZwei,
-        AufnahmeTyp.stilOutfitDrei,
-      });
+      for (final datei in quellen) {
+        expect(
+          datei.readAsStringSync(),
+          isNot(contains('rueckkamera')),
+          reason: datei.path,
+        );
+      }
     });
 
-    test('und das ist dieselbe Gruppe, die selbst ausloest', () {
-      // Kein Zufall, sondern derselbe Grund: Wer drei Meter entfernt steht,
-      // erreicht weder den Ausloeser noch die richtige Linse.
-      for (final typ in AufnahmeTyp.values) {
-        expect(typ.rueckkamera, typ.autoAusloeser, reason: typ.name);
-      }
+    test('und der Sucher startet mit der vorderen Linse', () {
+      final quelle = File('lib/features/capture/ui/camera_screen.dart')
+          .readAsStringSync();
+
+      expect(
+        quelle,
+        contains('CameraLensDirection _richtung = CameraLensDirection.front'),
+      );
+    });
+
+    test('und die Wahl liefert dafuer die vordere Linse', () {
+      expect(
+        waehleKamera(
+          [_hinten, _vorn, _fremd],
+          CameraLensDirection.front,
+        )?.lensDirection,
+        CameraLensDirection.front,
+      );
     });
   });
 }
