@@ -227,17 +227,17 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
         return;
       }
 
-      if (beschreibung.lensDirection != _richtung) {
-        // Die eine Zeile, die den Fall aus DECISIONS 71 sichtbar macht: Sie
-        // nennt die gewuenschte Richtung und was das Geraet stattdessen
-        // anbietet. Ohne sie steht man vor einem Sucher, der in die falsche
-        // Richtung schaut, und weiss nicht, warum.
-        _protokoll(
-          'Kamera ${_richtung.name} nicht vorhanden, nehme '
-          '${beschreibung.lensDirection.name} '
-          '(vorhanden: ${_kameras.map((k) => k.lensDirection.name).join(', ')})',
-        );
-      }
+      // Immer protokolliert, nicht nur im Abweichungsfall (DECISIONS 73):
+      // Am 28.08.2026 stand der Verdacht im Raum, die Ganzkoerper-Aufnahme
+      // starte vorn. Die alte Zeile schwieg dazu – und Schweigen laesst sich
+      // nicht von "nicht passiert" unterscheiden. Diese Zeile beantwortet
+      // die Frage in einem Satz, ohne dass jemand raten muss.
+      _protokoll(
+        '${widget.typ.name}: wuenscht ${_richtung.name}, '
+        'nimmt ${beschreibung.lensDirection.name} '
+        '(${beschreibung.name}; vorhanden: '
+        '${_kameras.map((k) => '${k.name}/${k.lensDirection.name}').join(', ')})',
+      );
       _richtung = beschreibung.lensDirection;
 
       final controller = CameraController(

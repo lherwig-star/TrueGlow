@@ -3301,6 +3301,69 @@ beantwortet hatte, findet unter „Wofür soll dein Style funktionieren?"
 entweder „Arbeit / Nebenjob" oder gar nichts vor. Das ist gewollt: Die alte
 Antwort war für die neue Frage nur teilweise eine.
 
+## 73 · Die Rückkamera startete schon — der Beleg
+
+Der Verdacht aus dem letzten Paket lautete: Die Ganzkörper-Aufnahme startet
+weiterhin vorn, der `orElse`-Fix aus DECISIONS 71 hat nichts gebracht. Statt
+einer dritten Vermutung steht hier die Messung am angeschlossenen Gerät
+(Galaxy A52, 28.08.2026, 19:07–19:11).
+
+### Was das Gerät sagt
+
+Die App schreibt beim Kamerastart jetzt **immer** eine Zeile — nicht mehr
+nur bei einer Abweichung. Das ist die eigentliche Änderung dieses Commits:
+Die alte Zeile schwieg im Normalfall, und Schweigen lässt sich nicht von
+„nicht passiert" unterscheiden.
+
+```
+TrueGlow/Aufnahme: figurGanzkoerperFrontal: wuenscht back, nimmt back (0;
+  vorhanden: 0/back, 1/front, 2/back, 3/front)
+TrueGlow/Aufnahme: figurGanzkoerperSeitlich: wuenscht back, nimmt back (0; …)
+TrueGlow/Aufnahme: stilOutfitEins:           wuenscht back, nimmt back (0; …)
+TrueGlow/Aufnahme: basisFrontal:             wuenscht front, nimmt front (1; …)
+```
+
+Dazu unabhängig davon das Systemprotokoll von Android:
+
+```
+CameraManagerGlobal: Camera 0 facing CAMERA_FACING_BACK state now
+  CAMERA_STATE_OPEN for client com.trueglow.app
+```
+
+**Die Rückkamera wird angefordert und sie wird geöffnet.** Das Gerät bietet
+vier Linsen an (0/back, 1/front, 2/back, 3/front); die Auswahl nimmt 0/back.
+Die Gesichts-Aufnahme nimmt 1/front — auch das ist richtig, dort schaut man
+ins Display.
+
+Ein Bildschirmfoto des offenen Suchers („Ganzkörper seitlich") zeigt
+dasselbe: Bei flach auf dem Tisch liegendem Handy ist das Bild schwarz und
+der Hinweis lautet „Mehr Licht nötig" — die nach unten zeigende Rückkamera.
+Die Frontkamera hätte die Zimmerdecke gezeigt.
+
+### Es gibt also nichts zu reparieren — und einen wahrscheinlichen Grund
+
+Ein Ganzkörperfoto macht man allein **vor dem Spiegel**. Die Rückkamera
+zeigt dort das Spiegelbild — also einen selbst, formatfüllend, so wie es
+eine Selfie-Kamera täte. Auf dem Bildschirm ist beides nicht zu
+unterscheiden, und der naheliegende Schluss ist der falsche.
+
+Das ist keine Ausrede: Es ist die einzige Erklärung, die mit allen drei
+Messungen verträglich ist. Wer es prüfen will, hält die Hand vor die
+**Rückseite** des Handys — wird das Bild dunkel, läuft die richtige Linse
+(TESTPLAN 35).
+
+### Was `waehleKamera` aus DECISIONS 71 damit ist
+
+Nicht der Fix, für den es gedacht war, aber auch nicht falsch: Die Funktion
+verhindert weiterhin, dass ein Gerät ohne `back`-Linse in der Selfie-Kamera
+landet. Sie bleibt, samt Tests. Nur die Begründung in DECISIONS 71 stimmt so
+nicht — der `orElse`-Zweig griff auf diesem Gerät nie, weil es eine
+`back`-Linse gibt.
+
+**Preis:** Eine Protokollzeile bei jedem Kamerastart statt nur im
+Ausnahmefall. Ein paar Byte im Logcat gegen eine Frage, die zweimal einen
+halben Arbeitstag gekostet hat.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`
