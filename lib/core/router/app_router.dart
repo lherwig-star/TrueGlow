@@ -16,6 +16,7 @@ import '../../features/capture/models/aufnahme_typ.dart';
 import '../../features/capture/ui/camera_screen.dart';
 import '../../features/capture/ui/capture_flow_screen.dart';
 import '../../features/checkin/ui/checkin_screen.dart';
+import '../../features/ausprobieren/ui/ausprobieren_screen.dart';
 import '../../features/direction/ui/direction_screen.dart';
 import '../../features/modules/models/analyse_modul.dart';
 import '../../features/modules/ui/module_selection_screen.dart';
@@ -58,6 +59,7 @@ class Routes {
     modus,
     module,
     richtung,
+    ausprobieren,
     aufnahme,
     kamera,
     analysis,
@@ -69,6 +71,9 @@ class Routes {
   static const modus = '/modus';
   static const module = '/module';
   static const richtung = '/richtung';
+
+  /// „Das will ich ausprobieren" – der Schritt direkt nach der Richtung.
+  static const ausprobieren = '/ausprobieren';
   static const aufnahme = '/aufnahme';
 
   /// "Deine Richtung" nachtraeglich aendern – der Screen springt danach
@@ -213,6 +218,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => DirectionScreen(
           bearbeiten: state.uri.queryParameters['bearbeiten'] == '1',
         ),
+      ),
+      GoRoute(
+        path: Routes.ausprobieren,
+        builder: (context, state) => const AusprobierenScreen(),
       ),
       GoRoute(
         path: Routes.aufnahme,

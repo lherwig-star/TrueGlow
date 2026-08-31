@@ -3,6 +3,7 @@ import 'dart:io';
 import '../../../core/l10n/sprache.dart';
 import '../../../core/netz/wiederholung.dart';
 import '../../capture/models/aufnahme_typ.dart';
+import '../../ausprobieren/models/technik.dart';
 import '../../direction/models/richtung.dart';
 import '../../modules/models/analyse_modul.dart';
 import '../../modules/models/modul_eingaben.dart';
@@ -127,6 +128,11 @@ abstract interface class AnalysisService {
   /// vorhandenen Look verbessern oder einen neuen entwerfen. Die Fotos und
   /// die Module sind in beiden Faellen dieselben.
   ///
+  /// [techniken] sind die Techniken aus „Das will ich ausprobieren". Jede
+  /// gewaehlte muss im Report auftauchen – als Empfehlung mit kurzer
+  /// Anleitung und als Aufgabe im richtigen Takt (DECISIONS 79). Leer, wenn
+  /// der Schritt uebersprungen wurde.
+  ///
   /// [abbruch] stoppt Warten und Wiederholen, wenn der Nutzer aufgibt.
   ///
   /// Wirft bei Problemen eine [AnalysisException].
@@ -141,6 +147,7 @@ abstract interface class AnalysisService {
     required Sprache sprache,
     Richtung richtung = Richtung.leer,
     AnalyseModus modus = AnalyseModus.standard,
+    Set<Technik> techniken = const {},
     Abbruch? abbruch,
   });
 }

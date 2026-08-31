@@ -898,7 +898,7 @@ abstract class L {
   /// No description provided for @richtungWeiter.
   ///
   /// In de, this message translates to:
-  /// **'Weiter zur Aufnahme'**
+  /// **'Weiter'**
   String get richtungWeiter;
 
   /// No description provided for @richtungSpeichern.
@@ -948,6 +948,444 @@ abstract class L {
   /// In de, this message translates to:
   /// **'Überspringen'**
   String get flowUeberspringen;
+
+  /// No description provided for @ausprobierenTitel.
+  ///
+  /// In de, this message translates to:
+  /// **'Das will ich ausprobieren'**
+  String get ausprobierenTitel;
+
+  /// No description provided for @ausprobierenEyebrow.
+  ///
+  /// In de, this message translates to:
+  /// **'Optional'**
+  String get ausprobierenEyebrow;
+
+  /// No description provided for @ausprobierenUeberschrift.
+  ///
+  /// In de, this message translates to:
+  /// **'Lust, etwas Neues in deine Routine zu holen?'**
+  String get ausprobierenUeberschrift;
+
+  /// No description provided for @ausprobierenEinleitung.
+  ///
+  /// In de, this message translates to:
+  /// **'Wähl aus, was du schon immer mal machen wolltest – wir bauen es passend in deinen Plan ein. Du kannst den Schritt auch überspringen.'**
+  String get ausprobierenEinleitung;
+
+  /// No description provided for @ausprobierenChipsText.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrfachauswahl möglich.'**
+  String get ausprobierenChipsText;
+
+  /// No description provided for @ausprobierenWeiter.
+  ///
+  /// In de, this message translates to:
+  /// **'Weiter zur Aufnahme'**
+  String get ausprobierenWeiter;
+
+  /// Zaehler unter den Chips im Schritt „Das will ich ausprobieren“.
+  ///
+  /// In de, this message translates to:
+  /// **'{anzahl} ausgewählt'**
+  String ausprobierenGewaehlt(int anzahl);
+
+  /// No description provided for @ausprobierenNichts.
+  ///
+  /// In de, this message translates to:
+  /// **'Für deine Auswahl gibt es hier nichts anzubieten.'**
+  String get ausprobierenNichts;
+
+  /// No description provided for @ergebnisNeuFuerDich.
+  ///
+  /// In de, this message translates to:
+  /// **'Neu für dich'**
+  String get ergebnisNeuFuerDich;
+
+  /// Name einer Technik im Schritt „Das will ich ausprobieren“. Die Namen und ihre Einzeiler stehen in derselben Reihenfolge wie das Enum `Technik`.
+  ///
+  /// In de, this message translates to:
+  /// **'Kopfhautmassage'**
+  String get technikKopfhautmassage;
+
+  /// No description provided for @technikKopfhautmassageUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Zwei Minuten Fingerkuppen für die Durchblutung.'**
+  String get technikKopfhautmassageUnter;
+
+  /// No description provided for @technikRosmarinoel.
+  ///
+  /// In de, this message translates to:
+  /// **'Rosmarinöl für die Kopfhaut'**
+  String get technikRosmarinoel;
+
+  /// No description provided for @technikRosmarinoelUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Verdünnt einmassiert, über Wochen hinweg.'**
+  String get technikRosmarinoelUnter;
+
+  /// No description provided for @technikFoehnRundbuerste.
+  ///
+  /// In de, this message translates to:
+  /// **'Föhnen mit der Rundbürste'**
+  String get technikFoehnRundbuerste;
+
+  /// No description provided for @technikFoehnRundbuersteUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Volumen und Form, die den Tag über halten.'**
+  String get technikFoehnRundbuersteUnter;
+
+  /// No description provided for @technikHaaroelkur.
+  ///
+  /// In de, this message translates to:
+  /// **'Haar-Ölkur über Nacht'**
+  String get technikHaaroelkur;
+
+  /// No description provided for @technikHaaroelkurUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Öl in die Längen, morgens auswaschen.'**
+  String get technikHaaroelkurUnter;
+
+  /// No description provided for @technikSeidenkissen.
+  ///
+  /// In de, this message translates to:
+  /// **'Seidenkissenbezug'**
+  String get technikSeidenkissen;
+
+  /// No description provided for @technikSeidenkissenUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Weniger Reibung, weniger Bruch und Knick.'**
+  String get technikSeidenkissenUnter;
+
+  /// No description provided for @technikBartoelRoutine.
+  ///
+  /// In de, this message translates to:
+  /// **'Bartöl & Balsam'**
+  String get technikBartoelRoutine;
+
+  /// No description provided for @technikBartoelRoutineUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Öl für die Haut darunter, Balsam für die Form.'**
+  String get technikBartoelRoutineUnter;
+
+  /// No description provided for @technikBartbuerste.
+  ///
+  /// In de, this message translates to:
+  /// **'Bartbürste'**
+  String get technikBartbuerste;
+
+  /// No description provided for @technikBartbuersteUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Richtet die Haare und verteilt das Öl.'**
+  String get technikBartbuersteUnter;
+
+  /// No description provided for @technikGuaSha.
+  ///
+  /// In de, this message translates to:
+  /// **'Gua Sha'**
+  String get technikGuaSha;
+
+  /// No description provided for @technikGuaShaUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Stein am Gesicht entlang, immer nach außen.'**
+  String get technikGuaShaUnter;
+
+  /// No description provided for @technikGesichtsyoga.
+  ///
+  /// In de, this message translates to:
+  /// **'Gesichtsyoga'**
+  String get technikGesichtsyoga;
+
+  /// No description provided for @technikGesichtsyogaUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Gezielte Übungen für Wangen, Kiefer und Stirn.'**
+  String get technikGesichtsyogaUnter;
+
+  /// No description provided for @technikIceRolling.
+  ///
+  /// In de, this message translates to:
+  /// **'Ice Rolling am Morgen'**
+  String get technikIceRolling;
+
+  /// No description provided for @technikIceRollingUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Kälte gegen geschwollene Augen und Müdigkeit.'**
+  String get technikIceRollingUnter;
+
+  /// No description provided for @technikLymphmassage.
+  ///
+  /// In de, this message translates to:
+  /// **'Lymph-Gesichtsmassage'**
+  String get technikLymphmassage;
+
+  /// No description provided for @technikLymphmassageUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Sanft ausstreichen, von der Mitte zum Hals.'**
+  String get technikLymphmassageUnter;
+
+  /// No description provided for @technikSanftesPeeling.
+  ///
+  /// In de, this message translates to:
+  /// **'Sanftes chemisches Peeling'**
+  String get technikSanftesPeeling;
+
+  /// No description provided for @technikSanftesPeelingUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Milde Säure, langsam eingeschlichen.'**
+  String get technikSanftesPeelingUnter;
+
+  /// No description provided for @technikSheetMaske.
+  ///
+  /// In de, this message translates to:
+  /// **'Sheet-Masken-Ritual'**
+  String get technikSheetMaske;
+
+  /// No description provided for @technikSheetMaskeUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Zwanzig Minuten, ein fester Abend die Woche.'**
+  String get technikSheetMaskeUnter;
+
+  /// No description provided for @technikLippenpeeling.
+  ///
+  /// In de, this message translates to:
+  /// **'Lippen-Peeling'**
+  String get technikLippenpeeling;
+
+  /// No description provided for @technikLippenpeelingUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Sanft abtragen, danach pflegen.'**
+  String get technikLippenpeelingUnter;
+
+  /// No description provided for @technikNagelpflege.
+  ///
+  /// In de, this message translates to:
+  /// **'Nagelpflege-Routine'**
+  String get technikNagelpflege;
+
+  /// No description provided for @technikNagelpflegeUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Feilen, Nagelhaut, Öl – einmal die Woche.'**
+  String get technikNagelpflegeUnter;
+
+  /// No description provided for @technikAugenbrauenWimpern.
+  ///
+  /// In de, this message translates to:
+  /// **'Augenbrauen- & Wimpernpflege'**
+  String get technikAugenbrauenWimpern;
+
+  /// No description provided for @technikAugenbrauenWimpernUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Bürsten, Öl, Form halten statt nachziehen.'**
+  String get technikAugenbrauenWimpernUnter;
+
+  /// No description provided for @technikPinselhygiene.
+  ///
+  /// In de, this message translates to:
+  /// **'Pinsel sauber halten'**
+  String get technikPinselhygiene;
+
+  /// No description provided for @technikPinselhygieneUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle zwei Wochen waschen – die Haut dankt es.'**
+  String get technikPinselhygieneUnter;
+
+  /// No description provided for @technikLidschattenbasis.
+  ///
+  /// In de, this message translates to:
+  /// **'Grundierung für die Lider'**
+  String get technikLidschattenbasis;
+
+  /// No description provided for @technikLidschattenbasisUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Hält die Farbe und verhindert Absetzen in der Falte.'**
+  String get technikLidschattenbasisUnter;
+
+  /// No description provided for @technikRougePlatzierung.
+  ///
+  /// In de, this message translates to:
+  /// **'Rouge bewusst platzieren'**
+  String get technikRougePlatzierung;
+
+  /// No description provided for @technikRougePlatzierungUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Nach Gesichtsform statt nach Gewohnheit.'**
+  String get technikRougePlatzierungUnter;
+
+  /// No description provided for @technikOelziehen.
+  ///
+  /// In de, this message translates to:
+  /// **'Ölziehen'**
+  String get technikOelziehen;
+
+  /// No description provided for @technikOelziehenUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Morgens Öl im Mund bewegen, dann ausspucken.'**
+  String get technikOelziehenUnter;
+
+  /// No description provided for @technikZungenschaber.
+  ///
+  /// In de, this message translates to:
+  /// **'Zungenschaber'**
+  String get technikZungenschaber;
+
+  /// No description provided for @technikZungenschaberUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Ein Zug über die Zunge vor dem Putzen.'**
+  String get technikZungenschaberUnter;
+
+  /// No description provided for @technikLaechelntraining.
+  ///
+  /// In de, this message translates to:
+  /// **'Lächeln vor dem Spiegel üben'**
+  String get technikLaechelntraining;
+
+  /// No description provided for @technikLaechelntrainingUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Damit es auf Fotos nicht angestrengt wirkt.'**
+  String get technikLaechelntrainingUnter;
+
+  /// No description provided for @technikAufhellung.
+  ///
+  /// In de, this message translates to:
+  /// **'Zähne aufhellen'**
+  String get technikAufhellung;
+
+  /// No description provided for @technikAufhellungUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Nur nach Rücksprache mit der Zahnarztpraxis.'**
+  String get technikAufhellungUnter;
+
+  /// No description provided for @technikChinTuck.
+  ///
+  /// In de, this message translates to:
+  /// **'Chin Tucks für den Nacken'**
+  String get technikChinTuck;
+
+  /// No description provided for @technikChinTuckUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Kinn zurückziehen, gegen den Handy-Nacken.'**
+  String get technikChinTuckUnter;
+
+  /// No description provided for @technikMobilityMinuten.
+  ///
+  /// In de, this message translates to:
+  /// **'Tägliche Mobility-Minuten'**
+  String get technikMobilityMinuten;
+
+  /// No description provided for @technikMobilityMinutenUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Fünf Minuten Beweglichkeit statt eines Programms.'**
+  String get technikMobilityMinutenUnter;
+
+  /// No description provided for @technikWandstand.
+  ///
+  /// In de, this message translates to:
+  /// **'Wandstand für die Haltung'**
+  String get technikWandstand;
+
+  /// No description provided for @technikWandstandUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Rücken an die Wand, zwei Minuten lang.'**
+  String get technikWandstandUnter;
+
+  /// No description provided for @technikKaltDuschen.
+  ///
+  /// In de, this message translates to:
+  /// **'Kalt abduschen'**
+  String get technikKaltDuschen;
+
+  /// No description provided for @technikKaltDuschenUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Die letzten dreißig Sekunden kalt.'**
+  String get technikKaltDuschenUnter;
+
+  /// No description provided for @technikSchlafhygiene.
+  ///
+  /// In de, this message translates to:
+  /// **'Schlafhygiene-Routine'**
+  String get technikSchlafhygiene;
+
+  /// No description provided for @technikSchlafhygieneUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Feste Zeiten, dunkles Zimmer, kein Bildschirm.'**
+  String get technikSchlafhygieneUnter;
+
+  /// No description provided for @technikKleiderschrankAudit.
+  ///
+  /// In de, this message translates to:
+  /// **'Kleiderschrank-Audit'**
+  String get technikKleiderschrankAudit;
+
+  /// No description provided for @technikKleiderschrankAuditUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Einmal alles durchgehen und ehrlich sortieren.'**
+  String get technikKleiderschrankAuditUnter;
+
+  /// No description provided for @technikCapsuleWardrobe.
+  ///
+  /// In de, this message translates to:
+  /// **'Capsule Wardrobe'**
+  String get technikCapsuleWardrobe;
+
+  /// No description provided for @technikCapsuleWardrobeUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Wenige Teile, die alle zueinander passen.'**
+  String get technikCapsuleWardrobeUnter;
+
+  /// No description provided for @technikSchuhpflege.
+  ///
+  /// In de, this message translates to:
+  /// **'Schuhpflege-Ritual'**
+  String get technikSchuhpflege;
+
+  /// No description provided for @technikSchuhpflegeUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Bürsten, pflegen, in Form bringen.'**
+  String get technikSchuhpflegeUnter;
+
+  /// No description provided for @technikAccessoireEinstieg.
+  ///
+  /// In de, this message translates to:
+  /// **'Das erste Accessoire'**
+  String get technikAccessoireEinstieg;
+
+  /// No description provided for @technikAccessoireEinstiegUnter.
+  ///
+  /// In de, this message translates to:
+  /// **'Ein Ring oder eine Kette, dezent angefangen.'**
+  String get technikAccessoireEinstiegUnter;
 
   /// No description provided for @flowAbbrechen.
   ///

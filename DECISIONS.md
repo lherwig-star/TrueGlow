@@ -3652,6 +3652,118 @@ in jedem Lauf), ein Secret weniger, eine Function weniger, zwei
 Firestore-Sammlungen weniger — und einen Bildschirm ohne die Wartezeit, bis
 die Reihe geladen hat.
 
+## 79 · „Das will ich ausprobieren"
+
+Ein optionaler Schritt zwischen „Deine Richtung" und der Aufnahme, in dem
+sich der Nutzer Techniken aussucht, die er schon immer mal machen wollte.
+
+**Der Befund:** Die Empfehlungen waren richtig und brav. Gesicht waschen,
+Zahnseide, Feuchtigkeitscreme. Nichts davon ist falsch, und genau das ist
+das Problem — es überrascht niemanden. Ein Report, den man einmal liest und
+danach kennt, wird kein zweites Mal geöffnet.
+
+Was fehlt, ist die zweite Hälfte: Techniken, von denen man schon gehört hat
+und die man nie richtig gemacht hat. Gua Sha. Gesichtsyoga.
+Kopfhautmassage. Ölziehen. Sie stehen in keinem Ratgeber-Aufmacher, aber
+jeder in der Zielgruppe hat sie schon irgendwo vorbeiziehen sehen.
+
+### Warum die Auswahl vor die Analyse gehört und nicht dahinter
+
+Der naheliegende Weg wäre gewesen, sie hinterher anzubieten: Report lesen,
+dann „das will ich auch noch". Dagegen sprechen zwei Dinge.
+
+Erstens kostet jede Neuberechnung Kontingent. Zehn Analysen im Monat sind
+das Budget; eine davon für „ich hätte gern noch Gua Sha dabei" auszugeben,
+ist teuer für das, was dabei herauskommt.
+
+Zweitens — und das ist der eigentliche Grund — soll die Technik nicht
+angehängt, sondern **eingebaut** werden. Wer Gua Sha wählt, bekommt keinen
+Zusatzabsatz am Ende, sondern eine Empfehlung im Haut-Kapitel, die auf sein
+Hautbild Bezug nimmt, und eine Aufgabe im richtigen Takt in der Tagesliste.
+Das geht nur, wenn das Modell die Wahl kennt, während es den Report
+schreibt.
+
+### Warum eine feste Liste und kein Freitext
+
+Für Wünsche in eigenen Worten gibt es das Feld bei „Deine Richtung", und es
+funktioniert. Hier geht es um etwas anderes: Was gewählt wird, geht als
+**Name** in den Prompt, und der Server hängt an jeden Namen zwei Dinge, die
+er nur zu etwas sagen kann, das er kennt — den fachlich richtigen Takt (Gua
+Sha nicht als tägliche Pflicht, Peeling höchstens ein- bis zweimal die
+Woche) und einen Satz zur Verträglichkeit.
+
+Ein Freitextfeld hätte das nicht geliefert. „Dermaroller" hineinzuschreiben
+wäre möglich gewesen, und das Modell hätte etwas dazu geschrieben.
+
+### Die Sicherheitsgrenze
+
+Nichts Invasives, nichts Medizinisches, nichts aus der Looksmaxxing-Ecke mit
+Verletzungsrisiko oder ohne Grundlage. Ausdrücklich **nicht** in der Liste:
+
+| Nicht dabei | Warum |
+|---|---|
+| Dermaroller, Microneedling zu Hause | Verletzt die Haut. Gehört in eine Praxis oder gar nicht. |
+| Rezeptpflichtige Wirkstoffe | Braucht eine ärztliche Verordnung, keine App. |
+| Mewing | Ohne belastbare Grundlage, und der Ton der Szene dahinter passt nicht zu dieser App. |
+| Kiefer-Kautraining, Mastic Gum | Kiefergelenk und Zähne, kein Kosmetikthema. |
+| Fasten- und Diät-Regime | Die App bewertet kein Gewicht. Ein Regime vorzuschlagen wäre das Gegenteil. |
+
+Ein Test hält diese Grenze fest: Er geht die Namen des Enums durch und
+schlägt an, wenn eines dieser Wörter darin auftaucht. Das fängt den Fall ab,
+dass jemand später „nur schnell" einen Eintrag ergänzt.
+
+Bleibt eine Technik trotzdem heikel — Aufhellung ist der Fall —, steht der
+Hinweis dabei. Bei den Zähnen ist es die Rücksprache mit der Zahnarztpraxis,
+beim Peeling das langsame Einschleichen und der Sonnenschutz danach. Der
+Hinweis steht auf dem Server und geht in den Prompt; er ist kein
+Kleingedrucktes, sondern Teil der Anleitung.
+
+### Was angeboten wird und was nicht
+
+Zwei Filter, beide aus demselben Grund wie bei den Modulen:
+
+- **Nur zu gewählten Kapiteln.** Gua Sha gehört ins Haut-Kapitel. Wer das
+  nicht bestellt hat, bekommt den Chip nicht — der Vorschlag hätte im
+  Report keinen Platz.
+- **Passend zur Ausrichtung.** Die Bartbürste gibt es im weiblichen Modus
+  nicht, die Nagelpflege-Routine steht im männlichen nicht zur Wahl. Bei
+  „divers" und „keine Angabe" steht alles zur Auswahl — dieselbe Regel wie
+  in `AnalyseModul.waehlbareFuer`.
+
+Der Server siebt beides ein zweites Mal aus. Nicht aus Misstrauen gegen den
+eigenen Bildschirm, sondern weil der Client grundsätzlich nicht
+vertrauenswürdig ist: Eine alte oder veränderte App darf keine Technik
+bestellen können, die es in ihrem Modus nicht gibt.
+
+### Die Auswahl gilt pro Analyse — und wird trotzdem gespeichert
+
+Das klingt widersprüchlich und ist es nicht. Mitgeschickt wird sie bei genau
+dem Lauf, bei dem sie auf dem Schirm stand; ein fertiger Report ändert sich
+nicht mehr, wenn danach jemand etwas anhakt. Gespeichert wird sie, damit der
+nächste Lauf nicht bei null anfängt — wer Gua Sha und Kopfhautmassage
+ausprobiert, will sie beim nächsten Mal meist wieder dabeihaben.
+
+Was inzwischen nicht mehr angeboten wird, fällt beim Öffnen des Schritts aus
+der gemerkten Auswahl. Sonst liefe eine Bartbürste als unsichtbarer Haken
+weiter, nachdem jemand die Ausrichtung umgestellt hat.
+
+### Das Raster
+
+Volle Breite, eine Form, untereinander — dasselbe Raster wie bei den
+Stilrichtungen (DECISIONS 61) und aus demselben Grund. „Gua Sha" und
+„Rosmarinöl für die Kopfhaut" nebeneinander in einem `Wrap` ergeben sofort
+das ausgefranste Bild, das dort abgeschafft wurde. Gegliedert wird nach
+Kapiteln: Zwanzig Zeilen am Stück sind eine Wand, und die Überschrift sagt
+zugleich, wo die Technik später im Report landet.
+
+**Preis:** Ein Schritt mehr im Flow. Er ist überspringbar, und zwar
+wirklich: Ohne einen einzigen Haken läuft die Analyse unverändert — die
+Tiefe der Empfehlungen hängt nicht an diesem Schritt, dafür gibt es die
+Prompt-Regel in DECISIONS 80. Der zweite Preis ist Pflegearbeit: Jede
+Technik steht an vier Stellen — Enum, zwei ARB-Dateien, Server-Tabelle. Das
+ist der Preis dafür, dass Name, Takt und Verträglichkeitshinweis
+zusammenbleiben.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

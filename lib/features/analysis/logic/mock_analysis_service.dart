@@ -3,6 +3,7 @@ import 'dart:io';
 import '../../../core/l10n/sprache.dart';
 import '../../../core/netz/wiederholung.dart';
 import '../../capture/models/aufnahme_typ.dart';
+import '../../ausprobieren/models/technik.dart';
 import '../../direction/models/richtung.dart';
 import '../../modules/models/analyse_modul.dart';
 import '../../modules/models/modul_eingaben.dart';
@@ -36,6 +37,9 @@ class MockAnalysisService implements AnalysisService {
     // Beispiele, eines je Modus. Ohne das waere der neue Look ohne
     // Kontingent nicht anzusehen.
     AnalyseModus modus = AnalyseModus.standard,
+    // Die Auswahl aus „Das will ich ausprobieren" wird entgegengenommen und
+    // hier noch nicht ausgewertet – die Beispielantwort ist fest hinterlegt.
+    Set<Technik> techniken = const {},
     Abbruch? abbruch,
   }) async {
     await Future<void>.delayed(AnalysisConfig.mockDauer);

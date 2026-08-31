@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:trueglow/core/l10n/sprache.dart';
 import 'package:trueglow/features/analysis/logic/analyse_anfrage.dart';
 import 'package:trueglow/features/analysis/models/analyse_modus.dart';
+import 'package:trueglow/features/ausprobieren/models/technik.dart';
 import 'package:trueglow/features/capture/models/aufnahme_typ.dart';
 import 'package:trueglow/features/direction/models/richtung.dart';
 import 'package:trueglow/features/modules/models/analyse_modul.dart';
@@ -76,6 +77,16 @@ void main() {
         freitext: 'Ich will im Bewerbungsgespräch souverän wirken.',
       ),
       modus: modus,
+      // Bewusst gemischt: zwei, die zu dieser Analyse passen, und zwei, die
+      // der Server aussieben muss – „nagelpflege" gibt es im maennlichen
+      // Modus nicht, „oelziehen" gehoert zu einem Kapitel, das hier gar
+      // nicht bestellt wurde.
+      techniken: const {
+        Technik.kopfhautmassage,
+        Technik.guaSha,
+        Technik.nagelpflege,
+        Technik.oelziehen,
+      },
     );
   }
 
@@ -130,6 +141,7 @@ void main() {
             'profil',
             'eingaben',
             'richtung',
+            'techniken',
             'bilder',
           },
           reason: fall.key,
@@ -156,6 +168,12 @@ void main() {
         ['streetwearLaessig', 'smartHochwertig'],
       );
       expect((daten['profil'] as Map)['alter'], 'a25bis34');
+      expect(daten['techniken'], [
+        'kopfhautmassage',
+        'guaSha',
+        'nagelpflege',
+        'oelziehen',
+      ]);
     });
 
     test('nichts Persoenliches faehrt mit, was der Prompt nicht braucht', () {

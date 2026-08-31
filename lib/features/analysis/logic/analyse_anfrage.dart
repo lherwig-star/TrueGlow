@@ -1,5 +1,6 @@
 import '../../../core/l10n/sprache.dart';
 import '../../capture/models/aufnahme_typ.dart';
+import '../../ausprobieren/models/technik.dart';
 import '../../direction/models/richtung.dart';
 import '../../modules/models/analyse_modul.dart';
 import '../../modules/models/modul_eingaben.dart';
@@ -16,6 +17,7 @@ import '../models/analyse_modus.dart';
 /// - den Analyse-Modus (verfeinern oder neuen Look entdecken),
 /// - Modulauswahl und Aufnahmetypen als stabile Namen,
 /// - die Antworten aus Onboarding, Modul-Fragebogen und Richtung,
+/// - die Namen der Techniken aus „Das will ich ausprobieren",
 /// - die Bilder als base64.
 ///
 /// Ausdruecklich **nicht** dabei: Dateipfade, Geraetekennungen, der
@@ -31,6 +33,7 @@ class AnalyseAnfrage {
     required Sprache sprache,
     Richtung richtung = Richtung.leer,
     AnalyseModus modus = AnalyseModus.standard,
+    Set<Technik> techniken = const {},
   }) {
     // Feste Reihenfolge, damit die Beschriftung im Prompt zu den angehaengten
     // Bildern passt.
@@ -61,6 +64,10 @@ class AnalyseAnfrage {
       },
       'eingaben': eingaben.toJson(),
       'richtung': richtung.toJson(),
+      // Nur die Namen. Was eine Technik heisst, wie oft sie sinnvoll ist
+      // und was zu ihrer Vertraeglichkeit gehoert, steht auf dem Server –
+      // aus dem Client kommt keine Zeile Prompt-Text.
+      'techniken': Technik.sortiert(techniken).map((t) => t.name).toList(),
       'bilder': [
         for (final typ in reihenfolge)
           {'typ': typ.name, 'daten': bilder[typ]},

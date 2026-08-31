@@ -9,6 +9,7 @@ import '../../../core/diagnose/diagnose_dienst.dart';
 import '../../../core/netz/wiederholung.dart';
 import '../../../core/storage/hive_service.dart';
 import '../../capture/logic/aufnahme_flow.dart';
+import '../../ausprobieren/logic/ausprobieren_controller.dart';
 import '../../consent/logic/einwilligung_controller.dart';
 import '../../capture/logic/capture_controller.dart';
 import '../../capture/models/aufnahme_typ.dart';
@@ -100,6 +101,11 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
     final modulZustand = _ref.read(moduleControllerProvider);
     final richtung = _ref.read(directionControllerProvider);
     final gewaehlteModule = module ?? modulZustand.module;
+    // Beim Erweitern und beim Neurechnen zaehlt dieselbe Auswahl: Sie
+    // beschreibt, was der Nutzer ausprobieren will, und das gilt auch fuer
+    // ein nachtraeglich ergaenztes Kapitel. Was nicht zu den Modulen dieses
+    // Laufs gehoert, siebt der Server aus.
+    final techniken = _ref.read(ausprobierenControllerProvider);
 
     // Beim Erweitern und beim Neurechnen zaehlt der Modus des bestehenden
     // Reports, nicht der, der gerade im Flow steht: Ein Kapitel, das in einen
@@ -153,6 +159,7 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
             sprache: _ref.read(aktiveSpracheProvider),
             richtung: richtung,
             modus: modus,
+            techniken: techniken,
             abbruch: abbruch,
           );
 

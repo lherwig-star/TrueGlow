@@ -16,9 +16,10 @@ import '../models/richtung.dart';
 /// Optionaler Schritt zwischen Modul-Auswahl und Aufnahme: Der Nutzer gibt
 /// der Analyse eigene Ziele mit.
 ///
-/// Zwei Betriebsarten: im Flow (Weiter fuehrt in die Aufnahme, oben rechts
-/// laesst sich der Schritt ueberspringen) und als nachtraegliche Bearbeitung
-/// aus dem Report heraus, die einfach wieder zurueckspringt.
+/// Zwei Betriebsarten: im Flow (Weiter fuehrt zum naechsten Schritt „Das
+/// will ich ausprobieren", oben rechts laesst sich die Richtung
+/// ueberspringen) und als nachtraegliche Bearbeitung aus dem Report heraus,
+/// die einfach wieder zurueckspringt.
 class DirectionScreen extends ConsumerStatefulWidget {
   const DirectionScreen({super.key, this.bearbeiten = false});
 
@@ -45,7 +46,7 @@ class _DirectionScreenState extends ConsumerState<DirectionScreen> {
       context.pop();
       return;
     }
-    context.push(Routes.aufnahme);
+    context.push(Routes.ausprobieren);
   }
 
   @override

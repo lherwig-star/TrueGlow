@@ -448,7 +448,7 @@ class LEn extends L {
       'This is not a chat: your text goes into the analysis once and otherwise stays on your device.';
 
   @override
-  String get richtungWeiter => 'On to the photos';
+  String get richtungWeiter => 'Continue';
 
   @override
   String get richtungSpeichern => 'Save direction';
@@ -475,6 +475,250 @@ class LEn extends L {
 
   @override
   String get flowUeberspringen => 'Skip';
+
+  @override
+  String get ausprobierenTitel => 'Things to try';
+
+  @override
+  String get ausprobierenEyebrow => 'Optional';
+
+  @override
+  String get ausprobierenUeberschrift =>
+      'Fancy adding something new to your routine?';
+
+  @override
+  String get ausprobierenEinleitung =>
+      'Pick what you have always meant to try — we will work it into your plan where it fits. You can skip this step too.';
+
+  @override
+  String get ausprobierenChipsText => 'Pick as many as you like.';
+
+  @override
+  String get ausprobierenWeiter => 'On to the photos';
+
+  @override
+  String ausprobierenGewaehlt(int anzahl) {
+    return '$anzahl selected';
+  }
+
+  @override
+  String get ausprobierenNichts =>
+      'There is nothing to offer here for your selection.';
+
+  @override
+  String get ergebnisNeuFuerDich => 'New for you';
+
+  @override
+  String get technikKopfhautmassage => 'Scalp massage';
+
+  @override
+  String get technikKopfhautmassageUnter =>
+      'Two minutes with your fingertips, for circulation.';
+
+  @override
+  String get technikRosmarinoel => 'Rosemary oil for the scalp';
+
+  @override
+  String get technikRosmarinoelUnter => 'Diluted, massaged in, over weeks.';
+
+  @override
+  String get technikFoehnRundbuerste => 'Blow-drying with a round brush';
+
+  @override
+  String get technikFoehnRundbuersteUnter =>
+      'Volume and shape that hold all day.';
+
+  @override
+  String get technikHaaroelkur => 'Overnight hair oil treatment';
+
+  @override
+  String get technikHaaroelkurUnter =>
+      'Oil into the lengths, washed out in the morning.';
+
+  @override
+  String get technikSeidenkissen => 'Silk pillowcase';
+
+  @override
+  String get technikSeidenkissenUnter =>
+      'Less friction, less breakage and fewer kinks.';
+
+  @override
+  String get technikBartoelRoutine => 'Beard oil & balm';
+
+  @override
+  String get technikBartoelRoutineUnter =>
+      'Oil for the skin underneath, balm for the shape.';
+
+  @override
+  String get technikBartbuerste => 'Beard brush';
+
+  @override
+  String get technikBartbuersteUnter => 'Trains the hairs and spreads the oil.';
+
+  @override
+  String get technikGuaSha => 'Gua sha';
+
+  @override
+  String get technikGuaShaUnter => 'A stone along the face, always outwards.';
+
+  @override
+  String get technikGesichtsyoga => 'Face yoga';
+
+  @override
+  String get technikGesichtsyogaUnter =>
+      'Targeted exercises for cheeks, jaw and forehead.';
+
+  @override
+  String get technikIceRolling => 'Ice rolling in the morning';
+
+  @override
+  String get technikIceRollingUnter =>
+      'Cold against puffy eyes and morning tiredness.';
+
+  @override
+  String get technikLymphmassage => 'Facial lymphatic massage';
+
+  @override
+  String get technikLymphmassageUnter =>
+      'Gentle strokes, from the centre down to the neck.';
+
+  @override
+  String get technikSanftesPeeling => 'Gentle chemical exfoliant';
+
+  @override
+  String get technikSanftesPeelingUnter => 'A mild acid, eased in slowly.';
+
+  @override
+  String get technikSheetMaske => 'Sheet mask ritual';
+
+  @override
+  String get technikSheetMaskeUnter =>
+      'Twenty minutes, one fixed evening a week.';
+
+  @override
+  String get technikLippenpeeling => 'Lip scrub';
+
+  @override
+  String get technikLippenpeelingUnter => 'Buff gently, then look after them.';
+
+  @override
+  String get technikNagelpflege => 'Nail care routine';
+
+  @override
+  String get technikNagelpflegeUnter => 'File, cuticles, oil — once a week.';
+
+  @override
+  String get technikAugenbrauenWimpern => 'Brow & lash care';
+
+  @override
+  String get technikAugenbrauenWimpernUnter =>
+      'Brush, oil, keep the shape instead of drawing it on.';
+
+  @override
+  String get technikPinselhygiene => 'Keep your brushes clean';
+
+  @override
+  String get technikPinselhygieneUnter =>
+      'Wash them every two weeks — your skin will thank you.';
+
+  @override
+  String get technikLidschattenbasis => 'Eyeshadow primer';
+
+  @override
+  String get technikLidschattenbasisUnter =>
+      'Holds the colour and stops it creasing.';
+
+  @override
+  String get technikRougePlatzierung => 'Place blush deliberately';
+
+  @override
+  String get technikRougePlatzierungUnter => 'By face shape, not by habit.';
+
+  @override
+  String get technikOelziehen => 'Oil pulling';
+
+  @override
+  String get technikOelziehenUnter =>
+      'Swish oil in the morning, then spit it out.';
+
+  @override
+  String get technikZungenschaber => 'Tongue scraper';
+
+  @override
+  String get technikZungenschaberUnter =>
+      'One pass over the tongue before brushing.';
+
+  @override
+  String get technikLaechelntraining => 'Practise smiling in the mirror';
+
+  @override
+  String get technikLaechelntrainingUnter =>
+      'So it doesn\'t come out forced in photos.';
+
+  @override
+  String get technikAufhellung => 'Teeth whitening';
+
+  @override
+  String get technikAufhellungUnter => 'Only after talking to your dentist.';
+
+  @override
+  String get technikChinTuck => 'Chin tucks for the neck';
+
+  @override
+  String get technikChinTuckUnter => 'Chin back, against tech neck.';
+
+  @override
+  String get technikMobilityMinuten => 'Daily mobility minutes';
+
+  @override
+  String get technikMobilityMinutenUnter =>
+      'Five minutes of mobility, not a whole programme.';
+
+  @override
+  String get technikWandstand => 'Wall stand for posture';
+
+  @override
+  String get technikWandstandUnter => 'Back to the wall, two minutes.';
+
+  @override
+  String get technikKaltDuschen => 'Finish your shower cold';
+
+  @override
+  String get technikKaltDuschenUnter => 'The last thirty seconds cold.';
+
+  @override
+  String get technikSchlafhygiene => 'Sleep hygiene routine';
+
+  @override
+  String get technikSchlafhygieneUnter => 'Fixed times, dark room, no screens.';
+
+  @override
+  String get technikKleiderschrankAudit => 'Wardrobe audit';
+
+  @override
+  String get technikKleiderschrankAuditUnter =>
+      'Go through everything once and sort it honestly.';
+
+  @override
+  String get technikCapsuleWardrobe => 'Capsule wardrobe';
+
+  @override
+  String get technikCapsuleWardrobeUnter =>
+      'Few pieces that all work together.';
+
+  @override
+  String get technikSchuhpflege => 'Shoe care ritual';
+
+  @override
+  String get technikSchuhpflegeUnter =>
+      'Brush, condition, get them back in shape.';
+
+  @override
+  String get technikAccessoireEinstieg => 'Your first accessory';
+
+  @override
+  String get technikAccessoireEinstiegUnter =>
+      'One ring or chain, started quietly.';
 
   @override
   String get flowAbbrechen => 'Stop here?';

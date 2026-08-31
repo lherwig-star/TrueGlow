@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import '../../capture/models/aufnahme_typ.dart';
+import '../../ausprobieren/models/technik.dart';
 import '../../direction/models/richtung.dart';
 import '../models/analyse_modus.dart';
 import '../../modules/models/analyse_modul.dart';
@@ -35,6 +36,7 @@ class FunctionsAnalysisService implements AnalysisService {
     required Sprache sprache,
     Richtung richtung = Richtung.leer,
     AnalyseModus modus = AnalyseModus.standard,
+    Set<Technik> techniken = const {},
     Abbruch? abbruch,
   }) async {
     if (fotos.isEmpty) {
@@ -62,6 +64,7 @@ class FunctionsAnalysisService implements AnalysisService {
         sprache: sprache,
         richtung: richtung,
         modus: modus,
+        techniken: techniken,
       ),
       abbruch: abbruch,
     );

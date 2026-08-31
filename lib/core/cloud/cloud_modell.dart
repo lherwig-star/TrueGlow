@@ -8,7 +8,7 @@ import '../storage/hive_service.dart';
 /// ```
 /// users/{uid}
 ///   daten/profil        Onboarding-Antworten und Einwilligungsnachweis
-///   daten/richtung      Persoenliche Richtung
+///   daten/richtung      Persoenliche Richtung und Ausprobier-Auswahl
 ///   daten/streak        Rekord und gefeierte Abzeichen
 ///   daten/module        Modulauswahl und Modul-Eingaben
 ///   daten/checkinPlan   Zeitplan und Markierungen der Check-ins
@@ -63,6 +63,13 @@ class CloudModell {
   static const String keyOnboarding = 'onboarding';
   static const String keyEinwilligungen = 'einwilligungen';
   static const String keyRichtung = 'richtung';
+
+  /// Die Techniken aus „Das will ich ausprobieren".
+  ///
+  /// Liegt beim Richtungs-Dokument und nicht bei den Modulen: Beides ist
+  /// eine Angabe darueber, was der Nutzer will, und beides wird vor der
+  /// Aufnahme im selben Zug erfragt.
+  static const String keyTechniken = 'techniken';
   static const String keyModule = 'analyseModule';
   static const String keyModulEingaben = 'modulEingaben';
   static const String keyAktuelleAnalyse = 'aktuelleAnalyseId';
@@ -117,6 +124,7 @@ class CloudModell {
           // beschreibt die Person, nicht einen Durchlauf.
           keyEinwilligungen => const CloudZiel(dokProfil, 'einwilligungen'),
           keyRichtung => const CloudZiel(dokRichtung, 'wert'),
+          keyTechniken => const CloudZiel(dokRichtung, 'techniken'),
           keyModule => const CloudZiel(dokModule, 'module'),
           keyModulEingaben => const CloudZiel(dokModule, 'eingaben'),
           keyAktuelleAnalyse => const CloudZiel(dokVerweise, 'analyseId'),
@@ -183,6 +191,8 @@ class CloudModell {
         const LokalesZiel(HiveService.boxEinstellungen, keyEinwilligungen),
       (dokRichtung, 'wert') =>
         const LokalesZiel(HiveService.boxEinstellungen, keyRichtung),
+      (dokRichtung, 'techniken') =>
+        const LokalesZiel(HiveService.boxEinstellungen, keyTechniken),
       (dokModule, 'module') =>
         const LokalesZiel(HiveService.boxEinstellungen, keyModule),
       (dokModule, 'eingaben') =>
