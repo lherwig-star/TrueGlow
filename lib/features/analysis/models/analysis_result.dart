@@ -172,12 +172,17 @@ class Kapitel {
     required this.einleitung,
     required this.sektionen,
     this.habits = const [],
+    this.kurzfazit = '',
   });
 
   final AnalyseModul modul;
 
   /// Kurzer Einstieg ins Kapitel, z. B. die Gesichtsform bei der Basis.
   final String einleitung;
+
+  /// Höchstens acht Wörter als vollständige Aussage. Leer bei Reports, die
+  /// vor DECISIONS 90 entstanden sind – dann greift [fazit].
+  final String kurzfazit;
 
   final List<Sektion> sektionen;
 
@@ -190,6 +195,27 @@ class Kapitel {
   String titel(L texte, Ausrichtung ausrichtung) =>
       modul.kapitel(texte, ausrichtung);
 
+  /// Die Kernaussage in höchstens acht Wörtern – was in der Übersicht unter
+  /// dem Bereichsnamen steht (DECISIONS 90).
+  ///
+  /// Bis dahin stand dort die auf zwei Zeilen gekürzte Einleitung, und die
+  /// endete mitten im Wort: „Dein Gesicht zeichnet sich durch eine ausgew…".
+  /// Ein angefangener Satz sagt weniger als gar nichts.
+  ///
+  /// Fehlt das Feld – in jedem Report, der vor dieser Änderung entstanden
+  /// ist –, springt die erste Empfehlung ein. Sie ist von sich aus ein ganzer
+  /// Satz und damit die bessere Rückfallebene als ein abgeschnittener Absatz.
+  String get fazit {
+    final eigen = kurzfazit.trim();
+    if (eigen.isNotEmpty) return eigen;
+    for (final sektion in sektionen) {
+      for (final empfehlung in sektion.empfehlungen) {
+        if (empfehlung.trim().isNotEmpty) return empfehlung.trim();
+      }
+    }
+    return '';
+  }
+
   int get anzahlEmpfehlungen =>
       sektionen.fold(0, (summe, s) => summe + s.empfehlungen.length);
 
@@ -198,6 +224,7 @@ class Kapitel {
   Map<String, dynamic> toJson() => {
         'modul': modul.name,
         'einleitung': einleitung,
+        if (kurzfazit.isNotEmpty) 'kurzfazit': kurzfazit,
         'sektionen': sektionen.map((s) => s.toJson()).toList(),
         'habits': habits,
       };
@@ -213,6 +240,7 @@ class Kapitel {
     return Kapitel(
       modul: modul,
       einleitung: _text(json['einleitung']),
+      kurzfazit: _text(json['kurzfazit']),
       sektionen: _liste(json['sektionen']).map(Sektion.fromJson).toList(),
       habits: _textListe(json['habits']),
     );

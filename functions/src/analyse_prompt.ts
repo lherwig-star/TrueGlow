@@ -165,6 +165,7 @@ Fließtext davor oder danach, keine Markdown-Codefences:
   "kapitel": [
     {
       "modul": "${gewaehlt[0]}",
+      "kurzfazit": "höchstens 8 Wörter, eine vollständige Aussage",
       "einleitung": "2-3 Sätze als Einstieg ins Kapitel",
       "habits": ["kurze, täglich abhakbare Aufgabe aus DIESEM Kapitel"],
       "sektionen": [
@@ -208,6 +209,14 @@ Vorgaben zum Inhalt:
   nicht übersetzen, nichts anderes. Das Wort dazu setzt die App.
 - "titel" ist Anzeigetext und steht deshalb in der Zielsprache, genau wie
   jedes andere Textfeld. ${AUSGABESPRACHE_KURZ[sprache]}
+- "kurzfazit": die Kernaussage des Kapitels in HÖCHSTENS 8 Wörtern. Es steht
+  in der Übersicht unter dem Bereichsnamen, wo nur eine Zeile Platz hat.
+  Deshalb: eine **vollständige Aussage**, kein angefangener Satz und kein
+  Anfang der Einleitung. Kein Punkt am Ende, keine Anrede, keine Frage.
+  So sieht es aus: "Kieferlinie betonen, Bart klar konturieren" oder
+  "Warmer Unterton – erdige Töne stehen dir".
+  So nicht: "Dein Gesicht zeichnet sich durch eine ausgewogene" – das ist
+  ein abgeschnittener Satz und keine Aussage.
 - "sektionen": ${entdecken ? 3 : 2} bis ${entdecken ? 5 : 4} pro Kapitel.
 - "empfehlungen": 2 bis 4 pro Sektion.
 ${neuVorgabe(daten.techniken)}

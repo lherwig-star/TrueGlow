@@ -4556,6 +4556,37 @@ Stufe größer. Der Inhalt ist unverändert, und dass der Vorspann über allem
 steht (DECISIONS 67), ist es auch – nur trägt das jetzt die Reihenfolge und
 nicht die Farbe.
 
+### Die Kacheln werden der Hauptdarsteller
+
+**Kein Loch mehr am Ende.** Bei ungerader Anzahl blieb rechts unten eine
+halbe Zeile leer – das sah aus, als fehlte dort etwas. Jetzt legt sich die
+letzte Kachel quer über die volle Breite: Symbol links, Text rechts. Der
+Layout-Test fährt dafür beide Fälle ab, sechs und sieben Bereiche, in beiden
+Sprachen und auf drei Breiten.
+
+**Und ganze Aussagen statt angerissener Sätze.** Unter dem Bereichsnamen
+stand die auf zwei Zeilen gekürzte Einleitung. Die endete mitten im Wort:
+„Dein Gesicht zeichnet sich durch eine ausgew…". Ein angefangener Satz sagt
+weniger als gar nichts – man liest ihn und weiß danach weniger, als hätte
+man ihn übersprungen.
+
+Der Prompt liefert deshalb je Kapitel ein neues Feld `kurzfazit`: höchstens
+acht Wörter, eine vollständige Aussage. „Kieferlinie betonen, Bart klar
+konturieren" statt eines Absatzanfangs. Beide Modi, beide Sprachen, Demo
+inklusive.
+
+**Mit Negativbeispiel im Prompt**, und das ist kein Zierrat: Ohne den Satz
+„So nicht: ‚Dein Gesicht zeichnet sich durch eine ausgewogene'" liefert das
+Modell genau das – den Anfang der Einleitung, nur kürzer.
+
+**Und eine Rückfallebene**, denn jeder Report, der vor heute entstanden ist,
+kennt das Feld nicht. Dann springt die **erste Empfehlung** ein. Sie ist von
+sich aus ein ganzer Satz und damit die bessere Wahl als ein abgeschnittener
+Absatz. Alte Reports sehen damit nicht kaputt aus, sondern nur etwas anders.
+
+Dazu etwas mehr Präsenz: größere Bereichsnamen, mehr Innenabstand, ein
+größeres Symbol. Der Kern der Seite soll auch der größte sein.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

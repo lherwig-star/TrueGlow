@@ -41,6 +41,7 @@ void main() {
           for (final modul in AnalyseModul.values)
             Kapitel(
               modul: modul,
+              kurzfazit: 'Kurzfazit zu ${modul.name}',
               einleitung:
                   'Einleitung zu ${modul.name} – zwei Zeilen, die den '
                   'Bereich in eigenen Worten zusammenfassen und dabei '
@@ -63,6 +64,19 @@ void main() {
         ),
       );
 
+  /// Derselbe Report mit einer bestimmten Zahl von Kapiteln.
+  AnalysisResult mitKapiteln(int anzahl) {
+    final voll = vollerReport();
+    return AnalysisResult(
+      id: voll.id,
+      erstelltAm: voll.erstelltAm,
+      gesamtbild: voll.gesamtbild,
+      richtung: voll.richtung,
+      kapitel: voll.kapitel.take(anzahl).toList(),
+      plan: voll.plan,
+    );
+  }
+
   Future<ProviderContainer> speichern(AnalysisResult ergebnis) async {
     final container = ProviderContainer(overrides: speicherOverrides());
     addTearDown(container.dispose);
@@ -74,112 +88,74 @@ void main() {
     for (final sprache in [const Locale('de'), const Locale('en')]) {
       for (final fall in {'schmal': 320.0, 'normal': 400.0, 'breit': 480.0}
           .entries) {
-        testWidgets(
-            'zwei je Zeile, gleich hoch – ${sprache.languageCode}, '
-            '${fall.key}', (tester) async {
-          tester.view.physicalSize = Size(fall.value, 3000);
-          tester.view.devicePixelRatio = 1.0;
-          addTearDown(tester.view.reset);
+        for (final anzahl in [6, 7]) {
+          testWidgets(
+              '$anzahl Bereiche \u2013 ${sprache.languageCode}, ${fall.key}',
+              (tester) async {
+            tester.view.physicalSize = Size(fall.value, 3000);
+            tester.view.devicePixelRatio = 1.0;
+            addTearDown(tester.view.reset);
 
-          final container = await speichern(vollerReport());
+            final ergebnis = mitKapiteln(anzahl);
+            final container = await speichern(ergebnis);
 
-          await tester.pumpWidget(
-            UncontrolledProviderScope(
-              container: container,
-              child: MaterialApp(
-                theme: AppTheme.dark,
-                locale: sprache,
-                localizationsDelegates: L.localizationsDelegates,
-                supportedLocales: L.supportedLocales,
-                home: const Scaffold(body: SizedBox.shrink()),
-              ),
-            ),
-          );
-
-          await tester.pumpWidget(
-            UncontrolledProviderScope(
-              container: container,
-              child: MaterialApp(
-                theme: AppTheme.dark,
-                locale: sprache,
-                localizationsDelegates: L.localizationsDelegates,
-                supportedLocales: L.supportedLocales,
-                home: Scaffold(
-                  body: SingleChildScrollView(
-                    padding: const EdgeInsets.all(AppTheme.gapM),
-                    child: KapitelRaster(ergebnis: vollerReport()),
+            await tester.pumpWidget(
+              UncontrolledProviderScope(
+                container: container,
+                child: MaterialApp(
+                  theme: AppTheme.dark,
+                  locale: sprache,
+                  localizationsDelegates: L.localizationsDelegates,
+                  supportedLocales: L.supportedLocales,
+                  home: Scaffold(
+                    body: SingleChildScrollView(
+                      padding: const EdgeInsets.all(AppTheme.gapM),
+                      child: KapitelRaster(ergebnis: ergebnis),
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-          await tester.pumpAndSettle();
-
-          final kacheln = tester
-              .widgetList<KapitelKachel>(find.byType(KapitelKachel))
-              .toList();
-          expect(kacheln.length, AnalyseModul.values.length);
-
-          final rechtecke = [
-            for (final kachel in kacheln)
-              tester.getRect(find.byWidget(kachel)),
-          ];
-
-          // Alle gleich breit – zwei Spalten, keine Ausreißer.
-          final breiten = rechtecke.map((r) => r.width.round()).toSet();
-          expect(breiten.length, 1, reason: 'Breiten: $breiten');
-
-          // Und je Zeile gleich hoch.
-          for (var i = 0; i + 1 < rechtecke.length; i += 2) {
-            expect(
-              rechtecke[i].height,
-              closeTo(rechtecke[i + 1].height, 0.5),
-              reason: 'Zeile ${i ~/ 2}',
             );
-          }
+            await tester.pumpAndSettle();
 
-          // Nichts läuft über den Rand hinaus.
-          for (final rechteck in rechtecke) {
-            expect(rechteck.left, greaterThanOrEqualTo(-0.5));
-            expect(rechteck.right, lessThanOrEqualTo(fall.value + 0.5));
-          }
-        });
+            final rechtecke = tester
+                .widgetList<KapitelKachel>(find.byType(KapitelKachel))
+                .map((k) => tester.getRect(find.byWidget(k)))
+                .toList();
+            expect(rechtecke.length, anzahl);
+
+            // Die Paare: alle gleich breit, je Zeile gleich hoch.
+            final paare = anzahl.isOdd
+                ? rechtecke.sublist(0, anzahl - 1)
+                : rechtecke;
+            final breiten = paare.map((r) => r.width.round()).toSet();
+            expect(breiten.length, 1, reason: 'Breiten: $breiten');
+
+            for (var i = 0; i + 1 < paare.length; i += 2) {
+              expect(
+                paare[i].height,
+                closeTo(paare[i + 1].height, 0.5),
+                reason: 'Zeile ${i ~/ 2}',
+              );
+            }
+
+            // Bei ungerader Anzahl liegt die letzte quer \u00fcber die volle
+            // Breite \u2013 kein Loch daneben (DECISIONS 90).
+            if (anzahl.isOdd) {
+              final letzte = rechtecke.last;
+              expect(letzte.width, greaterThan(paare.first.width * 1.8));
+              expect(letzte.height, lessThan(paare.first.height));
+            }
+
+            // Nichts l\u00e4uft \u00fcber den Rand hinaus.
+            for (final rechteck in rechtecke) {
+              expect(rechteck.left, greaterThanOrEqualTo(-0.5));
+              expect(rechteck.right, lessThanOrEqualTo(fall.value + 0.5));
+            }
+          });
+        }
       }
     }
-
-    testWidgets('bei ungerader Anzahl bleibt der Platz frei', (tester) async {
-      handyGroesse(tester, hoehe: 2000);
-
-      final ergebnis = vollerReport();
-      final ungerade = AnalysisResult(
-        id: '1',
-        erstelltAm: ergebnis.erstelltAm,
-        kapitel: ergebnis.kapitel.take(3).toList(),
-        plan: ergebnis.plan,
-      );
-      final container = await speichern(ungerade);
-
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: testHuelle(
-            Scaffold(
-              body: SingleChildScrollView(
-                child: KapitelRaster(ergebnis: ungerade),
-              ),
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      final breiten = tester
-          .widgetList<KapitelKachel>(find.byType(KapitelKachel))
-          .map((k) => tester.getSize(find.byWidget(k)).width.round())
-          .toSet();
-      // Die letzte Kachel wird nicht doppelt so breit.
-      expect(breiten.length, 1);
-    });
   });
 
   group('Auf der Kachel steht, was dahinter wartet', () {
@@ -203,11 +179,58 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.textContaining('Einleitung zu basis'), findsOneWidget);
+      // Eine ganze Aussage statt eines angerissenen Satzes (DECISIONS 90).
+      expect(find.text('Kurzfazit zu basis'), findsOneWidget);
+      expect(find.textContaining('Einleitung zu'), findsNothing);
       expect(
         find.text(texte.ergebnisKachelEmpfehlungen(2)),
         findsNWidgets(AnalyseModul.values.length),
       );
+    });
+
+    testWidgets('ohne kurzfazit springt die erste Empfehlung ein',
+        (tester) async {
+      // Aeltere Reports kennen das Feld nicht. Die erste Empfehlung ist von
+      // sich aus ein ganzer Satz – die bessere Rueckfallebene als ein
+      // abgeschnittener Absatz (DECISIONS 90).
+      handyGroesse(tester, hoehe: 1200);
+
+      final alt = AnalysisResult(
+        id: '1',
+        erstelltAm: DateTime(2026, 8, 31),
+        kapitel: const [
+          Kapitel(
+            modul: AnalyseModul.basis,
+            einleitung: 'Ein langer Einleitungstext, der mitten im Wort ab',
+            sektionen: [
+              Sektion(
+                titel: 'Frisur',
+                einschaetzung: 'x',
+                empfehlungen: ['Seiten kuerzer halten als oben.'],
+                produkte: [],
+              ),
+            ],
+          ),
+        ],
+        plan: const Plan(
+          sofort: [],
+          dreissigTage: [],
+          langfristig: [],
+          taeglicheHabits: [],
+        ),
+      );
+      final container = await speichern(alt);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: testHuelle(Scaffold(body: KapitelRaster(ergebnis: alt))),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Seiten kuerzer halten als oben.'), findsOneWidget);
+      expect(find.textContaining('Ein langer Einleitungstext'), findsNothing);
     });
 
     testWidgets('ein leeres Kapitel bekommt keine Kachel', (tester) async {

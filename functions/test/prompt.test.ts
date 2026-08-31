@@ -68,6 +68,28 @@ describe('Analyse-Prompt', () => {
     expect(prompt).toContain('gesundheitlich bedenkliche Ziele');
   });
 
+  it('verlangt je Kapitel ein kurzfazit von hoechstens acht Woertern', () => {
+    // DECISIONS 90: In der Übersicht stand die auf zwei Zeilen gekürzte
+    // Einleitung – und die endete mitten im Wort.
+    const prompt = analyse.systemPrompt(analyseDaten());
+
+    expect(prompt).toContain('"kurzfazit"');
+    expect(prompt).toContain('HÖCHSTENS 8 Wörtern');
+    // Das Negativbeispiel gehört dazu: Ohne es liefert das Modell den
+    // Anfang der Einleitung.
+    expect(prompt).toContain('vollständige Aussage');
+    expect(prompt).toContain('abgeschnittener Satz');
+  });
+
+  it('verlangt es in beiden Modi', () => {
+    for (const modus of ['verfeinern', 'entdecken'] as const) {
+      const prompt = analyse.systemPrompt(
+        analyseDaten(undefined, ['basis'], 'de', 'maennlich', modus),
+      );
+      expect(prompt, modus).toContain('"kurzfazit"');
+    }
+  });
+
   it('verlangt einen sichtbaren Bezug auf die gewaehlte Richtung', () => {
     // DECISIONS 87: Die Wahl floss in den Prompt ein, war im Report aber
     // nicht wiederzuerkennen – und was unsichtbar ist, fuehlt sich
