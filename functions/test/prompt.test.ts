@@ -29,6 +29,7 @@ function analyseDaten(
     figur: {},
     stil: { ziele: [], zwecke: [] },
     richtung,
+    techniken: [],
   };
 }
 
@@ -237,6 +238,7 @@ function checkinDaten(
     wirkung: [],
     plan: [{ modul: 'basis', habits: ['Haare stylen', 'Bart ölen'] }],
     richtung: { ziele: [], freitext: '' },
+    techniken: [],
     historie: [],
     mitFotos: false,
     ...ueberschreibung,

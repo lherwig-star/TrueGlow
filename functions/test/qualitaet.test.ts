@@ -27,6 +27,7 @@ function daten(freitext = ''): AnalysePromptDaten {
     figur: {},
     stil: { ziele: [], zwecke: [] },
     richtung: { ziele: [], freitext },
+    techniken: [],
   };
 }
 
@@ -138,6 +139,8 @@ describe('Flache Tagesaufgaben werden erkannt', () => {
         floskeln: ['Wasser trinken'],
         zielkapitelFehlt: false,
         doppelteNamen: [],
+        erfundeneMarken: [],
+        fehlendeTechniken: [],
       },
       { sprache: 'de' },
     );

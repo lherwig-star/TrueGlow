@@ -25,6 +25,7 @@ function daten(
     figur: {},
     stil: { ziele: [], zwecke: [] },
     richtung: { ziele: [], freitext: '' },
+    techniken: [],
   };
 }
 

@@ -480,6 +480,19 @@ class _SektionKarte extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Ganz oben, noch vor der Einschaetzung: Wer den Schritt
+          // „Das will ich ausprobieren" ausgefuellt hat, soll hier sehen,
+          // dass seine Wahl angekommen ist (DECISIONS 80).
+          if (sektion.zeigtNeu) ...[
+            Wrap(
+              spacing: AppTheme.gapXs,
+              runSpacing: AppTheme.gapXs,
+              children: [
+                for (final name in sektion.neu) _NeuPille(name),
+              ],
+            ),
+            const SizedBox(height: AppTheme.gapS),
+          ],
           if (sektion.einschaetzung.isNotEmpty)
             Text(
               sektion.einschaetzung,
@@ -498,6 +511,53 @@ class _SektionKarte extends StatelessWidget {
             const SizedBox(height: AppTheme.gapXs),
             for (final produkt in sektion.produkte) _ProduktZeile(produkt),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Die Marke „Neu für dich" an einer Sektion.
+///
+/// Traegt den Ton fuer Erreichtes – denselben wie das Gesamtbild oben und
+/// das Etikett im Verlauf. Das ist keine Wertung gegenueber den anderen
+/// Sektionen, sondern Wiedererkennung: Diese Farbe heisst in der ganzen App
+/// „hier ist etwas passiert".
+class _NeuPille extends StatelessWidget {
+  const _NeuPille(this.name);
+
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    final farben = context.farben;
+    final texte = context.texte;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: farben.erreichtFlaeche.withValues(alpha: 0.16),
+        border: Border.all(color: farben.erreichtFlaeche),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.auto_awesome, size: 13, color: farben.erreichtFlaeche),
+          const SizedBox(width: 6),
+          Text(
+            // „Neu für dich · Gua Sha" – erst wofuer die Marke steht, dann
+            // was gemeint ist. Der Name allein saehe aus wie eine
+            // Ueberschrift.
+            '${texte.ergebnisNeuFuerDich} · $name',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              // Nicht die Akzentfarbe: Kleinschrift darin kaeme auf dieser
+              // Flaeche nicht auf die noetigen 4,5:1.
+              color: farben.textPrimaer,
+            ),
+          ),
         ],
       ),
     );

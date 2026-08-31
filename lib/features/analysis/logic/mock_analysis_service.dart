@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
+
 import '../../../core/l10n/sprache.dart';
+import '../../../core/l10n/texte.dart';
 import '../../../core/netz/wiederholung.dart';
 import '../../capture/models/aufnahme_typ.dart';
 import '../../ausprobieren/models/technik.dart';
@@ -37,8 +40,10 @@ class MockAnalysisService implements AnalysisService {
     // Beispiele, eines je Modus. Ohne das waere der neue Look ohne
     // Kontingent nicht anzusehen.
     AnalyseModus modus = AnalyseModus.standard,
-    // Die Auswahl aus „Das will ich ausprobieren" wird entgegengenommen und
-    // hier noch nicht ausgewertet – die Beispielantwort ist fest hinterlegt.
+    // Und die Auswahl aus „Das will ich ausprobieren" wirkt ebenfalls: Sie
+    // wird in die hinterlegte Antwort eingesetzt (siehe [mitTechniken]).
+    // Ohne das liesse sich der ganze Schritt nur mit echtem Kontingent
+    // ansehen – und genau dafuer gibt es den Demo-Modus.
     Set<Technik> techniken = const {},
     Abbruch? abbruch,
   }) async {
@@ -51,12 +56,87 @@ class MockAnalysisService implements AnalysisService {
     }
 
     return AnalysisResult.vonApi(
-      json,
+      mitTechniken(json, techniken),
       id: DateTime.now().microsecondsSinceEpoch.toString(),
       erstelltAm: DateTime.now(),
       richtung: richtung,
       modus: modus,
     );
+  }
+
+  /// Setzt die gewaehlten Techniken in die hinterlegte Antwort ein.
+  ///
+  /// Was ein echtes Modell tun soll, macht hier eine Schleife: je Technik
+  /// eine Empfehlung mit Anleitung in der ersten Sektion ihres Kapitels, die
+  /// Marke „Neu für dich" daneben und eine Aufgabe in der Tagesliste. Ohne
+  /// das waere der ganze Schritt „Das will ich ausprobieren" nur mit echtem
+  /// Kontingent anzusehen.
+  ///
+  /// **Was der Demo-Modus damit nicht beweist:** dass ein echtes Modell die
+  /// Technik wirklich mit den Fotos verbindet. Das entscheidet der Prompt
+  /// (DECISIONS 80), und das braucht einen Lauf gegen den Server.
+  ///
+  /// Der Takt wechselt bewusst ab: Die erste Technik bekommt eine
+  /// Wochenaufgabe, die naechste eine Tagesaufgabe, dann wieder eine
+  /// Wochenaufgabe. So sind im Demo-Modus beide Formen zu sehen und beide
+  /// Abschnitte der Tagesliste belegt. Welchen Takt eine Technik wirklich
+  /// hat, steht in der Tabelle auf dem Server und nicht hier — der
+  /// Demo-Modus zeigt die Form, nicht die Fachaussage.
+  static Map<String, dynamic> mitTechniken(
+    Map<String, dynamic> json,
+    Set<Technik> techniken,
+  ) {
+    if (techniken.isEmpty) return json;
+
+    // Die Beispielantwort liegt nur auf Deutsch vor – die Namen deshalb
+    // auch.
+    final texte = lookupL(const Locale('de'));
+    final kapitel = [
+      for (final eintrag in (json['kapitel'] as List? ?? const []))
+        if (eintrag is Map) Map<String, dynamic>.from(eintrag),
+    ];
+
+    var lauf = 0;
+    for (final technik in Technik.sortiert(techniken)) {
+      final ziel = kapitel
+          .where((k) => k['modul'] == technik.modul.name)
+          .firstOrNull;
+      // Eine Technik ohne ihr Kapitel kann es regulaer nicht geben – der
+      // Bildschirm bietet sie dann gar nicht an. Sie hier stillschweigend
+      // zu ueberspringen ist trotzdem richtiger als ein Absturz im
+      // Demo-Modus.
+      if (ziel == null) continue;
+
+      final sektionen = [
+        for (final eintrag in (ziel['sektionen'] as List? ?? const []))
+          if (eintrag is Map) Map<String, dynamic>.from(eintrag),
+      ];
+      if (sektionen.isEmpty) continue;
+
+      final name = technik.label(texte);
+      final erste = sektionen.first;
+      erste['empfehlungen'] = [
+        ...(erste['empfehlungen'] as List? ?? const []),
+        '$name: ${technik.untertext(texte)} Fang klein an und bleib dabei – '
+            'die Wirkung kommt über Wochen, nicht über einen Abend.',
+      ];
+      erste['neu'] = [
+        ...(erste['neu'] as List? ?? const []),
+        name,
+      ];
+      ziel['sektionen'] = sektionen;
+
+      final woechentlich = lauf.isEven;
+      ziel['habits'] = [
+        ...(ziel['habits'] as List? ?? const []),
+        woechentlich
+            ? 'Zweimal die Woche: $name einbauen'
+            : 'Nach dem Duschen: $name',
+      ];
+      lauf += 1;
+    }
+
+    return {...json, 'kapitel': kapitel};
   }
 
   /// Baut die Beispielantwort aus den Kapiteln der gewaehlten Module.

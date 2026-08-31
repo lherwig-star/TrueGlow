@@ -4,6 +4,7 @@ import {
   istModul,
   moduleFuer,
   normalisiereRichtungsziele,
+  technikenFuer,
   type Modul,
 } from './labels';
 import { leseSprache } from './sprache';
@@ -83,6 +84,11 @@ export function leseAnalyse(roh: unknown): AnalyseEingang {
       figur: leseFigur(daten.eingaben),
       stil: leseStil(daten.eingaben),
       richtung: leseRichtung(daten.richtung),
+      // Gefiltert wie auf dem Bildschirm: nur Techniken zu den bestellten
+      // Kapiteln und nur solche, die es in dieser Ausrichtung gibt. Ein
+      // alter oder veraenderter Client kommt damit nicht weiter als die
+      // App selbst (DECISIONS 79).
+      techniken: technikenFuer(daten.techniken, module, ausrichtung),
     },
     bildTypen: typen,
     bilder,

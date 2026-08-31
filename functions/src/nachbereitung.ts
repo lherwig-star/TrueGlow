@@ -1,5 +1,10 @@
 import { type Ausrichtung } from './ausrichtung';
-import { ZIELKAPITEL, type Modul } from './labels';
+import {
+  techniklabels,
+  ZIELKAPITEL,
+  type Modul,
+  type Techniknamen,
+} from './labels';
 import { SPRACHEN, type Sprache } from './sprache';
 
 /**
@@ -16,8 +21,9 @@ import { SPRACHEN, type Sprache } from './sprache';
  *     und im weiblichen Modus alles, was von Bart oder Rasur handelt.
  *  2. **Gemeldet** wird, wenn der Report offenbar in der falschen Sprache
  *     zurueckkommt, wenn das Zielkapitel fehlt, obwohl der Nutzer etwas
- *     geschrieben hat, und wenn Tagesaufgaben zurueckkommen, die auch ohne
- *     die Fotos dagestanden haetten. Aussieben laesst sich nichts davon; ein
+ *     geschrieben hat, wenn eine ausdruecklich gewaehlte Technik nirgends
+ *     auftaucht, und wenn Tagesaufgaben zurueckkommen, die auch ohne die
+ *     Fotos dagestanden haetten. Aussieben laesst sich nichts davon; ein
  *     Protokolleintrag sorgt wenigstens dafuer, dass es auffaellt, statt
  *     still beim Nutzer zu landen.
  */
@@ -79,6 +85,10 @@ export interface Nachbereitet {
   falscheSprache?: Sprache;
   /** Namen, die in einem Kapitel stehen und schon im Gesamtbild vorkommen. */
   doppelteNamen: string[];
+  /** Eintraege in "neu", die keine gewaehlte Technik sind. Entfernt. */
+  erfundeneMarken: string[];
+  /** Gewaehlte Techniken, die im Report nirgends markiert sind. */
+  fehlendeTechniken: string[];
 }
 
 export function nachbereiten(
@@ -88,6 +98,7 @@ export function nachbereiten(
     ausrichtung: Ausrichtung;
     module: Modul[];
     richtung?: { freitext: string };
+    techniken?: readonly Techniknamen[];
   },
 ): Nachbereitet {
   // Das Zielkapitel steht in keiner Modulauswahl – es haengt am Freitext.
@@ -143,7 +154,53 @@ export function nachbereiten(
     kapitel.push(k);
   }
 
-  const ergebnis: Record<string, unknown> = { ...roh, kapitel };
+  // Die Marken zum Schluss und in einem eigenen Durchgang: So werden sie in
+  // jedem Zweig gleich behandelt – auch in dem, der oben schon Sektionen
+  // entfernt hat.
+  const gewaehlt = techniklabels(vorgabe.techniken ?? [], vorgabe.sprache);
+  const bekannteMarken = new Map(
+    gewaehlt.map((label) => [schluessel(label), label]),
+  );
+  const erfundeneMarken: string[] = [];
+  const markiert = new Set<string>();
+
+  const gesaeubert = kapitel.map((eintrag) => {
+    const k = objekt(eintrag);
+    const sektionen = liste(k.sektionen).map((roheSektion) => {
+      const sektion = { ...objekt(roheSektion) };
+      if (sektion.neu === undefined) return sektion;
+
+      const behalten: string[] = [];
+      for (const gegeben of liste(sektion.neu)) {
+        // Auf die kanonische Schreibweise zurueckgefuehrt: Das Modell
+        // schreibt „gua sha" statt „Gua Sha", und die App erkennt den Namen
+        // sonst nicht wieder.
+        const treffer =
+          typeof gegeben === 'string'
+            ? bekannteMarken.get(schluessel(gegeben))
+            : undefined;
+        if (treffer === undefined) {
+          // Eine Marke, die keine gewaehlte Technik ist, waere im Report
+          // eine Behauptung: „Neu fuer dich" an etwas, das der Nutzer nie
+          // angetippt hat. Sie faellt weg.
+          erfundeneMarken.push(kurz(gegeben));
+          continue;
+        }
+        if (!behalten.includes(treffer)) behalten.push(treffer);
+        markiert.add(treffer);
+      }
+
+      if (behalten.length === 0) {
+        delete sektion.neu;
+        return sektion;
+      }
+      sektion.neu = behalten;
+      return sektion;
+    });
+    return { ...k, sektionen };
+  });
+
+  const ergebnis: Record<string, unknown> = { ...roh, kapitel: gesaeubert };
 
   if (ohneBart && ergebnis.plan !== undefined) {
     ergebnis.plan = planOhneBart(ergebnis.plan);
@@ -159,6 +216,8 @@ export function nachbereiten(
     entfernteSektionen,
     entfernteHabits,
     doppelteNamen,
+    erfundeneMarken,
+    fehlendeTechniken: gewaehlt.filter((label) => !markiert.has(label)),
     floskeln: alleHabits(kapitel).filter(istFloskel),
     zielkapitelFehlt:
       mitZielkapitel &&
@@ -203,6 +262,25 @@ export function melde(befund: Nachbereitet, vorgabe: { sprache: Sprache }): void
     console.warn(
       'Nachbereitung: Diese Namen stehen im Gesamtbild UND im Kapitel – das ' +
         `Gesamtbild soll sie nicht nennen (${befund.doppelteNamen.join(', ')})`,
+    );
+  }
+  if (befund.erfundeneMarken.length > 0) {
+    // Nur gemeldet, weil das Aussieben schon passiert ist: Die Sektion zeigt
+    // dann keine Marke, der Report bleibt vollstaendig.
+    console.warn(
+      'Nachbereitung: erfundene „Neu fuer dich"-Marken entfernt ' +
+        `(${befund.erfundeneMarken.join(' | ')})`,
+    );
+  }
+  if (befund.fehlendeTechniken.length > 0) {
+    // Das ist der Fund, der wirklich beim Nutzer ankommt: Er hat eine
+    // Technik ausdruecklich angetippt und findet sie im Report nicht
+    // wieder. Reparieren laesst sich das nicht – eine Empfehlung, die das
+    // Modell nicht geschrieben hat, koennen wir nicht nachtragen
+    // (DECISIONS 80).
+    console.warn(
+      'Nachbereitung: gewaehlte Techniken fehlen im Report ' +
+        `(${befund.fehlendeTechniken.join(', ')})`,
     );
   }
   if (befund.floskeln.length > 0) {
@@ -303,6 +381,17 @@ function alleHabits(kapitel: unknown[]): string[] {
   return kapitel.flatMap((k) =>
     liste(objekt(k).habits).filter((h): h is string => typeof h === 'string'),
   );
+}
+
+/** Fuer den Vergleich von Namen: klein, ohne doppelte Leerzeichen. */
+function schluessel(text: string): string {
+  return text.toLowerCase().replace(/\s+/g, ' ').trim();
+}
+
+/** Fuer die Logzeile: lang genug zum Erkennen, kurz genug fuer eine Zeile. */
+function kurz(wert: unknown): string {
+  const text = typeof wert === 'string' ? wert : JSON.stringify(wert);
+  return text.length > 60 ? `${text.slice(0, 57)}...` : text;
 }
 
 function liste(roh: unknown): unknown[] {

@@ -26,6 +26,7 @@ function daten(sprache: Sprache, freitext = ''): AnalysePromptDaten {
     figur: {},
     stil: { ziele: [], zwecke: [] },
     richtung: { ziele: [], freitext },
+    techniken: [],
   };
 }
 

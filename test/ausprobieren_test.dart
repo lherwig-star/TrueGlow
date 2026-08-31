@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trueglow/core/cloud/cloud_modell.dart';
@@ -8,15 +7,21 @@ import 'package:trueglow/core/storage/hive_service.dart';
 import 'package:trueglow/core/theme/app_theme.dart';
 import 'package:trueglow/core/widgets/auswahl_chip.dart';
 import 'package:trueglow/features/analysis/logic/analyse_anfrage.dart';
+import 'package:trueglow/features/analysis/logic/json_extractor.dart';
+import 'package:trueglow/features/analysis/logic/mock_analysis_service.dart';
+import 'package:trueglow/features/analysis/models/analysis_result.dart';
 import 'package:trueglow/features/ausprobieren/logic/ausprobieren_controller.dart';
 import 'package:trueglow/features/ausprobieren/models/technik.dart';
 import 'package:trueglow/features/ausprobieren/ui/ausprobieren_screen.dart';
 import 'package:trueglow/features/capture/models/aufnahme_typ.dart';
+import 'package:trueglow/features/history/logic/analysis_repository.dart';
 import 'package:trueglow/features/modules/logic/module_controller.dart';
 import 'package:trueglow/features/modules/models/analyse_modul.dart';
 import 'package:trueglow/features/modules/models/modul_eingaben.dart';
 import 'package:trueglow/features/onboarding/logic/onboarding_controller.dart';
 import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
+import 'package:trueglow/features/plan/logic/tagesabschnitt.dart';
+import 'package:trueglow/features/result/ui/result_screen.dart';
 import 'package:trueglow/main.dart';
 
 import 'hilfen.dart';
@@ -274,6 +279,180 @@ void main() {
       );
 
       expect(anfrage['techniken'], isEmpty);
+    });
+  });
+
+  group('Die Wirkung im Report', () {
+    test('eine gewaehlte Technik wird zu Empfehlung, Marke und Aufgabe', () {
+      final json = JsonExtractor.extrahiere(
+        MockAnalysisService.antwortFuer({AnalyseModul.basis}),
+      )!;
+
+      final mit = MockAnalysisService.mitTechniken(
+        json,
+        {Technik.kopfhautmassage},
+      );
+      final ergebnis = AnalysisResult.vonApi(
+        mit,
+        id: '1',
+        erstelltAm: DateTime(2026, 8, 31),
+      );
+
+      final name = texte.technikKopfhautmassage;
+      final sektion = ergebnis.kapitel.first.sektionen.first;
+
+      expect(sektion.neu, [name]);
+      expect(sektion.zeigtNeu, isTrue);
+      expect(sektion.empfehlungen.any((e) => e.contains(name)), isTrue);
+      expect(ergebnis.alleHabits.any((h) => h.contains(name)), isTrue);
+    });
+
+    test('ohne Auswahl bleibt die Antwort unveraendert', () {
+      final json = JsonExtractor.extrahiere(
+        MockAnalysisService.antwortFuer({AnalyseModul.basis}),
+      )!;
+
+      expect(MockAnalysisService.mitTechniken(json, const {}), same(json));
+
+      final ergebnis = AnalysisResult.vonApi(
+        json,
+        id: '1',
+        erstelltAm: DateTime(2026, 8, 31),
+      );
+      expect(ergebnis.sektionen.every((s) => s.neu.isEmpty), isTrue);
+    });
+
+    test('die Marke ueberlebt den Weg durch die Speicherung', () {
+      const sektion = Sektion(
+        titel: 'Haut',
+        einschaetzung: 'Text.',
+        empfehlungen: ['Schritt'],
+        produkte: [],
+        neu: ['Gua Sha'],
+      );
+
+      expect(Sektion.fromJson(sektion.toJson()).neu, ['Gua Sha']);
+
+      // Ohne Marke steht das Feld gar nicht erst im Dokument.
+      const ohne = Sektion(
+        titel: 'Haut',
+        einschaetzung: '',
+        empfehlungen: [],
+        produkte: [],
+      );
+      expect(ohne.toJson().containsKey('neu'), isFalse);
+      expect(Sektion.fromJson(ohne.toJson()).neu, isEmpty);
+    });
+
+    testWidgets('der Report zeigt die Marke an der Sektion', (tester) async {
+      handyGroesse(tester, hoehe: 2200);
+
+      final analyse = AnalysisResult(
+        id: '1',
+        erstelltAm: DateTime(2026, 8, 31),
+        kapitel: const [
+          Kapitel(
+            modul: AnalyseModul.hautFarbtyp,
+            einleitung: 'Warmer Unterton.',
+            sektionen: [
+              Sektion(
+                titel: 'Haut',
+                einschaetzung: 'Ruhiges Hautbild, an den Wangen etwas trocken.',
+                empfehlungen: ['Gua Sha: mit Öl, immer nach außen.'],
+                produkte: [],
+                neu: ['Gua Sha'],
+              ),
+            ],
+          ),
+        ],
+        plan: const Plan(
+          sofort: ['Heute anfangen'],
+          dreissigTage: [],
+          langfristig: [],
+          taeglicheHabits: [],
+        ),
+      );
+
+      final container = ProviderContainer(overrides: speicherOverrides());
+      addTearDown(container.dispose);
+      await container.read(analysenProvider.notifier).speichern(analyse);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: testHuelle(const ResultScreen(analyseId: '1')),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('${texte.ergebnisNeuFuerDich} \u00b7 Gua Sha'),
+        findsOneWidget,
+      );
+    });
+  });
+
+  group('Eine Wochenaufgabe in der Tagesliste', () {
+    const ausloeser = [
+      ('Einmal die Woche', 'Once a week'),
+      ('Zweimal die Woche', 'Twice a week'),
+      ('Dreimal die Woche', 'Three times a week'),
+    ];
+
+    test('landet unter Bei Bedarf, nicht mitten im Tag', () {
+      for (final (de, en) in ausloeser) {
+        for (final wort in [de, en]) {
+          expect(
+            einordnen('$wort: Gua Sha einbauen').abschnitt,
+            Tagesabschnitt.beiBedarf,
+            reason: wort,
+          );
+        }
+      }
+    });
+
+    test('deutsche und englische Fassung landen gleich', () {
+      // Wer die App nach der Analyse umstellt, behaelt seine Aufgaben in der
+      // alten Sprache. Sie muessen trotzdem an derselben Stelle stehen.
+      for (final (de, en) in ausloeser) {
+        final links = einordnen('$de: X');
+        final rechts = einordnen('$en: X');
+
+        expect(rechts.abschnitt, links.abschnitt, reason: de);
+        expect(rechts.rang, links.rang, reason: de);
+      }
+    });
+
+    test('und stehen in fester Reihenfolge beieinander', () {
+      // Ein unbekannter Ausloeser bekommt Rang 0; die drei Wochen-Ausloeser
+      // haben feste Raenge und stehen deshalb immer beieinander und immer in
+      // derselben Reihenfolge.
+      final situativ = einordnen('Wenn das Verlangen kommt: X');
+      final einmal = einordnen('Einmal die Woche: X');
+      final dreimal = einordnen('Dreimal die Woche: X');
+
+      expect(situativ.rang, lessThan(einmal.rang));
+      expect(einmal.rang, lessThan(dreimal.rang));
+    });
+
+    test('die Tagesliste zeigt sie in einem eigenen Abschnitt', () {
+      final gruppen = tagesliste(const [
+        Kapitel(
+          modul: AnalyseModul.hautFarbtyp,
+          einleitung: '',
+          sektionen: [],
+          habits: [
+            'Nach dem Aufstehen: Gesicht mit lauwarmem Wasser waschen',
+            'Zweimal die Woche: Gua Sha einbauen',
+          ],
+        ),
+      ]);
+
+      expect(gruppen.map((g) => g.abschnitt), [
+        Tagesabschnitt.morgens,
+        Tagesabschnitt.beiBedarf,
+      ]);
+      expect(gruppen.last.aufgaben.single.text, contains('Gua Sha'));
     });
   });
 

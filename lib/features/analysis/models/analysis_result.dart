@@ -65,6 +65,7 @@ class Sektion {
     required this.einschaetzung,
     required this.empfehlungen,
     required this.produkte,
+    this.neu = const [],
   });
 
   final String titel;
@@ -72,11 +73,26 @@ class Sektion {
   final List<String> empfehlungen;
   final List<Produkt> produkte;
 
+  /// Die Techniken aus „Das will ich ausprobieren", die in dieser Sektion
+  /// vorkommen – der Report zeigt sie als „Neu für dich" (DECISIONS 80).
+  ///
+  /// Die Namen kommen vom Modell, aber nicht ungeprueft: Der Server laesst
+  /// nur durch, was der Nutzer wirklich angetippt hat, und fuehrt dabei die
+  /// Schreibweise auf die des Katalogs zurueck. Eine Marke an etwas, das
+  /// niemand gewaehlt hat, waere im Report eine Behauptung.
+  ///
+  /// Leer bei jedem Report, der ohne Auswahl entstanden ist, und bei allen
+  /// aus der Zeit davor.
+  final List<String> neu;
+
+  bool get zeigtNeu => neu.isNotEmpty;
+
   Map<String, dynamic> toJson() => {
         'titel': titel,
         'einschaetzung': einschaetzung,
         'empfehlungen': empfehlungen,
         'produkte': produkte.map((p) => p.toJson()).toList(),
+        if (neu.isNotEmpty) 'neu': neu,
       };
 
   /// Reports aus der Zeit der Beispielbilder tragen hier noch ein Feld
@@ -88,6 +104,7 @@ class Sektion {
         einschaetzung: _text(json['einschaetzung']),
         empfehlungen: _textListe(json['empfehlungen']),
         produkte: _liste(json['produkte']).map(Produkt.fromJson).toList(),
+        neu: _textListe(json['neu']),
       );
 }
 

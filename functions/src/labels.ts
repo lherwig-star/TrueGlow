@@ -540,3 +540,474 @@ export const WIRKUNGS_ANTWORT: Beschriftungen = {
   gleich: { de: 'Gleich', en: 'the same' },
   schlechter: { de: 'Schlechter', en: 'worse' },
 };
+
+// --- Ausprobieren ------------------------------------------------------
+
+/**
+ * Eine Technik aus „Das will ich ausprobieren" (DECISIONS 79).
+ *
+ * Drei Textfelder, alle zweisprachig, und jedes hat einen anderen Grund:
+ *
+ * - `label` ist der Name, den der Report traegt. Er steht in der
+ *   Zielsprache, weil das Modell woertlich abschreibt, was der Prompt
+ *   woertlich nennt (DECISIONS 36) — und weil die App genau diesen Namen
+ *   im Feld "neu" wiedererkennen muss.
+ * - `takt` ist die fachlich richtige Haeufigkeit. Sie steht hier und nicht
+ *   im Ermessen des Modells: Gua Sha jeden Tag als Pflicht ist keine
+ *   Empfehlung mehr, sondern eine Belastung, und ein Peeling dreimal die
+ *   Woche schadet.
+ * - `hinweis` ist der Satz zur Vertraeglichkeit. Er ist kein
+ *   Kleingedrucktes, sondern Teil der Anleitung: Gua Sha auf trockener
+ *   Haut zieht, ein Peeling ohne Sonnenschutz danach ist ein Schaden.
+ */
+export interface Technik {
+  modul: Modul;
+  /** Fuer wen es die Technik gibt. Fehlt das Feld, gilt sie fuer alle. */
+  nur?: Ausrichtung;
+  label: Zweisprachig;
+  takt: Zweisprachig;
+  hinweis: Zweisprachig;
+}
+
+/**
+ * Der Katalog. Spiegelt das Enum `Technik` in
+ * `lib/features/ausprobieren/models/technik.dart` — dieselbe Reihenfolge,
+ * dieselben Namen.
+ *
+ * Er steht hier ein zweites Mal, aus demselben Grund wie [moduleFuer]: Der
+ * Client ist nicht vertrauenswuerdig. Eine alte oder veraenderte App darf
+ * keine Technik bestellen koennen, die es in ihrem Modus nicht gibt — und
+ * schon gar keine, die es gar nicht gibt.
+ */
+export const TECHNIK = {
+  kopfhautmassage: {
+    modul: 'basis',
+    label: { de: 'Kopfhautmassage', en: 'Scalp massage' },
+    takt: { de: 'täglich, 2 Minuten', en: 'daily, 2 minutes' },
+    hinweis: {
+      de: 'mit den Fingerkuppen, nicht mit den Nägeln',
+      en: 'with the fingertips, not the nails',
+    },
+  },
+  rosmarinoel: {
+    modul: 'basis',
+    label: {
+      de: 'Rosmarinöl für die Kopfhaut',
+      en: 'Rosemary oil for the scalp',
+    },
+    takt: { de: '2-3× pro Woche', en: '2-3 times a week' },
+    hinweis: {
+      de: 'immer verdünnt in einem Trägeröl, nie pur; bei gereizter '
+        + 'Kopfhaut weglassen',
+      en: 'always diluted in a carrier oil, never neat; skip it on an '
+        + 'irritated scalp',
+    },
+  },
+  foehnRundbuerste: {
+    modul: 'basis',
+    label: {
+      de: 'Föhnen mit der Rundbürste',
+      en: 'Blow-drying with a round brush',
+    },
+    takt: { de: 'nach jeder Haarwäsche', en: 'after every wash' },
+    hinweis: {
+      de: 'mittlere Hitze, Abstand halten, kalt abschließen',
+      en: 'medium heat, keep some distance, finish on cold',
+    },
+  },
+  haaroelkur: {
+    modul: 'basis',
+    label: {
+      de: 'Haar-Ölkur über Nacht',
+      en: 'Overnight hair oil treatment',
+    },
+    takt: { de: '1× pro Woche, über Nacht', en: 'once a week, overnight' },
+    hinweis: {
+      de: 'nur in die Längen, nicht auf den Ansatz',
+      en: 'lengths only, not the roots',
+    },
+  },
+  seidenkissen: {
+    modul: 'basis',
+    label: { de: 'Seidenkissenbezug', en: 'Silk pillowcase' },
+    takt: { de: 'jede Nacht', en: 'every night' },
+    hinweis: {
+      de: 'nichts aufzutragen, nur ein Wechsel des Bezugs; regelmäßig '
+        + 'waschen',
+      en: 'nothing to apply, just a change of pillowcase; wash it '
+        + 'regularly',
+    },
+  },
+  bartoelRoutine: {
+    modul: 'basis',
+    nur: 'maennlich',
+    label: { de: 'Bartöl & Balsam', en: 'Beard oil & balm' },
+    takt: { de: 'täglich nach dem Waschen', en: 'daily after washing' },
+    hinweis: {
+      de: 'wenige Tropfen, in die Haut darunter einarbeiten',
+      en: 'a few drops, worked into the skin underneath',
+    },
+  },
+  bartbuerste: {
+    modul: 'basis',
+    nur: 'maennlich',
+    label: { de: 'Bartbürste', en: 'Beard brush' },
+    takt: { de: 'täglich', en: 'daily' },
+    hinweis: {
+      de: 'weiche Borste, in Wuchsrichtung, ohne Druck',
+      en: 'soft bristle, in the direction of growth, without pressure',
+    },
+  },
+  guaSha: {
+    modul: 'hautFarbtyp',
+    label: { de: 'Gua Sha', en: 'Gua sha' },
+    takt: {
+      de: '2-3× pro Woche, je 5 Minuten',
+      en: '2-3 times a week, 5 minutes each',
+    },
+    hinweis: {
+      de: 'nie auf trockener Haut – immer mit Öl oder Serum; sanfter '
+        + 'Druck, von der Mitte nach außen; entzündete Stellen aussparen',
+      en: 'never on dry skin – always with oil or serum; light pressure, '
+        + 'from the centre outwards; avoid inflamed areas',
+    },
+  },
+  gesichtsyoga: {
+    modul: 'hautFarbtyp',
+    label: { de: 'Gesichtsyoga', en: 'Face yoga' },
+    takt: { de: 'täglich, 5 Minuten', en: 'daily, 5 minutes' },
+    hinweis: {
+      de: 'ohne an der Haut zu ziehen; bei Kieferbeschwerden nur sanft',
+      en: 'without pulling at the skin; go gently if the jaw is sensitive',
+    },
+  },
+  iceRolling: {
+    modul: 'hautFarbtyp',
+    label: { de: 'Ice Rolling am Morgen', en: 'Ice rolling in the morning' },
+    takt: {
+      de: 'täglich am Morgen, 1-2 Minuten',
+      en: 'daily in the morning, 1-2 minutes',
+    },
+    hinweis: {
+      de: 'nicht zu lange auf einer Stelle; bei sichtbar erweiterten '
+        + 'Äderchen weglassen',
+      en: 'never too long on one spot; skip it with visibly broken '
+        + 'capillaries',
+    },
+  },
+  lymphmassage: {
+    modul: 'hautFarbtyp',
+    label: { de: 'Lymph-Gesichtsmassage', en: 'Facial lymphatic massage' },
+    takt: { de: '3-4× pro Woche', en: '3-4 times a week' },
+    hinweis: {
+      de: 'sehr leichter Druck; bei geschwollenen Lymphknoten oder einem '
+        + 'Infekt aussetzen',
+      en: 'very light pressure; skip it with swollen lymph nodes or an '
+        + 'infection',
+    },
+  },
+  sanftesPeeling: {
+    modul: 'hautFarbtyp',
+    label: {
+      de: 'Sanftes chemisches Peeling',
+      en: 'Gentle chemical exfoliant',
+    },
+    takt: { de: 'höchstens 1-2× pro Woche', en: 'at most 1-2 times a week' },
+    hinweis: {
+      de: 'langsam einschleichen – erst alle zehn Tage, dann steigern; am '
+        + 'nächsten Tag Sonnenschutz; nicht mit anderen Säuren '
+        + 'kombinieren',
+      en: 'ease in slowly – every ten days at first, then increase; '
+        + 'sunscreen the next day; do not combine it with other acids',
+    },
+  },
+  sheetMaske: {
+    modul: 'hautFarbtyp',
+    label: { de: 'Sheet-Masken-Ritual', en: 'Sheet mask ritual' },
+    takt: { de: '1× pro Woche', en: 'once a week' },
+    hinweis: {
+      de: 'höchstens 20 Minuten, danach nicht abspülen',
+      en: '20 minutes at most, do not rinse afterwards',
+    },
+  },
+  lippenpeeling: {
+    modul: 'hautFarbtyp',
+    nur: 'weiblich',
+    label: { de: 'Lippen-Peeling', en: 'Lip scrub' },
+    takt: { de: '1-2× pro Woche', en: '1-2 times a week' },
+    hinweis: {
+      de: 'sehr sanft, danach Balsam; nicht auf rissigen Lippen',
+      en: 'very gently, balm afterwards; not on cracked lips',
+    },
+  },
+  nagelpflege: {
+    modul: 'hautFarbtyp',
+    nur: 'weiblich',
+    label: { de: 'Nagelpflege-Routine', en: 'Nail care routine' },
+    takt: { de: '1× pro Woche', en: 'once a week' },
+    hinweis: {
+      de: 'Nagelhaut nur zurückschieben, nicht schneiden',
+      en: 'push the cuticles back, do not cut them',
+    },
+  },
+  augenbrauenWimpern: {
+    modul: 'makeupAusstrahlung',
+    label: { de: 'Augenbrauen- & Wimpernpflege', en: 'Brow & lash care' },
+    takt: { de: 'täglich', en: 'daily' },
+    hinweis: {
+      de: 'bürsten und pflegen; kein Wirkstoff-Serum ohne ärztlichen Rat',
+      en: 'brushing and care only; no active serum without medical advice',
+    },
+  },
+  pinselhygiene: {
+    modul: 'makeupAusstrahlung',
+    label: { de: 'Pinsel sauber halten', en: 'Keeping the brushes clean' },
+    takt: { de: 'alle 2 Wochen', en: 'every two weeks' },
+    hinweis: {
+      de: 'milde Seife, flach liegend trocknen lassen',
+      en: 'mild soap, dried lying flat',
+    },
+  },
+  lidschattenbasis: {
+    modul: 'makeupAusstrahlung',
+    label: { de: 'Grundierung für die Lider', en: 'Eyeshadow primer' },
+    takt: { de: 'an jedem Tag mit Make-up', en: 'on every day with make-up' },
+    hinweis: {
+      de: 'dünn auftragen und kurz antrocknen lassen',
+      en: 'applied thinly and left to set for a moment',
+    },
+  },
+  rougePlatzierung: {
+    modul: 'makeupAusstrahlung',
+    label: {
+      de: 'Rouge bewusst platzieren',
+      en: 'Placing blush deliberately',
+    },
+    takt: { de: 'an jedem Tag mit Make-up', en: 'on every day with make-up' },
+    hinweis: {
+      de: 'wenig auftragen und die Kanten auslaufen lassen',
+      en: 'use little and blend the edges out',
+    },
+  },
+  oelziehen: {
+    modul: 'zaehneLaecheln',
+    label: { de: 'Ölziehen', en: 'Oil pulling' },
+    takt: {
+      de: 'täglich am Morgen, 5-10 Minuten',
+      en: 'daily in the morning, 5-10 minutes',
+    },
+    hinweis: {
+      de: 'ins Papier ausspucken, nicht ins Waschbecken; ersetzt kein '
+        + 'Zähneputzen',
+      en: 'spit into a tissue, not the sink; it does not replace brushing',
+    },
+  },
+  zungenschaber: {
+    modul: 'zaehneLaecheln',
+    label: { de: 'Zungenschaber', en: 'Tongue scraper' },
+    takt: { de: 'täglich vor dem Zähneputzen', en: 'daily before brushing' },
+    hinweis: {
+      de: 'ohne Druck, von hinten nach vorn',
+      en: 'without pressure, from back to front',
+    },
+  },
+  laechelntraining: {
+    modul: 'zaehneLaecheln',
+    label: {
+      de: 'Lächeln vor dem Spiegel üben',
+      en: 'Practising a smile in the mirror',
+    },
+    takt: { de: 'täglich, 2 Minuten', en: 'daily, 2 minutes' },
+    hinweis: {
+      de: 'nichts aufzutragen, reine Übung',
+      en: 'nothing to apply, pure practice',
+    },
+  },
+  aufhellung: {
+    modul: 'zaehneLaecheln',
+    label: { de: 'Zähne aufhellen', en: 'Teeth whitening' },
+    takt: {
+      de: 'nur nach zahnärztlicher Rücksprache',
+      en: 'only after checking with a dentist',
+    },
+    hinweis: {
+      de: 'zuerst in der Zahnarztpraxis abklären lassen; empfiehl weder '
+        + 'ein Mittel noch eine Schiene noch einen Wirkstoff und nenne '
+        + 'keine Dauer',
+      en: 'have it checked at a dental practice first; do not recommend '
+        + 'any agent, tray or active ingredient, and do not give a '
+        + 'duration',
+    },
+  },
+  chinTuck: {
+    modul: 'figurPassform',
+    label: { de: 'Chin Tucks für den Nacken', en: 'Chin tucks for the neck' },
+    takt: { de: 'täglich, 2× 10 Wiederholungen', en: 'daily, 2 sets of 10' },
+    hinweis: {
+      de: 'langsam und ohne Ruck; bei Nackenschmerzen aussetzen',
+      en: 'slow and without jerking; stop if the neck hurts',
+    },
+  },
+  mobilityMinuten: {
+    modul: 'figurPassform',
+    label: { de: 'Tägliche Mobility-Minuten', en: 'Daily mobility minutes' },
+    takt: { de: 'täglich, 5 Minuten', en: 'daily, 5 minutes' },
+    hinweis: {
+      de: 'im schmerzfreien Bereich bleiben',
+      en: 'stay within a pain-free range',
+    },
+  },
+  wandstand: {
+    modul: 'figurPassform',
+    label: { de: 'Wandstand für die Haltung', en: 'Wall stand for posture' },
+    takt: { de: 'täglich, 2 Minuten', en: 'daily, 2 minutes' },
+    hinweis: {
+      de: 'locker atmen, nicht ins Hohlkreuz drücken',
+      en: 'breathe easily, do not force an arch into the back',
+    },
+  },
+  kaltDuschen: {
+    modul: 'figurPassform',
+    label: { de: 'Kalt abduschen', en: 'Finishing the shower cold' },
+    takt: {
+      de: 'täglich, die letzten 30 Sekunden',
+      en: 'daily, the last 30 seconds',
+    },
+    hinweis: {
+      de: 'langsam steigern; bei Herz-Kreislauf-Beschwerden vorher '
+        + 'ärztlich abklären',
+      en: 'build up slowly; check with a doctor first with heart or '
+        + 'circulation problems',
+    },
+  },
+  schlafhygiene: {
+    modul: 'figurPassform',
+    label: { de: 'Schlafhygiene-Routine', en: 'Sleep hygiene routine' },
+    takt: { de: 'täglich', en: 'daily' },
+    hinweis: {
+      de: 'feste Zeiten sind der Kern; keine Schlafmittel und keine '
+        + 'Nahrungsergänzung empfehlen',
+      en: 'fixed times are the point; do not recommend sleep aids or '
+        + 'supplements',
+    },
+  },
+  kleiderschrankAudit: {
+    modul: 'stilKleiderschrank',
+    label: { de: 'Kleiderschrank-Audit', en: 'Wardrobe audit' },
+    takt: {
+      de: 'einmalig, danach 2× im Jahr',
+      en: 'once, then twice a year',
+    },
+    hinweis: {
+      de: 'in einem Durchgang, mit drei Stapeln: bleibt, weg, unsicher',
+      en: 'in one go, with three piles: keep, go, unsure',
+    },
+  },
+  capsuleWardrobe: {
+    modul: 'stilKleiderschrank',
+    label: { de: 'Capsule Wardrobe', en: 'Capsule wardrobe' },
+    takt: {
+      de: 'einmal aufgebaut, danach laufend',
+      en: 'built once, then ongoing',
+    },
+    hinweis: {
+      de: 'über Monate ergänzen statt an einem Wochenende kaufen',
+      en: 'added to over months rather than bought in one weekend',
+    },
+  },
+  schuhpflege: {
+    modul: 'stilKleiderschrank',
+    label: { de: 'Schuhpflege-Ritual', en: 'Shoe care ritual' },
+    takt: { de: '1× pro Woche', en: 'once a week' },
+    hinweis: {
+      de: 'auf das Material achten – Glattleder und Wildleder brauchen '
+        + 'Verschiedenes',
+      en: 'mind the material – smooth leather and suede need different '
+        + 'things',
+    },
+  },
+  accessoireEinstieg: {
+    modul: 'stilKleiderschrank',
+    label: { de: 'Das erste Accessoire', en: 'A first accessory' },
+    takt: {
+      de: 'einmalig, danach täglich getragen',
+      en: 'once, then worn daily',
+    },
+    hinweis: {
+      de: 'mit einem einzigen Teil anfangen',
+      en: 'start with a single piece',
+    },
+  },
+} as const satisfies Record<string, Technik>;
+
+export type Techniknamen = keyof typeof TECHNIK;
+
+/**
+ * Die Techniken, die zu dieser Analyse ueberhaupt passen.
+ *
+ * Zwei Filter, beide dieselben wie auf dem Bildschirm: Eine Technik braucht
+ * ihr Kapitel — ein Gua Sha ohne Haut-Kapitel haette im Report keinen Platz
+ * —, und sie muss zur Ausrichtung passen. Unbekannte Namen fallen weg.
+ *
+ * Die Reihenfolge ist die der Tabelle, nicht die der Anfrage: Dieselbe
+ * Auswahl soll immer denselben Prompt ergeben.
+ */
+export function technikenFuer(
+  namen: unknown,
+  module: readonly Modul[],
+  ausrichtung: Ausrichtung,
+): Techniknamen[] {
+  if (!Array.isArray(namen)) return [];
+  const gewaehlt = new Set(namen.filter((n) => typeof n === 'string'));
+  const erlaubteModule = new Set<string>(module);
+
+  return (Object.keys(TECHNIK) as Techniknamen[]).filter((name) => {
+    if (!gewaehlt.has(name)) return false;
+    const technik = TECHNIK[name];
+    if (!erlaubteModule.has(technik.modul)) return false;
+    // „divers" und „keine Angabe" sind kein Auftrag, etwas wegzulassen —
+    // dieselbe Regel wie bei den Modulen.
+    const nur = 'nur' in technik ? technik.nur : undefined;
+    return nur === undefined || nur === ausrichtung || ausrichtung === 'neutral';
+  });
+}
+
+/**
+ * Die Anzeigenamen der gewaehlten Techniken, in der Zielsprache.
+ *
+ * Grundlage von zweierlei: Der Prompt nennt sie, und die Nachbereitung
+ * misst das Feld "neu" daran.
+ */
+export function techniklabels(
+  namen: readonly Techniknamen[],
+  sprache: Sprache,
+): string[] {
+  return namen.map((name) => TECHNIK[name].label[sprache]);
+}
+
+/**
+ * Die Auslöser für eine Aufgabe, die nicht taeglich ansteht.
+ *
+ * Der Wenn-dann-Anker (DECISIONS 44) setzt eine Aufgabe an einen Punkt im
+ * Tag. Fuer eine Technik, die zwei- oder dreimal die Woche drankommt, gibt
+ * es diesen Punkt nicht — „Nach dem Duschen: Gua Sha" waere die Aufforderung,
+ * sie taeglich zu machen, und genau das ist fachlich falsch.
+ *
+ * Deshalb diese zweite, kurze Liste. Sie steht an derselben Stelle im Satz
+ * wie ein Anker — Ausloeser, Doppelpunkt, Handlung — und die App sortiert
+ * eine Aufgabe damit unter „Bei Bedarf" ein: den Abschnitt fuer alles, was
+ * an keiner festen Tageszeit haengt (DECISIONS 80).
+ *
+ * Zweisprachig aus demselben Grund wie die Anker: Was der Prompt woertlich
+ * nennt, schreibt das Modell woertlich ab.
+ */
+export const WOCHENANKER: readonly Zweisprachig[] = [
+  { de: 'Einmal die Woche', en: 'Once a week' },
+  { de: 'Zweimal die Woche', en: 'Twice a week' },
+  { de: 'Dreimal die Woche', en: 'Three times a week' },
+];
+
+/** Die Wochen-Ausloeser als Aufzaehlung fuer den Prompt. */
+export function wochenankerListe(sprache: Sprache): string {
+  return WOCHENANKER.map((a) => `"${a[sprache]}"`).join(', ');
+}

@@ -13,6 +13,9 @@ import {
   sektion,
   RICHTUNGSVORGABE,
   RICHTUNGSZIEL,
+  TECHNIK,
+  wochenankerListe,
+  type Techniknamen,
   ZEIT,
   ZIELKAPITEL,
   label,
@@ -83,6 +86,8 @@ export interface AnalysePromptDaten {
   figur: Figurangaben;
   stil: Stilangaben;
   richtung: Richtungsangaben;
+  /** Was der Nutzer ausprobieren will – bereits gefiltert (DECISIONS 79). */
+  techniken: Techniknamen[];
 }
 
 /** Nachfassen, wenn die erste Antwort kein gueltiges JSON war. */
@@ -131,8 +136,9 @@ ${fotoumfangRegel(gewaehlt)}- Richte Aufwand und Preisniveau der Empfehlungen am
 ${zielRegeln(daten.richtung, sprache)}${entdecken ? `
 ${planRegeln()}` : ''}
 ${QUALITAET}
+${tiefeRegel(bestellt, sprache)}
 ${gesamtbildRegeln(daten.modus, sprache)}
-${entdecken ? `${entdeckenRegeln()}
+${ausprobierenRegeln(daten.techniken, sprache)}${entdecken ? `${entdeckenRegeln()}
 ` : ''}${ankerRegeln(sprache)}
 Antworte AUSSCHLIESSLICH mit einem JSON-Objekt nach diesem Schema. Kein
 Fließtext davor oder danach, keine Markdown-Codefences:
@@ -147,7 +153,7 @@ Fließtext davor oder danach, keine Markdown-Codefences:
       "sektionen": [
         {
           "titel": "kurzer Bereichsname",
-          "einschaetzung": "2-3 Sätze, was auffällt und warum das relevant ist",
+${neuFeld(daten.techniken)}          "einschaetzung": "2-3 Sätze, was auffällt und warum das relevant ist",
           "empfehlungen": ["konkreter Schritt", "konkreter Schritt"],
           "produkte": [
             {
@@ -187,6 +193,7 @@ Vorgaben zum Inhalt:
   jedes andere Textfeld. ${AUSGABESPRACHE_KURZ[sprache]}
 - "sektionen": ${entdecken ? 3 : 2} bis ${entdecken ? 5 : 4} pro Kapitel.
 - "empfehlungen": 2 bis 4 pro Sektion.
+${neuVorgabe(daten.techniken)}
 - "produkte": 0 bis 3 pro Sektion, "affiliateUrl" immer null.
 - "habits": 4 bis 7 pro Kapitel, jeder unter 80 Zeichen. Jeder Eintrag ist eine
   konkrete Alltagsaufgabe, die sich täglich abhaken lässt, und gehört
@@ -299,6 +306,159 @@ function fotoumfangRegel(module: readonly Modul[]): string {
   KEIN Mangel: Beurteile Silhouette, Proportionen und Passform aus dem, was
   zu sehen ist, und weise nicht darauf hin, dass etwas fehlt.
 `;
+}
+
+/**
+ * Was der Nutzer ausdruecklich ausprobieren will (DECISIONS 79).
+ *
+ * Der Block steht nur da, wenn wirklich etwas gewaehlt wurde. Ein Prompt
+ * ohne Auswahl bleibt Wort fuer Wort derselbe wie vorher — sonst liesse
+ * sich nie sagen, ob eine Aenderung an der Antwort von der Auswahl kommt.
+ *
+ * **Warum Takt und Vertraeglichkeit hier stehen und nicht im Ermessen des
+ * Modells liegen.** Ein Modell, das „Gua Sha" hoert, schreibt bereitwillig
+ * eine taegliche Aufgabe daraus — und genau das ist fachlich falsch. Der
+ * Takt kommt deshalb aus der Tabelle, nicht aus dem Sprachgefuehl. Beim
+ * Peeling ist der Unterschied nicht kosmetisch: dreimal die Woche schadet.
+ *
+ * **Warum es „MUSS" heisst.** Wer diesen Schritt ausfuellt, hat eine
+ * Erwartung an den Report. Eine Technik, die er gewaehlt hat und die
+ * nirgends auftaucht, ist fuer ihn nicht „nicht so wichtig" — sie ist ein
+ * Fehler. Die Nachbereitung zaehlt mit, wie oft das passiert.
+ */
+function ausprobierenRegeln(
+  techniken: readonly Techniknamen[],
+  sprache: Sprache,
+): string {
+  if (techniken.length === 0) return '';
+
+  const liste = techniken
+    .map((name) => {
+      const technik = TECHNIK[name];
+      return (
+        `- "${technik.label[sprache]}" (Kapitel "${technik.modul}").\n` +
+        `  Takt: ${technik.takt[sprache]}.\n` +
+        `  Verträglichkeit: ${technik.hinweis[sprache]}.`
+      );
+    })
+    .join('\n');
+
+  return `Das will ich ausprobieren – der Nutzer hat diese Techniken ausdrücklich
+angetippt. Sie sind kein Vorschlag von dir, sondern sein Wunsch:
+${liste}
+
+Verbindlich für JEDE dieser Techniken:
+- Sie MUSS im Report vorkommen, und zwar in dem Kapitel, das oben dabeisteht,
+  und nirgendwo sonst. Keine einzige darf fehlen.
+- Sie steht dort als eigene "empfehlung" mit einer kurzen Anleitung: 2-3
+  Sätze, die sagen WAS, WIE und WIE OFT. Nicht "probier mal Gua Sha", sondern
+  die Handgriffe, in der richtigen Reihenfolge.
+- Verbinde sie mit dem, was du auf den Fotos siehst. Warum ausgerechnet bei
+  dieser Person? Eine Anleitung, die für jeden gleich lautet, ist keine.
+- Übernimm den Takt von oben. Erfinde keinen eigenen und mach nichts täglich,
+  was dort nicht täglich steht.
+- Der Satz zur Verträglichkeit gehört dazu. Er ist kein Kleingedrucktes,
+  sondern Teil der Anleitung – schreib ihn in eigenen Worten aus.
+- Sie bekommt zusätzlich eine Aufgabe in "habits" desselben Kapitels, im
+  Takt von oben.
+- Bleibt der Name der Technik unverändert: Schreib ihn genau so, wie er oben
+  steht, und trag ihn im Feld "neu" derjenigen Sektion ein, in der die
+  Empfehlung steht.
+${wochenaufgabenRegel(techniken, sprache)}- Nichts Invasives und nichts Medizinisches kommt dazu. Keine Dermaroller,
+  kein Microneedling zu Hause, keine rezeptpflichtigen Wirkstoffe, kein
+  Mewing, kein Kiefer-Kautraining, keine Fasten- oder Diät-Regime – auch
+  nicht als Ergänzung, als Steigerung oder als "wenn du weitergehen willst".
+`;
+}
+
+/**
+ * Wie eine Aufgabe aussieht, die nicht taeglich ansteht.
+ *
+ * Nur wenn wirklich eine gewaehlte Technik so einen Takt hat: Bei lauter
+ * taeglichen Techniken waere die Regel eine Einladung, sich eine
+ * Wochenaufgabe auszudenken.
+ */
+function wochenaufgabenRegel(
+  techniken: readonly Techniknamen[],
+  sprache: Sprache,
+): string {
+  const woechentlich = techniken.some(
+    (name) => !TAEGLICH.test(TECHNIK[name].takt.de),
+  );
+  if (!woechentlich) return '';
+
+  return `- Steht im Takt nicht "täglich", ist die Aufgabe KEINE Tagesaufgabe. Sie
+  beginnt dann statt mit einem Wenn-dann-Anker mit einem dieser Auslöser,
+  wörtlich so geschrieben: ${wochenankerListe(sprache)}. Danach ein
+  Doppelpunkt, dann die Handlung – zum Beispiel der Wochentag oder die
+  Gelegenheit, an der sie am ehesten passt. Die App sortiert solche
+  Aufgaben in einen eigenen Abschnitt der Tagesliste ein. Das ist die
+  einzige Ausnahme von "täglich abhakbar" weiter unten.
+`;
+}
+
+/** Ob ein Takt eine taegliche Anwendung beschreibt. */
+const TAEGLICH = /täglich|jede nacht|jedem tag|nach jeder/i;
+
+/**
+ * Die Tiefe-Regel, die auch ohne jede Auswahl gilt (DECISIONS 80).
+ *
+ * `QUALITAET` verlangt seit DECISIONS 40 schon Tiefe, und der Befund am
+ * Geraet war trotzdem: Gesicht waschen, Zahnseide, Feuchtigkeitscreme. Das
+ * Wort „Tiefe" ist eben eine Stimmung. Diese Regel macht daraus eine Zahl
+ * — mindestens ein Vorschlag je Kapitel — und sagt am Beispiel, was mit
+ * dem Niveau gemeint ist.
+ *
+ * **Warum die Beispiele mit einer Warnung kommen.** Was der Prompt
+ * woertlich nennt, schreibt das Modell woertlich ab (DECISIONS 36). Ohne
+ * den Zusatz „nicht abschreiben" stuende in jedem Haut-Kapitel Gua Sha,
+ * egal ob es zu der Person passt. Die Beispiele stehen deshalb
+ * ausdruecklich als Muster fuer das NIVEAU da, nicht fuer den Inhalt — und
+ * in der Zielsprache, weil das Modell sie sonst uebersetzt.
+ */
+function tiefeRegel(module: readonly Modul[], sprache: Sprache): string {
+  const zeilen = module
+    .map((modul) => {
+      const beispiele = (Object.keys(TECHNIK) as Techniknamen[])
+        .filter((name) => TECHNIK[name].modul === modul)
+        .slice(0, 3)
+        .map((name) => `"${TECHNIK[name].label[sprache]}"`);
+      if (beispiele.length === 0) return undefined;
+      return `  ${modul}: ${beispiele.join(', ')}`;
+    })
+    .filter((zeile): zeile is string => zeile !== undefined);
+
+  return `Mehr als die Basics – eine Zahl, keine Stimmung:
+- In JEDEM angeforderten Kapitel steht mindestens EIN Vorschlag, der über das
+  hinausgeht, was jeder ohnehin weiß. Nicht "benutz eine Feuchtigkeitscreme",
+  sondern eine Technik mit Namen, die man kennen muss, um sie zu nennen.
+- Er wird erklärt, nicht nur genannt: was er bewirkt, wie oft, worauf zu
+  achten ist – und warum er zu dieser Person und diesen Fotos passt.
+- Die Basics bleiben stehen. Sie sind der Anfang der Liste und nicht ihr Ende.
+- Nichts Invasives, nichts Medizinisches, nichts ohne Grundlage. Keine
+  Dermaroller, kein Microneedling zu Hause, keine rezeptpflichtigen
+  Wirkstoffe, kein Mewing, kein Kiefer-Kautraining, keine Fasten- oder
+  Diät-Regime.
+- So sieht das Niveau aus (Muster für das NIVEAU, nicht für den Inhalt –
+  übernimm keinen dieser Namen, wenn etwas anderes besser zu der Person
+  passt):
+${zeilen.join('\n')}`;
+}
+
+/** Die Zeile fuer "neu" im Schema. Ohne Auswahl gibt es das Feld nicht. */
+function neuFeld(techniken: readonly Techniknamen[]): string {
+  if (techniken.length === 0) return '';
+  return '          "neu": ["Name einer ausprobierten Technik aus dieser ' +
+    'Sektion"],\n';
+}
+
+/** Die Erlaeuterung dazu unter "Vorgaben zum Inhalt". */
+function neuVorgabe(techniken: readonly Techniknamen[]): string {
+  if (techniken.length === 0) return '';
+  return `- "neu": nur die Namen der oben ausdrücklich gewählten Techniken, und nur
+  in der Sektion, in der die zugehörige Empfehlung steht. Wörtlich wie oben
+  geschrieben. Keine anderen Vorschläge, keine eigenen Formulierungen; hat
+  eine Sektion keine, lass das Feld weg.`;
 }
 
 /**

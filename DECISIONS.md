@@ -3764,6 +3764,136 @@ Technik steht an vier Stellen — Enum, zwei ARB-Dateien, Server-Tabelle. Das
 ist der Preis dafür, dass Name, Takt und Verträglichkeitshinweis
 zusammenbleiben.
 
+## 80 · Mehr Tiefe — als Zahl, nicht als Stimmung
+
+Zwei Regeln im Prompt, eine Marke im Report und ein neuer Platz in der
+Tagesliste. Die Fortsetzung von DECISIONS 79: Dort wird gewählt, hier wirkt
+es.
+
+### Warum „Tiefe" bisher nicht gereicht hat
+
+`QUALITAET` verlangt seit DECISIONS 40 ausdrücklich Tiefe — „mindestens eine
+Empfehlung, die über die erste Seite einer Suchmaschine hinausgeht". Der
+Befund am Gerät war trotzdem: Gesicht waschen, Zahnseide,
+Feuchtigkeitscreme.
+
+Der Grund ist derselbe wie bei den Schwerpunkten (DECISIONS 60) und bei der
+Stilrichtung (DECISIONS 58): Für ein Sprachmodell ist ein Adjektiv eine
+Stimmung. „Geh tiefer" färbt den Ton ein und ändert den Inhalt nicht.
+
+Die neue Regel sagt deshalb dreierlei, und jedes davon lässt sich an einer
+einzelnen Zeile des Reports nachzählen:
+
+1. **Eine Zahl:** In JEDEM angeforderten Kapitel mindestens EIN Vorschlag
+   über den Basics.
+2. **Eine Anforderung an die Form:** erklärt, nicht nur genannt — was er
+   bewirkt, wie oft, worauf zu achten ist, und warum ausgerechnet bei dieser
+   Person.
+3. **Ein Beispiel für das Niveau:** je Kapitel zwei bis drei Namen aus dem
+   Katalog, in der Zielsprache.
+
+Die Basics bleiben ausdrücklich stehen. Sie sind der Anfang der Liste und
+nicht ihr Ende — ein Report ohne „trink genug" wäre nicht tiefer, nur
+lückenhaft.
+
+**Die Beispiele tragen eine Warnung.** Was der Prompt wörtlich nennt,
+schreibt das Modell wörtlich ab (DECISIONS 36). Ohne den Zusatz „Muster für
+das NIVEAU, nicht für den Inhalt — übernimm keinen dieser Namen, wenn etwas
+anderes besser passt" stünde in jedem Haut-Kapitel Gua Sha, ob es zu der
+Person passt oder nicht. Genau dieselbe Vorkehrung wie beim Gesamtbild und
+bei den Ankern.
+
+Diese Regel gilt **immer** — auch für jemanden, der den Ausprobier-Schritt
+überspringt. Das ist der Punkt: Die Tiefe des Reports darf nicht davon
+abhängen, ob jemand Lust auf einen zusätzlichen Bildschirm hatte.
+
+### Was mit einer gewählten Technik passiert
+
+| Verlangt | Warum so scharf |
+|---|---|
+| Sie MUSS vorkommen, in ihrem Kapitel, keine darf fehlen | Wer den Schritt ausfüllt, hat eine Erwartung. Eine Technik, die er angetippt hat und nirgends wiederfindet, ist für ihn kein „war wohl nicht so wichtig", sondern ein Fehler. |
+| Als eigene Empfehlung mit 2–3 Sätzen Anleitung: was, wie, wie oft | „Probier mal Gua Sha" ist das, was er schon wusste. Die Handgriffe sind das, was er nicht wusste. |
+| Verbunden mit dem, was auf den Fotos zu sehen ist | Eine Anleitung, die für jeden gleich lautet, hätte er auch ohne die App. |
+| Takt aus der Tabelle, nicht aus dem Sprachgefühl | Ein Modell, das „Gua Sha" hört, macht daraus bereitwillig eine tägliche Pflicht. Beim Peeling ist der Unterschied nicht kosmetisch: dreimal die Woche schadet. |
+| Der Verträglichkeitssatz gehört in den Text | Er ist kein Kleingedrucktes. Gua Sha auf trockener Haut zieht, ein Peeling ohne Sonnenschutz danach ist ein Schaden. |
+| Plus eine Aufgabe in der Tagesliste | Gearbeitet wird mit der Tagesliste. Ein Wunsch, der es nicht bis dorthin schafft, ist für den Nutzer nicht passiert — dieselbe Überlegung wie beim Freitext in DECISIONS 39. |
+
+### „Neu für dich"
+
+Jede Sektion kann ein Feld `neu` tragen: die Namen der Techniken, die in ihr
+vorkommen. Der Report zeigt sie als Pille über der Einschätzung, im Ton für
+Erreichtes — demselben, den das Gesamtbild und das Etikett im Verlauf
+tragen. Keine Wertung gegenüber den anderen Sektionen, sondern
+Wiedererkennung: Diese Farbe heißt in der ganzen App „hier ist etwas
+passiert".
+
+**Die Nachbereitung lässt keine erfundene Marke stehen.** Was das Modell in
+`neu` schreibt, wird gegen die wirklich gewählten Techniken geprüft und auf
+deren Schreibweise zurückgeführt — „gua sha" wird zu „Gua Sha", sonst
+erkennt die App den Namen nicht wieder. Alles andere fliegt raus: „Neu für
+dich" an etwas, das der Nutzer nie angetippt hat, wäre im Report eine
+Behauptung.
+
+Und was fehlt, wird gezählt: Steht eine gewählte Technik in keinem einzigen
+`neu`, geht eine Zeile ins Protokoll. Reparieren lässt sich das nicht — eine
+Empfehlung, die das Modell nicht geschrieben hat, können wir nicht
+nachtragen. Die Zahl sagt uns, ob die Regel wirkt.
+
+### Wochenaufgaben: warum sie unter „Bei Bedarf" landen
+
+Der Wenn-dann-Anker (DECISIONS 44) setzt eine Aufgabe an einen Punkt im Tag.
+Für eine Technik, die zwei- oder dreimal die Woche drankommt, gibt es diesen
+Punkt nicht: „Nach dem Duschen: Gua Sha" ist die Aufforderung, es täglich zu
+machen — und das ist genau der fachliche Fehler, den der Takt in der Tabelle
+verhindern soll.
+
+Deshalb eine zweite, kurze Liste von Auslösern: „Einmal die Woche",
+„Zweimal die Woche", „Dreimal die Woche". Sie stehen an derselben Stelle im
+Satz wie ein Anker — Auslöser, Doppelpunkt, Handlung —, sodass die
+Tagesliste sie ohne Umbau einsortieren kann.
+
+**Warum kein eigener fünfter Abschnitt.** „Bei Bedarf" ist bereits der
+Abschnitt für alles, was an keiner festen Tageszeit hängt; dort stehen seit
+DECISIONS 70 die situativen Aufgaben aus dem Freitext („bei
+Rauchverlangen"). Eine Wochenaufgabe hat dieselbe Eigenschaft: kein Platz im
+Tagesablauf, aber ein Platz in der Woche. Ein fünfter Abschnitt hätte die
+Liste um eine Überschrift verlängert, die dasselbe sagt.
+
+Der Auslöser bleibt dabei im Text stehen, wie jeder Anker. Wer die Liste
+liest, sieht „Zweimal die Woche: Gua Sha einbauen" — die Häufigkeit ist Teil
+der Aufgabe und nicht in eine Überschrift ausgelagert.
+
+**Was die drei Auslöser in der Zuordnungstabelle zu suchen haben,** obwohl
+ein unbekannter Auslöser ohnehin in „Bei Bedarf" landet: Erst dadurch haben
+sie einen festen Rang, stehen jedes Mal beieinander und in derselben
+Reihenfolge — und erst dadurch ist es eine Entscheidung statt eines
+Nebeneffekts.
+
+**Was das für die Serie und die Wochen-Challenge heißt:** Eine
+Wochenaufgabe zählt wie jede andere Aufgabe. Wer sie an einem Tag abhakt,
+hat an diesem Tag etwas getan. Die Challenge „volle Tage" wird dadurch
+schwerer — dieselbe Eigenschaft haben die situativen Aufgaben aber schon
+seit DECISIONS 70, und dort ist sie nie aufgefallen. Sollte sie es jetzt,
+gehört sie ausgenommen; vorher ist eine Sonderregel geraten.
+
+### Der Demo-Modus zeigt die Form, nicht die Fachaussage
+
+Der Mock setzt die gewählten Techniken selbst in die hinterlegte Antwort
+ein: je Technik eine Empfehlung, die Marke und eine Aufgabe, abwechselnd als
+Wochen- und als Tagesaufgabe. Damit ist der ganze Weg ohne Kontingent
+anzusehen, und beide Abschnitte der Tagesliste sind belegt.
+
+Was er nicht beweist: dass ein echtes Modell die Technik wirklich mit den
+Fotos verbindet und den richtigen Takt übernimmt. Das entscheidet der Prompt
+und braucht einen Lauf gegen den Server — dafür steht ein Punkt im
+TESTPLAN 37.
+
+**Preis:** Der Prompt wird länger, und zwar in jedem Lauf. Die Tiefe-Regel
+kostet rund 900 Zeichen, der Ausprobier-Block je gewählter Technik etwa 150
+weitere. Gegenrechnung: Das Feld `bildSuchbegriff` ist mit DECISIONS 78
+weggefallen — es kostete eine Zeile pro Sektion in der Antwort, also bei
+sechs Kapiteln mehr, als hier dazukommt.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

@@ -22,9 +22,16 @@ enum Tagesabschnitt {
   tagsueber(Icons.wb_sunny_outlined),
   abends(Icons.nightlight_outlined),
 
-  /// Situative Anker ohne feste Tageszeit – „bei Rauchverlangen", „wenn der
-  /// Feierabend-Drang einsetzt". Sie stehen zuletzt, weil sie an keinem
-  /// Zeitpunkt haengen, den man abarbeiten kann.
+  /// Alles, was an keiner festen Tageszeit haengt. Zweierlei landet hier:
+  ///
+  /// - **Situative Anker** – „bei Rauchverlangen", „wenn der Feierabend-Drang
+  ///   einsetzt". Sie kommen aus dem Freitext.
+  /// - **Wochenaufgaben** – „Zweimal die Woche: Gua Sha …". Eine Technik, die
+  ///   nicht taeglich drankommt, hat keinen Punkt im Tag, an den sie gehoert
+  ///   (DECISIONS 80).
+  ///
+  /// Beide stehen zuletzt, weil sie an keinem Zeitpunkt haengen, den man
+  /// der Reihe nach abarbeiten kann.
   beiBedarf(Icons.bolt_outlined);
 
   const Tagesabschnitt(this.icon);
@@ -79,6 +86,16 @@ const List<_Anker> _anker = [
   ),
   _Anker('nach dem abendessen', 'after dinner', Tagesabschnitt.abends),
   _Anker('vor dem schlafengehen', 'before bed', Tagesabschnitt.abends),
+  // Die Wochen-Ausloeser aus `functions/src/labels.ts` (`WOCHENANKER`).
+  //
+  // Sie stehen hier ausdruecklich drin, obwohl ein unbekannter Ausloeser
+  // ohnehin in „Bei Bedarf" landet. Zwei Gruende: Erst dadurch haben sie
+  // einen festen Rang und stehen jedes Mal in derselben Reihenfolge
+  // beieinander – und erst dadurch ist es eine Entscheidung statt eines
+  // Nebeneffekts (DECISIONS 80).
+  _Anker('einmal die woche', 'once a week', Tagesabschnitt.beiBedarf),
+  _Anker('zweimal die woche', 'twice a week', Tagesabschnitt.beiBedarf),
+  _Anker('dreimal die woche', 'three times a week', Tagesabschnitt.beiBedarf),
 ];
 
 /// Laenger als das ist kein Ausloeser mehr, sondern ein Satz mit Doppelpunkt.
@@ -139,7 +156,8 @@ String? ankerVon(String aufgabe) {
 ///  * **Bekannter Anker** → sein Abschnitt, an seiner Stelle.
 ///  * **Unbekannter Anker** → „Bei Bedarf". Der Ausloeser ist dann eine
 ///    Situation und keine Tageszeit; genau das laesst der Prompt fuer die
-///    Aufgaben aus dem Freitext zu.
+///    Aufgaben aus dem Freitext zu. Die drei Wochen-Ausloeser landen dort
+///    ebenfalls, aber an einer festen Stelle (DECISIONS 80).
 ///  * **Gar kein Anker** → „Tagsueber". Das trifft alte Reports. Sie
 ///    verschwinden nicht, sie stehen in der Mitte des Tages.
 ({Tagesabschnitt abschnitt, int rang}) einordnen(String aufgabe) {

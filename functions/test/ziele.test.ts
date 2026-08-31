@@ -34,6 +34,7 @@ function daten(options: {
     figur: {},
     stil: { ziele: [], zwecke: [] },
     richtung: { ziele: options.ziele ?? [], freitext: options.freitext ?? '' },
+    techniken: [],
   };
 }
 

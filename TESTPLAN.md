@@ -2188,6 +2188,184 @@ Aufnahme-Strecke lässt sich bis zum Auslösen prüfen. Danach abbrechen.
 | Der Report bemängelt fehlende Füße | Notieren — Prompt-Frage. |
 | Nach 12 Sekunden kommt kein anderer Hinweis | Vor dem Launch beheben. |
 
+## 37 · Keine Beispielbilder mehr, dafür „Das will ich ausprobieren"
+
+Prüft DECISIONS 78, 79 und 80. **Höchstens ZWEI echte Analyse-Läufe**, beide
+im Abschnitt E — einer mit gewählten Techniken, einer ohne. Alles davor im
+Demo-Modus:
+
+```bash
+flutter run --dart-define=TRUEGLOW_MOCK=true
+```
+
+Kosten je echtem Lauf wie immer: eine der zehn Analysen des Monats plus die
+Tokens für Bilder und Antwort.
+
+### A · Die Bilder sind weg (DECISIONS 78)
+
+1. **Kein neuer Report zeigt eine Bilderreihe.** Im Demo-Modus eine Analyse
+   mit allen Modulen laufen lassen und den Report von oben bis unten
+   durchscrollen. Erwartet: Unter den Empfehlungen stehen nur noch Text und
+   Produkte. *Kriterium:* Taucht irgendwo eine Fotoreihe, ein Platzhalter
+   oder eine leere graue Fläche auf, ist das ein **Blocker**.
+
+2. **Auch ein alter Report nicht.** Im Tab **Analyse** einen Report aus der
+   Zeit davor öffnen (Verlauf, ein Eintrag von vor dem 31.08.2026).
+   Erwartet: Er öffnet sich normal, alle Kapitel und Empfehlungen sind da,
+   keine Bilderreihe, keine Fehlermeldung. *Kriterium:* Ein Absturz oder ein
+   leeres Kapitel ist ein **Blocker** — dann stolpert der Leser über das
+   alte Feld.
+
+3. **Nichts erinnert mehr daran.** In den Einstellungen und im Report nach
+   dem Wort **„Pexels"** suchen. Erwartet: kommt nirgends mehr vor.
+
+### B · Der neue Schritt taucht auf (DECISIONS 79)
+
+4. **Er liegt zwischen Richtung und Aufnahme.** Neue Analyse starten:
+   Modus → Module (mindestens **Haut & Farbtyp** und **Zähne & Lächeln**
+   dazuwählen) → „Deine Richtung" → **Weiter**. Erwartet: der Bildschirm
+   **„Das will ich ausprobieren"** mit der Überschrift „Lust, etwas Neues in
+   deine Routine zu holen?". *Kriterium:* Geht es direkt in die Aufnahme,
+   ist der Schritt nicht verdrahtet — **Blocker**.
+
+5. **Nur passende Chips.** Die Liste durchsehen. Erwartet: Überschriften der
+   gewählten Kapitel, darunter die Techniken — „Gua Sha" und „Ölziehen" sind
+   dabei. *Kriterium:* Steht dort eine Technik zu einem Kapitel, das du
+   nicht gewählt hast (etwa „Kleiderschrank-Audit" ohne das Stil-Modul), ist
+   das ein Fund.
+
+6. **Ein Raster, keine Zickzack-Reihe.** Alle Chips sind gleich breit,
+   stehen untereinander und tragen je eine Erklärzeile. *Kriterium:*
+   Unterschiedlich breite Pillen nebeneinander sind ein Fund.
+
+7. **Mehrfachauswahl.** Zwei bis drei antippen, Haken erscheinen, der
+   Zähler unter der Einleitung zählt mit („2 ausgewählt"). Noch einmal
+   antippen: Haken weg.
+
+8. **Überspringen geht wirklich.** Oben rechts **„Überspringen"**. Erwartet:
+   die Aufnahme-Strecke. Dann zurück — die Haken von vorhin stehen noch.
+
+9. **Die Wahl überlebt.** App vollständig schließen und neu starten, wieder
+   bis zu diesem Schritt gehen. Erwartet: dieselben Haken wie vorher.
+   *Kriterium:* Eine leere Liste ist ein Fund — die letzte Wahl soll
+   vorbelegt sein.
+
+10. **Was nicht mehr passt, verschwindet.** Zurück zur Modul-Auswahl,
+    **Haut & Farbtyp** abwählen, wieder vorgehen. Erwartet: „Gua Sha" ist
+    weg — aus der Liste **und** aus dem Zähler.
+
+11. **Und der Zuschnitt stimmt.** In den Einstellungen die Angabe zum
+    Geschlecht auf **weiblich** stellen, dann eine neue Analyse mit **Basis**
+    und **Haut & Farbtyp** beginnen. Erwartet: „Bartbürste" und „Bartöl &
+    Balsam" fehlen, „Nagelpflege-Routine" und „Lippen-Peeling" sind da. Auf
+    **männlich** ist es umgekehrt.
+
+### C · Die Wirkung im Demo-Report (DECISIONS 80)
+
+12. **Zwei Techniken wählen** — „Gua Sha" (Haut) und „Ölziehen" (Zähne) —,
+    die Aufnahme mit Platzhalter-Fotos durchlaufen und die Demo-Analyse
+    starten.
+
+13. **Die Marke steht am richtigen Ort.** Im Report das Kapitel **Haut &
+    Farbtyp** öffnen. Erwartet: über der Einschätzung eine Pille
+    **„Neu für dich · Gua Sha"**, und in den Empfehlungen darunter ein
+    Eintrag, der mit „Gua Sha:" beginnt. Dasselbe bei **Zähne & Lächeln**
+    mit „Ölziehen". *Kriterium:* Steht die Marke in einem fremden Kapitel,
+    ist das ein Fund.
+
+14. **Beides steht in der Tagesliste.** Tab **Heute** öffnen. Erwartet:
+    Unter **„Bei Bedarf"** ganz unten steht eine Aufgabe, die mit
+    **„Zweimal die Woche:"** beginnt; eine zweite steht bei **„Morgens"**
+    oder in einem anderen Tagesabschnitt. *Kriterium:* Landet die
+    Wochenaufgabe zwischen den Morgen-Aufgaben, ist die Einsortierung
+    kaputt — **Blocker**.
+
+15. **Abhaken geht.** Die Wochenaufgabe antippen. Erwartet: Haken, und die
+    Serie zählt sie wie jede andere Aufgabe.
+
+16. **Auf Englisch dasselbe.** Einstellungen → Sprache auf **English**, dann
+    denselben Weg noch einmal (der Report bleibt deutsch, das ist richtig —
+    er behält die Sprache, in der er entstanden ist). Erwartet: Der Schritt
+    heißt **„Things to try"**, die Überschrift **„Fancy adding something new
+    to your routine?"**, die Chips heißen „Gua sha", „Oil pulling".
+    *Kriterium:* Ein deutscher Satz in der englischen Oberfläche ist ein
+    Fund.
+
+17. **Und ohne Auswahl bleibt alles beim Alten.** Demo-Analyse ohne einen
+    einzigen Haken. Erwartet: keine Marke, keine Wochenaufgabe, ein Report
+    wie vorher.
+
+### D · Sicherheit und Ton
+
+18. **Die Liste bleibt harmlos.** Alle Chips über alle Module durchlesen.
+    *Kriterium:* Taucht irgendwo Dermaroller, Microneedling, Mewing,
+    Kiefertraining/Mastic Gum, ein rezeptpflichtiger Wirkstoff oder ein
+    Fasten-/Diät-Vorschlag auf, ist das ein **Blocker**.
+
+19. **Der Zahnhinweis steht da.** Der Chip **„Zähne aufhellen"** trägt als
+    Erklärzeile „Nur nach Rücksprache mit der Zahnarztpraxis". *Kriterium:*
+    Fehlt der Satz, ist das ein **Blocker**.
+
+### E · Die zwei echten Läufe
+
+> Ab hier kostet es. **Genau zwei Läufe**, nicht mehr. Vorher sicherstellen,
+> dass Functions und App in der neuen Fassung laufen.
+
+20. **Lauf 1 — mit Auswahl.** Module: **Basis** und **Haut & Farbtyp**.
+    Im Schritt „Das will ich ausprobieren" **„Gua Sha"** und
+    **„Kopfhautmassage"** wählen. Fotos aufnehmen, Analyse starten.
+
+    Erwartet im fertigen Report:
+    - Im Haut-Kapitel eine Empfehlung, die **Gua Sha** beim Namen nennt, mit
+      2–3 Sätzen Anleitung (was, wie, wie oft) **und** dem Hinweis, dass es
+      nie auf trockener Haut angewendet wird.
+    - Daneben die Marke **„Neu für dich · Gua Sha"**.
+    - Dasselbe für **Kopfhautmassage** im Basis-Kapitel.
+    - In der Tagesliste eine Aufgabe zu Gua Sha, die **nicht** täglich
+      verlangt wird — sie beginnt mit „Zweimal die Woche" oder „Dreimal die
+      Woche".
+
+    *Kriterien:* Fehlt eine der beiden Techniken ganz, ist das ein
+    **Blocker**. Steht Gua Sha als tägliche Pflicht in der Liste, ist das
+    ein **Blocker** — der Takt kommt vom Server. Fehlt nur der
+    Verträglichkeitssatz, notieren.
+
+21. **Lauf 2 — ohne Auswahl.** Dieselben Module, den Schritt
+    **überspringen**. Erwartet: In **jedem** der beiden Kapitel steht
+    mindestens ein Vorschlag, der über „waschen, eincremen, trinken"
+    hinausgeht — eine Technik mit Namen, erklärt und begründet.
+
+    *Kriterium:* Besteht ein Kapitel nur aus Basics, ist das der Fund, um
+    den es in DECISIONS 80 geht. Notieren mit dem vollständigen Kapitel.
+
+22. **Das Protokoll gegenlesen**, bei angeschlossenem Rechner:
+
+    ```bash
+    firebase functions:log --only analysiere --project trueglow-b2c1c -n 40
+    ```
+
+    | Zeile | Bedeutung |
+    |---|---|
+    | `gewaehlte Techniken fehlen im Report` | Lauf 1 hat eine Technik verschluckt — passt zum Befund oben |
+    | `erfundene „Neu fuer dich"-Marken entfernt` | Das Modell hat markiert, was niemand gewählt hat. Kein Blocker, die Marke ist schon weg |
+    | `Tagesaufgaben ohne Bezug zu den Fotos` | Der alte Floskel-Zähler, wie gehabt |
+
+### Was ein Fund ist
+
+| Fund | Reaktion |
+|---|---|
+| Irgendwo taucht noch eine Bilderreihe auf | Blocker. |
+| Ein alter Report öffnet sich nicht mehr | Blocker. |
+| Der Ausprobier-Schritt fehlt im Flow | Blocker. |
+| Eine gewählte Technik fehlt im echten Report | Blocker. |
+| Eine Wochen-Technik steht als tägliche Pflicht in der Liste | Blocker. |
+| Eine Technik jenseits der Sicherheitsgrenze in der Liste | Blocker. |
+| Die Wochenaufgabe landet zwischen den Morgen-Aufgaben | Blocker. |
+| Die Marke steht am falschen Kapitel | Notieren, mit Screenshot. |
+| Der Verträglichkeitssatz fehlt im Text | Notieren — Prompt-Frage. |
+| Ein Kapitel besteht nur aus Basics (Lauf 2) | Notieren, mit dem ganzen Kapitel. |
+| Chips fransen aus oder sind unterschiedlich breit | Vor dem Launch beheben. |
+
 ## Was mit Funden passiert
 
 | Fund | Reaktion |
