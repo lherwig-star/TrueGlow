@@ -138,10 +138,20 @@ describe('Security Rules', () => {
     );
   });
 
-  it('sperrt den Bilder-Cache fuer jeden Client', async () => {
-    // Der Cache gehoert keinem Konto und geht keinen Client etwas an. Er
-    // waere sonst eine Liste dessen, was die App gerade vorschlaegt
-    // (DECISIONS 69).
+  it('sperrt Sammlungen, die das Datenmodell nicht kennt', async () => {
+    const db = alsIch();
+
+    await assertFails(
+      setDoc(doc(db, `users/${ICH}/geheim/eintrag`), { wert: 'x' }),
+    );
+    await assertFails(setDoc(doc(db, 'irgendwas/eintrag'), { wert: 'x' }));
+  });
+
+  it('sperrt auch die Sammlungen des abgeschafften Bilder-Caches', async () => {
+    // `bildcache` und `bildkontingent` hatten bis DECISIONS 78 einen eigenen
+    // Regelblock. Der ist weg – die Pfade bleiben trotzdem zu, weil ein Pfad
+    // ohne Treffer verboten ist. Genau das prueft dieser Test: Die Sperre
+    // haengt nicht an dem geloeschten Block.
     for (const db of [alsIch(), ohneAnmeldung()]) {
       await assertFails(getDoc(doc(db, 'bildcache/abc')));
       await assertFails(setDoc(doc(db, 'bildcache/abc'), { begriff: 'x' }));
@@ -150,14 +160,5 @@ describe('Security Rules', () => {
         setDoc(doc(db, 'bildkontingent/2026-08-27T22'), { anfragen: 0 }),
       );
     }
-  });
-
-  it('sperrt Sammlungen, die das Datenmodell nicht kennt', async () => {
-    const db = alsIch();
-
-    await assertFails(
-      setDoc(doc(db, `users/${ICH}/geheim/eintrag`), { wert: 'x' }),
-    );
-    await assertFails(setDoc(doc(db, 'irgendwas/eintrag'), { wert: 'x' }));
   });
 });

@@ -1852,112 +1852,15 @@ ein Outfit zum Anziehen sowie eines zum Hinlegen.
 | Der Countdown läuft, löst aber nicht aus | Blocker (der `clamp`-Fehler in `auto_ausloeser.dart`). |
 | Die Vorschau ruckelt auf dem Gerät spürbar stärker als vorher | Notieren, mit Gerätemodell. |
 
-## 33 · Beispielbilder unter den Vorschlägen
+## 33 · ~~Beispielbilder unter den Vorschlägen~~ — hinfällig
 
-Prüft DECISIONS 69. **Höchstens EIN echter Analyse-Lauf** — nur damit ein
-Report mit echten Suchbegriffen entsteht. Alles andere im Demo-Modus oder an
-einem Report, der schon da ist:
+Dieser Abschnitt prüfte DECISIONS 69. **Er entfällt vollständig:** Die
+Beispielbilder sind seit DECISIONS 78 aus App und Server entfernt, weil rund
+neun von zehn Fotos nicht zu dem Vorschlag passten, unter dem sie standen.
 
-```bash
-flutter run --dart-define=TRUEGLOW_MOCK=true
-```
-
-### A · Ohne Kontingent (Demo-Modus)
-
-Der Demo-Modus zeigt die Reihe mit **gezeichneten Platzhaltern** statt
-echter Fotos — es läuft dort kein Server. Geprüft wird also Aufbau,
-Antippen, Wischen und die Nennung, nicht das Foto selbst.
-
-1. **Die Reihe steht unter dem Vorschlag.** Demo-Analyse starten, Report
-   öffnen, zum Kapitel „Basis" scrollen. Erwartet: unter der Frisur-Sektion,
-   **nach** den Empfehlungen und Produkten, die Überschrift **„So sieht das
-   aus"** mit drei Kacheln darunter.
-
-2. **Nicht überall.** Weiterscrollen. Erwartet: Bei einer reinen
-   Pflege-Sektion (Hautbild, Zahnpflege, Haltung) steht **keine** Reihe und
-   auch keine leere Fläche.
-
-3. **Antippen öffnet das Vollbild.** Eine Kachel antippen. Erwartet:
-   schwarzer Vollbildschirm, unten der Name des Fotografen und der Knopf
-   **„Bei Pexels ansehen"**, oben rechts ein X.
-
-4. **Wischen geht.** Nach links wischen. Erwartet: Das nächste Bild kommt,
-   der Zähler oben („2 von 3") und der Name wechseln mit.
-
-5. **Der Link führt zu Pexels.** „Bei Pexels ansehen" antippen. Erwartet:
-   Der Browser öffnet sich auf pexels.com. *Kriterium:* Passiert nichts, ist
-   das ein Fund.
-
-6. **Zurück ohne Umweg.** X antippen oder die Zurück-Taste. Erwartet: Der
-   Report steht wieder da, an derselben Stelle.
-
-7. **Auf Englisch.** Sprache umstellen, Schritte 1 und 3 wiederholen.
-   Erwartet: „What this looks like" und „View on Pexels".
-
-### B · Alte Reports
-
-8. **Ein Report von vor heute zeigt keine Bilder.** Aus dem Verlauf einen
-   älteren Report öffnen. Erwartet: Er sieht aus wie immer — **keine**
-   Bilderreihe, keine leere Fläche, keine Fehlermeldung.
-
-### C · Mit einem echten Report (ein Lauf)
-
-Voraussetzung: Der Pexels-Schlüssel ist eingetragen und die Functions sind
-ausgerollt (SETUP.md 5.7).
-
-9. **Echte Fotos kommen an.** Eine echte Analyse laufen lassen, Report
-   öffnen. Erwartet: Unter dem Frisur-Vorschlag stehen **echte Fotos**, kurz
-   nach dem Öffnen. *Kriterium:* Bleiben überall graue Platzhalter stehen,
-   siehe Schritt 13.
-
-10. **Die Fotos passen zum Vorschlag.** Ansehen. *Kriterium:* Zeigen sie
-    etwas ganz anderes als das, was im Text steht — eine Landschaft, ein
-    Produkt, ein völlig anderer Schnitt —, ist das ein Fund. Notieren, mit
-    dem Text der Sektion daneben.
-
-11. **Die Nennung stimmt.** Ein Foto vergrößern. Erwartet: ein echter Name
-    und ein Link, der auf die Seite genau dieses Fotos führt.
-
-12. **Beim zweiten Öffnen sind sie sofort da.** Report schließen und erneut
-    öffnen. Erwartet: Die Bilder erscheinen schneller — der Server hat sie
-    zwischengespeichert.
-
-13. **Gegenprobe im Protokoll**, falls etwas fehlt:
-
-    ```bash
-    firebase functions:log --only bilderSuchen --project trueglow-b2c1c -n 1
-    ```
-
-    | Zeile im Protokoll | Bedeutung |
-    |---|---|
-    | `PEXELS_API_KEY ist leer` | Schlüssel fehlt — SETUP.md 5.7 |
-    | `Pexels antwortete 401` | Schlüssel falsch |
-    | `Pexels antwortete 429` | Limit bei Pexels erreicht |
-    | `Stundenlimit erreicht` | unsere eigene Grenze von 150 |
-    | `unbrauchbare Bild-Suchbegriffe verworfen` | Das Modell hat die Prompt-Regel überlesen |
-
-14. **Verbrauchszeile notieren**, wie in Abschnitt 12 — zum Vergleich mit
-    dem letzten Lauf ohne Suchbegriffe.
-
-### D · Ohne Netz
-
-15. **Flugmodus.** Flugmodus an, einen Report öffnen, den du vorher noch
-    nicht offen hattest. Erwartet: Der Report steht vollständig da, **ohne**
-    Bilderreihen und **ohne** Fehlermeldung. *Kriterium:* Eine rote Meldung,
-    ein Ladekringel, der nie aufhört, oder eine leere graue Fläche, die
-    stehen bleibt, sind Funde.
-
-### Was ein Fund ist
-
-| Fund | Reaktion |
-|---|---|
-| Eine Fehlermeldung, weil Bilder fehlen | Blocker. |
-| Eine leere Fläche oder ein Dauer-Platzhalter, wo keine Bilder kommen | Blocker. |
-| Ein Foto ohne Fotografennamen im Vollbild | Blocker — die Lizenz verlangt ihn. |
-| Der Link führt nicht zu diesem Foto | Blocker. |
-| Ein alter Report zeigt plötzlich etwas Kaputtes | Blocker. |
-| Die Fotos passen inhaltlich nicht zum Vorschlag | Notieren, mit dem Text daneben — das ist eine Prompt-Frage. |
-| Der Report ruckelt beim Scrollen spürbar stärker als vorher | Notieren, mit Gerätemodell. |
+Was an seine Stelle tritt, steht in Abschnitt 37: Dort wird unter anderem
+geprüft, dass im Report **keine** Bilderreihe mehr auftaucht — auch nicht in
+einem Report, der noch aus der Zeit davor stammt.
 
 ## 34 · Tagesablauf, Rückkamera und der neue Stil-Fragebogen
 
