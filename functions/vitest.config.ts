@@ -5,7 +5,11 @@ export default defineConfig({
     // Die Rules-Tests brauchen den Firestore-Emulator und laufen deshalb
     // ueber ein eigenes Kommando (npm run test:rules).
     include: ['test/**/*.test.ts'],
-    exclude: ['test/rules.test.ts', 'node_modules/**'],
+    exclude: [
+      'test/rules.test.ts',
+      'test/loeschen.test.ts',
+      'node_modules/**',
+    ],
     environment: 'node',
   },
 });

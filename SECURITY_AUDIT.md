@@ -34,7 +34,7 @@ Prompt-Baukasten, ohne das Modell zu rufen.
 | **A1** Firestore-Regeln | 🟢 | Jedes Konto kommt nur an seinen eigenen Baum — mit dem Emulator nachgewiesen, 7 von 7 Tests bestanden. |
 | **A2** Functions, fremde Daten | 🟢 | Alle drei Functions nehmen die Nutzer-ID ausschließlich aus dem Login; es gibt keinen Weg, mit einem fremden Schlüssel fremde Daten zu holen. |
 | **A3** App Check | 🟢 | Auf allen drei Functions im Code erzwungen, für Firestore in der Konsole erzwungen und durch einen Live-Lauf bestätigt. |
-| **B1** Kontingent unumgehbar | 🟡 | Der Zähler ist serverseitig und rennwettfest — aber „Alle Daten löschen" setzt ihn zurück, und damit lässt sich die Monatsgrenze beliebig oft neu starten. |
+| **B1** Kontingent unumgehbar | 🟢 **behoben** | Der Zähler überlebt „Alle Daten löschen" jetzt; sechs Tests gegen den Emulator belegen es, die Datenschutzerklärung nennt die Ausnahme (DECISIONS 83). |
 | **B2** Client-schreibbare Werte | 🟢 | Der Server liest aus der Datenbank ausschließlich seine eigenen Zähler; Serie und Joker sind reine Anzeige und werden nie als Wahrheit genommen. |
 | **B3** Käufe (vorausschauend) | 🟢 | Es gibt noch keine Käufe; die Stelle zum Andocken ist benannt. |
 | **C1** Schlüssel und Git-Historie | 🟢 | Alle 105 Commits durchsucht: Es war nie ein echter Schlüssel im Repo. |
@@ -185,6 +185,14 @@ Zähler außerhalb von `users/{uid}` führen. **Aufwand: klein** (ein
 Nachmittag inklusive Test).
 
 ---
+
+> **Behoben am 31.08.2026 (DECISIONS 83).** `datenLoeschen` sichert
+> die Zähler vor dem `recursiveDelete` und schreibt sie danach zurück — in
+> einer Transaktion und mit dem jeweils höheren Wert, damit eine Analyse, die
+> zwischendurch startet, nicht gratis wird. Beim Löschen des **Kontos** wird
+> nichts behalten: Die uid ist danach für immer verbraucht. Sechs Tests gegen
+> den Firestore-Emulator halten das fest, und Abschnitt 8 der
+> Datenschutzerklärung nennt die Ausnahme ausdrücklich.
 
 ### B2 · Was der Client schreiben darf 🟢
 

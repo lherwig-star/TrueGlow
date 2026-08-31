@@ -240,7 +240,6 @@ function checkinDaten(
     wirkung: [],
     plan: [{ modul: 'basis', habits: ['Haare stylen', 'Bart ölen'] }],
     richtung: { ziele: [], freitext: '' },
-    techniken: [],
     historie: [],
     mitFotos: false,
     ...ueberschreibung,

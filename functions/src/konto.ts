@@ -1,5 +1,9 @@
 import { getAuth } from 'firebase-admin/auth';
-import { getFirestore } from 'firebase-admin/firestore';
+import {
+  getFirestore,
+  type CollectionReference,
+  type DocumentData,
+} from 'firebase-admin/firestore';
 import type { CallableRequest } from 'firebase-functions/v2/https';
 import { HttpsError } from 'firebase-functions/v2/https';
 
@@ -74,10 +78,80 @@ function neuAnmelden(grund: string): HttpsError {
  * es ist aber vollständig und nimmt Unterkollektionen mit, was der Client
  * nicht kann. Bricht es ab, bleibt ein Rest stehen; ein zweiter Aufruf räumt
  * ihn weg, weil die Aktion idempotent ist.
+ *
+ * **[kontingentBehalten] ist die eine Ausnahme davon** — und der Grund steht
+ * in SECURITY_AUDIT B1: Bis dahin verschwand mit dem Nutzerbaum auch der
+ * Verbrauchszähler, und damit ließ sich die Monatsgrenze durch wiederholtes
+ * "Alle Daten löschen" beliebig oft zurücksetzen. Zehn Analysen, löschen,
+ * zehn weitere — auf unsere Rechnung.
+ *
+ * Beim Löschen des **Kontos** wird nichts behalten: Die uid ist danach für
+ * immer verbraucht, ein Zähler dazu wäre ein Datensatz ohne Zweck.
  */
-export async function datenLoeschen(uid: string): Promise<void> {
+export async function datenLoeschen(
+  uid: string,
+  options: { kontingentBehalten: boolean },
+): Promise<void> {
   const db = getFirestore();
-  await db.recursiveDelete(db.collection('users').doc(uid));
+  const wurzel = db.collection('users').doc(uid);
+  const zaehler = wurzel.collection('kontingent');
+
+  const gesichert = options.kontingentBehalten
+    ? await kontingentLesen(zaehler)
+    : [];
+
+  await db.recursiveDelete(wurzel);
+
+  for (const [id, daten] of gesichert) {
+    await kontingentZurueck(zaehler.doc(id), daten);
+  }
+}
+
+/** Der Stand aller Zähler, bevor gelöscht wird. */
+async function kontingentLesen(
+  sammlung: CollectionReference,
+): Promise<[string, DocumentData][]> {
+  const treffer = await sammlung.get();
+  return treffer.docs.map((d) => [d.id, d.data()]);
+}
+
+/**
+ * Schreibt einen gesicherten Zählerstand zurück.
+ *
+ * In einer Transaktion und mit dem jeweils **höheren** Wert: Zwischen dem
+ * Sichern und dem Zurückschreiben kann eine Analyse gestartet worden sein.
+ * Sie würde sonst überschrieben — und wäre damit gratis.
+ */
+async function kontingentZurueck(
+  referenz: FirebaseFirestore.DocumentReference,
+  gesichert: DocumentData,
+): Promise<void> {
+  await getFirestore().runTransaction(async (transaktion) => {
+    const jetzt = (await transaktion.get(referenz)).data() ?? {};
+
+    const hoeher = (feld: string, schluesselfeld: string) => {
+      // Nur vergleichbar, wenn beide denselben Tag bzw. Monat meinen.
+      if (jetzt[schluesselfeld] !== gesichert[schluesselfeld]) {
+        return jetzt[feld] ?? gesichert[feld];
+      }
+      return Math.max(zahl(jetzt[feld]), zahl(gesichert[feld]));
+    };
+
+    transaktion.set(
+      referenz,
+      {
+        ...gesichert,
+        ...jetzt,
+        tagZaehler: hoeher('tagZaehler', 'tag'),
+        monatZaehler: hoeher('monatZaehler', 'monat'),
+      },
+      { merge: true },
+    );
+  });
+}
+
+function zahl(wert: unknown): number {
+  return typeof wert === 'number' && Number.isFinite(wert) ? wert : 0;
 }
 
 /** Löscht das Auth-Konto. Danach ist die uid für immer verbraucht. */

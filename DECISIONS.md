@@ -4070,6 +4070,73 @@ mehr braucht ein Aufruf nicht, der ausschließlich eigene Daten liefert.
 und eine vierte Cloud Function. Dagegen steht, dass die App vor
 Testpersonen überhaupt erst rechtlich vorzeigbar ist.
 
+## 83 · Der Verbrauchszähler überlebt das Datenlöschen
+
+Behebt SECURITY_AUDIT B1.
+
+**Der Fund:** „Alle Daten löschen" räumte den kompletten Nutzerbaum — und
+darin lag der Zähler, wie viele Analysen jemand in diesem Monat gestartet
+hat. Danach stand er auf null. Zehn Analysen, löschen, zehn weitere. Kein
+manipulierter Client nötig; ein Knopf in den Einstellungen.
+
+Gedeckelt war der Schaden nur durch das aufgeladene Gemini-Guthaben. Das ist
+kein Schutz, das ist Zufall.
+
+### Warum der Zähler bleiben darf
+
+Weil er nichts über die Person enthält. In dem Dokument stehen zwei Zahlen,
+ein Tag, ein Monat und ein Zeitstempel — kein Inhalt, keine Angabe, kein
+Ergebnis. Aus ihm lässt sich ablesen, dass ein Konto neun Analysen gemacht
+hat, und sonst gar nichts.
+
+Rechtsgrundlage ist das berechtigte Interesse an der Missbrauchsvermeidung
+(Art. 6 Abs. 1 lit. f DSGVO). **Wir schreiben das ausdrücklich in die
+Datenschutzerklärung**, Abschnitt 8, statt es stillschweigend zu tun. Eine
+Löschfunktion, die etwas stehen lässt und es nicht sagt, wäre schlimmer als
+das Problem.
+
+### Warum nicht in eine eigene Sammlung
+
+Der naheliegende Weg wäre gewesen, die Zähler aus `users/{uid}`
+herauszuziehen. Dagegen sprach, dass damit drei Dinge auf einmal wandern: die
+Firestore-Regeln, der Regel-Test und die Aussage „der Zähler liegt im
+Nutzerbaum, also gilt für ihn dieselbe Löschregel wie für alles andere".
+
+Stattdessen bleibt alles, wo es ist, und `datenLoeschen` bekommt einen
+Schalter: sichern, löschen, zurückschreiben. Das ist die kleinere Änderung
+und sie ist an einer Stelle nachzulesen.
+
+**Beim Löschen des Kontos** wird nichts behalten. Die uid ist danach für
+immer verbraucht; ein Zähler dazu wäre ein Datensatz ohne Zweck.
+
+### Die Lücke zwischen Sichern und Zurückschreiben
+
+Zwischen beidem kann eine Analyse starten. Würde der gesicherte Stand stumpf
+zurückgeschrieben, wäre sie gratis — das Loch wäre kleiner, aber noch da.
+
+Deshalb läuft das Zurückschreiben in einer Transaktion und nimmt je Feld den
+**höheren** Wert, sofern beide denselben Tag bzw. Monat meinen. Ein Test
+fährt genau diesen Fall.
+
+### Der Nachweis
+
+Sechs Tests gegen den Firestore-Emulator (`npm run test:rules`) — nicht
+gegen eine Attrappe: `recursiveDelete` lässt sich nicht sinnvoll nachbauen,
+und ohne den Emulator wäre der wichtigste Satz dieses Tests eine Behauptung.
+
+| Test | Zusage |
+|---|---|
+| räumt alle Inhalte weg | Daten, Analysen, Check-ins, Fortschritt, Kopfdokument — alles weg |
+| lässt den Zähler stehen | 3 am Tag, 9 im Monat bleiben stehen |
+| behält die Check-in-Freistellung | auch der freie Check-in lässt sich nicht neu holen |
+| dreimal löschen | setzt nichts zurück |
+| Buchung dazwischen | der höhere Stand gewinnt |
+| Konto löschen | nimmt den Zähler mit |
+
+**Preis:** Nach „Alle Daten löschen" ist das Konto leer, aber nicht neu. Wer
+sein Monatskontingent aufgebraucht hat, bekommt es damit nicht zurück — und
+genau das ist der Punkt.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

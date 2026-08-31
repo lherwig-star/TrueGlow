@@ -162,7 +162,10 @@ export const kontoLoeschen = onCall(OPTIONEN, async (request) => {
     pruefeFrischeAnmeldung(request);
   }
 
-  await datenLoeschen(uid);
+  // Beim reinen Datenloeschen bleibt der Verbrauchszaehler stehen: Er
+  // enthaelt nichts ueber die Person und ist das Einzige, was die
+  // Monatsgrenze traegt (SECURITY_AUDIT B1).
+  await datenLoeschen(uid, { kontingentBehalten: modus === 'daten' });
 
   if (modus === 'konto') {
     await authKontoLoeschen(uid);
