@@ -889,11 +889,15 @@ class LDe extends L {
   }
 
   @override
-  String get richtungStehtOben =>
-      'Deine gewählten Richtungen stehen oben unter „Deine Auswahl“.';
+  String get ergebnisDeinWunsch => 'Dein Wunsch';
 
   @override
-  String ergebnisKopf(String datum, int kapitel, int empfehlungen) {
+  String ergebnisKopf(
+    String datum,
+    String modus,
+    int kapitel,
+    int empfehlungen,
+  ) {
     String _temp0 = intl.Intl.pluralLogic(
       kapitel,
       locale: localeName,
@@ -906,7 +910,7 @@ class LDe extends L {
       other: '$empfehlungen Empfehlungen',
       one: '1 Empfehlung',
     );
-    return '$datum · $_temp0 · $_temp1';
+    return '$datum · $modus · $_temp0 · $_temp1';
   }
 
   @override

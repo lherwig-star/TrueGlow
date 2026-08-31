@@ -11,7 +11,6 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../analysis/models/analyse_modus.dart';
 import '../../analysis/models/analysis_result.dart';
-import '../../direction/logic/direction_controller.dart';
 import '../../direction/models/richtung.dart';
 import '../../history/logic/analysis_repository.dart';
 import '../../modules/logic/module_controller.dart';
@@ -99,9 +98,6 @@ class ResultScreen extends ConsumerWidget {
         // Was der Nutzer selbst eingegeben hat – direkt unter dem
         // Gesamtbild, bevor die Kapitel anfangen (DECISIONS 87).
         _AuswahlEcho(ergebnis: ergebnis),
-        const SizedBox(height: AppTheme.gapM),
-        _RichtungKarte(ergebnis: ergebnis),
-        const SizedBox(height: AppTheme.gapM),
         // Die Kapitel als Übersicht statt als langer Scroll: eine
         // Kachel je Bereich, dahinter der unveränderte Inhalt
         // (DECISIONS 89).
@@ -146,6 +142,11 @@ class _Kopf extends StatelessWidget {
                 heute: texte.datumHeute,
                 gestern: texte.datumGestern,
               ),
+              // Der Modus stand als Pille in der Auswahl-Zeile. Dort war er
+              // fehl am Platz: Er ist keine Auswahl aus einer Liste, sondern
+              // die Frage, die dieser Report beantwortet – und die gehört
+              // in die Zeile, die den Report benennt (DECISIONS 90).
+              ergebnis.modus.etikett(texte),
               ergebnis.kapitel.length,
               ergebnis.anzahlEmpfehlungen,
             ),
@@ -162,9 +163,12 @@ class _Kopf extends StatelessWidget {
 /// Kapitel darunter sind die Umsetzung dieser Richtung. Wer ihn ueberspringt,
 /// liest den Rest als lose Tipps.
 ///
-/// Optisch abgesetzt und nicht als gewoehnliche Karte: Der Ton fuer
-/// Erreichtes umrandet ihn, derselbe, der das Etikett im Verlauf traegt.
-/// Das ist keine Wertung des anderen Modus – es ist Wiedererkennung.
+/// **Seit DECISIONS 90 eine Karte wie jede andere.** Sie trug einen goldenen
+/// Rahmen und war damit das lauteste Element der Seite – eine Textkarte, die
+/// mehr Aufmerksamkeit zog als der eigentliche Inhalt darunter. Und Gold
+/// gehoert dem Erreichten (DECISIONS 50), nicht der Dekoration. Die
+/// Ueberschrift darf dafuer eine Stufe groesser sein; der Inhalt ist
+/// unveraendert.
 class _GesamtbildKarte extends StatelessWidget {
   const _GesamtbildKarte({required this.titel, required this.text});
 
@@ -175,34 +179,20 @@ class _GesamtbildKarte extends StatelessWidget {
   Widget build(BuildContext context) {
     final farben = context.farben;
 
-    return Container(
-      padding: const EdgeInsets.all(AppTheme.gapM),
-      decoration: BoxDecoration(
-        color: Color.alphaBlend(
-          farben.erreichtFlaeche.withValues(alpha: 0.08),
-          Theme.of(context).cardTheme.color ?? farben.flaeche,
-        ),
-        border: Border.all(color: farben.erreichtFlaeche, width: 1.4),
-        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-      ),
+    return SectionCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(
-                Icons.explore_outlined,
-                size: 18,
-                color: farben.erreichtFlaeche,
-              ),
+              Icon(Icons.explore_outlined, size: 20, color: farben.akzent),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   titel,
-                  style: TextStyle(
-                    fontSize: 17,
+                  style: const TextStyle(
+                    fontSize: 19,
                     fontWeight: FontWeight.w800,
-                    color: farben.erreicht,
                   ),
                 ),
               ),
@@ -216,97 +206,23 @@ class _GesamtbildKarte extends StatelessWidget {
   }
 }
 
-/// Kompakte Zusammenfassung der persoenlichen Ziele, mit denen dieser Report
-/// entstanden ist.
-///
-/// Weicht die gespeicherte Richtung inzwischen ab, bietet die Karte an, den
-/// Plan mit den vorhandenen Fotos neu zu rechnen – neue Aufnahmen braucht es
-/// dafuer nicht.
-class _RichtungKarte extends ConsumerWidget {
-  const _RichtungKarte({required this.ergebnis});
-
-  final AnalysisResult ergebnis;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final texte = context.texte;
-    final farben = context.farben;
-    final aktuell = ref.watch(directionControllerProvider);
-    final verwendet = ergebnis.richtung;
-    final geaendert = aktuell != verwendet;
-
-    return SectionCard(
-      title: texte.richtungTitel,
-      icon: Icons.explore_outlined,
-      trailing: TextButton(
-        onPressed: () => context.push(Routes.richtungBearbeiten),
-        child: Text(
-          verwendet.istLeer ? texte.richtungAngeben : texte.richtungAendern,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (verwendet.istLeer)
-            MutedText(texte.richtungLeerText)
-          else ...[
-            // Die gewählten Richtungen stehen als Pillen im Auswahl-Echo
-            // weiter oben. Sie hier ein zweites Mal zu zeigen, wäre auf
-            // demselben Bildschirm doppelt (DECISIONS 87); diese Karte
-            // behält den Freitext und den Weg zum Ändern.
-            if (verwendet.kurzfassung.isNotEmpty) ...[
-              Container(
-                padding: const EdgeInsets.only(left: AppTheme.gapS),
-                decoration: BoxDecoration(
-                  border: Border(
-                    left: BorderSide(color: farben.akzent, width: 2),
-                  ),
-                ),
-                child: Text(
-                  verwendet.kurzfassung,
-                  style: TextStyle(
-                    height: 1.5,
-                    fontStyle: FontStyle.italic,
-                    color: farben.textSekundaer,
-                  ),
-                ),
-              ),
-            ],
-            // Ohne Freitext bliebe die Karte sonst leer. Ein Satz ist
-            // besser als eine Überschrift über nichts – und er sagt
-            // gleich, wo die Auswahl steht.
-            if (verwendet.ziele.isNotEmpty && verwendet.kurzfassung.isEmpty)
-              MutedText(texte.richtungStehtOben),
-          ],
-          if (geaendert) ...[
-            const SizedBox(height: AppTheme.gapM),
-            MutedText(texte.richtungAktualisierenText),
-            const SizedBox(height: AppTheme.gapS),
-            FilledButton.icon(
-              onPressed: () =>
-                  context.push(Routes.analyseNeu(ergebnis.module)),
-              style: FilledButton.styleFrom(shape: const StadiumBorder()),
-              icon: const Icon(Icons.refresh),
-              label: Text(texte.richtungAktualisieren),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-/// Was der Nutzer selbst eingegeben hat, in einer Zeile (DECISIONS 87).
+/// Was der Nutzer selbst eingegeben hat, in genau einer Zeile
+/// (DECISIONS 87, neu gefasst in DECISIONS 90).
 ///
 /// Der Befund: Die gewaehlte Richtung floss in den Prompt ein und praegte den
 /// Report – nur sah man das dem Report nicht an. Eine Auswahl, deren Folgen
 /// unsichtbar bleiben, fuehlt sich folgenlos an.
 ///
-/// Was hier steht, ist ausschliesslich Gewaehltes und nichts Erfundenes:
-/// die Richtungen dieser Analyse, die Techniken, die es wirklich in den
-/// Report geschafft haben, und der Modus. Wurde der Richtungs-Schritt
-/// uebersprungen, fehlen die Richtungs-Pillen – dann steht dort nur der
-/// Modus, und der ist in jedem Durchlauf eine echte Entscheidung.
+/// **Eine Zeile, waagerecht scrollbar** und keine Chip-Wolke: Die Wolke wuchs
+/// mit der Auswahl und schob die Kacheln nach unten – ausgerechnet das, was
+/// der Kern der Seite sein soll. Laeuft die Zeile ueber, wird der letzte Chip
+/// angeschnitten; das ist der Hinweis, dass es weitergeht.
+///
+/// Was hier steht, ist ausschliesslich Gewaehltes und nichts Erfundenes: erst
+/// die Richtungen, dann die Techniken, die es wirklich in den Report
+/// geschafft haben. Der Freitext steht bewusst **nicht** hier – er ist oft
+/// ein ganzer Absatz und hat sein Zuhause im Zielkapitel. Gibt es nichts zu
+/// zeigen, entfaellt die Zeile ganz, samt Beschriftung.
 class _AuswahlEcho extends StatelessWidget {
   const _AuswahlEcho({required this.ergebnis});
 
@@ -329,21 +245,31 @@ class _AuswahlEcho extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final texte = context.texte;
-    final pillen = [
-      for (final ziel in ergebnis.richtung.sortierteZiele) ziel.label(texte),
-      ..._techniken,
-      ergebnis.modus.etikett(texte),
-    ];
+    final richtungen = ergebnis.richtung.sortierteZiele;
+    final techniken = _techniken;
+    if (richtungen.isEmpty && techniken.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
-    return Padding(
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.gapXs),
-      child: Wrap(
-        spacing: AppTheme.gapXs,
-        runSpacing: AppTheme.gapXs,
-        crossAxisAlignment: WrapCrossAlignment.center,
+      child: Row(
         children: [
           MutedText('${texte.ergebnisAuswahl}:'),
-          for (final pille in pillen) _ZielPille(pille),
+          const SizedBox(width: AppTheme.gapXs),
+          for (final ziel in richtungen) ...[
+            _ZielPille(ziel.label(texte)),
+            const SizedBox(width: AppTheme.gapXs),
+          ],
+          // Die Techniken tragen ein Funkeln vor dem Namen – dasselbe
+          // Zeichen, an dem man „Neu für dich" im Kapitel wiedererkennt.
+          // Ohne es waere „Gua Sha" von einer Stilrichtung nicht zu
+          // unterscheiden.
+          for (final technik in techniken) ...[
+            _ZielPille(technik, symbol: Icons.auto_awesome),
+            const SizedBox(width: AppTheme.gapXs),
+          ],
         ],
       ),
     );
@@ -354,9 +280,12 @@ class _AuswahlEcho extends StatelessWidget {
 /// die Schrift – Kleinschrift in Akzentfarbe kaeme auf der Karte nicht auf
 /// die noetigen 4,5:1.
 class _ZielPille extends StatelessWidget {
-  const _ZielPille(this.label);
+  const _ZielPille(this.label, {this.symbol});
 
   final String label;
+
+  /// Kleines Zeichen vor der Beschriftung – nur die Techniken tragen eines.
+  final IconData? symbol;
 
   @override
   Widget build(BuildContext context) {
@@ -368,13 +297,22 @@ class _ZielPille extends StatelessWidget {
         color: farben.akzent.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(999),
       ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 12.5,
-          fontWeight: FontWeight.w600,
-          color: farben.textPrimaer,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (symbol case final zeichen?) ...[
+            Icon(zeichen, size: 12, color: farben.textPrimaer),
+            const SizedBox(width: 5),
+          ],
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12.5,
+              fontWeight: FontWeight.w600,
+              color: farben.textPrimaer,
+            ),
+          ),
+        ],
       ),
     );
   }

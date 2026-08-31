@@ -49,6 +49,7 @@ class KapitelRaster extends ConsumerWidget {
                     child: KapitelKachel(
                       analyseId: ergebnis.id,
                       kapitel: eintrag,
+                      freitext: ergebnis.richtung.freitext,
                     ),
                   ),
                 ],
@@ -74,10 +75,27 @@ class KapitelKachel extends ConsumerWidget {
     super.key,
     required this.analyseId,
     required this.kapitel,
+    this.freitext = '',
   });
 
   final String analyseId;
   final Kapitel kapitel;
+
+  /// Der Wunsch in eigenen Worten – nur auf der Kachel des Zielkapitels.
+  ///
+  /// Er stand bis DECISIONS 90 in einer eigenen Karte weiter oben. Dort war
+  /// er doppelt: Das Zielkapitel entsteht aus genau diesem Text. Jetzt steht
+  /// er da, wo das Kapitel steht, das aus ihm geworden ist.
+  final String freitext;
+
+  /// Was unter dem Bereichsnamen steht.
+  String _untertitel() {
+    if (kapitel.modul == AnalyseModul.persoenlicheZiele) {
+      final wunsch = freitext.trim().replaceAll(RegExp(r'\s+'), ' ');
+      if (wunsch.isNotEmpty) return wunsch;
+    }
+    return kapitel.einleitung;
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -131,12 +149,12 @@ class KapitelKachel extends ConsumerWidget {
                   height: 1.25,
                 ),
               ),
-              if (kapitel.einleitung.isNotEmpty) ...[
+              if (_untertitel().isNotEmpty) ...[
                 const SizedBox(height: 4),
-                // Nichts Erfundenes: Das ist die Einleitung des Kapitels,
-                // gekürzt – kein neuer Text und kein zweites Feld.
+                // Nichts Erfundenes: die Einleitung des Kapitels, gekürzt –
+                // beim Zielkapitel der eigene Wunsch.
                 Text(
-                  kapitel.einleitung,
+                  _untertitel(),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(

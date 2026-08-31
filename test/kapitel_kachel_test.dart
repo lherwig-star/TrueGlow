@@ -8,6 +8,7 @@ import 'package:trueglow/core/theme/app_theme.dart';
 import 'package:trueglow/features/analysis/logic/json_extractor.dart';
 import 'package:trueglow/features/analysis/logic/mock_analysis_service.dart';
 import 'package:trueglow/features/analysis/models/analysis_result.dart';
+import 'package:trueglow/features/direction/models/richtung.dart';
 import 'package:trueglow/features/history/logic/analysis_repository.dart';
 import 'package:trueglow/features/modules/models/analyse_modul.dart';
 import 'package:trueglow/features/result/ui/kapitel_screen.dart';
@@ -32,6 +33,10 @@ void main() {
         id: '1',
         erstelltAm: DateTime(2026, 8, 31),
         gesamtbild: 'Ein ruhiges Gesamtbild mit klarer Richtung.',
+        richtung: const Richtung(
+          ziele: {Richtungsziel.cleanGepflegt},
+          freitext: 'Ich will gepflegter wirken, ohne viel Aufwand.',
+        ),
         kapitel: [
           for (final modul in AnalyseModul.values)
             Kapitel(
@@ -314,6 +319,87 @@ void main() {
       expect(find.text('Erste Empfehlung'), findsOneWidget);
       expect(find.text('Zweite'), findsOneWidget);
       expect(find.textContaining('Einleitung zu basis'), findsOneWidget);
+    });
+  });
+
+  group('Der Freitext wohnt im Zielkapitel', () {
+    // DECISIONS 90: Er stand in einer eigenen Karte, die dasselbe sagte wie
+    // das Kapitel darunter. Jetzt steht er dort, wo das Kapitel steht, das
+    // aus ihm geworden ist.
+    testWidgets('auf der Kachel als Untertitel', (tester) async {
+      handyGroesse(tester, hoehe: 3000);
+
+      final ergebnis = vollerReport();
+      final container = await speichern(ergebnis);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: testHuelle(
+            Scaffold(
+              body: SingleChildScrollView(
+                child: KapitelRaster(ergebnis: ergebnis),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Ich will gepflegter wirken, ohne viel Aufwand.'),
+        findsOneWidget,
+      );
+      // Und nicht die Einleitung des Zielkapitels.
+      expect(
+        find.textContaining('Einleitung zu persoenlicheZiele'),
+        findsNothing,
+      );
+    });
+
+    testWidgets('und dahinter vollständig als Zitat', (tester) async {
+      handyGroesse(tester, hoehe: 3000);
+
+      final container = await speichern(vollerReport());
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: testHuelle(const KapitelScreen(
+            analyseId: '1',
+            modulName: 'persoenlicheZiele',
+          )),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(texte.ergebnisDeinWunsch), findsOneWidget);
+      expect(
+        find.text('Ich will gepflegter wirken, ohne viel Aufwand.'),
+        findsOneWidget,
+      );
+      // Der Rest des Kapitels steht wie bisher darunter.
+      expect(find.text('Abschnitt persoenlicheZiele'), findsOneWidget);
+      expect(find.text('Erste Empfehlung'), findsOneWidget);
+    });
+
+    testWidgets('in einem anderen Bereich steht kein Zitat', (tester) async {
+      handyGroesse(tester, hoehe: 3000);
+
+      final container = await speichern(vollerReport());
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: testHuelle(const KapitelScreen(
+            analyseId: '1',
+            modulName: 'basis',
+          )),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(texte.ergebnisDeinWunsch), findsNothing);
     });
   });
 

@@ -407,18 +407,19 @@
       }
     }
   },
-  "richtungStehtOben": "Deine gewählten Richtungen stehen oben unter „Deine Auswahl“.",
-  "@richtungStehtOben": {
-    "description": "Fuellt die Richtungskarte, wenn nur Chips und kein Freitext vorliegen."
+  "ergebnisDeinWunsch": "Dein Wunsch",
+  "@ergebnisDeinWunsch": {
+    "description": "Ueberschrift des Zitatblocks mit dem Freitext im Zielkapitel."
   },
   "@ergebnisAuswahl": {
     "description": "Vorspann der Echo-Zeile im Report, die die eigenen Eingaben zeigt."
   },
-  "ergebnisKopf": "{datum} · {kapitel, plural, one{1 Kapitel} other{{kapitel} Kapitel}} · {empfehlungen, plural, one{1 Empfehlung} other{{empfehlungen} Empfehlungen}}",
+  "ergebnisKopf": "{datum} · {modus} · {kapitel, plural, one{1 Kapitel} other{{kapitel} Kapitel}} · {empfehlungen, plural, one{1 Empfehlung} other{{empfehlungen} Empfehlungen}}",
   "@ergebnisKopf": {
     "description": "Zeile über dem Report. Datum, Kapitelzahl und Empfehlungszahl stehen bewusst zusammen in einem Satz: Als drei Bausteine im Dart-Code blieben zwei davon deutsch, während die Oberfläche schon englisch war.",
     "placeholders": {
       "datum": { "type": "String" },
+      "modus": { "type": "String" },
       "kapitel": { "type": "int" },
       "empfehlungen": { "type": "int" }
     }

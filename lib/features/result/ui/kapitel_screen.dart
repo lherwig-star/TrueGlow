@@ -61,6 +61,13 @@ class KapitelScreen extends ConsumerWidget {
     return AppPage(
       title: kapitel.titel(texte, ausrichtung),
       children: [
+        // Der Wunsch in eigenen Worten steht über dem, was daraus geworden
+        // ist – vollständig und nicht gekürzt (DECISIONS 90).
+        if (kapitel.modul == AnalyseModul.persoenlicheZiele &&
+            (ergebnis?.richtung.freitext.trim() ?? '').isNotEmpty) ...[
+          _WunschZitat(text: ergebnis!.richtung.freitext.trim()),
+          const SizedBox(height: AppTheme.gapM),
+        ],
         KapitelBlock(kapitel: kapitel),
         const SizedBox(height: AppTheme.gapS),
         Padding(
@@ -68,6 +75,61 @@ class KapitelScreen extends ConsumerWidget {
           child: MutedText(texte.disclaimerMedizin),
         ),
       ],
+    );
+  }
+}
+
+/// Der Freitext des Nutzers als Zitat über dem Zielkapitel.
+///
+/// Eigene Optik und keine gewöhnliche Karte: Das hier ist der einzige Text
+/// auf der ganzen Seite, der nicht von der Analyse stammt, sondern vom
+/// Nutzer selbst. Ein Zitat sieht man das an.
+class _WunschZitat extends StatelessWidget {
+  const _WunschZitat({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final texte = context.texte;
+    final farben = context.farben;
+
+    return Container(
+      padding: const EdgeInsets.all(AppTheme.gapM),
+      decoration: BoxDecoration(
+        color: farben.flaecheHoch,
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+        border: Border(left: BorderSide(color: farben.akzent, width: 3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.format_quote, size: 18, color: farben.akzent),
+              const SizedBox(width: 6),
+              Text(
+                texte.ergebnisDeinWunsch,
+                style: TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.6,
+                  color: farben.textSekundaer,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.gapXs),
+          Text(
+            text,
+            style: const TextStyle(
+              height: 1.55,
+              fontSize: 15.5,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

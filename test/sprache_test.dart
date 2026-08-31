@@ -241,14 +241,17 @@ void main() {
     test('die Kopfzeile des Reports ist ganz übersetzt', () {
       // Sie stand als „today · 1 Kapitel · 4 Empfehlungen" auf dem Gerät –
       // halb englisch, halb deutsch, weil sie aus drei Bausteinen bestand.
-      final deutsch = texte.ergebnisKopf('heute', 2, 7);
-      expect(deutsch, 'heute · 2 Kapitel · 7 Empfehlungen');
-      expect(texte.ergebnisKopf('heute', 1, 1), 'heute · 1 Kapitel · 1 Empfehlung');
+      // Seit DECISIONS 90 steht der Modus mit in der Zeile – er war
+      // vorher eine Pille in der Auswahl-Zeile.
+      final deutsch = texte.ergebnisKopf('heute', 'Verfeinert', 2, 7);
+      expect(deutsch, 'heute · Verfeinert · 2 Kapitel · 7 Empfehlungen');
+      expect(texte.ergebnisKopf('heute', 'Verfeinert', 1, 1),
+          'heute · Verfeinert · 1 Kapitel · 1 Empfehlung');
 
-      final english = englisch.ergebnisKopf('today', 2, 7);
-      expect(english, 'today · 2 chapters · 7 recommendations');
-      expect(englisch.ergebnisKopf('today', 1, 1),
-          'today · 1 chapter · 1 recommendation');
+      final english = englisch.ergebnisKopf('today', 'Refined', 2, 7);
+      expect(english, 'today · Refined · 2 chapters · 7 recommendations');
+      expect(englisch.ergebnisKopf('today', 'Refined', 1, 1),
+          'today · Refined · 1 chapter · 1 recommendation');
 
       // Kein deutsches Wort im englischen Satz.
       expect(english, isNot(contains('Kapitel')));

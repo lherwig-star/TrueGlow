@@ -4488,6 +4488,74 @@ scrollen – das ist der Handel. Er lohnt sich, solange man den Report
 überfliegt und gezielt hineingeht; wenn sich zeigt, dass die Leute ihn doch
 am Stück lesen, ist dieser Commit einzeln zurückzudrehen.
 
+## 90 · Vier Sorten statt sieben
+
+Die Kacheln aus DECISIONS 89 waren die richtige Richtung und trotzdem nicht
+genug: Auf der Report-Seite standen danach **sieben verschiedene Element-Typen
+gleichberechtigt untereinander** – Kopfzeile, Gesamtbild mit goldenem Rahmen,
+Auswahl-Wolke, Richtungskarte, Kacheln, drei große Erweitern-Karten, zwei
+Knöpfe. Ausgerechnet der Hauptinhalt war optisch der kleinste.
+
+Ziel dieses Umbaus: **vier Sorten und eine klare Rangordnung.** Kopfzeile →
+ruhiges Gesamtbild → eine Auswahl-Zeile → Kacheln → eine kompakte
+Erweitern-Karte → Hinweis → ein Knopf.
+
+### Die Karte „Deine Richtung" fällt weg
+
+Sie sagte dasselbe zweimal: Die gewählten Richtungen standen als Pillen
+bereits in der Auswahl-Zeile, und der Freitext ist genau das, woraus das
+Kapitel „Persönliche Ziele" entsteht. Dazu kam ein Ändern-Knopf an einer
+Stelle, an der sich nichts mehr ändern lässt – die Analyse ist gelaufen.
+
+Der Freitext zieht deshalb dorthin, wo er hingehört: auf die Kachel des
+Zielkapitels als Untertitel und auf der Kapitelseite ganz oben als Zitat, in
+eigener Optik. Er ist der einzige Text der ganzen Seite, der nicht von der
+Analyse stammt, sondern vom Nutzer – das darf man ihm ansehen.
+
+**In die Auswahl-Zeile gehört er nicht**: Leute schreiben dort ganze Absätze,
+und ein Absatz in einer Chip-Reihe ist kein Chip mehr.
+
+> **Was dabei mit verschwunden ist.** Die Karte trug auch das Angebot
+> „Plan mit neuer Richtung aktualisieren" – der einzige Weg, eine Analyse mit
+> den **vorhandenen** Fotos neu rechnen zu lassen, wenn sich die Richtung
+> geändert hat. `Routes.analyseNeu` gibt es weiterhin, nur ruft sie niemand
+> mehr auf. Ob dieser Weg an anderer Stelle wieder auftauchen soll, steht als
+> Frage im Bericht; wiederherstellen ist eine Zeile.
+
+### Die Auswahl wird eine Zeile
+
+Aus der mehrzeiligen Chip-Wolke wird **eine** waagerecht scrollbare Zeile:
+erst die Stilrichtungen, dann die Techniken. Läuft sie über, wird der letzte
+Chip angeschnitten – das ist der Hinweis, dass es weitergeht.
+
+Die Wolke wuchs mit der Auswahl und schob die Kacheln nach unten. Wer viel
+angetippt hatte, bekam dafür weniger von dem zu sehen, was daraus geworden
+war. Eine Zeile ist eine Zeile, egal wie viel drinsteht.
+
+**Die Techniken tragen ein Funkeln vor dem Namen** – sonst wäre „Gua Sha"
+von einer Stilrichtung nicht zu unterscheiden. Dasselbe Zeichen steht im
+Kapitel an „Neu für dich".
+
+**Der Modus ist keine Pille mehr.** Er ist auch keine Auswahl aus einer
+Liste, sondern die Frage, die dieser Report beantwortet – und die gehört in
+die Zeile, die den Report benennt: „gestern · Verfeinert · 3 Kapitel · 14
+Empfehlungen".
+
+Ohne jede Auswahl entfällt die Zeile ganz, samt Beschriftung. Ein Label über
+nichts ist schlechter als kein Label.
+
+### Das Gesamtbild wird leiser
+
+Der goldene Rahmen ist weg. Zwei Gründe, und der zweite wäre allein schon
+genug: Er machte eine **Textkarte** zum lautesten Element einer Seite, deren
+Kern die Kacheln sind. Und Gold gehört seit DECISIONS 50 dem Erreichten – als
+Rahmen um einen Fließtext war es Dekoration.
+
+Die Karte sieht jetzt aus wie jede andere; die Überschrift ist dafür eine
+Stufe größer. Der Inhalt ist unverändert, und dass der Vorspann über allem
+steht (DECISIONS 67), ist es auch – nur trägt das jetzt die Reihenfolge und
+nicht die Farbe.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

@@ -1645,17 +1645,22 @@ abstract class L {
   /// **'{anzahl, plural, one{1 Empfehlung} other{{anzahl} Empfehlungen}}'**
   String ergebnisKachelEmpfehlungen(int anzahl);
 
-  /// Fuellt die Richtungskarte, wenn nur Chips und kein Freitext vorliegen.
+  /// Ueberschrift des Zitatblocks mit dem Freitext im Zielkapitel.
   ///
   /// In de, this message translates to:
-  /// **'Deine gewählten Richtungen stehen oben unter „Deine Auswahl“.'**
-  String get richtungStehtOben;
+  /// **'Dein Wunsch'**
+  String get ergebnisDeinWunsch;
 
   /// Zeile über dem Report. Datum, Kapitelzahl und Empfehlungszahl stehen bewusst zusammen in einem Satz: Als drei Bausteine im Dart-Code blieben zwei davon deutsch, während die Oberfläche schon englisch war.
   ///
   /// In de, this message translates to:
-  /// **'{datum} · {kapitel, plural, one{1 Kapitel} other{{kapitel} Kapitel}} · {empfehlungen, plural, one{1 Empfehlung} other{{empfehlungen} Empfehlungen}}'**
-  String ergebnisKopf(String datum, int kapitel, int empfehlungen);
+  /// **'{datum} · {modus} · {kapitel, plural, one{1 Kapitel} other{{kapitel} Kapitel}} · {empfehlungen, plural, one{1 Empfehlung} other{{empfehlungen} Empfehlungen}}'**
+  String ergebnisKopf(
+    String datum,
+    String modus,
+    int kapitel,
+    int empfehlungen,
+  );
 
   /// No description provided for @ergebnisGesichtsform.
   ///

@@ -373,8 +373,16 @@ void main() {
       );
     });
 
-    testWidgets('der Report bietet nach einer Aenderung die Neuberechnung an',
+    testWidgets('der Report zeigt die Richtung, aber keine Karte mehr',
         (tester) async {
+      // Bis DECISIONS 90 stand hier eine Karte „Deine Richtung" mit dem
+      // Freitext und einem Angebot, den Plan mit geänderter Richtung neu zu
+      // rechnen. Beides ist weg: Die gewählten Richtungen stehen in der
+      // Auswahl-Zeile, der Freitext im Zielkapitel.
+      //
+      // **Was damit auch weg ist:** der einzige Weg zur Neuberechnung aus
+      // vorhandenen Fotos. `Routes.analyseNeu` gibt es weiterhin – nur
+      // ruft sie niemand mehr auf. Das steht als Frage im Bericht.
       handyGroesse(tester, hoehe: 3000);
       final container = await _appMitDashboard(tester);
 
@@ -399,24 +407,19 @@ void main() {
       );
       await container.read(analysenProvider.notifier).speichern(gespeichert);
 
-      // Gleicher Stand wie im Report: kein Angebot zum Neuberechnen.
-      container
-          .read(directionControllerProvider.notifier)
-          .umschalten(Richtungsziel.cleanGepflegt);
-      container.read(routerProvider).push('${Routes.result}/report1');
-      await tester.pumpAndSettle();
-
-      expect(find.text(texte.richtungTitel), findsOneWidget);
-      expect(find.text(Richtungsziel.cleanGepflegt.label(texte)), findsOneWidget);
-      expect(find.text(texte.richtungAktualisieren), findsNothing);
-
-      // Richtung aendern -> der Report bietet die Neuberechnung an.
       container
           .read(directionControllerProvider.notifier)
           .umschalten(Richtungsziel.sportlichFunktional);
+      container.read(routerProvider).push('${Routes.result}/report1');
       await tester.pumpAndSettle();
 
-      expect(find.text(texte.richtungAktualisieren), findsOneWidget);
+      // Die Wahl dieser Analyse steht weiter da – als Pille, nicht als Karte.
+      expect(
+        find.text(Richtungsziel.cleanGepflegt.label(texte)),
+        findsOneWidget,
+      );
+      expect(find.text(texte.richtungTitel), findsNothing);
+      expect(find.text(texte.richtungAktualisieren), findsNothing);
     });
   });
 }

@@ -19,6 +19,8 @@ import 'package:trueglow/features/onboarding/logic/onboarding_controller.dart';
 import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
 import 'package:trueglow/main.dart';
 
+import 'package:trueglow/features/result/ui/widgets/kapitel_kachel.dart';
+
 import 'hilfen.dart';
 
 /// Die Moduswahl – der erste Schritt jeder Analyse.
@@ -292,11 +294,12 @@ void main() {
         findsOneWidget,
       );
 
-      // Ueber dem Richtungs-Block: Die Kapitel darunter sind die Umsetzung
-      // dieser Richtung, nicht umgekehrt.
+      // Ueber den Kapiteln: Sie sind die Umsetzung dieser Richtung, nicht
+      // umgekehrt. (Bis DECISIONS 90 wurde gegen die Richtungskarte
+      // verglichen – die gibt es nicht mehr.)
       final look = tester.getTopLeft(find.text(texte.neuerLookTitel)).dy;
-      final richtung = tester.getTopLeft(find.text(texte.richtungTitel)).dy;
-      expect(look, lessThan(richtung));
+      final kachel = tester.getTopLeft(find.byType(KapitelKachel).first).dy;
+      expect(look, lessThan(kachel));
     });
 
     testWidgets('der verfeinernde Report hat ihn auch – unter eigenem Namen',

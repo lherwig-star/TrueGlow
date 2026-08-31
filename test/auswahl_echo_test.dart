@@ -89,13 +89,16 @@ void main() {
       expect(find.text(texte.richtungszielStreetwear), findsOneWidget);
       expect(find.text(texte.richtungszielMarkant), findsOneWidget);
       expect(find.text('Gua Sha'), findsWidgets);
-      expect(find.text(texte.modusEntdeckenEtikett), findsOneWidget);
+      // Der Modus steht seit DECISIONS 90 in der Kopfzeile und ist keine
+      // Pille mehr.
+      expect(find.textContaining(texte.modusEntdeckenEtikett), findsOneWidget);
     });
 
     testWidgets('und zwar genau einmal, nicht zweimal auf demselben Schirm',
         (tester) async {
-      // Die Richtungskarte zeigte dieselben Pillen. Zwei gleiche Zeilen
-      // untereinander lesen sich wie ein Fehler.
+      // Die Richtungskarte zeigte dieselben Pillen ein zweites Mal. Seit
+      // DECISIONS 90 gibt es die Karte nicht mehr – nach einer gelaufenen
+      // Analyse liess sich dort ohnehin nichts mehr ändern.
       await zeige(
         tester,
         analyse(
@@ -104,7 +107,7 @@ void main() {
       );
 
       expect(find.text(texte.richtungszielClean), findsOneWidget);
-      expect(find.text(texte.richtungStehtOben), findsOneWidget);
+      expect(find.text(texte.richtungTitel), findsNothing);
     });
 
     testWidgets('ohne Auswahl wird nichts erfunden', (tester) async {
@@ -116,8 +119,12 @@ void main() {
       for (final ziel in Richtungsziel.values) {
         expect(find.text(ziel.label(texte)), findsNothing, reason: ziel.name);
       }
-      expect(find.text(texte.modusVerfeinernEtikett), findsOneWidget);
-      expect(find.text(texte.richtungLeerText), findsOneWidget);
+      expect(
+        find.textContaining(texte.modusVerfeinernEtikett),
+        findsOneWidget,
+      );
+      // Ohne Auswahl entfällt die Zeile ganz – kein leeres Label.
+      expect(find.text('${texte.ergebnisAuswahl}:'), findsNothing);
     });
 
     testWidgets('eine nicht untergebrachte Technik wird nicht behauptet',
