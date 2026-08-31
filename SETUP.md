@@ -1361,6 +1361,184 @@ andere Prüfung bestehen.
 
 ---
 
+## 16 · Sicherheits-Kontrollgang in der Google-Konsole
+
+Sechs Punkte, die **nur du** nachsehen kannst: Sie stehen in der Firebase-
+bzw. Google-Cloud-Konsole und nicht im Code. Im Audit
+(`SECURITY_AUDIT.md`) sind sie als „nicht prüfbar" markiert — nicht als
+grün, weil ich sie von hier aus nicht sehen kann.
+
+**Wie du zurückmeldest:** Bei jedem Punkt steht, was du mir sagen sollst.
+Ein Satz genügt. Ich trage es dann im Audit nach, mit Datum.
+
+> **Zwei Konsolen, und sie sehen verschieden aus.**
+> **Firebase** (<https://console.firebase.google.com>) ist die freundliche
+> Oberfläche für App-Themen. **Google Cloud**
+> (<https://console.cloud.google.com>) ist die technische darunter. Beide
+> zeigen dasselbe Projekt: **trueglow-b2c1c**. Prüfe oben immer, dass dort
+> auch wirklich dieses Projekt steht.
+
+---
+
+☐ **16.1 App Check: Wird es noch erzwungen?**
+
+Es war am 24.08.2026 eingeschaltet (Abschnitt 4.4). Ob es das noch ist, sieht
+man nur hier.
+
+1. Firebase-Konsole öffnen, Projekt **trueglow-b2c1c** wählen
+2. Links unten **Build → App Check**
+3. Reiter **APIs**
+
+**Sollwert:** Bei **Cloud Firestore** steht **Erzwungen** (englisch:
+*Enforced*), nicht *Nicht erzwungen*.
+
+> **Cloud Functions steht dort nicht in der Liste.** Das ist richtig so:
+> Functions der 2. Generation werden über den Code erzwungen, und dort steht
+> `enforceAppCheck: true` — geprüft und bestätigt (Audit A3).
+
+4. Reiter **Apps**: Bei der Android-App muss **Play Integrity** stehen.
+
+**Melde mir:** „Firestore steht auf erzwungen, Play Integrity ist aktiv" —
+oder was stattdessen dasteht.
+
+---
+
+☐ **16.2 Anmeldeverfahren: Ist etwas offen, das die App nicht benutzt?**
+
+Die App benutzt **Google**, **Apple** und **anonym**. Alles andere wäre eine
+Tür, die niemand braucht.
+
+1. Firebase-Konsole → **Build → Authentication**
+2. Reiter **Sign-in method**
+
+**Sollwert:** Aktiviert sind genau **Google**, **Apple** und **Anonymous**.
+Alles andere steht auf *Disabled* — insbesondere **E-Mail/Passwort**.
+
+3. Steht dort noch etwas anderes auf aktiviert: draufklicken, den Schalter
+   auf **Disabled** stellen, **Speichern**.
+
+> **Ein Verfahren abzuschalten sperrt niemanden aus, der es nie benutzt hat.**
+> Falls du dich selbst irgendwann mit E-Mail angemeldet hast, sag es mir
+> vorher — dann sehen wir uns das an, bevor du es abschaltest.
+
+**Melde mir:** die Liste dessen, was auf aktiviert steht.
+
+---
+
+☐ **16.3 Firestore-Backup einschalten (Point-in-Time-Recovery)**
+
+Derzeit gibt es **kein** Backup. Ein versehentliches Löschen oder ein Fehler
+in einer Function wäre nicht rückgängig zu machen.
+
+1. Google-Cloud-Konsole → oben das Projekt **trueglow-b2c1c** wählen
+2. Im Suchfeld oben **Firestore** eingeben, den Treffer **Firestore** öffnen
+3. Links **Databases**, dann die Datenbank **(default)** anklicken
+4. Reiter oder Abschnitt **Backups / Disaster recovery**
+5. **Point-in-time recovery (PITR)** auf **Enabled** stellen
+
+**Sollwert:** PITR ist **aktiviert**. Damit lässt sich der Stand der letzten
+**sieben Tage** minutengenau wiederherstellen.
+
+**Was das kostet:** Speicherplatz für die Änderungen von sieben Tagen. Bei
+der Datenmenge dieses Projekts sind das Cent-Beträge im Monat.
+
+**Melde mir:** „PITR ist an" — oder die Fehlermeldung, falls der Schalter
+nicht geht.
+
+---
+
+☐ **16.4 Budget-Alarm nachschärfen und den Deckel prüfen**
+
+Es gibt bereits ein automatisches Budget über 25 € (Abschnitt 5.3). Zwei
+Dinge fehlen: eine frühere Warnschwelle und die Gewissheit über die harte
+Obergrenze.
+
+**Teil A — die Warnung früher setzen**
+
+1. Google-Cloud-Konsole → Suchfeld → **Billing** (Abrechnung)
+2. Links **Budgets & alerts** (Budgets und Benachrichtigungen)
+3. Das bestehende Budget **Firebase Project trueglow-b2c1c** öffnen
+4. Unter **Set budget amount** den Betrag auf **20 €** setzen
+5. Unter **Actions / Set budget alerts** Schwellen eintragen: **50 %**,
+   **75 %**, **100 %** — bei 20 € sind das Warnungen ab 10 €
+6. Häkchen bei **Email alerts to billing admins and users** muss gesetzt sein
+7. **Finish / Speichern**
+
+**Teil B — der harte Deckel**
+
+Ein Budget-Alarm ist eine E-Mail. Er stoppt **nichts**. Die einzige echte
+Obergrenze ist derzeit das aufgeladene Guthaben für Gemini.
+
+8. <https://aistudio.google.com/> öffnen → **Get API key** → dein Projekt
+9. Nachsehen, ob dort **Prepaid-Guthaben** steht und **keine automatische
+   Nachzahlung** eingerichtet ist
+
+**Sollwert:** Guthaben aufgeladen, automatische Nachzahlung **aus**. Dann
+kann die Rechnung nicht davonlaufen, egal was passiert.
+
+**Melde mir:** den Betrag des Budgets, die Schwellen — und ob eine
+automatische Nachzahlung eingerichtet ist.
+
+---
+
+☐ **16.5 Fehler-Alarm für die Functions**
+
+Fehler landen zuverlässig im Protokoll. Es sieht sie nur, wer nachschaut. Am
+27.08.2026 hat genau das einen halben Tag gekostet (DECISIONS 59).
+
+1. Google-Cloud-Konsole → Suchfeld → **Monitoring**
+2. Links **Alerting** → **+ Create policy**
+3. **Select a metric** → im Suchfeld **Cloud Function** eingeben →
+   **Cloud Function → Function → Executions** wählen → **Apply**
+4. Unter **Add filters**: `status` **!=** `ok`
+5. **Rolling window** auf **5 min**, **Rolling window function** auf **sum**
+6. **Next** → **Threshold position: Above threshold**, **Threshold value: 5**
+7. **Next** → **Notification channels** → **Manage notification channels** →
+   **Email → Add new** → deine Adresse eintragen, bestätigen, auswählen
+8. Name: `TrueGlow Function-Fehler`, dann **Create policy**
+
+**Sollwert:** Eine aktive Regel, die eine E-Mail schickt, wenn in fünf
+Minuten mehr als fünf Aufrufe fehlschlagen.
+
+> **Warum fünf und nicht einer:** Ein einzelner Fehlschlag ist Alltag —
+> abgelaufenes Debug-Token, jemand ohne Netz. Fünf in fünf Minuten sind ein
+> Muster.
+
+**Melde mir:** „Alarmregel steht" — oder an welchem Schritt es hakt.
+
+---
+
+☐ **16.6 Wie lange die Protokolle aufbewahrt werden**
+
+Im Audit steht „Standard sind 30 Tage" — geprüft ist das nicht.
+
+1. Google-Cloud-Konsole → Suchfeld → **Logging**
+2. Links **Logs Storage**
+3. In der Liste den Eimer **_Default** ansehen, Spalte **Retention**
+
+**Sollwert:** **30 Tage**. Steht dort deutlich mehr, kannst du es hier
+herabsetzen: auf den Eimer klicken → **Edit bucket** → **Retention period**.
+
+**Melde mir:** die Zahl, die in der Spalte steht.
+
+---
+
+### Und einer, der nicht in die Konsole gehört
+
+☐ **16.7 Den Quellcode aus diesem Rechner herausbekommen**
+
+`git remote` ist leer. Der komplette Projektstand — Code, DECISIONS,
+TESTPLAN, SETUP, der Audit-Bericht — existiert **nur auf diesem einen
+Rechner**. Ein Festplattenschaden wäre ein Totalverlust.
+
+Das ist streng genommen kein Sicherheitsthema, aber der gravierendere der
+beiden Backup-Punkte — und er ist in einer halben Stunde erledigt. Der
+Klickweg steht in Abschnitt 8.
+
+**Melde mir:** „Repo liegt bei GitHub" — dann hake ich 8.1 mit ab.
+
+---
+
 ## Offen, sobald es soweit ist
 
 Diese Punkte gehören zu späteren Phasen und stehen hier nur als Merkposten:

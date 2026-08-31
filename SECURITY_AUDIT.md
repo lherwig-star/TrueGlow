@@ -46,10 +46,10 @@ Prompt-Baukasten, ohne das Modell zu rufen.
 | **E2** Fehlermeldungen | 🟢 | Beim Nutzer landen nur kurze Fallnamen, Einzelheiten bleiben im Server-Protokoll. |
 | **F1** Protokolle | 🟢 **behoben** | Die Konto-ID ist aus den Kontingentzeilen entfernt; die verbleibenden Bruchstücke sind Betriebszahlen ohne Personenbezug (DECISIONS 85). Aufbewahrungsdauer: siehe Konsolen-Anleitung. |
 | **F2** DSGVO | 🟡 **teilweise behoben** | Datenschutzerklärung, Nutzungsbedingungen und Impressum liegen als Entwurf in beiden Sprachen bei, die Datenauskunft gibt es; offen bleiben die juristische Prüfung und die Angaben im Impressum (DECISIONS 82). |
-| **G1** Kosten-Bremse | 🟡 | Ein Budget-Alarm besteht (25 € im Monat) — ein Alarm ist aber keine Obergrenze. |
-| **G2** Monitoring | 🟡 | Nicht prüfbar von hier; im Projekt ist keine Alarmregel für Fehler oder Aufrufmengen dokumentiert. |
-| **G3** Backups | 🟡 | Für Firestore ist nirgends ein Backup eingerichtet, und der Quellcode liegt nur auf diesem einen Rechner. |
-| **G4** Abhängigkeiten | 🟡 | 8 mittlere Meldungen im Server-Betrieb, die schweren betreffen nur Werkzeuge; 58 Flutter-Pakete sind veraltet. |
+| **G1** Kosten-Bremse | 🟡 **du bist dran** | Das größte Loch (B1) ist zu; der Alarm bleibt ein Alarm. Klickweg in SETUP 16.4. |
+| **G2** Monitoring | 🟡 **du bist dran** | Klickweg für eine Fehler-Alarmregel steht in SETUP 16.5. |
+| **G3** Backups | 🟡 **du bist dran** | Klickweg für Point-in-time-Recovery in SETUP 16.3, Remote-Repo in SETUP 16.7. |
+| **G4** Abhängigkeiten | 🟡 **geprüft, bewusst nichts geändert** | `npm audit fix` ändert nichts; die erzwungene Fassung würde firebase-admin um drei Hauptversionen zurückstufen. Begründung unten. |
 | **H** Konto und Sitzung | 🟡 **teilweise behoben** | Beim Kontolöschen werden die Sitzungen jetzt widerrufen (DECISIONS 85); die Ein-Stunden-Gültigkeit eines bereits ausgestellten Tokens bleibt — dazu eine Frage in der Fix-Liste. |
 
 **Ursprünglich zwei rote Punkte, elf gelbe, acht grüne.**
@@ -777,9 +777,24 @@ solche Meldungen gibt".
 **Folge:** Heute keine. Der Abstand wächst aber, und irgendwann wird das
 Aktualisieren zum Umbau.
 
-**Fix:** `npm audit fix` für die Werkzeuge, die Firebase-Pakete in einem
-eigenen Arbeitspaket auf den Stand bringen und danach die Tests laufen
-lassen. **Aufwand: klein bis mittel.**
+> **Geprüft und bewusst nicht geändert, 31.08.2026.** `npm audit fix`
+> ohne `--force` ändert **gar nichts** — es gibt keine Fassung, die die
+> Meldungen behebt und die Hauptversion behält. Und `npm audit fix --force`
+> würde **firebase-admin von 13 auf 10** und **firebase-functions von 6 auf
+> 4** zurückstufen: npm „behebt" die Meldung, indem es auf eine drei Jahre
+> alte Hauptversion geht, die die verwundbare Abhängigkeit gar nicht erst
+> kennt. Das wäre erheblich schlimmer als der Befund.
+>
+> Damit bleibt es dabei: Die eine Ursache in der Produktion (`uuid`, über
+> `firebase-admin` → `@google-cloud/storage`) verschwindet, wenn Google die
+> Abhängigkeit aktualisiert. Unser Code ruft die betroffene Funktion nicht
+> mit eigenem Puffer auf — das praktische Risiko ist sehr gering.
+>
+> Die Flutter-Pakete (58 Versionsschritte hinter dem Stand) gehören in ein
+> eigenes Arbeitspaket: `firebase_core` ist bewusst festgenagelt
+> (DECISIONS 29), und ein Rundum-Update kurz vor dem Launch ist genau die
+> Art Änderung, die man vor Testpersonen nicht macht. Empfehlung: nach dem
+> Testlauf, mit anschließendem vollständigen Testdurchgang am Gerät.
 
 ---
 
@@ -826,32 +841,79 @@ zu holen gibt (**Aufwand: klein**).
 
 ---
 
-# Die Fix-Liste, nach Dringlichkeit
+# Was aus der Fix-Liste geworden ist
 
-## 🔴 Vor den Testpersonen
+**Stufe 2, 31.08.2026.** Die Reihenfolge ist die der ursprünglichen Liste.
 
-| # | Was | Wo | Aufwand |
-|---|---|---|---|
-| 1 | **Datenschutzerklärung erstellen** und mit Nutzungsbedingungen und Impressum eintragen, Textversion hochsetzen | `rechtstexte.dart`, SETUP 10/11 | mittel — überwiegend Schreibarbeit |
-| 2 | **Freitext-Ausbruch schließen:** `"""` und Anführungszeichen entfernen, Steuerzeichen filtern, Check-in-Notizen genauso einrahmen wie den Analyse-Freitext, Regeln am Prompt-Ende wiederholen | `functions/src/eingang.ts`, `checkin_prompt.ts` | klein — ein Tag mit Tests |
-| 3 | Die Zusage „Bilder werden bei Google nicht gespeichert" gegen die aktuellen Gemini-Bedingungen halten | Einwilligungstext | sehr klein — nachlesen |
+## Erledigt
 
-## 🟡 Vor dem Store-Start
+| # | Was | Wo nachzulesen |
+|---|---|---|
+| 1 | Rechtstexte als vollständiger Entwurf, zweisprachig, in der App lesbar | DECISIONS 82 |
+| 2 | Freitext-Ausbruch geschlossen — Datenblock mit zufälliger Marke, geputzter Nutzertext, Verbotsliste am Ende | DECISIONS 81 |
+| 4 | Kontingentzähler überlebt „Alle Daten löschen" | DECISIONS 83 |
+| 5 | Bilddaten werden als JPEG geprüft, bevor sie Geld kosten | DECISIONS 84 |
+| 6 | Datenauskunft „Meine Daten herunterladen" | DECISIONS 82 |
+| 11 | Antworten mit Bewertungszahlen werden verworfen; `affiliateUrl` serverseitig auf `null` | DECISIONS 81, 85 |
+| 12 | `debugPrint` im Release stillgelegt | DECISIONS 85 |
+| 13 | Konto-ID aus den Kontingent-Protokollzeilen | DECISIONS 85 |
+| — | Sitzungen werden beim Kontolöschen widerrufen | DECISIONS 85 |
 
-| # | Was | Wo | Aufwand |
-|---|---|---|---|
-| 4 | **Kontingentzähler beim Datenlöschen erhalten** — sonst ist die Monatsgrenze beliebig oft rücksetzbar | `functions/src/konto.ts` | klein |
-| 5 | **Bilddaten wirklich prüfen** (gültiges Base64, JPEG-Kennung) vor dem Modellaufruf | `functions/src/eingang.ts` | sehr klein |
-| 6 | **Datenauskunft/Export** für den Nutzer anbieten | Einstellungen | klein bis mittel |
-| 7 | **Privates Remote-Repo** anlegen und pushen — der Code liegt derzeit nur auf einem Rechner | SETUP 8.1 | sehr klein |
-| 8 | **Firestore-Backup** (Point-in-Time-Recovery) einschalten | Google-Cloud-Konsole | sehr klein |
-| 9 | **Zwei Monitoring-Alarme** (Fehlerrate, Aufrufmenge) | Google-Cloud-Konsole | klein |
-| 10 | **Anmeldeverfahren aufräumen** — abschalten, was die App nicht benutzt | Firebase-Konsole | sehr klein |
-| 11 | **Inhaltsprüfung der Antwort:** Notenmuster und Diagnosewörter melden; `affiliateUrl` serverseitig auf `null` zwingen | `nachbereitung.ts` | klein bis mittel |
-| 12 | **`debugPrint` im Release stilllegen** | `lib/main.dart` | sehr klein |
-| 13 | **Konto-ID aus den Kontingent-Protokollzeilen** nehmen; Aufbewahrungsdauer der Protokolle ansehen | `functions/src/limit.ts`, Konsole | sehr klein |
-| 14 | **Abhängigkeiten aktualisieren**, danach Tests | `functions`, `pubspec.yaml` | klein bis mittel |
-| 15 | **Harte Kostengrenze** bewusst behalten (aufgeladenes Guthaben statt automatischer Nachzahlung), optional Notaus über Budget-Alarm | Google-Cloud-Konsole | mittel |
+## Bei dir — Klickwege stehen in SETUP 16
+
+| # | Was | Abschnitt |
+|---|---|---|
+| 7 | Privates Remote-Repo (der Code liegt nur auf einem Rechner) | SETUP 16.7 |
+| 8 | Firestore-Backup (Point-in-time-Recovery) | SETUP 16.3 |
+| 9 | Fehler-Alarm für die Functions | SETUP 16.5 |
+| 10 | Anmeldeverfahren aufräumen | SETUP 16.2 |
+| 15 | Budget schärfer stellen, harten Deckel bestätigen | SETUP 16.4 |
+| — | App-Check-Erzwingung nachsehen | SETUP 16.1 |
+| — | Aufbewahrungsdauer der Protokolle | SETUP 16.6 |
+
+## Offen, weil es deine Entscheidung braucht
+
+Diese vier habe ich **nicht** umgesetzt. Jeder kostet etwas oder verändert
+etwas für Nutzer — das entscheidest du, nicht ich.
+
+### F1 · Das Impressum ausfüllen · **dringend**
+
+Es besteht ausschließlich aus Angaben, die nur du kennst: Name,
+ladungsfähige Anschrift, Kontakt. Im Entwurf stehen eckige Klammern.
+**Das muss vor den Testpersonen passieren** — ein Impressum ist Pflicht,
+sobald die App verteilt wird.
+
+*Meine Empfehlung:* ausfüllen, bevor der erste Tester das APK bekommt.
+
+### F2 · Die Rechtstexte juristisch prüfen lassen · **dringend**
+
+Der Entwurf beschreibt die Datenflüsse korrekt — geprüft hat ihn niemand.
+Solange die Textversion auf `-entwurf` steht, bricht der Release-Build ab;
+das ist Absicht.
+
+*Meine Empfehlung:* Prüfung beauftragen, danach sage mir Bescheid, dann
+hebe ich die Version auf `1` und der Release ist frei.
+
+### F3 · Das gelöschte Konto und die eine Stunde
+
+Ein bereits ausgestelltes Token bleibt bis zu einer Stunde gültig, weil die
+Functions es nur prüfen und nicht bei Firebase nachfragen, ob es das Konto
+noch gibt. Nachzufragen kostet **einen zusätzlichen Datenbankzugriff bei
+jedem Aufruf** — bei jeder Analyse, jedem Check-in, jeder Löschung.
+
+*Meine Empfehlung:* so lassen. Der Betroffene ist an dasselbe Kontingent
+gebunden wie vorher, und seit Stufe 2 kann er es nicht mehr zurücksetzen.
+Der Schaden ist auf drei Analysen begrenzt; der Preis wäre dauerhaft.
+
+### F4 · Die Flutter-Pakete aktualisieren
+
+58 Versionsschritte hinter dem Stand, keine bekannte Lücke — für Dart gibt
+es keine Schwachstellen-Datenbank, deshalb lässt sich das auch nicht
+ausschließen. `firebase_core` ist bewusst festgenagelt (DECISIONS 29).
+
+*Meine Empfehlung:* **nach** dem Testlauf, als eigenes Arbeitspaket mit
+vollständigem Testdurchgang am Gerät. Ein Rundum-Update kurz vor dem ersten
+Test ist genau die Art Änderung, die man dann nicht macht.
 
 ---
 
@@ -859,16 +921,20 @@ zu holen gibt (**Aufwand: klein**).
 
 Ehrlichkeitshalber ausdrücklich benannt statt grün gefärbt:
 
-| Punkt | Warum nicht |
-|---|---|
-| Ob App Check in der Konsole **heute** noch erzwungen wird | Braucht Zugriff auf die Firebase-Konsole. Beleg ist die Dokumentation (SETUP 4.4) plus ein Live-Lauf. |
-| Welche Anmeldeverfahren freigeschaltet sind | Nur unter **Authentication → Sign-in method** sichtbar. |
-| Ob es eine Monitoring-Alarmregel gibt | Wird in der Konsole angelegt, steht nicht im Projekt. |
-| Ob Firestore-Backups laufen | Dito. |
-| Wie lange die Cloud-Protokolle aufbewahrt werden | Dito. Standard sind 30 Tage. |
-| Ob Google die Bilder wirklich nicht speichert | Zusage eines fremden Dienstes, hängt am Tarif. Nur in den Gemini-Bedingungen nachzulesen. |
-| Ob eine echte Analyse verbotene Inhalte liefert | Hätte Kontingent gekostet. Geprüft wurde stattdessen der Prompt-Baukasten — das zeigt die Lücke, nicht das Ergebnis. |
-| Bekannte Lücken in Flutter-Paketen | Für Dart existiert keine Schwachstellen-Datenbank wie `npm audit`. |
+> **Für alle sechs gibt es seit dem 31.08.2026 einen Klickweg:
+> `SETUP.md`, Abschnitt 16.** Melde mir je Punkt den Ist-Zustand, dann trage
+> ich ihn hier mit Datum nach.
+
+| Punkt | Warum nicht | Klickweg |
+|---|---|---|
+| Ob App Check in der Konsole **heute** noch erzwungen wird | Braucht Zugriff auf die Firebase-Konsole. Beleg ist die Dokumentation (SETUP 4.4) plus ein Live-Lauf. | SETUP 16.1 |
+| Welche Anmeldeverfahren freigeschaltet sind | Nur unter **Authentication → Sign-in method** sichtbar. | SETUP 16.2 |
+| Ob es eine Monitoring-Alarmregel gibt | Wird in der Konsole angelegt, steht nicht im Projekt. | SETUP 16.5 |
+| Ob Firestore-Backups laufen | Dito. | SETUP 16.3 |
+| Wie lange die Cloud-Protokolle aufbewahrt werden | Dito. Standard sind 30 Tage. | SETUP 16.6 |
+| Ob Google die Bilder wirklich nicht speichert | Zusage eines fremden Dienstes, hängt am Tarif. Nur in den Gemini-Bedingungen nachzulesen. | einmal nachlesen |
+| Ob eine echte Analyse verbotene Inhalte liefert | Hätte Kontingent gekostet. Geprüft wurde stattdessen der Prompt-Baukasten — das zeigt die Lücke, nicht das Ergebnis. | TESTPLAN 38 |
+| Bekannte Lücken in Flutter-Paketen | Für Dart existiert keine Schwachstellen-Datenbank wie `npm audit`. | — |
 
 ---
 
