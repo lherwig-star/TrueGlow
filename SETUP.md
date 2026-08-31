@@ -639,16 +639,18 @@ Damit entfällt alles, was dieser Abschnitt verlangt hat: kein Pexels-Konto,
 kein Schlüssel, kein Secret. Die Function `bilderSuchen` ist gelöscht, und
 der Deploy verlangt `PEXELS_API_KEY` nicht mehr.
 
-**Falls du den Schlüssel schon angelegt hattest:** Er wird nicht mehr
-gelesen, kostet nichts und schadet nichts. Aufräumen kannst du ihn mit
+**Das Secret ist am 31.08.2026 aufgeräumt worden** — mit
 
 ```bash
 firebase functions:secrets:destroy PEXELS_API_KEY --project trueglow-b2c1c
 ```
 
-Der Befehl fragt vor dem Löschen nach. Er betrifft ausschließlich dieses
-eine Secret; `GEMINI_API_KEY` bleibt unberührt. Bei Pexels selbst ist nichts
-zu tun — ein unbenutzter Schlüssel läuft dort einfach mit.
+Im Secret Manager liegt seitdem nur noch `GEMINI_API_KEY`. Bei Pexels selbst
+war nichts zu tun; ein unbenutzter Schlüssel läuft dort einfach mit.
+
+> Wer dieses Projekt neu aufsetzt, überspringt diesen Abschnitt ganz. Der
+> Befehl steht hier nur noch für den Fall, dass in einer älteren Kopie des
+> Projekts noch ein Pexels-Secret liegt.
 
 ---
 
