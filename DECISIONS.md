@@ -4166,6 +4166,60 @@ wie eine echte Anfrage statt wie ein Platzhalter.
 Absage. Die App nimmt ausschließlich JPEG auf — sollte sich das ändern,
 gehört die Kennung erweitert.
 
+## 85 · Vier kleine Schrauben aus dem Audit
+
+Vier gelbe Punkte, jeder für sich klein, jeder mit einem eigenen Grund.
+Zusammengefasst, weil keiner davon eine eigene Entscheidung trägt — sie sind
+die Umsetzung dessen, was im Audit schon begründet steht.
+
+### `affiliateUrl` kommt nicht mehr vom Modell (D2)
+
+Das Feld gehört der Struktur, nicht dem Modell: Der Prompt verlangt dort
+`null`, angezeigt wird es nirgends, und trotzdem wurde durchgereicht, was das
+Modell hineinschrieb. Solange es niemand anzeigt, ist das harmlos — es ist
+eine schlafende Baustelle, und die kostet nichts, wenn man sie jetzt
+zuschüttet.
+
+Die Nachbereitung setzt es hart auf `null`. Kommen die Links eines Tages von
+uns, gehört diese Zeile durch eine Prüfung gegen die eigene Partnerliste
+ersetzt — nicht durch Vertrauen.
+
+### Im Release schweigt die App (C2)
+
+`debugPrint` heißt so, wird aber nicht wegkompiliert. Die rund vierzig
+Protokollzeilen der App liefen auch in einer veröffentlichten Fassung ins
+Geräteprotokoll.
+
+Der Inhalt ist harmlos — abgefangene Ausnahmen, keine Fotos, keine Namen —,
+aber eine Ausnahme kann einen Dateipfad mitbringen, und ein Pfad enthält den
+Dateinamen eines Fotos. Drei Zeilen in `main.dart` stellen es im Release ab;
+Debug und Profile bleiben unverändert.
+
+### Die Konto-ID fällt aus zwei Protokollzeilen (F1)
+
+„Tagesgrenze analyse erreicht (abc123…)" — die Kennung stand im Meldungstext.
+Cloud Logging hängt an jeden Aufruf ohnehin die Kennung des Aufrufers; eine
+zweite Kopie im Text macht aus einer Betriebszeile eine personenbezogene,
+ohne dass sie beim Suchen irgendetwas hinzufügt.
+
+### Sitzungen werden beim Kontolöschen widerrufen (H)
+
+Ein Firebase-ID-Token gilt eine Stunde und wird beim Löschen des Kontos nicht
+von selbst ungültig. Wer unmittelbar davor ein frisches Token hatte, konnte
+damit noch eine Weile Analysen starten.
+
+`revokeRefreshTokens` vor `deleteUser` schließt den Spalt für alles, was
+danach ein neues Token bräuchte. Der Widerruf steht in einem eigenen `try`:
+Scheitert er, ist das ärgerlich, aber kein Grund, das Löschen selbst
+abzubrechen — das wäre die schlechtere von zwei Hälften.
+
+**Was damit nicht behoben ist:** Ein bereits ausgestelltes Token bleibt bis
+zu einer Stunde gültig, weil die Functions es nur prüfen und nicht bei
+Firebase nachfragen, ob es das Konto noch gibt. Das nachzufragen kostet einen
+zusätzlichen Datenbankzugriff bei **jedem** Aufruf. Ob uns das eine Stunde
+wert ist, steht als Frage im Bericht — es ist eine Produktentscheidung, keine
+Programmieraufgabe.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

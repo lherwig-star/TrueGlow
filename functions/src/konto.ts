@@ -154,7 +154,24 @@ function zahl(wert: unknown): number {
   return typeof wert === 'number' && Number.isFinite(wert) ? wert : 0;
 }
 
-/** Löscht das Auth-Konto. Danach ist die uid für immer verbraucht. */
+/**
+ * Löscht das Auth-Konto. Danach ist die uid für immer verbraucht.
+ *
+ * **Vorher werden die Sitzungen widerrufen** (SECURITY_AUDIT H). Ein
+ * Firebase-ID-Token gilt eine Stunde und wird beim Löschen des Kontos nicht
+ * von selbst ungültig — wer unmittelbar davor ein frisches Token hatte,
+ * könnte damit noch eine Weile Analysen starten. `revokeRefreshTokens`
+ * schließt den Spalt für alles, was danach ein neues Token bräuchte.
+ *
+ * Der Widerruf steht in einem eigenen `try`: Scheitert er, ist das
+ * ärgerlich, aber kein Grund, das Löschen selbst abzubrechen — das wäre die
+ * schlechtere von zwei Hälften.
+ */
 export async function authKontoLoeschen(uid: string): Promise<void> {
+  try {
+    await getAuth().revokeRefreshTokens(uid);
+  } catch (e) {
+    console.warn(`Sitzungen nicht widerrufen: ${e}`);
+  }
   await getAuth().deleteUser(uid);
 }

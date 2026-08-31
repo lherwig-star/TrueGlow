@@ -329,6 +329,39 @@ describe('Die Nachbereitung der Marken', () => {
     expect(befund.fehlendeTechniken).toEqual(['Gua Sha']);
   });
 
+  it('nimmt jedem Produkt seinen Link', () => {
+    // Das Feld gehoert der Struktur, nicht dem Modell: Eine Adresse, die ein
+    // Sprachmodell erfindet, hat im Report nichts zu suchen
+    // (SECURITY_AUDIT D2).
+    const befund = nachbereiten(
+      {
+        kapitel: [
+          {
+            modul: 'hautFarbtyp',
+            sektionen: [
+              {
+                titel: 'Haut',
+                produkte: [
+                  { name: 'Serum', affiliateUrl: 'https://erfunden.example' },
+                  { name: 'Creme' },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      vorgabe,
+    );
+
+    const produkte = (befund.ergebnis.kapitel as any[])[0].sektionen[0]
+      .produkte as any[];
+
+    expect(produkte).toHaveLength(2);
+    expect(produkte[0].affiliateUrl).toBeNull();
+    expect(produkte[1].affiliateUrl).toBeNull();
+    expect(produkte[0].name).toBe('Serum');
+  });
+
   it('ohne Auswahl faellt jede Marke weg', () => {
     const befund = nachbereiten(antwort(['Gua Sha']), {
       ...vorgabe,

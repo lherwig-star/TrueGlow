@@ -1,5 +1,6 @@
 import 'dart:ui' show PlatformDispatcher;
 
+import 'package:flutter/foundation.dart' show kReleaseMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -27,6 +28,20 @@ import 'features/legal/logic/rechtstexte.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Im Release schweigt die App.
+  //
+  // `debugPrint` heisst zwar so, wird aber nicht wegkompiliert: Die rund
+  // vierzig Protokollzeilen der App laufen sonst auch in einer
+  // veroeffentlichten Fassung ins Geraeteprotokoll. Der Inhalt ist harmlos
+  // – abgefangene Ausnahmen, keine Fotos, keine Namen –, aber eine
+  // Ausnahme kann einen Dateipfad mitbringen, und ein Pfad enthaelt den
+  // Dateinamen eines Fotos (SECURITY_AUDIT C2).
+  //
+  // Im Debug- und im Profile-Build bleibt alles, wie es war.
+  if (kReleaseMode) {
+    debugPrint = (String? nachricht, {int? wrapWidth}) {};
+  }
 
   // Meldet im Debug-Build, wenn noch Rechtstexte fehlen – als Assertion, nicht
   // als Absturz. Den harten Riegel vor dem Release zieht

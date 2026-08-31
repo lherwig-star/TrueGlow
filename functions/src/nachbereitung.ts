@@ -233,6 +233,7 @@ export function nachbereiten(
     const k = objekt(eintrag);
     const sektionen = liste(k.sektionen).map((roheSektion) => {
       const sektion = { ...objekt(roheSektion) };
+      sektion.produkte = ohneLinks(sektion.produkte);
       if (sektion.neu === undefined) return sektion;
 
       const behalten: string[] = [];
@@ -446,6 +447,22 @@ function alleHabits(kapitel: unknown[]): string[] {
   return kapitel.flatMap((k) =>
     liste(objekt(k).habits).filter((h): h is string => typeof h === 'string'),
   );
+}
+
+/**
+ * Nimmt jedem Produkt seinen Link.
+ *
+ * Das Feld `affiliateUrl` gehoert der Struktur, nicht dem Modell: Der Prompt
+ * verlangt dort `null`, und angezeigt wird es ohnehin nirgends. Solange das
+ * so ist, kostet es nichts, es hier hart zu setzen — und sobald daraus ein
+ * anklickbarer Link wird, ist es keine Adresse, die ein Sprachmodell
+ * erfunden hat (SECURITY_AUDIT D2).
+ *
+ * Kommen die Links eines Tages von uns, gehoert die Zeile hier ersetzt durch
+ * eine Pruefung gegen die eigene Partnerliste — nicht durch Vertrauen.
+ */
+function ohneLinks(roh: unknown): unknown[] {
+  return liste(roh).map((p) => ({ ...objekt(p), affiliateUrl: null }));
 }
 
 /** Fuer den Vergleich von Namen: klein, ohne doppelte Leerzeichen. */

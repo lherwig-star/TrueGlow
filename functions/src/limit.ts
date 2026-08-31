@@ -109,13 +109,17 @@ export async function reservieren(
     const doc = await transaktion.get(referenz);
     const aktuell = stand(doc.data(), jetzt);
 
+    // Ohne die uid in der Meldung: Cloud Logging haengt an jeden Aufruf
+    // ohnehin die Kennung des Aufrufers, und eine zweite Kopie im
+    // Meldungstext macht aus einer Betriebszeile eine personenbezogene
+    // (SECURITY_AUDIT F1).
     if (aktuell.tagZaehler >= grenze.proTag) {
-      throw fehler('kontingent', `Tagesgrenze ${art} erreicht (${uid})`);
+      throw fehler('kontingent', `Tagesgrenze ${art} erreicht`);
     }
     if (aktuell.monatZaehler >= grenze.proMonat) {
       // Eigener Fall, damit die App sagen kann, wann es wieder losgeht:
       // „morgen früh" stimmt bei der Monatsgrenze nicht.
-      throw fehler('kontingentMonat', `Monatsgrenze ${art} erreicht (${uid})`);
+      throw fehler('kontingentMonat', `Monatsgrenze ${art} erreicht`);
     }
 
     transaktion.set(referenz, {

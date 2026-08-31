@@ -38,19 +38,19 @@ Prompt-Baukasten, ohne das Modell zu rufen.
 | **B2** Client-schreibbare Werte | 🟢 | Der Server liest aus der Datenbank ausschließlich seine eigenen Zähler; Serie und Joker sind reine Anzeige und werden nie als Wahrheit genommen. |
 | **B3** Käufe (vorausschauend) | 🟢 | Es gibt noch keine Käufe; die Stelle zum Andocken ist benannt. |
 | **C1** Schlüssel und Git-Historie | 🟢 | Alle 105 Commits durchsucht: Es war nie ein echter Schlüssel im Repo. |
-| **C2** Release-Hygiene | 🟡 | Debug-Provider und Demo-Modus sind im Release sicher aus; die Protokollzeilen der App laufen dort aber weiter. |
+| **C2** Release-Hygiene | 🟢 **behoben** | Im Release ist `debugPrint` stillgelegt; Debug-Provider und Demo-Modus waren ohnehin sicher aus (DECISIONS 85). |
 | **C3** `google-services.json` | 🟢 | Bestätigt: Die Sicherheit hängt an Regeln und App Check, nicht an der Geheimhaltung dieser Datei. |
 | **D1** Prompt Injection | 🟢 **behoben** | Nutzertext steht in einem Datenblock mit zufälliger Marke; 38 Tests belegen, dass sieben Angriffsvarianten ihn nicht verlassen (DECISIONS 81). |
 | **D2** Ausgabe-Prüfung | 🟢 **behoben** | Antworten mit Bewertungszahlen oder Kalorienvorgaben werden verworfen und protokolliert; ein zweiter Versuch läuft automatisch (DECISIONS 81). |
 | **E1** Bilder und Anfragegrößen | 🟢 **behoben** | Zusätzlich zu Anzahl und Größe wird jetzt vor dem Modellaufruf geprüft, dass die Daten wirklich ein JPEG sind (DECISIONS 84). |
 | **E2** Fehlermeldungen | 🟢 | Beim Nutzer landen nur kurze Fallnamen, Einzelheiten bleiben im Server-Protokoll. |
-| **F1** Protokolle | 🟡 | Keine Fotos, keine E-Mails, keine Namen, keine Freitexte — aber die Konto-ID und einzelne Report-Bruchstücke. |
+| **F1** Protokolle | 🟢 **behoben** | Die Konto-ID ist aus den Kontingentzeilen entfernt; die verbleibenden Bruchstücke sind Betriebszahlen ohne Personenbezug (DECISIONS 85). Aufbewahrungsdauer: siehe Konsolen-Anleitung. |
 | **F2** DSGVO | 🟡 **teilweise behoben** | Datenschutzerklärung, Nutzungsbedingungen und Impressum liegen als Entwurf in beiden Sprachen bei, die Datenauskunft gibt es; offen bleiben die juristische Prüfung und die Angaben im Impressum (DECISIONS 82). |
 | **G1** Kosten-Bremse | 🟡 | Ein Budget-Alarm besteht (25 € im Monat) — ein Alarm ist aber keine Obergrenze. |
 | **G2** Monitoring | 🟡 | Nicht prüfbar von hier; im Projekt ist keine Alarmregel für Fehler oder Aufrufmengen dokumentiert. |
 | **G3** Backups | 🟡 | Für Firestore ist nirgends ein Backup eingerichtet, und der Quellcode liegt nur auf diesem einen Rechner. |
 | **G4** Abhängigkeiten | 🟡 | 8 mittlere Meldungen im Server-Betrieb, die schweren betreffen nur Werkzeuge; 58 Flutter-Pakete sind veraltet. |
-| **H** Konto und Sitzung | 🟡 | Alle Functions prüfen das Token — ein gelöschtes Konto kann seines aber noch bis zu einer Stunde weiterbenutzen. |
+| **H** Konto und Sitzung | 🟡 **teilweise behoben** | Beim Kontolöschen werden die Sitzungen jetzt widerrufen (DECISIONS 85); die Ein-Stunden-Gültigkeit eines bereits ausgestellten Tokens bleibt — dazu eine Frage in der Fix-Liste. |
 
 **Ursprünglich zwei rote Punkte, elf gelbe, acht grüne.**
 Der jeweils aktuelle Stand steht in der Spalte „Ampel".
@@ -289,6 +289,10 @@ heran. Es ist Unsauberkeit, kein Leck.
 setzen. **Aufwand: sehr klein** (drei Zeilen).
 
 ---
+
+> **Behoben am 31.08.2026 (DECISIONS 85).** `main.dart` legt
+> `debugPrint` im Release still. Debug- und Profile-Builds bleiben
+> unverändert gesprächig.
 
 ### C3 · `google-services.json` 🟢
 
@@ -558,6 +562,13 @@ Suchen nichts, was das Cloud-Logging nicht ohnehin mitliefert) und die
 Aufbewahrungsdauer in der Konsole ansehen. **Aufwand: sehr klein.**
 
 ---
+
+> **Behoben am 31.08.2026 (DECISIONS 85).** Die Konto-ID steht nicht
+> mehr im Text der beiden Kontingentzeilen. Cloud Logging hängt die Kennung
+> des Aufrufers ohnehin an jeden Aufruf; eine zweite Kopie im Meldungstext
+> hat beim Suchen nichts hinzugefügt und den Personenbezug erst hergestellt.
+> Die Aufbewahrungsdauer der Protokolle steht als Punkt in der
+> Konsolen-Anleitung.
 
 ### F2 · DSGVO 🔴
 
