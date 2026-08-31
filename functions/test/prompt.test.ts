@@ -68,6 +68,47 @@ describe('Analyse-Prompt', () => {
     expect(prompt).toContain('gesundheitlich bedenkliche Ziele');
   });
 
+  it('verlangt einen sichtbaren Bezug auf die gewaehlte Richtung', () => {
+    // DECISIONS 87: Die Wahl floss in den Prompt ein, war im Report aber
+    // nicht wiederzuerkennen – und was unsichtbar ist, fuehlt sich
+    // folgenlos an.
+    const prompt = analyse.systemPrompt(
+      analyseDaten({ ziele: ['streetwearLaessig'], freitext: '' }),
+    );
+
+    expect(prompt).toContain(
+      'Passend zu deiner Richtung „Streetwear & lässig"',
+    );
+    expect(prompt).toContain('Mindestens einmal in JEDEM Kapitel');
+    expect(prompt).toContain('Höchstens zwei solche Stellen je Kapitel');
+  });
+
+  it('nennt die Wendung in der Sprache des Reports', () => {
+    // Stuende sie nur auf Deutsch im Prompt, begaenne jede englische
+    // Empfehlung mit „Passend zu deiner Richtung“.
+    const prompt = analyse.systemPrompt(
+      analyseDaten({ ziele: ['streetwearLaessig'], freitext: '' }, ['basis'], 'en'),
+    );
+
+    expect(prompt).toContain(
+      // Klein geschrieben wie in der Tabelle: Die englischen Labels stehen
+      // dort in Kleinschreibung, weil sie im Prompt mitten im Satz landen.
+      'In keeping with your direction "streetwear & casual"',
+    );
+    expect(prompt).not.toContain('Passend zu deiner Richtung');
+  });
+
+  it('erfindet ohne Chips keinen Bezug', () => {
+    // Nur Freitext, keine Richtung: Dann gibt es nichts, worauf sich eine
+    // Empfehlung berufen koennte.
+    const prompt = analyse.systemPrompt(
+      analyseDaten({ ziele: [], freitext: 'Weniger Bart.' }),
+    );
+
+    expect(prompt).not.toContain('Passend zu deiner Richtung');
+    expect(prompt).not.toContain('Mindestens einmal in JEDEM Kapitel');
+  });
+
   it('sortiert die Chips nach Deklaration, nicht nach Klickreihenfolge', () => {
     const prompt = analyse.systemPrompt(
       analyseDaten({

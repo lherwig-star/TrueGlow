@@ -4233,10 +4233,11 @@ Kleidung*. Wer „Streetwear & lässig" antippt, bekommt also einen Report über
 seine Frisur – nachdem die App ihm Sneaker versprochen hat. Die Erwartung,
 die der Chip setzt, und das, was danach passiert, gingen auseinander.
 
-**Neu:** Jeder Untertext beschreibt den ganzen Look in vier bis sieben
+**Neu:** Jeder Untertext beschreibt den ganzen Look in vier bis sechs
 Wörtern – „Entspannter Campus-Look, easy Frisur, Sneaker",
-„Klare Kanten – Kiefer, Kurzhaar, Kontur", „Gepflegt-edel von Schnitt bis
-Schuh". Er ist damit die Kurzfassung dessen, was der Server ohnehin
+„Klare Kanten: Kiefer, Kurzhaar, Kontur", „Gepflegt-edel von Schnitt bis
+Schuh". Die Obergrenze von sechs Wörtern ist keine Willkür: Sie steht seit
+DECISIONS 58 als Test da, weil längeres auf einem Chip umbricht. Er ist damit die Kurzfassung dessen, was der Server ohnehin
 verlangt, und nicht mehr eine zweite, engere Aussage daneben.
 
 ### Und derselbe Text an beiden Stellen
@@ -4255,6 +4256,66 @@ irgendwann nicht mehr.
 **Preis:** Der Fragebogen wird länger – acht Zeilen statt zweier Pillenreihen.
 Das ist der Preis dafür, dass man dort nicht raten muss, was man antippt.
 Ein Test hält fest, dass beide Bildschirme denselben Untertext zeigen.
+
+## 87 · Die Wahl muss man dem Report ansehen
+
+Die gewählte Richtung floss längst in den Prompt ein und prägte die
+Empfehlungen. Nur stand nirgends, dass sie es tat. Am fertigen Report war
+nicht zu erkennen, dass ein Mensch vorher acht Chips gesehen und zwei davon
+angetippt hatte – und eine Auswahl, deren Folgen unsichtbar bleiben,
+fühlt sich folgenlos an. Genau dieselbe Lücke hat das
+Ausprobieren-Paket mit „Neu für dich" geschlossen (DECISIONS 80); hier
+steht dasselbe noch einmal, an zwei Stellen.
+
+### Oben: das Echo
+
+Unter dem Gesamtbild steht eine Zeile „Deine Auswahl:" mit kleinen Pillen –
+die Richtungen, die Techniken, der Modus. Man sieht in einem Blick, dass der
+Report aus eigenen Eingaben gebaut wurde.
+
+**Woher die Techniken kommen, ist eine Entscheidung.** Nicht aus der
+angetippten Liste, sondern aus dem Feld `neu` der Sektionen – also aus dem,
+was das Modell wirklich untergebracht hat. Die angetippte Liste wäre
+bequemer gewesen und hätte gelogen, sobald eine Technik im Report fehlt.
+
+**Und die Richtungskarte gibt dafür etwas ab.** Sie zeigte dieselben Pillen
+ein zweites Mal, wenige Zentimeter darunter. Zwei gleiche Zeilen
+untereinander lesen sich wie ein Fehler, nicht wie eine Betonung. Die Karte
+behält den Freitext und den Weg zum Ändern; wo nur Chips gewählt wurden,
+steht dort jetzt ein Satz, der nach oben zeigt, statt einer leeren Fläche.
+
+### In den Kapiteln: der halbe Satz
+
+Der Prompt verlangt jetzt, dass eine Empfehlung, die von einer gewählten
+Richtung geprägt ist, das auch sagt – wörtlich in der Form „Passend zu
+deiner Richtung ‚Streetwear & lässig'". Mindestens einmal je Kapitel, in dem
+die Wahl eine Rolle spielt.
+
+Dass das Modell eine wörtlich genannte Wendung abschreibt (DECISIONS 36),
+ist hier ausnahmsweise erwünscht: Sie soll wiedererkennbar sein.
+
+**Die eigentliche Gefahr ist nicht das Fehlen, sondern die Flut.** Ein
+Report, in dem jeder zweite Satz mit „Passend zu deiner Richtung" beginnt,
+liest sich wie ein Formbrief und entwertet die Wendung genau dort, wo sie
+zählt. Deshalb steht die Obergrenze mit im Prompt – höchstens zwei Stellen
+je Kapitel – und daneben das Verbot, einen Bezug zu erfinden, wo eine
+Empfehlung für jeden gelten würde.
+
+**In der Zielsprache**, sonst begänne jede englische Empfehlung mit
+„Passend zu deiner Richtung" – derselbe Fehler, den die Ankerliste schon
+einmal gemacht hat.
+
+### Ohne Auswahl kein Bezug
+
+Wurde der Richtungs-Schritt übersprungen, entfällt beides: keine
+Richtungs-Pillen oben, keine Bezugs-Regel im Prompt. Erfundene Begründungen
+wären schlimmer als gar keine. Der Modus bleibt als einzige Pille stehen –
+er ist in jedem Durchlauf eine echte Entscheidung, kein Vorgabewert.
+
+**Preis:** Ein zusätzlicher Prompt-Abschnitt, der Tokens kostet, und die
+Möglichkeit, dass das Modell die Wendung zu oft benutzt. Die Obergrenze
+dämmt das ein, beweisen lässt sie sich nur am echten Lauf – deshalb steht
+sie im Testplan.
 
 ## Mock vs. Live
 

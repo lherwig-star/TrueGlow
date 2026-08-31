@@ -600,6 +600,7 @@ function zielRegeln(
   wie du das gemacht hast.
 - Widersprechen sich zwei gewählte Richtungen an einem Punkt, entscheide dich
   sichtbar für eine und sag, warum – nicht die Mitte aus beiden.
+${bezugRegel(richtung, sprache)}
 - Wenn ein Ziel dem widerspricht, was auf den Fotos zu sehen ist, wäge beides
   offen ab und erkläre den Zielkonflikt – ignoriere das Ziel nicht und rede es
   auch nicht klein.
@@ -609,6 +610,50 @@ function zielRegeln(
   und schlage einen gesunden Weg zum gleichen Wunschbild vor.
 ${freitextRegeln(richtung, marke)}`;
 }
+
+/**
+ * Der halbe Satz, der die Wahl sichtbar macht (DECISIONS 87).
+ *
+ * Der Befund: Die gewaehlte Richtung floss in den Prompt ein und praegte die
+ * Empfehlungen — nur stand nirgends, dass sie es tat. Am fertigen Report war
+ * die Wahl unsichtbar, und was unsichtbar ist, fuehlt sich folgenlos an. Das
+ * Ausprobieren-Paket macht es mit „Neu fuer dich" vor; hier ist dasselbe in
+ * Worten statt in einer Pille.
+ *
+ * **Warum mit Positiv- und Negativbeispiel.** Was der Prompt woertlich nennt,
+ * schreibt das Modell woertlich ab (DECISIONS 36) — und das ist hier
+ * ausnahmsweise erwuenscht: Die Wendung soll wiedererkennbar sein. Das
+ * Negativbeispiel steht daneben, weil die Gefahr nicht das Fehlen ist,
+ * sondern die Flut: ein Report, in dem jeder zweite Satz mit „Passend zu
+ * deiner Richtung" beginnt, liest sich wie ein Formbrief.
+ *
+ * **Warum in der Zielsprache.** Stuende die Wendung nur auf Deutsch im
+ * Prompt, begaenne jede englische Empfehlung mit „Passend zu deiner
+ * Richtung" — derselbe Fehler, den die Anker-Liste schon einmal gemacht hat.
+ */
+function bezugRegel(richtung: Richtungsangaben, sprache: Sprache): string {
+  const gewaehlt = labels(RICHTUNGSZIEL, richtung.ziele, sprache);
+  if (gewaehlt.length === 0) return '';
+
+  const beispiel = BEZUG_BEISPIEL[sprache](gewaehlt[0]);
+  return `- Sag es dort, wo es zutrifft. Ist eine Empfehlung von einer gewählten
+  Richtung geprägt, nennt sie das in einem halben Satz – wörtlich in dieser
+  Form: "${beispiel}". Mindestens einmal in JEDEM Kapitel, in dem die Wahl
+  eine Rolle spielt.
+- Aber nicht öfter als nötig. Höchstens zwei solche Stellen je Kapitel; ein
+  Report, in dem jeder zweite Satz so beginnt, liest sich wie ein Formbrief.
+  Wo eine Empfehlung für jeden gelten würde, lässt du den Bezug weg, statt
+  einen zu erfinden.
+- Kein Bezug auf etwas, das nicht gewählt wurde. Nenne ausschließlich die
+  oben aufgeführten Richtungen, und zwar mit genau dem Namen, der dort
+  steht.`;
+}
+
+/** Die Wendung, an der man den Bezug erkennt – in der Zielsprache. */
+const BEZUG_BEISPIEL: Record<Sprache, (ziel: string) => string> = {
+  de: (ziel) => `Passend zu deiner Richtung „${ziel}"`,
+  en: (ziel) => `In keeping with your direction "${ziel}"`,
+};
 
 /**
  * Was aus dem Freitext werden soll.

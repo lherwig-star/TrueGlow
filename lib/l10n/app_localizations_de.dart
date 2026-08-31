@@ -313,49 +313,55 @@ class LDe extends L {
   String get richtungszielClean => 'Clean & gepflegt';
 
   @override
-  String get richtungszielCleanUnter => 'Aufgeräumt, zeitlos, nichts zu viel';
+  String get richtungszielCleanUnter =>
+      'Saubere Konturen, ruhige Farben, guter Sitz';
 
   @override
   String get richtungszielMarkant => 'Markant & maskulin';
 
   @override
-  String get richtungszielMarkantUnter => 'Kantig, klare Konturen';
+  String get richtungszielMarkantUnter =>
+      'Klare Kanten: Kiefer, Kurzhaar, Kontur';
 
   @override
   String get richtungszielNatuerlich => 'Natürlich & entspannt';
 
   @override
-  String get richtungszielNatuerlichUnter => 'Unaufgeregt, wenig Aufwand';
+  String get richtungszielNatuerlichUnter => 'Wenig Aufwand, echter Typ';
 
   @override
   String get richtungszielWeich => 'Weich & elegant';
 
   @override
-  String get richtungszielWeichUnter => 'Fließend, ruhig, feine Linien';
+  String get richtungszielWeichUnter =>
+      'Weiche Linien, feiner Stoff, ruhiger Auftritt';
 
   @override
   String get richtungszielStreetwear => 'Streetwear & lässig';
 
   @override
-  String get richtungszielStreetwearUnter => 'Baggy, Oversized, Sneaker';
+  String get richtungszielStreetwearUnter =>
+      'Entspannter Campus-Look, easy Frisur, Sneaker';
 
   @override
   String get richtungszielSmart => 'Smart & hochwertig';
 
   @override
-  String get richtungszielSmartUnter => 'Polo, Strick, klare Silhouetten';
+  String get richtungszielSmartUnter => 'Gepflegt-edel von Schnitt bis Schuh';
 
   @override
   String get richtungszielSportlich => 'Sportlich & funktional';
 
   @override
-  String get richtungszielSportlichUnter => 'Athletisch, praktisch, robust';
+  String get richtungszielSportlichUnter =>
+      'Kurz, praktisch, bereit für Bewegung';
 
   @override
   String get richtungszielKreativ => 'Kreativ & auffällig';
 
   @override
-  String get richtungszielKreativUnter => 'Statement-Teile, mutige Farben';
+  String get richtungszielKreativUnter =>
+      'Mutige Farben, Statement-Teile, eigener Kopf';
 
   @override
   String get tabHeute => 'Heute';
@@ -828,6 +834,13 @@ class LDe extends L {
 
   @override
   String get ergebnisTitel => 'Deine Analyse';
+
+  @override
+  String get ergebnisAuswahl => 'Deine Auswahl';
+
+  @override
+  String get richtungStehtOben =>
+      'Deine gewählten Richtungen stehen oben unter „Deine Auswahl“.';
 
   @override
   String ergebnisKopf(String datum, int kapitel, int empfehlungen) {

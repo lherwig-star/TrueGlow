@@ -95,6 +95,10 @@ class ResultScreen extends ConsumerWidget {
           ),
           const SizedBox(height: AppTheme.gapM),
         ],
+        // Was der Nutzer selbst eingegeben hat – direkt unter dem
+        // Gesamtbild, bevor die Kapitel anfangen (DECISIONS 87).
+        _AuswahlEcho(ergebnis: ergebnis),
+        const SizedBox(height: AppTheme.gapM),
         _RichtungKarte(ergebnis: ergebnis),
         const SizedBox(height: AppTheme.gapM),
         for (final kapitel in ergebnis.kapitel) ...[
@@ -244,18 +248,11 @@ class _RichtungKarte extends ConsumerWidget {
           if (verwendet.istLeer)
             MutedText(texte.richtungLeerText)
           else ...[
-            if (verwendet.ziele.isNotEmpty)
-              Wrap(
-                spacing: AppTheme.gapXs,
-                runSpacing: AppTheme.gapXs,
-                children: [
-                  for (final ziel in verwendet.sortierteZiele)
-                    _ZielPille(ziel.label(texte)),
-                ],
-              ),
+            // Die gewählten Richtungen stehen als Pillen im Auswahl-Echo
+            // weiter oben. Sie hier ein zweites Mal zu zeigen, wäre auf
+            // demselben Bildschirm doppelt (DECISIONS 87); diese Karte
+            // behält den Freitext und den Weg zum Ändern.
             if (verwendet.kurzfassung.isNotEmpty) ...[
-              if (verwendet.ziele.isNotEmpty)
-                const SizedBox(height: AppTheme.gapS),
               Container(
                 padding: const EdgeInsets.only(left: AppTheme.gapS),
                 decoration: BoxDecoration(
@@ -273,6 +270,11 @@ class _RichtungKarte extends ConsumerWidget {
                 ),
               ),
             ],
+            // Ohne Freitext bliebe die Karte sonst leer. Ein Satz ist
+            // besser als eine Überschrift über nichts – und er sagt
+            // gleich, wo die Auswahl steht.
+            if (verwendet.ziele.isNotEmpty && verwendet.kurzfassung.isEmpty)
+              MutedText(texte.richtungStehtOben),
           ],
           if (geaendert) ...[
             const SizedBox(height: AppTheme.gapM),
@@ -286,6 +288,60 @@ class _RichtungKarte extends ConsumerWidget {
               label: Text(texte.richtungAktualisieren),
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Was der Nutzer selbst eingegeben hat, in einer Zeile (DECISIONS 87).
+///
+/// Der Befund: Die gewaehlte Richtung floss in den Prompt ein und praegte den
+/// Report – nur sah man das dem Report nicht an. Eine Auswahl, deren Folgen
+/// unsichtbar bleiben, fuehlt sich folgenlos an.
+///
+/// Was hier steht, ist ausschliesslich Gewaehltes und nichts Erfundenes:
+/// die Richtungen dieser Analyse, die Techniken, die es wirklich in den
+/// Report geschafft haben, und der Modus. Wurde der Richtungs-Schritt
+/// uebersprungen, fehlen die Richtungs-Pillen – dann steht dort nur der
+/// Modus, und der ist in jedem Durchlauf eine echte Entscheidung.
+class _AuswahlEcho extends StatelessWidget {
+  const _AuswahlEcho({required this.ergebnis});
+
+  final AnalysisResult ergebnis;
+
+  /// Die Techniken, die im Report tatsaechlich vorkommen.
+  ///
+  /// Quelle ist das Feld `neu` der Sektionen und nicht die angetippte Liste:
+  /// Was das Modell nicht untergebracht hat, soll hier auch nicht behauptet
+  /// werden. Reihenfolge und Dubletten kommen aus dem Report, deshalb das
+  /// `Set` mit erhaltener Reihenfolge.
+  List<String> get _techniken {
+    final gesehen = <String>{};
+    for (final sektion in ergebnis.sektionen) {
+      gesehen.addAll(sektion.neu);
+    }
+    return gesehen.toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final texte = context.texte;
+    final pillen = [
+      for (final ziel in ergebnis.richtung.sortierteZiele) ziel.label(texte),
+      ..._techniken,
+      ergebnis.modus.etikett(texte),
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.gapXs),
+      child: Wrap(
+        spacing: AppTheme.gapXs,
+        runSpacing: AppTheme.gapXs,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          MutedText('${texte.ergebnisAuswahl}:'),
+          for (final pille in pillen) _ZielPille(pille),
         ],
       ),
     );

@@ -640,7 +640,7 @@ abstract class L {
   /// No description provided for @richtungszielCleanUnter.
   ///
   /// In de, this message translates to:
-  /// **'Aufgeräumt, zeitlos, nichts zu viel'**
+  /// **'Saubere Konturen, ruhige Farben, guter Sitz'**
   String get richtungszielCleanUnter;
 
   /// No description provided for @richtungszielMarkant.
@@ -652,7 +652,7 @@ abstract class L {
   /// No description provided for @richtungszielMarkantUnter.
   ///
   /// In de, this message translates to:
-  /// **'Kantig, klare Konturen'**
+  /// **'Klare Kanten: Kiefer, Kurzhaar, Kontur'**
   String get richtungszielMarkantUnter;
 
   /// No description provided for @richtungszielNatuerlich.
@@ -664,7 +664,7 @@ abstract class L {
   /// No description provided for @richtungszielNatuerlichUnter.
   ///
   /// In de, this message translates to:
-  /// **'Unaufgeregt, wenig Aufwand'**
+  /// **'Wenig Aufwand, echter Typ'**
   String get richtungszielNatuerlichUnter;
 
   /// No description provided for @richtungszielWeich.
@@ -676,7 +676,7 @@ abstract class L {
   /// No description provided for @richtungszielWeichUnter.
   ///
   /// In de, this message translates to:
-  /// **'Fließend, ruhig, feine Linien'**
+  /// **'Weiche Linien, feiner Stoff, ruhiger Auftritt'**
   String get richtungszielWeichUnter;
 
   /// No description provided for @richtungszielStreetwear.
@@ -688,7 +688,7 @@ abstract class L {
   /// No description provided for @richtungszielStreetwearUnter.
   ///
   /// In de, this message translates to:
-  /// **'Baggy, Oversized, Sneaker'**
+  /// **'Entspannter Campus-Look, easy Frisur, Sneaker'**
   String get richtungszielStreetwearUnter;
 
   /// No description provided for @richtungszielSmart.
@@ -700,7 +700,7 @@ abstract class L {
   /// No description provided for @richtungszielSmartUnter.
   ///
   /// In de, this message translates to:
-  /// **'Polo, Strick, klare Silhouetten'**
+  /// **'Gepflegt-edel von Schnitt bis Schuh'**
   String get richtungszielSmartUnter;
 
   /// No description provided for @richtungszielSportlich.
@@ -712,7 +712,7 @@ abstract class L {
   /// No description provided for @richtungszielSportlichUnter.
   ///
   /// In de, this message translates to:
-  /// **'Athletisch, praktisch, robust'**
+  /// **'Kurz, praktisch, bereit für Bewegung'**
   String get richtungszielSportlichUnter;
 
   /// No description provided for @richtungszielKreativ.
@@ -724,7 +724,7 @@ abstract class L {
   /// No description provided for @richtungszielKreativUnter.
   ///
   /// In de, this message translates to:
-  /// **'Statement-Teile, mutige Farben'**
+  /// **'Mutige Farben, Statement-Teile, eigener Kopf'**
   String get richtungszielKreativUnter;
 
   /// Beschriftung des ersten Tabs.
@@ -1560,6 +1560,18 @@ abstract class L {
   /// In de, this message translates to:
   /// **'Deine Analyse'**
   String get ergebnisTitel;
+
+  /// Vorspann der Echo-Zeile im Report, die die eigenen Eingaben zeigt.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Auswahl'**
+  String get ergebnisAuswahl;
+
+  /// Fuellt die Richtungskarte, wenn nur Chips und kein Freitext vorliegen.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine gewählten Richtungen stehen oben unter „Deine Auswahl“.'**
+  String get richtungStehtOben;
 
   /// Zeile über dem Report. Datum, Kapitelzahl und Empfehlungszahl stehen bewusst zusammen in einem Satz: Als drei Bausteine im Dart-Code blieben zwei davon deutsch, während die Oberfläche schon englisch war.
   ///

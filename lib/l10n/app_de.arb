@@ -157,9 +157,9 @@
     "description": "Ueberschrift der Vorspann-Karte im Modus „Neuen Look entdecken\"."
   },
   "richtungszielClean": "Clean & gepflegt",
-  "richtungszielCleanUnter": "Konturen sitzen, Farben ruhig, nichts zu viel",
+  "richtungszielCleanUnter": "Saubere Konturen, ruhige Farben, guter Sitz",
   "richtungszielMarkant": "Markant & maskulin",
-  "richtungszielMarkantUnter": "Klare Kanten – Kiefer, Kurzhaar, Kontur",
+  "richtungszielMarkantUnter": "Klare Kanten: Kiefer, Kurzhaar, Kontur",
   "richtungszielNatuerlich": "Natürlich & entspannt",
   "richtungszielNatuerlichUnter": "Wenig Aufwand, echter Typ",
   "richtungszielWeich": "Weich & elegant",
@@ -374,6 +374,14 @@
   "analyseTitel": "Analyse läuft",
   "analyseHinweis": "Das dauert etwa 20 Sekunden. Bitte nicht schließen.",
   "ergebnisTitel": "Deine Analyse",
+  "ergebnisAuswahl": "Deine Auswahl",
+  "richtungStehtOben": "Deine gewählten Richtungen stehen oben unter „Deine Auswahl“.",
+  "@richtungStehtOben": {
+    "description": "Fuellt die Richtungskarte, wenn nur Chips und kein Freitext vorliegen."
+  },
+  "@ergebnisAuswahl": {
+    "description": "Vorspann der Echo-Zeile im Report, die die eigenen Eingaben zeigt."
+  },
   "ergebnisKopf": "{datum} · {kapitel, plural, one{1 Kapitel} other{{kapitel} Kapitel}} · {empfehlungen, plural, one{1 Empfehlung} other{{empfehlungen} Empfehlungen}}",
   "@ergebnisKopf": {
     "description": "Zeile über dem Report. Datum, Kapitelzahl und Empfehlungszahl stehen bewusst zusammen in einem Satz: Als drei Bausteine im Dart-Code blieben zwei davon deutsch, während die Oberfläche schon englisch war.",

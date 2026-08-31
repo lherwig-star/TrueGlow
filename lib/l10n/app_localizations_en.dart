@@ -309,49 +309,54 @@ class LEn extends L {
   String get richtungszielClean => 'Clean & groomed';
 
   @override
-  String get richtungszielCleanUnter => 'Tidy, timeless, nothing excessive';
+  String get richtungszielCleanUnter =>
+      'Sharp outlines, calm colours, nothing extra';
 
   @override
   String get richtungszielMarkant => 'Striking & masculine';
 
   @override
-  String get richtungszielMarkantUnter => 'Angular, sharp outlines';
+  String get richtungszielMarkantUnter =>
+      'Hard edges: jaw, short hair, contour';
 
   @override
   String get richtungszielNatuerlich => 'Natural & relaxed';
 
   @override
-  String get richtungszielNatuerlichUnter => 'Understated, low effort';
+  String get richtungszielNatuerlichUnter => 'Low effort, unmistakably you';
 
   @override
   String get richtungszielWeich => 'Soft & elegant';
 
   @override
-  String get richtungszielWeichUnter => 'Flowing, calm, fine lines';
+  String get richtungszielWeichUnter =>
+      'Soft lines, fine fabric, quiet presence';
 
   @override
   String get richtungszielStreetwear => 'Streetwear & casual';
 
   @override
-  String get richtungszielStreetwearUnter => 'Baggy, oversized, sneakers';
+  String get richtungszielStreetwearUnter =>
+      'Easy campus look, loose hair, sneakers';
 
   @override
   String get richtungszielSmart => 'Smart & refined';
 
   @override
-  String get richtungszielSmartUnter => 'Polo, knitwear, clean silhouettes';
+  String get richtungszielSmartUnter => 'Polished from haircut to shoes';
 
   @override
   String get richtungszielSportlich => 'Sporty & functional';
 
   @override
-  String get richtungszielSportlichUnter => 'Athletic, practical, hard-wearing';
+  String get richtungszielSportlichUnter => 'Short, practical, ready to move';
 
   @override
   String get richtungszielKreativ => 'Creative & bold';
 
   @override
-  String get richtungszielKreativUnter => 'Statement pieces, brave colours';
+  String get richtungszielKreativUnter =>
+      'Bold colour, statement pieces, clearly yours';
 
   @override
   String get tabHeute => 'Today';
@@ -818,6 +823,13 @@ class LEn extends L {
 
   @override
   String get ergebnisTitel => 'Your analysis';
+
+  @override
+  String get ergebnisAuswahl => 'Your choices';
+
+  @override
+  String get richtungStehtOben =>
+      'Your chosen directions are listed above under “Your choices”.';
 
   @override
   String ergebnisKopf(String datum, int kapitel, int empfehlungen) {
