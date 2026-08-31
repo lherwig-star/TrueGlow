@@ -37,9 +37,6 @@ void main() {
     'camera_screen.dart': 'Bedienelemente über dem Kamerabild',
     'silhouette_overlay.dart': 'Silhouette über dem Kamerabild',
     'fortschritt_screen.dart': 'Marken über dem Foto',
-    // Dasselbe Argument: Das Vollbild liegt auf einem fremden Foto, dessen
-    // Helligkeit niemand kennt. Die Reihe selbst nimmt Themefarben.
-    'beispielbilder.dart': 'Vollbild über einem fremden Foto',
     'jubel_overlay.dart': 'Abdunkelung hinter dem Jubel-Dialog',
     // Weißglühend ist weiß. Der Kern der Glut ist kein Designton, sondern
     // die Mitte eines Leuchtens – in beiden Schemata dieselbe Physik.

@@ -686,32 +686,6 @@
       }
     }
   },
-  "beispielbilderTitel": "So sieht das aus",
-  "beispielbilderHinweis": "Beispielfotos von Pexels – zum Vergrößern antippen.",
-  "beispielbildOeffnen": "Beispielfoto vergrößern",
-  "beispielbildFotograf": "Foto: {fotograf} · Pexels",
-  "@beispielbildFotograf": {
-    "description": "Nennung im Vollbild. Die Pexels-Lizenz verlangt Fotograf und Link zur Quelle.",
-    "placeholders": {
-      "fotograf": {
-        "type": "String"
-      }
-    }
-  },
-  "beispielbildQuelle": "Bei Pexels ansehen",
-  "beispielbildDemo": "Platzhalter – im Demo-Modus gibt es keine echten Fotos.",
-  "beispielbildZaehler": "{nummer} von {gesamt}",
-  "@beispielbildZaehler": {
-    "description": "Position im Vollbild-Betrachter.",
-    "placeholders": {
-      "nummer": {
-        "type": "int"
-      },
-      "gesamt": {
-        "type": "int"
-      }
-    }
-  },
   "figurBleibtLokalTitel": "Bleibt auf dem Gerät",
   "figurBleibtLokalText": "Größe und Gewicht werden nur für die Passform-Empfehlung mitgeschickt und nicht dauerhaft beim Analyse-Dienst gespeichert.",
   "fotoOptional": "Optional – du kannst diesen Schritt überspringen.",

@@ -3595,6 +3595,63 @@ nicht, welches Stück kaputt ist.
 drei Meter zurückgetreten ist, sind das zwei Sekunden — und für den, der es
 nicht rechtzeitig geschafft hätte, ein Foto statt eines zweiten Versuchs.
 
+## 78 · Die Beispielbilder fallen wieder weg
+
+Neun Wochen nach DECISIONS 69 ist die Bilderreihe wieder draußen — Frontend,
+Cloud Function, Cache, Prompt-Feld und Schlüssel.
+
+**Was der Test am Gerät gezeigt hat:** Rund neun von zehn Fotos passten nicht
+zu dem Vorschlag, unter dem sie standen. Nicht knapp daneben — daneben. Zu
+„Textured Crop mit mittelhohem Fade" kam ein beliebiger Mann mit kurzen
+Haaren, zu einer Bartform ein Bart, zu einem Outfit-Vorschlag drei Personen
+in irgendetwas Beigem.
+
+**Warum das kein Fehler der Umsetzung war.** Der Weg funktionierte wie
+gebaut: Das Modell schrieb einen englischen Suchbegriff, die Nachbereitung
+putzte ihn, der Server fragte Pexels, der Cache griff, die Reihe erschien.
+Nur hat Pexels für Frisuren, Bartformen und Outfit-Kombinationen schlicht
+nicht das Material. Es ist eine Bibliothek für Stockfotos, kein Katalog für
+Haarschnitte. Ein besserer Suchbegriff hätte daran nichts geändert; die
+Bilder, die man bräuchte, liegen dort nicht.
+
+**Warum nicht einfach seltener zeigen.** Der Gedanke lag nahe: Reihe nur bei
+sicheren Treffern. Es gibt aber keinen Messwert dafür, ob ein Foto zum
+Vorschlag passt — Pexels liefert eine Trefferliste, keine Ähnlichkeit. Eine
+Schwelle hätte nur den Zufall verschoben.
+
+**Der eigentliche Punkt:** Ein unpassendes Bild ist schlechter als gar
+keins. Der Text daneben ist sorgfältig, und drei beliebige Fotos darunter
+ziehen ihn mit sich. Genau das war in DECISIONS 69 die Wette — „drei echte
+Fotos sind ein Bild im Kopf" — und sie ist verloren.
+
+### Was gegangen ist
+
+| Ort | Was |
+|---|---|
+| App | `Beispielbilder`-Reihe, Vollbild-Betrachter, `BilderDienst`, Modell `Beispielbild` |
+| App | Feld `bildSuchbegriff` in `Sektion`, sieben Textbausteine je Sprache |
+| Server | Function `bilderSuchen`, `bilder.ts`, Cache- und Stundenlogik |
+| Server | Prompt-Feld `bildSuchbegriff` samt Regelblock, Nachbereitung dazu |
+| Firestore | Regelblöcke `bildcache` und `bildkontingent` |
+| SETUP | Abschnitt 5.7 (Pexels-Schlüssel) — hinfällig |
+
+**Alte Reports bleiben lesbar.** Sie tragen das Feld `bildSuchbegriff` noch
+im gespeicherten JSON. Es wird nicht mehr gelesen und nicht mehr
+geschrieben — beim nächsten Speichern verschwindet es von selbst. Eine
+Wanderung braucht es nicht: Ein unbekanntes Feld hat den Leser noch nie
+gestört, und ein Report, dem eine Bilderreihe fehlt, ist derselbe Report.
+
+**Preis:** Die Vokabel bleibt eine Vokabel. Wer „Textured Crop" noch nie
+gesehen hat, sieht ihn auch jetzt nicht — er liest nur die Beschreibung. Das
+ist der bewusste Rückschritt gegenüber DECISIONS 69, und die Gegenrechnung
+ist die Glaubwürdigkeit des ganzen Reports. Zurück kommt der Gedanke erst
+mit einer Quelle, die Haarschnitte nach Namen kennt.
+
+**Was es zurückbringt:** ein Prompt-Feld weniger in jeder Sektion (Tokens
+in jedem Lauf), ein Secret weniger, eine Function weniger, zwei
+Firestore-Sammlungen weniger — und einen Bildschirm ohne die Wartezeit, bis
+die Reihe geladen hat.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

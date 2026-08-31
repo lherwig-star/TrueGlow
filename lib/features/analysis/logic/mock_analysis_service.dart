@@ -109,7 +109,6 @@ class MockAnalysisService implements AnalysisService {
       "sektionen": [
         {
           "titel": "Frisur",
-          "bildSuchbegriff": "textured quiff haircut men",
           "einschaetzung": "Das Haar ist kräftig und leicht wellig, an den Seiten aktuell etwas voluminöser als oben. Dadurch wirkt das Gesicht breiter, als es ist.",
           "empfehlungen": [
             "Die Seiten kürzer halten als das Deckhaar – etwa 2 zu 5 im Verhältnis.",
@@ -127,7 +126,6 @@ class MockAnalysisService implements AnalysisService {
         },
         {
           "titel": "Bart",
-          "bildSuchbegriff": "short full beard men",
           "einschaetzung": "Der Bartwuchs ist an den Wangen etwas lichter als am Kinn. Eine klar gezogene Wangenlinie sorgt trotzdem für ein sauberes Bild.",
           "empfehlungen": [
             "Die Wangenlinie knapp unterhalb des höchsten Bartwuchses ziehen, nicht höher.",
@@ -181,7 +179,6 @@ class MockAnalysisService implements AnalysisService {
         },
         {
           "titel": "Farbpalette",
-          "bildSuchbegriff": "warm earth tone outfit men",
           "einschaetzung": "Zum warmen Unterton passen gedeckte, erdige Töne deutlich besser als kühle Kontraste. Reines Schwarz direkt am Gesicht wirkt hart.",
           "empfehlungen": [
             "Setz auf Oliv, Camel, Rostbraun, Creme und warmes Marineblau.",
@@ -205,7 +202,6 @@ class MockAnalysisService implements AnalysisService {
       "sektionen": [
         {
           "titel": "Alltags-Look",
-          "bildSuchbegriff": "natural everyday makeup women",
           "einschaetzung": "Der Teint ist ruhig genug, dass eine leichte Deckung reicht. Volle Foundation würde die eigene Struktur eher zudecken als betonen.",
           "empfehlungen": [
             "Getönte Tagescreme dünn auftragen und nur dort abdecken, wo es nötig ist.",
@@ -223,7 +219,6 @@ class MockAnalysisService implements AnalysisService {
         },
         {
           "titel": "Farben, die tragen",
-          "bildSuchbegriff": "warm nude lipstick women",
           "einschaetzung": "Zum warmen Unterton passen weiche, erdige Töne besser als kühle Beeren. Auf den Lippen wirkt ein Ton, der zwei Nuancen kräftiger ist als die eigene Lippenfarbe, am natürlichsten.",
           "empfehlungen": [
             "Auf den Lidern mit Terracotta, warmem Taupe und Champagner arbeiten.",
@@ -286,7 +281,6 @@ class MockAnalysisService implements AnalysisService {
       "sektionen": [
         {
           "titel": "Schnitte und Passform",
-          "bildSuchbegriff": "tapered chinos fitted shirt men",
           "einschaetzung": "Das Schulter-Hüft-Verhältnis trägt gerade geschnittene Oberteile gut. Zu weite Hemden nehmen der Silhouette dagegen Struktur.",
           "empfehlungen": [
             "Bei Hemden auf die Schulternaht achten: Sie sollte genau auf dem Schulterknochen enden.",
@@ -319,7 +313,6 @@ class MockAnalysisService implements AnalysisService {
       "sektionen": [
         {
           "titel": "Abgleich mit deinem Ziel",
-          "bildSuchbegriff": "smart casual outfit men",
           "einschaetzung": "Die Basis stimmt: neutrale Farben, saubere Passform. Was fehlt, ist ein Teil, das den Look zusammenhält – meist eine leichte Jacke oder ein Overshirt.",
           "empfehlungen": [
             "Ein Overshirt in Oliv oder Camel ergänzen, das über beide gezeigten Outfits passt.",
@@ -337,7 +330,6 @@ class MockAnalysisService implements AnalysisService {
         },
         {
           "titel": "Alltagstauglichkeit",
-          "bildSuchbegriff": "minimal capsule wardrobe men",
           "einschaetzung": "Beide Outfits sind pflegeleicht und alltagstauglich. Das ist eine gute Grundlage, um gezielt zu ergänzen statt neu anzufangen.",
           "empfehlungen": [
             "Erst ergänzen, dann aussortieren – so bleibt der Kleiderschrank benutzbar.",
@@ -410,7 +402,6 @@ class MockAnalysisService implements AnalysisService {
       "sektionen": [
         {
           "titel": "Dein neuer Look",
-          "bildSuchbegriff": "textured crop haircut men",
           "einschaetzung": "Vorschlag: ein Textured Crop mit mittelhohem Fade. Dein Haar ist kräftig und leicht wellig – genau die Struktur, die dieser Schnitt oben braucht und an den Seiten nicht mitschleppen muss. Weil deine Stirn etwas höher ist, bleibt die Fransenkante vorn stehen, statt nach hinten zu gehen.",
           "empfehlungen": [
             "Sag im Salon: 'Textured Crop, oben etwa 5 cm, Seiten mit mittelhohem Fade auf 6 mm auslaufend, Fransen vorn stehen lassen.'",
@@ -438,7 +429,6 @@ class MockAnalysisService implements AnalysisService {
         },
         {
           "titel": "Bart",
-          "bildSuchbegriff": "short full beard men",
           "einschaetzung": "Der Bartwuchs ist an den Wangen lichter als am Kinn. Ein kurzer Vollbart auf gleichmäßiger Länge nutzt das aus, statt dagegen zu arbeiten: Auf 6 mm fällt der Dichteunterschied kaum noch auf.",
           "empfehlungen": [
             "Vollbart auf 6 mm trimmen, Wangenlinie knapp unterhalb des höchsten Wuchses gerade ziehen.",
@@ -509,7 +499,6 @@ class MockAnalysisService implements AnalysisService {
       "sektionen": [
         {
           "titel": "Dein neuer Look",
-          "bildSuchbegriff": "soft brows minimal makeup women",
           "einschaetzung": "Vorschlag: ein reduzierter Alltags-Look mit betonten Brauen und offenem Blick – und sonst fast nichts. Deine Augenpartie ist klar, die Brauen sind von Natur aus dicht genug, um die Form allein zu tragen. Mit dem kürzeren Schnitt bekommt das Gesicht ohnehin mehr Kontur; volle Deckung wirkte jetzt wie eine zweite Schicht.",
           "empfehlungen": [
             "Brauen mit einer Bürste nach oben außen in Form bringen und mit klarem Gel fixieren – das ist der ganze Schritt.",
@@ -527,7 +516,6 @@ class MockAnalysisService implements AnalysisService {
         },
         {
           "titel": "Farben",
-          "bildSuchbegriff": "terracotta eyeshadow warm makeup women",
           "einschaetzung": "Zum warmen Unterton passen weiche, erdige Töne besser als kühle Beeren – dieselbe Farbfamilie wie beim Rest des neuen Looks.",
           "empfehlungen": [
             "Auf den Lidern mit Terracotta, warmem Taupe und Champagner arbeiten.",
@@ -590,7 +578,6 @@ class MockAnalysisService implements AnalysisService {
       "sektionen": [
         {
           "titel": "Dein neuer Look",
-          "bildSuchbegriff": "structured overshirt outfit men",
           "einschaetzung": "Vorschlag: strukturierte Oberteile mit exakt sitzender Schulternaht statt weit geschnittener Hemden. Deine Schultern sind breiter als die Hüfte – ein Schnitt, der diese Linie aufnimmt, gibt der Silhouette dieselbe Klarheit, die der neue Haarschnitt oben setzt. Weite Hemden nehmen genau diese Linie wieder heraus.",
           "empfehlungen": [
             "Beim Anprobieren zuerst die Schulternaht prüfen: Sie muss auf dem Schulterknochen enden, nicht darüber hinaus.",
@@ -623,7 +610,6 @@ class MockAnalysisService implements AnalysisService {
       "sektionen": [
         {
           "titel": "Dein neuer Look",
-          "bildSuchbegriff": "smart casual overshirt knit men",
           "einschaetzung": "Vorschlag: Smart & hochwertig – wenige, gut sitzende Teile in gedeckten Farben statt vieler funktionaler. Konkret: Strickpullover mit Rundhals, Overshirt aus Baumwolltwill, gerade Hose, schlichte Ledersneaker. Deine Schulterlinie und der neue Schnitt tragen diese Richtung, ohne dass sie steif wirkt.",
           "empfehlungen": [
             "Fang mit einem Overshirt in Oliv oder Camel an – es passt über beide Outfits, die du heute schon trägst.",
