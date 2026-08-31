@@ -867,6 +867,17 @@ class LEn extends L {
   String get ergebnisAuswahl => 'Your choices';
 
   @override
+  String ergebnisKachelEmpfehlungen(int anzahl) {
+    String _temp0 = intl.Intl.pluralLogic(
+      anzahl,
+      locale: localeName,
+      other: '$anzahl recommendations',
+      one: '1 recommendation',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get richtungStehtOben =>
       'Your chosen directions are listed above under “Your choices”.';
 

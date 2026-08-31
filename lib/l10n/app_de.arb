@@ -398,6 +398,15 @@
   "einstellungenWissen": "Wissen",
   "ergebnisTitel": "Deine Analyse",
   "ergebnisAuswahl": "Deine Auswahl",
+  "ergebnisKachelEmpfehlungen": "{anzahl, plural, one{1 Empfehlung} other{{anzahl} Empfehlungen}}",
+  "@ergebnisKachelEmpfehlungen": {
+    "description": "Fusszeile einer Bereichs-Kachel in der Report-Uebersicht.",
+    "placeholders": {
+      "anzahl": {
+        "type": "int"
+      }
+    }
+  },
   "richtungStehtOben": "Deine gewählten Richtungen stehen oben unter „Deine Auswahl“.",
   "@richtungStehtOben": {
     "description": "Fuellt die Richtungskarte, wenn nur Chips und kein Freitext vorliegen."

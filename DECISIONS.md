@@ -4407,6 +4407,87 @@ das Info-Zeichen fehlt still, wenn das Modell eine Technik umschreibt statt
 sie zu benennen. Das ist der ehrlichere Fehler von beiden – lieber kein
 Zeichen als eines, das ins Leere führt.
 
+## 89 · Der Report wird eine Übersicht
+
+Der Report war ein einziger langer Scroll: Vorspann, dann sechs bis sieben
+Kapitel hintereinander, jedes mit Einleitung, Sektionen, Einschätzungen,
+Empfehlungen und Produkten. Inhaltlich richtig – und trotzdem trocken. Wer
+etwas Bestimmtes suchte, scrollte; wer nur schauen wollte, sah eine Wand.
+
+Jetzt steht dort ein Raster aus Kacheln, eine je Bereich. Dahinter liegt der
+Inhalt **unverändert**: dieselben Sektionen, dieselben Empfehlungen,
+dieselben Info-Zeichen der Wissens-Bibliothek, dieselben „Neu für
+dich"-Marken. Es ist eine Umsortierung, keine Streichung – und weil genau
+das die Gefahr eines solchen Umbaus ist, prüft ein Test, dass der Weg von
+der Übersicht zum vollständigen Kapitel wirklich alles wieder zeigt.
+
+### Eine Seite, kein Blatt von unten
+
+Beides wäre gegangen. Drei Gründe für die Seite:
+
+**Ein Kapitel ist lang.** Ein Blatt müsste fast den ganzen Bildschirm
+einnehmen und trüge dann einen Scroll innerhalb eines Scrolls. Das fühlt
+sich beim Wischen zäh an – man weiß nie, ob man den Inhalt bewegt oder das
+Blatt schließt.
+
+**Die Wissens-Erklärung ist selbst ein Blatt** (DECISIONS 88). Ein Blatt
+über einem Blatt stapelt sich, und der Wisch nach unten schlösse dann das
+falsche.
+
+**Die Zurück-Taste stimmt von selbst.** Eine Seite kommt mit einem Weg und
+einem Zurück; die Übersicht darunter bleibt stehen, samt Scroll-Position.
+Beim Blatt hätte man dasselbe von Hand nachbauen müssen.
+
+### Gleich hoch, ohne festes Seitenverhältnis
+
+Zwei Kacheln je Zeile, gleich hoch – aber die Höhe kommt aus dem Inhalt und
+nicht aus einer Zahl. Ein festes Seitenverhältnis müsste für den längsten
+Bereichsnamen in beiden Sprachen passen und wäre für alle anderen zu hoch.
+So bestimmt die längere der beiden Kacheln ihre Zeile, und weil jeder Text
+auf zwei Zeilen gekürzt wird, kann das nicht davonlaufen. Der Layout-Test
+fährt dafür drei Breiten in beiden Sprachen ab – dasselbe Verfahren wie beim
+Stilrichtungs-Raster (DECISIONS 61).
+
+Bei ungerader Anzahl bleibt der Platz daneben frei, statt dass die letzte
+Kachel doppelt so breit wird. Eine einzelne breite Kachel sähe aus wie ein
+eigener Abschnitt und nicht wie der Rest einer Reihe.
+
+**Auf der Kachel steht nichts Erfundenes**: Bereichsname, die Einleitung des
+Kapitels auf zwei Zeilen gekürzt, und die Anzahl der Empfehlungen – alles
+schon vorhanden. Kein neues Feld, kein Prozentwert, keine Priorität.
+
+### Die Töne sind eine Liste, keine sieben Rollen
+
+Jeder Bereich hat einen eigenen Ton, sichtbar nur als Fläche hinter dem
+Symbol. Petrol und Teal in verschiedenen Helligkeiten, hell die
+Creme-Teal-Entsprechungen; die Kacheln sollen unterscheidbar wirken, nicht
+bunt.
+
+**Als Liste in der Palette und nicht als sieben Rollen**, weil kein Ton eine
+eigene Bedeutung trägt: Keiner heißt „Haut", keiner heißt „Stil". Sie sind
+eine Reihe, deren einzige Aufgabe das Unterscheiden ist – und eine Reihe ist
+eine Liste. **Deckend und nicht durchscheinend**, weil ein Alphawert eine
+Rechnung wäre, deren Ergebnis vom Untergrund abhängt; genau solche
+Rechnungen sind aus den Widgets herausgezogen worden (DECISIONS 63).
+
+Das Gold aus [erreicht] kommt hier nicht vor. Es gehört seit DECISIONS 50
+dem Erreichten, und als Kacheldekoration wäre es das nicht mehr – ein Test
+hält das fest.
+
+### Und der Demo-Modus kann es zeigen
+
+Der Demo-Report kannte nur die sechs bestellbaren Bereiche. Das Zielkapitel
+entsteht im Echtbetrieb aus dem Freitext – also entsteht es jetzt auch im
+Demo-Modus daraus. Ohne das wären der siebte Bereich **und** die Zeile mit
+ungerader Kachelzahl nur mit echtem Kontingent zu sehen gewesen, und das ist
+genau die Art Prüfung, die dann nicht stattfindet.
+
+**Preis:** Ein Tipp mehr bis zur Empfehlung. Wer den Report von vorn bis
+hinten lesen will, muss jetzt sieben Kacheln einzeln öffnen statt einmal zu
+scrollen – das ist der Handel. Er lohnt sich, solange man den Report
+überfliegt und gezielt hineingeht; wenn sich zeigt, dass die Leute ihn doch
+am Stück lesen, ist dieser Commit einzeln zurückzudrehen.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

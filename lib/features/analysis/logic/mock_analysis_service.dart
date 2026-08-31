@@ -50,7 +50,15 @@ class MockAnalysisService implements AnalysisService {
     await Future<void>.delayed(AnalysisConfig.mockDauer);
     if (abbruch?.istAusgeloest ?? false) throw const AbbruchException();
 
-    final json = JsonExtractor.extrahiere(antwortFuer(module, modus: modus));
+    // Wie im Echtbetrieb: Das Zielkapitel entsteht aus dem Freitext und
+    // nur daraus. Ohne diese Zeile liesse sich der siebte Bereich – und
+    // damit die Kachel-Zeile mit ungerader Anzahl – nur mit echtem
+    // Kontingent ansehen (DECISIONS 89).
+    final json = JsonExtractor.extrahiere(antwortFuer(
+      module,
+      modus: modus,
+      mitZielen: richtung.freitext.trim().isNotEmpty,
+    ));
     if (json == null) {
       throw const AnalysisException(AnalysisFehler.ungueltigeAntwort);
     }
@@ -151,13 +159,16 @@ class MockAnalysisService implements AnalysisService {
   static String antwortFuer(
     Set<AnalyseModul> module, {
     AnalyseModus modus = AnalyseModus.standard,
+    bool mitZielen = false,
   }) {
     final entdecken = modus.istEntdecken;
     final quelle = entdecken ? _kapitelEntdecken : _kapitel;
-    final kapitel = AnalyseModul.bestellbar
-        .where(module.contains)
-        .map((m) => quelle[m]!)
-        .join(',\n');
+    final kapitel = [
+      for (final m in AnalyseModul.bestellbar)
+        if (module.contains(m)) quelle[m]!,
+      // Das Zielkapitel ist nicht bestellbar – es haengt am Freitext.
+      if (mitZielen) _kapitelZiele,
+    ].join(',\n');
     // Beide Modi bekommen ihren Vorspann – seit DECISIONS 67 gibt es das
     // Feld nicht mehr nur beim entdeckenden.
     final vorspann = entdecken ? _gesamtbildEntdecken : _gesamtbildVerfeinern;
@@ -177,6 +188,34 @@ class MockAnalysisService implements AnalysisService {
         AnalyseModul.bestellbar.toSet(),
         modus: AnalyseModus.entdecken,
       );
+
+  /// Das Kapitel aus dem Freitext bei „Deine Richtung".
+  ///
+  /// Es steht ausserhalb der beiden Karten, weil es in beiden Modi
+  /// dasselbe tut: Es nimmt auf, was jemand in eigenen Worten gesagt hat.
+  /// Der Beispieltext bleibt deshalb allgemein genug, um zu jedem Wunsch zu
+  /// passen – ein Demo-Report kann nicht wissen, was dort steht.
+  static const String _kapitelZiele = '''
+    {
+      "modul": "persoenlicheZiele",
+      "einleitung": "Was du dir selbst vorgenommen hast – aus deinen eigenen Worten. Dieses Kapitel gehört nur dir: Es taucht auf, weil du etwas geschrieben hast, und verschwindet, wenn du das Feld leer lässt.",
+      "habits": [
+        "Nach dem Aufstehen: einen Schluck Wasser trinken, bevor der Tag anfängt",
+        "Vor dem Schlafengehen: kurz notieren, was heute daran gut lief"
+      ],
+      "sektionen": [
+        {
+          "titel": "Dein Vorhaben",
+          "einschaetzung": "Ein Vorhaben hält selten an der Absicht, sondern an der Gelegenheit. Deshalb hängt hier jeder Schritt an etwas, das ohnehin jeden Tag passiert.",
+          "empfehlungen": [
+            "Fang kleiner an, als du dir zutraust – die erste Woche entscheidet nicht über das Ergebnis, sondern über die Gewohnheit.",
+            "Knüpf den Vorsatz an eine feste Stelle im Tag statt an eine Uhrzeit.",
+            "Rechne mit Tagen, an denen es nicht klappt, und plan sie ein statt sie zu vermeiden."
+          ],
+          "produkte": []
+        }
+      ]
+    }''';
 
   static const Map<AnalyseModul, String> _kapitel = {
     AnalyseModul.basis: '''

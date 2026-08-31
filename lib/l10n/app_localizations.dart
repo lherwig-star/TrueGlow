@@ -1639,6 +1639,12 @@ abstract class L {
   /// **'Deine Auswahl'**
   String get ergebnisAuswahl;
 
+  /// Fusszeile einer Bereichs-Kachel in der Report-Uebersicht.
+  ///
+  /// In de, this message translates to:
+  /// **'{anzahl, plural, one{1 Empfehlung} other{{anzahl} Empfehlungen}}'**
+  String ergebnisKachelEmpfehlungen(int anzahl);
+
   /// Fuellt die Richtungskarte, wenn nur Chips und kein Freitext vorliegen.
   ///
   /// In de, this message translates to:

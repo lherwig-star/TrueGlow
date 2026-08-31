@@ -2697,3 +2697,122 @@ Test nicht sieht.
 | Die Richtungs-Pillen stehen zweimal auf einem Schirm | Notieren. |
 | Der Bezug auf die Richtung kommt in keinem Kapitel vor | Notieren. |
 | Der Bezug kommt in jedem zweiten Satz vor | Notieren, mit Screenshot. |
+
+## 40 · Der Report als Kachel-Übersicht
+
+Prüft DECISIONS 89. **Kein einziger echter Analyse-Lauf**, kein Deploy, keine
+Kosten – dieses Paket ist vollständig im Demo-Modus zu prüfen:
+
+```bash
+flutter run --dart-define=TRUEGLOW_MOCK=true
+```
+
+Die wichtigste Frage dieses Abschnitts ist nicht „sieht es gut aus", sondern
+**„fehlt etwas"**. Der Inhalt ist derselbe geblieben, nur anders sortiert.
+
+### Vorbereitung · Ein Demo-Report, der alles füllt
+
+1. **Analyse im Demo-Modus starten**, dabei:
+   - **alle Module** auswählen,
+   - bei „Deine Richtung" **zwei Richtungen** antippen **und** ins Freitextfeld
+     einen Satz schreiben (der Satz erzeugt den siebten Bereich „Deine Ziele"),
+   - bei „Das will ich ausprobieren" **eine Technik** antippen.
+
+   Fotos machen, durchlaufen lassen. Erwartet: ein Report mit **sieben**
+   Bereichen.
+
+### A · Die Übersicht
+
+2. **Der Kopf steht noch da.** Ganz oben im Report. Erwartet: Titel,
+   das **Gesamtbild**, darunter die Zeile **„Deine Auswahl:"** mit den Pillen,
+   dann die Karte **„Deine Richtung"**.
+   *Kriterium:* Fehlt eines davon, ist beim Umbau etwas verlorengegangen –
+   **Blocker**.
+
+3. **Das Raster.** Darunter. Erwartet: **zwei Kacheln je Zeile**, gleich hoch,
+   abgerundet wie die übrigen Karten. Je Kachel: Symbol auf farbiger Fläche,
+   Bereichsname, ein bis zwei Zeilen Zusammenfassung, unten die Anzahl der
+   Empfehlungen und ein Pfeil.
+
+4. **Die letzte Zeile.** Bei sieben Bereichen bleibt rechts unten Platz frei.
+   Erwartet: Die letzte Kachel ist **genauso breit** wie alle anderen, nicht
+   doppelt so breit.
+
+5. **Die Farben sind unterscheidbar, nicht bunt.** Alle sieben Symbolflächen
+   ansehen. Erwartet: sieben Töne derselben Familie – Petrol und Teal in
+   verschiedenen Helligkeiten (hell: blasse Creme-Teal-Töne).
+   *Kriterium:* Taucht irgendwo **Gold/Amber** als Kachelfarbe auf, notieren –
+   das ist die Farbe für Erreichtes und gehört hier nicht hin.
+
+6. **Beide Modi.** Einstellungen → Erscheinungsbild auf **hell**, zurück zum
+   Report. Erwartet: dieselbe Struktur, saubere Kontraste, Symbol gut lesbar
+   auf seiner Fläche. Danach zurück auf dunkel.
+
+7. **Auf Englisch.** Sprache auf **English**, Report erneut ansehen. Erwartet:
+   Das Raster bleibt zweispaltig, nichts hängt über, lange Namen werden mit
+   „…" gekürzt statt überzulaufen. Danach zurück auf Deutsch.
+   *Kriterium:* Bricht eine Kachel aus der Reihe oder wird ein Text
+   abgeschnitten ohne „…", notieren – mit Screenshot.
+
+### B · Es geht nichts verloren
+
+> Der eigentliche Test dieses Pakets.
+
+8. **Jede Kachel einmal antippen.** Erwartet je Bereich: eine eigene Seite mit
+   dem Bereichsnamen als Überschrift und darunter **dem vollständigen
+   Kapitelinhalt** – Einleitung, alle Abschnitte, Einschätzungen, Empfehlungen,
+   Produkte.
+   *Kriterium:* Fehlt in einem Bereich ein Abschnitt, den es vorher gab,
+   **Blocker**.
+
+9. **Die Marke „Neu für dich".** In dem Bereich, zu dem deine angetippte
+   Technik gehört. Erwartet: die Marke steht wie bisher an der Sektion.
+
+10. **Die Info-Zeichen.** In denselben Bereichen. Erwartet: Wo eine bekannte
+    Technik steht, steht das **ⓘ** – und Antippen öffnet die Erklärung wie
+    bisher.
+    *Kriterium:* Öffnet sich nichts oder schließt sich stattdessen die Seite,
+    notieren.
+
+11. **Zurück ohne Verlust.** Mit der **Android-Zurück-Taste** aus einem
+    Bereich zurück. Erwartet: Du landest in der Übersicht, **an derselben
+    Stelle**, an der du warst – nicht wieder ganz oben.
+    Dasselbe noch einmal mit dem Pfeil oben links.
+
+12. **Unter dem Raster.** In der Übersicht ganz nach unten. Erwartet: Was
+    dort vorher stand, steht immer noch da – **„Analyse erweitern"** (falls
+    Module fehlen), der medizinische Hinweis und unten die Knöpfe
+    **„Plan erstellen"** und **„Zur Startseite"**.
+
+13. **Der Plan-Tab ist unberührt.** Startseite → Tab **Plan**. Erwartet:
+    genau wie vorher – Zusammenfassung, nächster Check-in, die drei
+    Zeithorizonte, der Knopf zum Report.
+
+14. **Heute, Analyse und Fortschritt ebenfalls.** Kurz durch alle drei.
+    Erwartet: keine Veränderung.
+
+### C · Das Gefühl
+
+15. **Der Übergang.** Eine Kachel antippen und darauf achten. Erwartet: ein
+    kurzer, weicher Wechsel, dezentes Druckfeedback beim Tippen. Keine
+    Dauer-Animation, kein Leuchten.
+
+16. **Ehrliche Einschätzung.** Lies den Report einmal so, wie du ihn wirklich
+    lesen würdest. Die Frage ist nicht, ob es hübscher ist, sondern:
+    **Kommst du schneller an das, was dich interessiert?**
+    *Wenn nein:* sag es. Der Umbau steckt in genau einem Commit und lässt sich
+    mit einem Befehl zurücknehmen – genau dafür ist er einer geblieben.
+
+### Was ein Fund ist
+
+| Fund | Reaktion |
+|---|---|
+| Ein Abschnitt aus dem alten Report fehlt hinter der Kachel | Blocker. |
+| Der Kopfbereich (Gesamtbild, Deine Auswahl) fehlt | Blocker. |
+| „Analyse erweitern" oder die Knöpfe unten sind weg | Blocker. |
+| Info-Zeichen oder „Neu für dich" funktionieren nicht mehr | Blocker. |
+| Eine Kachel schert aus der Reihe oder läuft über | Vor dem Launch beheben. |
+| Zurück springt an den Anfang der Übersicht | Vor dem Launch beheben. |
+| Gold/Amber taucht als Kachelfarbe auf | Notieren. |
+| Ein Bereich hat keine Kachel, obwohl er Inhalt hat | Blocker. |
+| Der Kachel-Look gefällt dir nicht | Sag es – ein Commit zurück. |

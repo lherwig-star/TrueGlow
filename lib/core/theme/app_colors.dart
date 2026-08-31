@@ -27,6 +27,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.erreichtLeer,
     required this.erreichtChip,
     required this.kartenrand,
+    required this.kachelToene,
   });
 
   /// Seitenhintergrund – der obere Ton des Seitenverlaufs.
@@ -126,6 +127,34 @@ class AppColors extends ThemeExtension<AppColors> {
   /// Dunkel wieder der zuvor gerechnete Wert: [erreicht] bei 14 %.
   final Color erreichtChip;
 
+  /// Die Toene, an denen man die Bereiche in der Report-Uebersicht
+  /// auseinanderhaelt – einer je Kapitel, in der Reihenfolge von
+  /// `AnalyseModul.values` (DECISIONS 89).
+  ///
+  /// **Warum eine Liste und keine sieben Rollen.** Sie tragen keine eigene
+  /// Bedeutung: Kein Ton heisst „Haut" und keiner heisst „Stil". Sie sind
+  /// eine Reihe, deren einzige Aufgabe es ist, sich voneinander zu
+  /// unterscheiden – und eine Reihe ist eine Liste.
+  ///
+  /// **Warum sie deckend sind und nicht durchscheinend.** Sie liegen als
+  /// Kreis hinter dem Bereichs-Symbol, auf der Kartenflaeche. Ein Alphawert
+  /// waere eine Rechnung, deren Ergebnis vom Untergrund abhaengt – und
+  /// genau solche Rechnungen sind aus den Widgets herausgezogen worden
+  /// (DECISIONS 63). Hier steht der fertige Ton.
+  ///
+  /// **Warum aus derselben Familie.** Petrol und Teal in verschiedenen
+  /// Helligkeiten, hell die zugehoerigen Creme-Teal-Werte. Die Kacheln
+  /// sollen unterscheidbar wirken, nicht bunt – und das Gold aus
+  /// [erreicht] bleibt dem Erreichten vorbehalten und wird hier nicht als
+  /// Dekoration verbraucht.
+  final List<Color> kachelToene;
+
+  /// Der Ton fuer den Bereich an [position]. Laeuft die Liste aus, faengt sie
+  /// von vorn an – ein neues Kapitel bekommt so einen Ton statt einer
+  /// Ausnahme.
+  Color kachelton(int position) =>
+      kachelToene[position % kachelToene.length];
+
   /// Die hauchduenne helle Kontur einer Karte.
   ///
   /// Seit DECISIONS 50 setzt sich eine Karte darueber ab und nicht mehr ueber
@@ -181,6 +210,17 @@ class AppColors extends ThemeExtension<AppColors> {
     erreichtChip: Color(0x24E8BE6E),
     // Off-White bei 10 % – Licht, kein Rahmen.
     kartenrand: Color(0x1AF2EEE6),
+    // Sieben Petrol- und Teal-Toene zwischen `flaecheHoch` und `rand`. Alle
+    // dunkel genug, dass das Off-White-Symbol darauf klar steht.
+    kachelToene: [
+      Color(0xFF34635F),
+      Color(0xFF26575E),
+      Color(0xFF3E6B62),
+      Color(0xFF2B5A6B),
+      Color(0xFF1F4A50),
+      Color(0xFF456F66),
+      Color(0xFF2A4F5E),
+    ],
   );
 
   /// Hell – "Creme, Teal & Amber".
@@ -234,6 +274,17 @@ class AppColors extends ThemeExtension<AppColors> {
     erreichtChip: Color(0xFFF5DEB9),
     // Wie dunkel: die Textfarbe bei 10 %.
     kartenrand: Color(0x1A12383F),
+    // Dieselbe Reihe hell: blasse Creme-Teal-Toene, hell genug, dass die
+    // dunkle Tinte darauf steht.
+    kachelToene: [
+      Color(0xFFDCEAEA),
+      Color(0xFFD3E4E9),
+      Color(0xFFE1EDE6),
+      Color(0xFFD6E6EC),
+      Color(0xFFE6EEEC),
+      Color(0xFFCFE2E0),
+      Color(0xFFDAE6EC),
+    ],
   );
 
   /// Die flache Fläche, mit der der Start beginnt.
@@ -268,6 +319,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? erreichtLeer,
     Color? erreichtChip,
     Color? kartenrand,
+    List<Color>? kachelToene,
   }) {
     return AppColors(
       hintergrund: hintergrund ?? this.hintergrund,
@@ -288,6 +340,7 @@ class AppColors extends ThemeExtension<AppColors> {
       erreichtLeer: erreichtLeer ?? this.erreichtLeer,
       erreichtChip: erreichtChip ?? this.erreichtChip,
       kartenrand: kartenrand ?? this.kartenrand,
+      kachelToene: kachelToene ?? this.kachelToene,
     );
   }
 
@@ -315,6 +368,15 @@ class AppColors extends ThemeExtension<AppColors> {
       erreichtLeer: Color.lerp(erreichtLeer, other.erreichtLeer, t)!,
       erreichtChip: Color.lerp(erreichtChip, other.erreichtChip, t)!,
       kartenrand: Color.lerp(kartenrand, other.kartenrand, t)!,
+      // Paarweise, solange beide Reihen gleich lang sind. Sind sie es
+      // nicht, gibt es nichts zu mischen – dann gilt die Zielreihe, statt
+      // dass der Themewechsel abstuerzt.
+      kachelToene: kachelToene.length != other.kachelToene.length
+          ? other.kachelToene
+          : [
+              for (var i = 0; i < kachelToene.length; i++)
+                Color.lerp(kachelToene[i], other.kachelToene[i], t)!,
+            ],
     );
   }
 }

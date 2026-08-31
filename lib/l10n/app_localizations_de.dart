@@ -878,6 +878,17 @@ class LDe extends L {
   String get ergebnisAuswahl => 'Deine Auswahl';
 
   @override
+  String ergebnisKachelEmpfehlungen(int anzahl) {
+    String _temp0 = intl.Intl.pluralLogic(
+      anzahl,
+      locale: localeName,
+      other: '$anzahl Empfehlungen',
+      one: '1 Empfehlung',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get richtungStehtOben =>
       'Deine gewählten Richtungen stehen oben unter „Deine Auswahl“.';
 

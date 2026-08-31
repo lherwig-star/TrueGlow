@@ -10,7 +10,7 @@ import 'package:trueglow/features/ausprobieren/models/technik.dart';
 import 'package:trueglow/features/modules/models/analyse_modul.dart';
 import 'package:trueglow/features/plan/ui/widgets/tagesliste_karte.dart';
 import 'package:trueglow/features/history/logic/analysis_repository.dart';
-import 'package:trueglow/features/result/ui/result_screen.dart';
+import 'package:trueglow/features/result/ui/kapitel_screen.dart';
 import 'package:trueglow/features/wissen/logic/wissen_bibliothek.dart';
 import 'package:trueglow/features/wissen/ui/wissen_screen.dart';
 import 'package:trueglow/features/wissen/ui/wissens_blatt.dart';
@@ -169,7 +169,13 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: testHuelle(const ResultScreen(analyseId: '1')),
+          // Der Kapitelinhalt steht seit DECISIONS 89 hinter einer
+          // Kachel. Geprüft wird hier der Inhalt, nicht der Weg dorthin –
+          // den prüft `kapitel_kachel_test.dart`.
+          child: testHuelle(const KapitelScreen(
+            analyseId: '1',
+            modulName: 'hautFarbtyp',
+          )),
         ),
       );
       await tester.pumpAndSettle();

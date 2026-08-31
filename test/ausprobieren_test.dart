@@ -21,7 +21,7 @@ import 'package:trueglow/features/modules/models/modul_eingaben.dart';
 import 'package:trueglow/features/onboarding/logic/onboarding_controller.dart';
 import 'package:trueglow/features/onboarding/models/onboarding_profile.dart';
 import 'package:trueglow/features/plan/logic/tagesabschnitt.dart';
-import 'package:trueglow/features/result/ui/result_screen.dart';
+import 'package:trueglow/features/result/ui/kapitel_screen.dart';
 import 'package:trueglow/main.dart';
 
 import 'hilfen.dart';
@@ -380,7 +380,12 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: testHuelle(const ResultScreen(analyseId: '1')),
+          // Seit DECISIONS 89 steht der Kapitelinhalt hinter einer
+          // Kachel; die Marke gehört zur Sektion und damit hierher.
+          child: testHuelle(const KapitelScreen(
+            analyseId: '1',
+            modulName: 'hautFarbtyp',
+          )),
         ),
       );
       await tester.pumpAndSettle();
