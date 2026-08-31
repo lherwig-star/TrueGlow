@@ -909,6 +909,23 @@ class LEn extends L {
   String get ergebnisPlanErstellen => 'Create plan';
 
   @override
+  String get ergebnisZumPlan => 'To your plan';
+
+  @override
+  String get ergebnisAlleBereiche => 'Every area has been analysed.';
+
+  @override
+  String ergebnisErweiternZeile(int anzahl, String bereiche) {
+    String _temp0 = intl.Intl.pluralLogic(
+      anzahl,
+      locale: localeName,
+      other: '$anzahl areas not analysed yet',
+      one: '1 area not analysed yet',
+    );
+    return '$_temp0: $bereiche';
+  }
+
+  @override
   String get ergebnisEmpfehlungen => 'Recommendations';
 
   @override

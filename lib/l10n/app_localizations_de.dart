@@ -920,6 +920,23 @@ class LDe extends L {
   String get ergebnisPlanErstellen => 'Plan erstellen';
 
   @override
+  String get ergebnisZumPlan => 'Zum Plan';
+
+  @override
+  String get ergebnisAlleBereiche => 'Alle Bereiche sind analysiert.';
+
+  @override
+  String ergebnisErweiternZeile(int anzahl, String bereiche) {
+    String _temp0 = intl.Intl.pluralLogic(
+      anzahl,
+      locale: localeName,
+      other: '$anzahl Bereiche noch nicht analysiert',
+      one: '1 Bereich noch nicht analysiert',
+    );
+    return '$_temp0: $bereiche';
+  }
+
+  @override
   String get ergebnisEmpfehlungen => 'Empfehlungen';
 
   @override

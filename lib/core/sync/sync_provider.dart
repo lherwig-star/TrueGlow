@@ -9,6 +9,7 @@ import '../../features/direction/logic/direction_controller.dart';
 import '../../features/history/logic/analysis_repository.dart';
 import '../../features/modules/logic/module_controller.dart';
 import '../../features/onboarding/logic/onboarding_controller.dart';
+import '../../features/result/logic/plan_erzeugt.dart';
 import '../../features/plan/logic/plan_progress_repository.dart';
 import '../storage/hive_service.dart';
 import '../theme/theme_controller.dart';
@@ -45,5 +46,9 @@ void zustaendeNeuLaden(WidgetRef ref) {
   ref.read(analysenProvider.notifier).neuLaden();
   ref.read(planFortschrittProvider.notifier).neuLaden();
   ref.read(themeControllerProvider.notifier).neuLaden();
+  // Rein lokal und nicht in der Sicherung – aber nach dem Loeschen aller
+  // Daten steht nichts mehr im Speicher, und der Knopf unter dem Report
+  // soll dann wieder „Plan erstellen" heissen (DECISIONS 90).
+  ref.read(planErzeugtProvider.notifier).neuLaden();
   ref.read(analysisControllerProvider.notifier).zuruecksetzen();
 }

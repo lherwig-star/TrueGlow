@@ -1674,6 +1674,24 @@ abstract class L {
   /// **'Plan erstellen'**
   String get ergebnisPlanErstellen;
 
+  /// Knopf unter dem Report, sobald aus ihm schon ein Plan geworden ist.
+  ///
+  /// In de, this message translates to:
+  /// **'Zum Plan'**
+  String get ergebnisZumPlan;
+
+  /// No description provided for @ergebnisAlleBereiche.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Bereiche sind analysiert.'**
+  String get ergebnisAlleBereiche;
+
+  /// Zeile auf der kompakten Erweitern-Karte unter dem Kachel-Raster.
+  ///
+  /// In de, this message translates to:
+  /// **'{anzahl, plural, one{1 Bereich noch nicht analysiert} other{{anzahl} Bereiche noch nicht analysiert}}: {bereiche}'**
+  String ergebnisErweiternZeile(int anzahl, String bereiche);
+
   /// No description provided for @ergebnisEmpfehlungen.
   ///
   /// In de, this message translates to:

@@ -13,10 +13,9 @@ import '../../analysis/models/analyse_modus.dart';
 import '../../analysis/models/analysis_result.dart';
 import '../../direction/models/richtung.dart';
 import '../../history/logic/analysis_repository.dart';
-import '../../modules/logic/module_controller.dart';
 import '../../modules/models/analyse_modul.dart';
 import '../../onboarding/logic/onboarding_controller.dart';
-import '../../modules/ui/widgets/modul_karte.dart';
+import '../logic/plan_erzeugt.dart';
 import 'widgets/kapitel_kachel.dart';
 
 /// Ergebnis der Analyse, gegliedert nach Modulen. Liest die Analyse anhand der
@@ -62,26 +61,26 @@ class ResultScreen extends ConsumerWidget {
         .where((m) => !ergebnis.module.contains(m))
         .toList();
 
+    // Ob aus diesem Report schon ein Plan geworden ist – davon hängt ab,
+    // was auf dem Knopf steht.
+    final erzeugt = ref.watch(planErzeugtProvider).contains(ergebnis.id);
+
     return AppPage(
       title: texte.ergebnisTitel,
       bottomFade: true,
-      bottomBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FilledButton.icon(
-            onPressed: () => context.go(Routes.plan),
-            style: FilledButton.styleFrom(shape: const StadiumBorder()),
-            icon: const Icon(Icons.checklist_rtl),
-            label: Text(texte.ergebnisPlanErstellen),
-          ),
-          const SizedBox(height: AppTheme.gapS),
-          OutlinedButton.icon(
-            onPressed: () => context.go(Routes.home),
-            style: OutlinedButton.styleFrom(shape: const StadiumBorder()),
-            icon: const Icon(Icons.home_outlined),
-            label: Text(texte.zurStartseite),
-          ),
-        ],
+      // Ein Knopf statt zweier: „Zur Startseite" hat nichts getan, was die
+      // Zurück-Taste und die Tab-Leiste nicht auch tun – er hat nur Höhe
+      // gekostet, und zwar unten, wo sie am teuersten ist (DECISIONS 90).
+      bottomBar: FilledButton.icon(
+        onPressed: () {
+          ref.read(planErzeugtProvider.notifier).merken(ergebnis.id);
+          context.go(Routes.plan);
+        },
+        style: FilledButton.styleFrom(shape: const StadiumBorder()),
+        icon: Icon(erzeugt ? Icons.checklist_rtl : Icons.playlist_add_check),
+        label: Text(
+          erzeugt ? texte.ergebnisZumPlan : texte.ergebnisPlanErstellen,
+        ),
       ),
       children: [
         _Kopf(ergebnis: ergebnis),
@@ -98,15 +97,16 @@ class ResultScreen extends ConsumerWidget {
         // Was der Nutzer selbst eingegeben hat – direkt unter dem
         // Gesamtbild, bevor die Kapitel anfangen (DECISIONS 87).
         _AuswahlEcho(ergebnis: ergebnis),
+        const SizedBox(height: AppTheme.gapM),
         // Die Kapitel als Übersicht statt als langer Scroll: eine
         // Kachel je Bereich, dahinter der unveränderte Inhalt
         // (DECISIONS 89).
         KapitelRaster(ergebnis: ergebnis),
-        const SizedBox(height: AppTheme.gapS),
         if (offene.isNotEmpty) ...[
-          _Erweitern(module: offene),
-          const SizedBox(height: AppTheme.gapM),
+          const SizedBox(height: AppTheme.gapS),
+          _ErweiternKarte(analyseId: ergebnis.id, module: offene),
         ],
+        const SizedBox(height: AppTheme.gapM),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: AppTheme.gapXs),
           child: MutedText(texte.disclaimerMedizin),
@@ -318,42 +318,66 @@ class _ZielPille extends StatelessWidget {
   }
 }
 
-/// Noch nicht analysierte Module – ein Tipp startet nur deren Aufnahmen.
-class _Erweitern extends ConsumerWidget {
-  const _Erweitern({required this.module});
+/// Was noch fehlt – eine Zeile statt dreier Karten (DECISIONS 90).
+///
+/// Sie ist bewusst kleiner und ruhiger als jede Inhalts-Kachel: Was noch
+/// nicht analysiert ist, darf nicht mehr Platz bekommen als das, was schon
+/// da ist. Die ausführlichen Modul-Karten stehen dahinter.
+class _ErweiternKarte extends StatelessWidget {
+  const _ErweiternKarte({required this.analyseId, required this.module});
 
+  final String analyseId;
   final List<AnalyseModul> module;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final texte = context.texte;
     final farben = context.farben;
+    final ausrichtung = ProviderScope.containerOf(context)
+        .read(ausrichtungProvider);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          texte.moduleErweitern,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
-        ),
-        const SizedBox(height: AppTheme.gapXs),
-        MutedText(texte.moduleErweiternText),
-        const SizedBox(height: AppTheme.gapS),
-        for (final modul in module) ...[
-          ModulKarte(
-            modul: modul,
-            mitCheckbox: false,
-            aktion: Icon(Icons.arrow_forward, color: farben.akzent, size: 20),
-            onTap: () {
-              // Auswahl merken, damit das Modul danach als Teil der Analyse
-              // gilt und nicht erneut angeboten wird.
-              ref.read(moduleControllerProvider.notifier).ergaenzen(modul);
-              context.push(Routes.aufnahmeFuer(modul));
-            },
+    return SectionCard(
+      padding: const EdgeInsets.all(AppTheme.gapS),
+      onTap: () => context.push(Routes.erweiternFuer(analyseId)),
+      child: Row(
+        children: [
+          Icon(Icons.add_circle_outline, size: 20, color: farben.akzent),
+          const SizedBox(width: AppTheme.gapS),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  texte.moduleErweitern,
+                  style: const TextStyle(
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  texte.ergebnisErweiternZeile(
+                    module.length,
+                    [
+                      for (final modul in module)
+                        modul.titel(texte, ausrichtung),
+                    ].join(' \u00b7 '),
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    height: 1.35,
+                    color: farben.textSekundaer,
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: AppTheme.gapS),
+          const SizedBox(width: AppTheme.gapXs),
+          Icon(Icons.chevron_right, size: 20, color: farben.textSekundaer),
         ],
-      ],
+      ),
     );
   }
 }

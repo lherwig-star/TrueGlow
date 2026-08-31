@@ -28,6 +28,7 @@ import '../../features/onboarding/ui/onboarding_screen.dart';
 import '../../features/start/ui/splash_screen.dart';
 import '../../features/result/ui/result_screen.dart';
 import '../../features/settings/ui/settings_screen.dart';
+import '../../features/result/ui/erweitern_screen.dart';
 import '../../features/result/ui/kapitel_screen.dart';
 import '../../features/wissen/ui/wissen_screen.dart';
 import '../../core/l10n/texte.dart';
@@ -124,6 +125,10 @@ class Routes {
   /// Ein einzelner Bereich des Reports – der Weg hinter einer Kachel.
   static String kapitelFuer(String analyseId, AnalyseModul modul) =>
       '$result/$analyseId/kapitel/${modul.name}';
+
+  /// Die noch offenen Bereiche mit den ausfuehrlichen Modul-Karten.
+  static String erweiternFuer(String analyseId) =>
+      '$result/$analyseId/erweitern';
 
   /// Ein einzelner Rechtstext in der App (Rueckfallebene ohne Netz).
   static String rechtstextFuer(Rechtsdokument dokument) =>
@@ -273,6 +278,12 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => KapitelScreen(
               analyseId: state.pathParameters['id']!,
               modulName: state.pathParameters['modul']!,
+            ),
+          ),
+          GoRoute(
+            path: 'erweitern',
+            builder: (context, state) => ErweiternScreen(
+              analyseId: state.pathParameters['id']!,
             ),
           ),
         ],

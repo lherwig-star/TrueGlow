@@ -4587,6 +4587,47 @@ Absatz. Alte Reports sehen damit nicht kaputt aus, sondern nur etwas anders.
 Dazu etwas mehr Präsenz: größere Bereichsnamen, mehr Innenabstand, ein
 größeres Symbol. Der Kern der Seite soll auch der größte sein.
 
+### Erweitern wird zurückgestuft
+
+Drei ausführliche Modul-Karten mit Erklärtext standen unter dem Report –
+zusammen höher als alle Inhalts-Kacheln darüber. Die Seite endete damit,
+was **fehlt**, statt mit dem, was da ist.
+
+Im Report steht jetzt eine einzige, ruhige Zeile: „Analyse erweitern ·
+3 Bereiche noch nicht analysiert: Zähne & Lächeln · Figur & Passform · Stil &
+Kleiderschrank" und ein Pfeil. Bewusst kleiner als jede Inhalts-Kachel – was
+es noch nicht gibt, darf nicht mehr Platz bekommen als das, was schon da
+ist. Die ausführlichen Karten stehen dahinter, auf einer eigenen Seite, und
+sind dort unverändert. Sind alle Bereiche analysiert, entfällt die Zeile.
+
+### Ein Knopf statt zweier
+
+„Zur Startseite" ist weg. Er tat nichts, was die Zurück-Taste und die
+Tab-Leiste nicht auch tun – und er kostete Höhe unten, wo sie am teuersten
+ist.
+
+Der verbleibende Knopf sagt, was er tut: **„Plan erstellen"**, solange aus
+diesem Report noch keiner geworden ist, danach **„Zum Plan"**.
+
+**Dafür braucht es eine kleine Notiz**, und die Alternativen waren beide
+schlechter. „Ist dies die aktuelle Analyse?" wäre ab der Sekunde wahr, in
+der sie fertig ist – der Knopf hieße nie „Plan erstellen". „Hat jemand eine
+Aufgabe abgehakt?" beantwortet eine andere Frage. Also merkt sich die App
+lokal, aus welchen Reports ein Plan geworden ist.
+
+Das ist keine Information über den Nutzer, sondern über seinen Weg durch die
+App. Sie geht deshalb **nicht** in die Cloud-Sicherung, und nach einem
+Datenlöschen steht dort wieder „Plan erstellen" – was nach einem
+Datenlöschen auch stimmt.
+
+Der medizinische Hinweis bleibt, als letzte Zeile über dem Knopf.
+
+**Preis des ganzen Pakets:** Ein Tipp mehr zu den offenen Bereichen, und der
+Freitext steht nicht mehr auf der ersten Bildschirmseite, sondern eine Ebene
+tiefer. Beides ist gewollt: Die Seite gehört dem, was die Analyse
+herausgefunden hat – nicht dem, was man ihr vorher mitgegeben hat, und nicht
+dem, was noch fehlt.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

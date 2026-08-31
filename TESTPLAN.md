@@ -2816,3 +2816,141 @@ Die wichtigste Frage dieses Abschnitts ist nicht „sieht es gut aus", sondern
 | Gold/Amber taucht als Kachelfarbe auf | Notieren. |
 | Ein Bereich hat keine Kachel, obwohl er Inhalt hat | Blocker. |
 | Der Kachel-Look gefällt dir nicht | Sag es – ein Commit zurück. |
+
+## 41 · Die aufgeräumte Report-Seite
+
+Prüft DECISIONS 90. Fast alles im Demo-Modus:
+
+```bash
+flutter run --dart-define=TRUEGLOW_MOCK=true
+```
+
+**Höchstens EIN echter Analyse-Lauf**, ganz am Ende in Abschnitt F – und nur
+für eine einzige Frage: ob das Modell das neue Feld `kurzfazit` sauber
+liefert. Kosten: eine der zehn Analysen des Monats plus Tokens.
+
+### Vorbereitung
+
+1. **Demo-Analyse mit allem**: alle Module, zwei Stilrichtungen, ein Satz im
+   Freitextfeld, eine Technik bei „Das will ich ausprobieren". Danach
+   **Report öffnen**.
+
+### A · Die Reihenfolge von oben nach unten
+
+2. **Von oben durchsehen.** Erwartet in genau dieser Folge:
+   Kopfzeile → Gesamtbild → eine Auswahl-Zeile → Kacheln → eine schmale
+   Erweitern-Zeile (falls Bereiche fehlen) → Hinweis → ein Knopf.
+   *Kriterium:* Steht dort noch eine Karte **„Deine Richtung"**, läuft eine
+   alte Fassung – **Blocker**.
+
+3. **Die Kopfzeile nennt den Modus.** Ganz oben. Erwartet:
+   „heute · Verfeinert · 7 Kapitel · … Empfehlungen" – der Modus steht in
+   der Zeile und **nicht** mehr als Pille in der Auswahl.
+
+4. **Das Gesamtbild ist ruhig.** Erwartet: eine Karte wie jede andere, **kein
+   goldener Rahmen**, die Überschrift eine Spur größer.
+   *Kriterium:* Ist der Goldrahmen noch da, notieren.
+
+### B · Die Auswahl-Zeile
+
+5. **Eine Zeile, nicht zwei.** Erwartet: **genau eine** Zeile mit Pillen –
+   erst die Stilrichtungen, dann die Technik mit einem kleinen Funkeln davor.
+   Kein Modus, kein Freitext.
+
+6. **Sie lässt sich schieben.** Mit dem Finger nach links wischen. Erwartet:
+   Die Zeile scrollt waagerecht; läuft sie über, ist der letzte Chip am
+   rechten Rand angeschnitten.
+   *Kriterium:* Bricht die Zeile um oder schiebt sie die Kacheln nach unten,
+   notieren.
+
+7. **Ohne Auswahl ist sie ganz weg.** Neue Demo-Analyse, diesmal
+   „Deine Richtung" **überspringen** und keine Technik antippen. Erwartet:
+   **keine** Auswahl-Zeile und **kein** Label „Deine Auswahl:".
+
+### C · Der Freitext im Zielkapitel
+
+8. **Auf der Kachel.** Zurück zum Report aus Schritt 1. Auf der Kachel
+   **Persönliche Ziele**. Erwartet: dein eigener Satz als Untertitel, auf
+   zwei Zeilen gekürzt.
+
+9. **Und dahinter vollständig.** Die Kachel antippen. Erwartet: ganz oben ein
+   abgesetzter Zitat-Block **„Dein Wunsch"** mit dem **vollen** Text, darunter
+   wie bisher die Empfehlungen.
+   *Kriterium:* Fehlt der Zitat-Block oder ist der Text gekürzt, notieren.
+
+10. **In anderen Bereichen steht kein Zitat.** Eine andere Kachel öffnen.
+    Erwartet: kein „Dein Wunsch"-Block.
+
+### D · Die Kacheln
+
+11. **Kein Loch mehr.** Bei sieben Bereichen. Erwartet: drei Zeilen zu zweit,
+    und die **letzte Kachel liegt quer über die volle Breite** – Symbol
+    links, Text rechts.
+    *Kriterium:* Bleibt rechts unten eine halbe Zeile leer, notieren.
+
+12. **Ganze Aussagen.** Alle Kacheln lesen. Erwartet: unter jedem
+    Bereichsnamen eine **vollständige** kurze Aussage – zum Beispiel
+    „Oben Volumen lassen, Seiten kürzer halten".
+    *Kriterium:* Endet irgendwo ein Satz mitten im Wort („… zeichnet sich
+    durch eine ausgew…"), ist das genau der Fehler, der weg sollte –
+    **Blocker**.
+
+13. **Ein alter Report.** Im Verlauf einen Report von **vor heute** öffnen.
+    Erwartet: Auch dort steht unter jedem Namen ein ganzer Satz – dann die
+    **erste Empfehlung** statt eines Fazits.
+    *Kriterium:* Steht dort ein abgeschnittener Absatz, notieren.
+
+14. **Beide Sprachen, beide Modi.** Sprache auf **English**, dann
+    Erscheinungsbild auf **hell**. Erwartet: Raster bleibt zweispaltig,
+    nichts hängt über, Kontraste stimmen. Danach beides zurückstellen.
+
+### E · Erweitern und der Fuß
+
+15. **Eine schmale Zeile statt dreier Karten.** In einem Report, dem Bereiche
+    fehlen (also **nicht** dem aus Schritt 1). Erwartet: eine kleine Karte
+    „Analyse erweitern" mit einer Zeile wie „3 Bereiche noch nicht
+    analysiert: …" und einem Pfeil. Sie ist **kleiner** als jede Kachel.
+
+16. **Dahinter das Ausführliche.** Antippen. Erwartet: eine eigene Seite mit
+    den bekannten großen Modul-Karten. Eine davon antippen führt wie bisher
+    in die Aufnahme. Zurück-Taste bringt zurück.
+
+17. **Unten genau ein Knopf.** Erwartet: **kein** „Zur Startseite" mehr, nur
+    ein Knopf – und darüber der medizinische Hinweis als letzte Zeile.
+
+18. **Der Knopf ändert sich.** Er heißt zuerst **„Plan erstellen"**.
+    Antippen → du landest im Plan-Tab. Zurück zum Report. Erwartet: Jetzt
+    heißt er **„Zum Plan"**.
+    *Kriterium:* Heißt er weiter „Plan erstellen", notieren.
+
+### F · Der eine echte Lauf
+
+> Ab hier kostet es. **Genau ein Lauf.** Vorher sicherstellen, dass die
+> Functions in der neuen Fassung laufen.
+
+19. **Eine Analyse mit zwei Modulen.** Nach dem Durchlauf den Report ansehen.
+
+    Erwartet: Unter **jedem** Bereichsnamen steht eine kurze, vollständige
+    Aussage von höchstens acht Wörtern – kein angerissener Satz und nicht
+    der Anfang der Einleitung.
+
+    *Kriterien:*
+    - Steht dort der Anfang der Einleitung: notieren, mit Screenshot – dann
+      greift die Prompt-Regel nicht.
+    - Ist die Aussage länger als eine Zeile oder wird sie gekürzt: notieren.
+    - Steht dort gar nichts: notieren – dann fehlt das Feld, und die
+      Rückfallebene hätte greifen müssen.
+
+### Was ein Fund ist
+
+| Fund | Reaktion |
+|---|---|
+| Die Karte „Deine Richtung" steht noch da | Blocker. |
+| Ein Kacheltext endet mitten im Wort | Blocker. |
+| Der Zitat-Block „Dein Wunsch" fehlt im Zielkapitel | Blocker. |
+| Hinter der Erweitern-Zeile fehlen die Modul-Karten | Blocker. |
+| Die letzte Kachel lässt ein Loch | Vor dem Launch beheben. |
+| Die Auswahl-Zeile bricht um | Vor dem Launch beheben. |
+| Der Goldrahmen am Gesamtbild ist noch da | Notieren. |
+| Der Knopf heißt weiter „Plan erstellen" | Notieren. |
+| Das `kurzfazit` fehlt im echten Report | Notieren, mit Screenshot. |

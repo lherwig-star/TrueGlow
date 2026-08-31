@@ -426,6 +426,19 @@
   },
   "ergebnisGesichtsform": "Gesichtsform",
   "ergebnisPlanErstellen": "Plan erstellen",
+  "ergebnisZumPlan": "Zum Plan",
+  "@ergebnisZumPlan": {
+    "description": "Knopf unter dem Report, sobald aus ihm schon ein Plan geworden ist."
+  },
+  "ergebnisAlleBereiche": "Alle Bereiche sind analysiert.",
+  "ergebnisErweiternZeile": "{anzahl, plural, one{1 Bereich noch nicht analysiert} other{{anzahl} Bereiche noch nicht analysiert}}: {bereiche}",
+  "@ergebnisErweiternZeile": {
+    "description": "Zeile auf der kompakten Erweitern-Karte unter dem Kachel-Raster.",
+    "placeholders": {
+      "anzahl": { "type": "int" },
+      "bereiche": { "type": "String" }
+    }
+  },
   "ergebnisEmpfehlungen": "Empfehlungen",
   "ergebnisProdukte": "Produkte",
   "produktReinigung": "Reinigung",
