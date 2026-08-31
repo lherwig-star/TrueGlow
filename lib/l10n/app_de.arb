@@ -459,6 +459,8 @@
   "einstellungenAngaben": "Meine Angaben ändern",
   "einstellungenErscheinungsbild": "Erscheinungsbild",
   "einstellungenDatenLoeschen": "Daten löschen, Konto behalten",
+  "einstellungenDatenExport": "Meine Daten herunterladen",
+  "einstellungenDatenExportLaeuft": "Deine Datei wird vorbereitet …",
   "einstellungenKontoLoeschen": "Konto endgültig löschen",
   "einstellungenImpressum": "Impressum",
   "einstellungenRechtliches": "Rechtliches",

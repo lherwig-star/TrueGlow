@@ -4,6 +4,7 @@ import { onCall, type CallableRequest } from 'firebase-functions/v2/https';
 
 import * as analysePrompt from './analyse_prompt';
 import * as checkinPrompt from './checkin_prompt';
+import { datenauskunft } from './export';
 import { fehler } from './fehler';
 import { frage } from './gemini';
 import { extrahiere } from './json_extractor';
@@ -169,6 +170,22 @@ export const kontoLoeschen = onCall(OPTIONEN, async (request) => {
 
   console.info(`Loeschung abgeschlossen (${modus}).`);
   return { modus };
+});
+
+/**
+ * Die Datenauskunft: alles, was zu diesem Konto gespeichert ist.
+ *
+ * Zaehlt nicht gegen das Kontingent – ein Recht aus der DSGVO darf nicht an
+ * einem Verbrauchszaehler haengen. Gegen Missbrauch stehen App Check und die
+ * Anmeldung; mehr braucht ein Aufruf nicht, der ausschliesslich eigene Daten
+ * liefert (SECURITY_AUDIT F2).
+ */
+export const datenExport = onCall(OPTIONEN, async (request) => {
+  const uid = pruefeAnmeldung(request);
+  const auskunft = await datenauskunft(uid);
+
+  console.info('Datenauskunft erstellt.');
+  return { auskunft };
 });
 
 // --- Bausteine ---------------------------------------------------------

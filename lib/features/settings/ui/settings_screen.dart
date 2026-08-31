@@ -11,6 +11,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_controller.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
+import '../../account/logic/daten_export.dart';
 import '../../account/logic/konto_dienst.dart';
 import '../../analysis/logic/analysis_controller.dart';
 import '../../analysis/logic/modus_controller.dart';
@@ -54,6 +55,12 @@ class SettingsScreen extends ConsumerWidget {
                 icon: Icons.tune,
                 label: texte.einstellungenAngaben,
                 onTap: () => _angabenAendern(context, ref),
+              ),
+              const Divider(indent: AppTheme.gapM, endIndent: AppTheme.gapM),
+              _Eintrag(
+                icon: Icons.download_outlined,
+                label: texte.einstellungenDatenExport,
+                onTap: () => _exportieren(context, ref),
               ),
               const Divider(indent: AppTheme.gapM, endIndent: AppTheme.gapM),
               _Eintrag(
@@ -107,6 +114,36 @@ class SettingsScreen extends ConsumerWidget {
   void _angabenAendern(BuildContext context, WidgetRef ref) {
     ref.read(onboardingControllerProvider.notifier).zuruecksetzen();
     context.go(Routes.onboarding);
+  }
+
+  /// Gibt dem Nutzer eine Kopie aller Daten, die zu seinem Konto
+  /// gespeichert sind (DSGVO Art. 15 und 20).
+  ///
+  /// Der Ablauf ist bewusst kurz: holen, schreiben, teilen. Es gibt keine
+  /// Rueckfrage vorher – eine Auskunft ueber die eigenen Daten ist nichts,
+  /// wovor man jemanden warnen muesste.
+  Future<void> _exportieren(BuildContext context, WidgetRef ref) async {
+    final texte = context.texte;
+    final bote = ScaffoldMessenger.of(context);
+    final dienst = ref.read(datenExportProvider);
+
+    bote.showSnackBar(
+      SnackBar(content: Text(texte.einstellungenDatenExportLaeuft)),
+    );
+
+    try {
+      final datei = await dienst.erzeugen();
+      await dienst.teilen(datei);
+    } on KontoException catch (e) {
+      bote.showSnackBar(
+        SnackBar(
+          content: Text(
+            texte.settingsFehlerMeldung(e.fehler.titel(texte),
+                e.fehler.tipp(texte)),
+          ),
+        ),
+      );
+    }
   }
 
   /// Loescht Daten – wahlweise samt Konto.

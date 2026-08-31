@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trueglow/core/router/app_router.dart';
 import 'package:trueglow/core/widgets/markdown_ansicht.dart';
@@ -9,12 +12,33 @@ import 'package:trueglow/features/legal/ui/rechtsdokument_texte.dart';
 
 void main() {
   group('Rechtstexte-Konfiguration', () {
-    test('erkennt fehlende Quellen und meldet sie verstaendlich', () {
-      // Solange nichts eingetragen ist, muss die App das auch sagen –
-      // ein stiller Zustand waere hier der gefaehrlichste.
-      expect(Rechtstexte.fehlende, isNotEmpty);
+    test('jedes Dokument hat eine Quelle in beiden Sprachen', () {
+      // Seit SECURITY_AUDIT F2 liegen alle drei als Entwurf bei.
+      expect(Rechtstexte.fehlende, isEmpty);
+
+      for (final dokument in Rechtsdokument.values) {
+        final quelle = Rechtstexte.quelle(dokument);
+        expect(quelle.fuer('de'), isNotNull, reason: dokument.name);
+        expect(quelle.fuer('en'), isNotNull, reason: dokument.name);
+        expect(quelle.fuer('de'), isNot(quelle.fuer('en')),
+            reason: dokument.name);
+      }
+    });
+
+    test('bleibt trotzdem nicht einreichungsfaehig', () {
+      // Der Release-Build muss weiter blockiert sein: Die Texte sind
+      // Entwuerfe und noch nicht juristisch geprueft.
       expect(Rechtstexte.vollstaendig, isFalse);
       expect(Rechtstexte.fehlerbericht, contains('rechtstexte.dart'));
+      expect(Rechtstexte.fehlerbericht, contains('entwurf'));
+    });
+
+    test('faellt auf Deutsch zurueck, wenn eine Sprache fehlt', () {
+      // Besser ein Text in der falschen Sprache als gar keiner.
+      const nurDeutsch = Rechtsquelle(asset: 'a/de.md');
+
+      expect(nurDeutsch.fuer('en'), 'a/de.md');
+      expect(const Rechtsquelle().fuer('de'), isNull);
     });
 
     test('eine Quelle ohne URL und ohne Asset gilt als nicht vorhanden', () {
@@ -115,14 +139,13 @@ void main() {
       for (final dokument in Rechtsdokument.values) {
         expect(find.text(dokument.titel(texte)), findsOneWidget);
       }
-      // Solange nichts hinterlegt ist, sagt der Screen das dreimal deutlich.
-      expect(find.text('Noch nicht verfügbar'), findsNWidgets(3));
-      // Und die alte Platzhalter-Snackbar gibt es nicht mehr.
+      // Jetzt liegt zu jedem etwas bei – der Hinweis „noch nicht
+      // verfuegbar" gehoert damit der Vergangenheit an.
+      expect(find.text('Noch nicht verfügbar'), findsNothing);
       expect(find.text('Rechtstext folgt.'), findsNothing);
     });
 
-    testWidgets('ein Eintrag ohne Quelle laesst sich nicht antippen',
-        (tester) async {
+    testWidgets('und laesst sie antippen', (tester) async {
       handyGroesse(tester, hoehe: 1600);
 
       final container = await appMitDashboard(tester);
@@ -135,7 +158,67 @@ void main() {
           matching: find.byType(ListTile),
         ),
       );
-      expect(eintrag.onTap, isNull);
+      expect(eintrag.onTap, isNotNull);
+    });
+  });
+
+  group('Die Entwuerfe selbst', () {
+    setUp(TestWidgetsFlutterBinding.ensureInitialized);
+
+    /// Liest ein Asset so, wie die App es liest.
+    Future<String> text(Rechtsdokument dokument, String sprache) async {
+      final pfad = Rechtstexte.quelle(dokument).fuer(sprache)!;
+      final daten = await rootBundle.load(pfad);
+      return utf8.decode(daten.buffer.asUint8List());
+    }
+
+    test('jeder Text ist da und als Entwurf gekennzeichnet', () async {
+      for (final dokument in Rechtsdokument.values) {
+        for (final sprache in ['de', 'en']) {
+          final inhalt = await text(dokument, sprache);
+
+          expect(inhalt.length, greaterThan(500),
+              reason: '${dokument.name}/$sprache');
+          expect(
+            inhalt.toLowerCase(),
+            anyOf(contains('entwurf'), contains('draft'),
+                contains('nicht ausgefüllt'), contains('not been filled')),
+            reason: '${dokument.name}/$sprache',
+          );
+        }
+      }
+    });
+
+    test('die Datenschutzerklaerung nennt, worauf es ankommt', () async {
+      // Was ein Nutzer als Erstes wissen will – und was das Audit unter F2
+      // vermisst hat.
+      final inhalt = await text(Rechtsdokument.datenschutz, 'de');
+
+      for (final stichwort in [
+        'Gemini',
+        'Drittlandtransfer',
+        'europe-west3',
+        'Art. 15',
+        'Widerruf',
+        'Löschen',
+        '18',
+      ]) {
+        expect(inhalt, contains(stichwort), reason: stichwort);
+      }
+    });
+
+    test('und die englische Fassung dasselbe', () async {
+      final inhalt = await text(Rechtsdokument.datenschutz, 'en');
+
+      for (final stichwort in [
+        'Gemini',
+        'outside the European Union',
+        'europe-west3',
+        'Art. 15',
+        'withdraw',
+      ]) {
+        expect(inhalt, contains(stichwort), reason: stichwort);
+      }
     });
   });
 }

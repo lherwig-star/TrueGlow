@@ -1951,6 +1951,18 @@ abstract class L {
   /// **'Daten löschen, Konto behalten'**
   String get einstellungenDatenLoeschen;
 
+  /// No description provided for @einstellungenDatenExport.
+  ///
+  /// In de, this message translates to:
+  /// **'Meine Daten herunterladen'**
+  String get einstellungenDatenExport;
+
+  /// No description provided for @einstellungenDatenExportLaeuft.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Datei wird vorbereitet …'**
+  String get einstellungenDatenExportLaeuft;
+
   /// No description provided for @einstellungenKontoLoeschen.
   ///
   /// In de, this message translates to:

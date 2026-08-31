@@ -24,6 +24,9 @@ class FirebaseKonfig {
 
   /// Name der Loesch-Function.
   static const String functionKontoLoeschen = 'kontoLoeschen';
+
+  /// Name der Function fuer die Datenauskunft (DSGVO Art. 15 und 20).
+  static const String functionDatenExport = 'datenExport';
 }
 
 /// Wie der Start ausgegangen ist.

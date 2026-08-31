@@ -309,6 +309,8 @@
   "einstellungenAngaben": "Change my details",
   "einstellungenErscheinungsbild": "Appearance",
   "einstellungenDatenLoeschen": "Delete data, keep account",
+  "einstellungenDatenExport": "Download my data",
+  "einstellungenDatenExportLaeuft": "Preparing your file …",
   "einstellungenKontoLoeschen": "Delete account permanently",
   "einstellungenImpressum": "Legal notice",
   "einstellungenRechtliches": "Legal",

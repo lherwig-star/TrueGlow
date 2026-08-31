@@ -45,7 +45,7 @@ Prompt-Baukasten, ohne das Modell zu rufen.
 | **E1** Bilder und Anfragegrößen | 🟡 | Anzahl und Gesamtgröße werden vor dem Modellaufruf begrenzt; dass die Daten wirklich ein Bild sind, prüft niemand. |
 | **E2** Fehlermeldungen | 🟢 | Beim Nutzer landen nur kurze Fallnamen, Einzelheiten bleiben im Server-Protokoll. |
 | **F1** Protokolle | 🟡 | Keine Fotos, keine E-Mails, keine Namen, keine Freitexte — aber die Konto-ID und einzelne Report-Bruchstücke. |
-| **F2** DSGVO | 🔴 | Es gibt keine Datenschutzerklärung und keine Datenauskunft; Löschen dagegen ist vorbildlich vollständig. |
+| **F2** DSGVO | 🟡 **teilweise behoben** | Datenschutzerklärung, Nutzungsbedingungen und Impressum liegen als Entwurf in beiden Sprachen bei, die Datenauskunft gibt es; offen bleiben die juristische Prüfung und die Angaben im Impressum (DECISIONS 82). |
 | **G1** Kosten-Bremse | 🟡 | Ein Budget-Alarm besteht (25 € im Monat) — ein Alarm ist aber keine Obergrenze. |
 | **G2** Monitoring | 🟡 | Nicht prüfbar von hier; im Projekt ist keine Alarmregel für Fehler oder Aufrufmengen dokumentiert. |
 | **G3** Backups | 🟡 | Für Firestore ist nirgends ein Backup eingerichtet, und der Quellcode liegt nur auf diesem einen Rechner. |
@@ -617,6 +617,20 @@ Testbuild greift diese Bremse aber nicht.
    exportiert. **Aufwand: klein bis mittel.**
 
 ---
+
+> **Teilweise behoben am 31.08.2026 (DECISIONS 82).** Alle drei
+> Dokumente liegen jetzt als vollständiger Entwurf im Bundle, deutsch und
+> englisch, und sind in der App lesbar. Die Textversion steht auf
+> `1-entwurf`: Die Nummer ist gestiegen, damit jede frühere Zustimmung neu
+> eingeholt wird — die Endung bleibt, damit der Release-Build weiter
+> blockiert ist, solange kein Anwalt daraufgesehen hat. Die Datenauskunft
+> gibt es als „Meine Daten herunterladen" in den Einstellungen; der Server
+> stellt sie zusammen, damit kein Zweig des Datenmodells vergessen wird.
+>
+> **Warum weiterhin gelb und nicht grün:** Zwei Dinge kann kein Code
+> erledigen. Erstens die juristische Prüfung. Zweitens das Impressum — es
+> besteht nur aus Angaben, die allein du kennst, und steht deshalb mit
+> eckigen Klammern da. **Beides muss vor den Testpersonen passieren.**
 
 ## G · Betrieb
 

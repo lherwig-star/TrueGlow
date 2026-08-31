@@ -32,18 +32,32 @@ enum Rechtsdokument {
 /// die App die Webseite und haelt den mitgelieferten Text als Rueckfallebene
 /// bereit — praktisch, wenn jemand offline nachlesen will.
 class Rechtsquelle {
-  const Rechtsquelle({this.url, this.asset});
+  const Rechtsquelle({this.url, this.asset, this.assetEn});
 
   /// Oeffentliche Adresse des Dokuments. Play verlangt für die
   /// Datenschutzerklärung zwingend eine solche URL.
   final String? url;
 
-  /// Pfad eines Markdown-Assets im Bundle, z. B.
-  /// `assets/rechtstexte/datenschutz.md`.
+  /// Pfad des deutschen Markdown-Assets im Bundle, z. B.
+  /// `assets/rechtstexte/datenschutz_de.md`.
   final String? asset;
+
+  /// Dasselbe auf Englisch. Fehlt es, wird die deutsche Fassung gezeigt –
+  /// besser ein Text in der falschen Sprache als gar keiner.
+  final String? assetEn;
 
   bool get hatUrl => (url ?? '').trim().isNotEmpty;
   bool get hatAsset => (asset ?? '').trim().isNotEmpty;
+
+  /// Der Pfad zur Fassung in dieser Sprache.
+  ///
+  /// [sprachcode] ist der ISO-Code der App-Sprache (`de`, `en`).
+  String? fuer(String sprachcode) {
+    if (sprachcode == 'en' && (assetEn ?? '').trim().isNotEmpty) {
+      return assetEn;
+    }
+    return hatAsset ? asset : null;
+  }
 
   /// Ob das Dokument ueberhaupt anzeigbar ist.
   bool get vorhanden => hatUrl || hatAsset;
@@ -68,8 +82,17 @@ class Rechtstexte {
   /// die Texte inhaltlich, wird diese Nummer erhöht — dann gilt die alte
   /// Einwilligung nicht mehr und die App fragt erneut.
   ///
-  /// `0-entwurf` heißt ausdrücklich: Es gibt noch keine verbindlichen Texte.
-  static const String version = '0-entwurf';
+  /// Die Endung `-entwurf` heißt ausdrücklich: Es gibt Texte, aber noch
+  /// keine geprüften. `tool/rechtstexte_pruefen.dart` bricht einen
+  /// Release-Build ab, solange sie dransteht.
+  ///
+  /// **Warum trotzdem `1-` und nicht mehr `0-`:** Seit SECURITY_AUDIT F2
+  /// liegen alle drei Dokumente als vollständige Entwürfe bei. Die erhöhte
+  /// Nummer sorgt dafür, dass jeder, der vorher zugestimmt hat, die
+  /// Zustimmung erneut gibt — er hat damals nämlich einem leeren
+  /// „Noch nicht verfügbar" zugestimmt. Verbindlich werden die Texte erst
+  /// mit der juristischen Prüfung, und dann fällt das `-entwurf` weg.
+  static const String version = '1-entwurf';
 
   /// Ab dieser Version gelten die Texte als verbindlich. Bis dahin ist der
   /// Zustand „Entwurf" und die Prüfung schlägt an.
@@ -80,18 +103,22 @@ class Rechtstexte {
   /// **Zum Ausfüllen:** URL eintragen (Play braucht sie), optional zusätzlich
   /// eine Markdown-Datei unter `assets/rechtstexte/` ablegen und in
   /// `pubspec.yaml` als Asset eintragen.
+  /// **Die URLs fehlen noch mit Absicht.** Play verlangt für die
+  /// Datenschutzerklärung eine öffentlich erreichbare Adresse; die gibt es
+  /// erst, wenn die Seite steht (SETUP 11). Bis dahin liest man die Texte
+  /// in der App.
   static const Map<Rechtsdokument, Rechtsquelle> quellen = {
     Rechtsdokument.datenschutz: Rechtsquelle(
-      // url: 'https://trueglow.app/datenschutz',
-      // asset: 'assets/rechtstexte/datenschutz.md',
+      asset: 'assets/rechtstexte/datenschutz_de.md',
+      assetEn: 'assets/rechtstexte/datenschutz_en.md',
     ),
     Rechtsdokument.nutzungsbedingungen: Rechtsquelle(
-      // url: 'https://trueglow.app/agb',
-      // asset: 'assets/rechtstexte/agb.md',
+      asset: 'assets/rechtstexte/nutzungsbedingungen_de.md',
+      assetEn: 'assets/rechtstexte/nutzungsbedingungen_en.md',
     ),
     Rechtsdokument.impressum: Rechtsquelle(
-      // url: 'https://trueglow.app/impressum',
-      // asset: 'assets/rechtstexte/impressum.md',
+      asset: 'assets/rechtstexte/impressum_de.md',
+      assetEn: 'assets/rechtstexte/impressum_en.md',
     ),
   };
 

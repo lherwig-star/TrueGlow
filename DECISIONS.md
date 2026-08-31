@@ -3990,6 +3990,86 @@ steht nichts mehr von ihm.
 jedem Lauf), und der Nutzer verliert in seinem Freitext die spitzen
 Klammern. Beides ist wenig gegen einen Report, der eine Note vergibt.
 
+## 82 · Rechtstexte als Entwurf, und eine Datenauskunft
+
+Behebt SECURITY_AUDIT F2 — den zweiten roten Punkt. Drei Dokumente in zwei
+Sprachen und ein Knopf „Meine Daten herunterladen".
+
+### Warum ein Entwurf und keine fertigen Texte
+
+Rechtstexte sind keine Programmierarbeit. Was hier entsteht, ist die
+**Grundlage für die anwaltliche Prüfung**: eine Beschreibung der Datenflüsse,
+die aus dem Code abgeleitet ist und nicht aus einem Muster im Netz. Jeder
+Satz über Fotos, Speicherorte, Dienste und Aufbewahrung lässt sich in diesem
+Repository nachlesen.
+
+Genau darin liegt der Wert. Ein Muster-Text aus dem Netz beschreibt eine App,
+die es nicht gibt; dieser hier beschreibt diese. Was er nicht ersetzt, ist
+die juristische Prüfung — und deshalb steht in jedem der Dokumente oben ein
+Kasten, der das sagt.
+
+### Warum die Version `1-entwurf` heißt und nicht `1`
+
+`Rechtstexte.istEntwurf` prüft auf die Endung `-entwurf`, und
+`tool/rechtstexte_pruefen.dart` bricht daran einen Release-Build ab. Das soll
+so bleiben: Ungeprüfte Texte gehören nicht in einen Store.
+
+Gleichzeitig musste die **Nummer** steigen. Wer vorher zugestimmt hat, hat
+einem leeren „Noch nicht verfügbar" zugestimmt — das ist keine Einwilligung,
+auf die man sich berufen möchte. Die erhöhte Nummer sorgt dafür, dass die App
+erneut fragt.
+
+`1-entwurf` erfüllt beides: Der Release bleibt blockiert, die Zustimmung wird
+neu eingeholt.
+
+### Das Impressum ist absichtlich nicht ausgefüllt
+
+Ein Impressum lässt sich nicht entwerfen. Es besteht ausschließlich aus
+Angaben, die nur der Anbieter kennt: Name, ladungsfähige Anschrift, Kontakt.
+Etwas zu erfinden wäre schlimmer als eine Lücke — deshalb stehen dort eckige
+Klammern und ein Kasten, der sagt, dass sie vor den Testpersonen ersetzt
+werden müssen.
+
+### Zweisprachig, und die Sprache entscheidet die App
+
+`Rechtsquelle` kennt jetzt zwei Assets. Fehlt die englische Fassung, wird die
+deutsche gezeigt — ein Text in der falschen Sprache ist immer noch besser als
+gar keiner.
+
+Die Texte liegen im Bundle und nicht nur im Netz. Play verlangt für die
+Datenschutzerklärung zusätzlich eine öffentlich erreichbare Adresse; die gibt
+es erst, wenn die Seite steht (SETUP 11). Bis dahin liest man sie in der App —
+auch ohne Verbindung.
+
+### Die Datenauskunft
+
+Ein Knopf in den Einstellungen, der eine Datei erzeugt und sie an den
+Teilen-Dialog des Geräts übergibt.
+
+**Warum der Server sie zusammenstellt.** Aus demselben Grund wie beim Löschen
+(DECISIONS zu `konto.ts`): Die App kennt ihren Teilbaum nur, soweit ihr
+Datenmodell reicht. Ein später hinzugekommener Zweig fehlte in der Auskunft,
+ohne dass es auffiele — und eine Auskunft, die etwas verschweigt, ist keine.
+Der Server liest stattdessen alle Sammlungen unter `users/{uid}` und liefert,
+was er findet.
+
+**Warum eine Datei und keine Anzeige.** Art. 15 gibt ein Recht auf eine
+*Kopie*. Etwas, das man nur ansehen und nicht mitnehmen kann, ist keine
+Kopie. Dafür kommt `share_plus` neu dazu — die einzige neue Abhängigkeit
+dieses Pakets, und sie ist der einzige dependency-freie Weg, unter Android
+eine Datei herauszugeben, der nicht in einem Sackgassen-Pfad endet.
+
+**Was nicht drin ist:** die Fotos. Sie waren nie auf dem Server. Die Datei
+sagt das im ersten Feld ausdrücklich, statt sie stillschweigend wegzulassen.
+
+**Ohne Kontingent.** Ein Recht aus der DSGVO darf nicht an einem
+Verbrauchszähler hängen. Gegen Missbrauch stehen App Check und die Anmeldung;
+mehr braucht ein Aufruf nicht, der ausschließlich eigene Daten liefert.
+
+**Preis:** Eine Abhängigkeit mehr, sechs Textdateien im Bundle (rund 40 kB)
+und eine vierte Cloud Function. Dagegen steht, dass die App vor
+Testpersonen überhaupt erst rechtlich vorzeigbar ist.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

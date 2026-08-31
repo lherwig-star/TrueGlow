@@ -1057,6 +1057,12 @@ class LDe extends L {
   String get einstellungenDatenLoeschen => 'Daten löschen, Konto behalten';
 
   @override
+  String get einstellungenDatenExport => 'Meine Daten herunterladen';
+
+  @override
+  String get einstellungenDatenExportLaeuft => 'Deine Datei wird vorbereitet …';
+
+  @override
   String get einstellungenKontoLoeschen => 'Konto endgültig löschen';
 
   @override

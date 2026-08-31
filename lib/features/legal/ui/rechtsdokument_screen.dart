@@ -23,11 +23,13 @@ class RechtsdokumentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final texte = context.texte;
     final quelle = Rechtstexte.quelle(dokument);
+    // Die Fassung in der Sprache, die die App gerade spricht.
+    final pfad = quelle.fuer(texte.localeName);
 
     return AppPage(
       title: dokument.titel(texte),
       children: [
-        if (!quelle.hatAsset)
+        if (pfad == null)
           SectionCard(
             title: texte.dokumentKeinTextTitel,
             icon: Icons.pending_outlined,
@@ -35,7 +37,7 @@ class RechtsdokumentScreen extends StatelessWidget {
           )
         else
           FutureBuilder<String>(
-            future: rootBundle.loadString(quelle.asset!),
+            future: rootBundle.loadString(pfad),
             builder: (context, stand) {
               if (stand.hasError) {
                 return SectionCard(

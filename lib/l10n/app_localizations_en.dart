@@ -1046,6 +1046,12 @@ class LEn extends L {
   String get einstellungenDatenLoeschen => 'Delete data, keep account';
 
   @override
+  String get einstellungenDatenExport => 'Download my data';
+
+  @override
+  String get einstellungenDatenExportLaeuft => 'Preparing your file …';
+
+  @override
   String get einstellungenKontoLoeschen => 'Delete account permanently';
 
   @override
