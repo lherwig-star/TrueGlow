@@ -833,6 +833,45 @@ class LDe extends L {
       'Das dauert etwa 20 Sekunden. Bitte nicht schließen.';
 
   @override
+  String get wissenTitel => 'Wissen';
+
+  @override
+  String get wissenText =>
+      'Kurze Erklärungen zu den Techniken, die in deinem Report und in deinem Plan vorkommen.';
+
+  @override
+  String get wissenSuche => 'Suchen';
+
+  @override
+  String get wissenLeer => 'Dazu gibt es keinen Eintrag.';
+
+  @override
+  String get wissenLaedt => 'Wird geladen …';
+
+  @override
+  String get wissenWasIstDas => 'WAS IST DAS';
+
+  @override
+  String get wissenSoGehts => 'SO GEHT ES';
+
+  @override
+  String get wissenWieOft => 'WIE OFT';
+
+  @override
+  String get wissenWomit => 'WOMIT';
+
+  @override
+  String get wissenWoraufAchten => 'WORAUF ACHTEN';
+
+  @override
+  String wissenWasIst(String name) {
+    return 'Was ist $name?';
+  }
+
+  @override
+  String get einstellungenWissen => 'Wissen';
+
+  @override
   String get ergebnisTitel => 'Deine Analyse';
 
   @override

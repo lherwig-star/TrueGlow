@@ -4317,6 +4317,96 @@ Möglichkeit, dass das Modell die Wendung zu oft benutzt. Die Obergrenze
 dämmt das ein, beweisen lässt sie sich nur am echten Lauf – deshalb steht
 sie im Testplan.
 
+## 88 · Eine Aufgabe, die niemand versteht, ist keine Aufgabe
+
+„5 Minuten Gesichtsyoga" steht in der Tagesliste, und der Haken daneben
+wartet. Wer nicht weiß, was Gesichtsyoga ist, hat drei Möglichkeiten: raten,
+die App verlassen, oder die Aufgabe stehen lassen. Alle drei sind schlechter
+als das, wofür die App da ist.
+
+Das Ausprobieren-Paket hat das Problem vergrößert, nicht verursacht: Es hat
+absichtlich Techniken in den Plan geholt, von denen man „schon mal gehört
+hat und sie nie richtig gemacht hat" (DECISIONS 79). Genau die brauchen eine
+Anleitung.
+
+### Fest hinterlegt, nicht erzeugt
+
+37 Einträge, zweisprachig, im Bundle: alle 32 Techniken aus dem Katalog plus
+fünf Begriffe, die in Empfehlungen ständig vorkommen und ohne Erklärung
+nichts sagen – Lichtschutzfaktor, Doppelreinigung, Lagenlook,
+Meersalzspray-Styling, warmer und kalter Unterton. Jeder Eintrag sagt
+dasselbe fünfmal Gleiche: was es ist, wie es geht (drei bis fünf Schritte),
+wie oft, womit, worauf zu achten ist.
+
+**Warum nicht die KI fragen.** Eine Erklärung auf Zuruf kostet bei jedem
+Antippen Geld und kann bei jedem Antippen anders lauten. Diese Texte sind
+einmal geschrieben, einmal gelesen und gelten. Kein Aufruf, keine laufenden
+Kosten, kein Netz nötig – und keine Möglichkeit, dass ein Modell an einer
+Stelle etwas empfiehlt, was der Katalog anderswo ausschließt. Die
+Sicherheitsgrenze aus DECISIONS 79 gilt hier wörtlich weiter, und ein Test
+hält sie fest.
+
+**Warum eine JSON-Datei und keine ARB-Einträge.** 37 Einträge mal acht Felder
+mal zwei Sprachen wären rund 700 zusätzliche Übersetzungsschlüssel gewesen,
+in einer Datei, in der bisher Knöpfe und Überschriften stehen. Die
+Rechtstexte liegen aus demselben Grund als Dateien im Bundle. Dass beide
+Sprachen dieselben Kennungen tragen, prüft ein Test – das ist genau die
+Zusicherung, die die ARB-Datei sonst geschenkt hätte.
+
+### Erkannt wird am Namen, nicht an einer Kennung
+
+Die Analyse liefert Kennungen mit – im Feld `neu` der Sektionen. Aber nur
+für Techniken, die der Nutzer vorher ausdrücklich angetippt hat. Der Befund
+ist ein anderer: Die Aufgabe „5 Minuten Gesichtsyoga" steht auch dann da,
+wenn niemand sie gewählt hat – das Modell hat sie selbst vorgeschlagen.
+Solche Aufgaben tragen keine Kennung, und gerade sie sind es, vor denen
+jemand ratlos steht.
+
+Gesucht wird deshalb im Text nach den Namen aus der Bibliothek. Für den
+ersten Fall ist das genauso exakt: Der Prompt schreibt gewählte Techniken
+**wörtlich** mit dem Katalognamen vor. Der Name **ist** die Kennung.
+
+**Damit es nicht wild um sich greift**, zwei Grenzen: Gesucht wird nur nach
+den Namen der Bibliothek, jeder mehrwortig oder eindeutig – kein „Öl", kein
+„Peeling". Und ein Treffer zählt nur, wenn links und rechts kein Buchstabe
+steht: „Ölziehen" wird nicht in „Ölziehenden Bewegungen" gefunden.
+
+**Die Klammer zum Server hält ein Test.** Weicht ein Name in `labels.ts` von
+dem in der Bibliothek ab, bleibt das Info-Zeichen einfach aus – nichts
+stürzt ab, nichts wird rot, es fehlt nur still. Genau dafür gibt es
+`functions/test/wissen.test.ts`. Beim Angleichen kam heraus, dass neun
+englische Namen zwischen Server, App und Bibliothek auseinandergingen; sie
+stehen jetzt als Schreibvarianten mit im Eintrag.
+
+### Zwei Wege hinein
+
+**Aus der Aufgabe heraus:** ein kleines Info-Zeichen hinter dem Text, wo es
+etwas zu lesen gibt – und nur dort. Antippen öffnet ein Blatt von unten;
+ein Wisch bringt genau dorthin zurück, wo man war. Kein eigener Bildschirm,
+weil man mitten in der Tagesliste nachschlägt und seinen Platz nicht
+verlieren soll. Dass das Antippen die Aufgabe **nicht** abhakt, obwohl die
+ganze Zeile antippbar ist, hält ein eigener Test fest.
+
+**Zum Stöbern:** ein Eintrag „Wissen" in den Einstellungen, mit Suche.
+Nicht im Fortschritt-Tab: Dort geht es um den eigenen Verlauf, hier um ein
+Nachschlagewerk – dieselbe Sorte wie die Rechtstexte, die direkt darunter
+stehen.
+
+### Was der Prompt dazu beiträgt
+
+Eine Zeile, mehr nicht: Meint das Modell eine der genannten Techniken, soll
+es den Namen genau so schreiben. **Nicht** die vollständige Liste aller 32
+Namen – was der Prompt aufzählt, wählt das Modell aus (DECISIONS 36), und
+aus einer Tiefe-Regel würde eine Speisekarte. Die Robustheit kommt von der
+anderen Seite: Die Bibliothek kennt Schreibvarianten.
+
+**Preis:** 37 Texte, die gepflegt werden wollen – wer eine Technik in den
+Katalog aufnimmt, schreibt ab jetzt auch eine Erklärung. Der Test sagt es
+ihm. Und die Erkennung bleibt eine Heuristik: Sie findet, was sie kennt, und
+das Info-Zeichen fehlt still, wenn das Modell eine Technik umschreibt statt
+sie zu benennen. Das ist der ehrlichere Fehler von beiden – lieber kein
+Zeichen als eines, das ins Leere führt.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

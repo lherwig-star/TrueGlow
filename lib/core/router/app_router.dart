@@ -28,6 +28,7 @@ import '../../features/onboarding/ui/onboarding_screen.dart';
 import '../../features/start/ui/splash_screen.dart';
 import '../../features/result/ui/result_screen.dart';
 import '../../features/settings/ui/settings_screen.dart';
+import '../../features/wissen/ui/wissen_screen.dart';
 import '../../core/l10n/texte.dart';
 
 /// Zentrale Routen-Namen. Ueber Konstanten, damit sich Tippfehler nicht
@@ -115,6 +116,9 @@ class Routes {
 
   /// Uebersicht der Rechtstexte.
   static const rechtliches = '/rechtliches';
+
+  /// Die Wissens-Bibliothek zum Stoebern.
+  static const wissen = '/wissen';
 
   /// Ein einzelner Rechtstext in der App (Rueckfallebene ohne Netz).
   static String rechtstextFuer(Rechtsdokument dokument) =>
@@ -284,6 +288,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const FortschrittScreen(),
       ),
       GoRoute(path: Routes.settings, builder: (context, state) => const SettingsScreen()),
+      GoRoute(
+        path: Routes.wissen,
+        builder: (context, state) => const WissenScreen(),
+      ),
       GoRoute(
         path: Routes.rechtliches,
         builder: (context, state) => const LegalScreen(),

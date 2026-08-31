@@ -1555,6 +1555,78 @@ abstract class L {
   /// **'Das dauert etwa 20 Sekunden. Bitte nicht schließen.'**
   String get analyseHinweis;
 
+  /// Die Wissens-Bibliothek in den Einstellungen.
+  ///
+  /// In de, this message translates to:
+  /// **'Wissen'**
+  String get wissenTitel;
+
+  /// No description provided for @wissenText.
+  ///
+  /// In de, this message translates to:
+  /// **'Kurze Erklärungen zu den Techniken, die in deinem Report und in deinem Plan vorkommen.'**
+  String get wissenText;
+
+  /// No description provided for @wissenSuche.
+  ///
+  /// In de, this message translates to:
+  /// **'Suchen'**
+  String get wissenSuche;
+
+  /// No description provided for @wissenLeer.
+  ///
+  /// In de, this message translates to:
+  /// **'Dazu gibt es keinen Eintrag.'**
+  String get wissenLeer;
+
+  /// No description provided for @wissenLaedt.
+  ///
+  /// In de, this message translates to:
+  /// **'Wird geladen …'**
+  String get wissenLaedt;
+
+  /// No description provided for @wissenWasIstDas.
+  ///
+  /// In de, this message translates to:
+  /// **'WAS IST DAS'**
+  String get wissenWasIstDas;
+
+  /// No description provided for @wissenSoGehts.
+  ///
+  /// In de, this message translates to:
+  /// **'SO GEHT ES'**
+  String get wissenSoGehts;
+
+  /// No description provided for @wissenWieOft.
+  ///
+  /// In de, this message translates to:
+  /// **'WIE OFT'**
+  String get wissenWieOft;
+
+  /// No description provided for @wissenWomit.
+  ///
+  /// In de, this message translates to:
+  /// **'WOMIT'**
+  String get wissenWomit;
+
+  /// No description provided for @wissenWoraufAchten.
+  ///
+  /// In de, this message translates to:
+  /// **'WORAUF ACHTEN'**
+  String get wissenWoraufAchten;
+
+  /// Vorlesetext des Info-Zeichens an Aufgaben und Empfehlungen.
+  ///
+  /// In de, this message translates to:
+  /// **'Was ist {name}?'**
+  String wissenWasIst(String name);
+
+  /// No description provided for @einstellungenWissen.
+  ///
+  /// In de, this message translates to:
+  /// **'Wissen'**
+  String get einstellungenWissen;
+
   /// No description provided for @ergebnisTitel.
   ///
   /// In de, this message translates to:

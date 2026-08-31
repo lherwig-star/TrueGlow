@@ -373,6 +373,29 @@
   "stilPflege": "Wie viel Aufwand ist okay?",
   "analyseTitel": "Analyse läuft",
   "analyseHinweis": "Das dauert etwa 20 Sekunden. Bitte nicht schließen.",
+  "wissenTitel": "Wissen",
+  "@wissenTitel": {
+    "description": "Die Wissens-Bibliothek in den Einstellungen."
+  },
+  "wissenText": "Kurze Erklärungen zu den Techniken, die in deinem Report und in deinem Plan vorkommen.",
+  "wissenSuche": "Suchen",
+  "wissenLeer": "Dazu gibt es keinen Eintrag.",
+  "wissenLaedt": "Wird geladen …",
+  "wissenWasIstDas": "WAS IST DAS",
+  "wissenSoGehts": "SO GEHT ES",
+  "wissenWieOft": "WIE OFT",
+  "wissenWomit": "WOMIT",
+  "wissenWoraufAchten": "WORAUF ACHTEN",
+  "wissenWasIst": "Was ist {name}?",
+  "@wissenWasIst": {
+    "description": "Vorlesetext des Info-Zeichens an Aufgaben und Empfehlungen.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "einstellungenWissen": "Wissen",
   "ergebnisTitel": "Deine Analyse",
   "ergebnisAuswahl": "Deine Auswahl",
   "richtungStehtOben": "Deine gewählten Richtungen stehen oben unter „Deine Auswahl“.",

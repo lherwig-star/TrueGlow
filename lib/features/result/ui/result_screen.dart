@@ -13,6 +13,7 @@ import '../../analysis/models/analyse_modus.dart';
 import '../../analysis/models/analysis_result.dart';
 import '../../direction/logic/direction_controller.dart';
 import '../../direction/models/richtung.dart';
+import '../../wissen/ui/wissens_blatt.dart';
 import '../../history/logic/analysis_repository.dart';
 import '../../modules/logic/module_controller.dart';
 import '../../modules/models/analyse_modul.dart';
@@ -660,6 +661,9 @@ class _Empfehlung extends StatelessWidget {
             ),
           ),
           Expanded(child: Text(text, style: const TextStyle(height: 1.45))),
+          // Steht in der Empfehlung eine Technik, die die Bibliothek kennt,
+          // laesst sie sich hier nachschlagen (DECISIONS 88).
+          WissenLink(text: text),
         ],
       ),
     );

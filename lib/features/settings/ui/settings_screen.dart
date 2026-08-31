@@ -83,10 +83,24 @@ class SettingsScreen extends ConsumerWidget {
         const SizedBox(height: AppTheme.gapS),
         SectionCard(
           padding: const EdgeInsets.symmetric(vertical: AppTheme.gapXs),
-          child: _Eintrag(
-            icon: Icons.gavel_outlined,
-            label: texte.einstellungenRechtliches,
-            onTap: () => context.push(Routes.rechtliches),
+          child: Column(
+            children: [
+              // Nachschlagen gehoert zu den Einstellungen und nicht in den
+              // Fortschritt-Tab: Dort geht es um den eigenen Verlauf, hier um
+              // Nachschlagewerke – daneben stehen die Rechtstexte
+              // (DECISIONS 88).
+              _Eintrag(
+                icon: Icons.menu_book_outlined,
+                label: texte.einstellungenWissen,
+                onTap: () => context.push(Routes.wissen),
+              ),
+              const Divider(indent: AppTheme.gapM, endIndent: AppTheme.gapM),
+              _Eintrag(
+                icon: Icons.gavel_outlined,
+                label: texte.einstellungenRechtliches,
+                onTap: () => context.push(Routes.rechtliches),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: AppTheme.gapS),

@@ -2539,3 +2539,161 @@ nichts kaputtgegangen ist.
 
 Jeder Blocker gehört als offener Punkt in `ROADMAP.md`, bevor er in
 Vergessenheit gerät.
+
+## 39 · Feinschliff: Untertexte, Auswahl-Echo, Wissens-Bibliothek
+
+Prüft DECISIONS 86 bis 88. **Höchstens EIN echter Analyse-Lauf**, ganz am
+Ende in Abschnitt E. Alles davor im Demo-Modus:
+
+```bash
+flutter run --dart-define=TRUEGLOW_MOCK=true
+```
+
+Kosten: Der eine Lauf in Abschnitt E verbraucht **eine der zehn Analysen des
+Monats** plus Tokens. Alles andere kostet nichts.
+
+Was hier **nicht** steht, weil Tests es schon belegen: dass zu jeder der 32
+Techniken eine Erklärung existiert, dass beide Sprachen dieselben Einträge
+führen und dass die Erkennung nicht mitten in ein anderes Wort greift
+(20 Tests in der App, 12 auf dem Server). Am Gerät wird geprüft, was ein
+Test nicht sieht.
+
+### A · Die Stilrichtungen beschreiben den ganzen Look (DECISIONS 86)
+
+1. **Die Untertexte sind neu.** Analyse starten → Module wählen →
+   **Deine Richtung**. Erwartet: acht Zeilen, jede mit einer zweiten Zeile
+   darunter, die **nicht nur Kleidung** nennt — zum Beispiel
+   „Entspannter Campus-Look, easy Frisur, Sneaker" oder
+   „Klare Kanten: Kiefer, Kurzhaar, Kontur".
+   *Kriterium:* Steht dort noch „Baggy, Oversized, Sneaker", läuft eine alte
+   Fassung — **Blocker**.
+
+2. **Nichts bricht um.** Dieselbe Liste ansehen. Erwartet: Alle acht Zeilen
+   sind gleich breit, keine schert aus, kein Text wird abgeschnitten.
+   *Kriterium:* Hängt eine Zeile über oder ist ein Untertext angeschnitten,
+   notieren — mit Screenshot.
+
+3. **Der Stil-Fragebogen zeigt dasselbe.** Analyse mit dem Modul
+   **Stil & Kleiderschrank** starten und bis zum Fragebogen gehen. Erwartet:
+   Die acht Stilrichtungen stehen dort **genauso** untereinander, mit
+   demselben Untertext wie bei „Deine Richtung".
+   *Kriterium:* Stehen dort noch acht kleine Pillen ohne zweite Zeile, ist
+   die Änderung nicht angekommen — **Blocker**.
+
+4. **Auf Englisch auch.** Einstellungen → Sprache **English**, dann
+   dieselben zwei Bildschirme. Erwartet: englische Untertexte, gleiche Form,
+   nichts abgeschnitten. Danach zurück auf Deutsch.
+
+### B · Die Auswahl steht im Report (DECISIONS 87)
+
+5. **Das Echo ist da.** Im Demo-Modus eine Analyse durchlaufen und dabei
+   **zwei Stilrichtungen** antippen. Im fertigen Report ganz nach oben.
+   Erwartet: unter dem Gesamtbild eine Zeile **„Deine Auswahl:"** mit
+   kleinen Pillen — die beiden Richtungen und der Modus.
+
+6. **Die Techniken stehen mit drin.** Denselben Durchlauf, aber bei
+   „Das will ich ausprobieren" eine Technik antippen. Erwartet: Ihr Name
+   erscheint als weitere Pille in derselben Zeile.
+
+7. **Nichts steht doppelt.** Im selben Report weiter nach unten zur Karte
+   **„Deine Richtung"**. Erwartet: Dort stehen die Richtungs-Pillen **nicht
+   noch einmal**. Ohne Freitext steht dort ein Satz, der nach oben verweist.
+   *Kriterium:* Stehen dieselben Pillen zweimal auf einem Bildschirm,
+   notieren.
+
+8. **Ohne Auswahl kein Fake.** Neue Analyse, den Schritt „Deine Richtung"
+   **überspringen**. Erwartet: In der Auswahl-Zeile steht **nur der Modus**,
+   keine Richtung.
+   *Kriterium:* Taucht dort eine Richtung auf, die niemand gewählt hat, ist
+   das ein **Blocker**.
+
+### C · Nachschlagen aus der Aufgabe (DECISIONS 88)
+
+9. **Das Info-Zeichen an der Aufgabe.** Aus einem Report mit einer Technik
+   den Plan erstellen, dann **Heute**. Erwartet: Hinter der Aufgabe mit der
+   Technik steht ein kleines **ⓘ**. Hinter „Zähne putzen" steht keines.
+
+10. **Antippen öffnet die Erklärung.** Auf das ⓘ tippen. Erwartet: ein
+    Blatt von unten mit dem Namen, **WAS IST DAS**, **SO GEHT ES** (nummerierte
+    Schritte), **WIE OFT**, **WOMIT** und einem hervorgehobenen Kasten
+    **WORAUF ACHTEN**.
+
+11. **Die Aufgabe ist danach nicht abgehakt.** Der wichtigste Punkt dieses
+    Abschnitts: Nach Schritt 10 das Blatt mit einem Wisch nach unten
+    schließen. Erwartet: Du stehst wieder in der Tagesliste, an derselben
+    Stelle, und die Aufgabe ist **nicht** abgehakt.
+    *Kriterium:* Ist sie abgehakt, ist das ein **Blocker** — dann meldet die
+    App etwas als getan, was niemand getan hat.
+
+12. **Auch im Report.** Denselben Report öffnen, zu einer Empfehlung mit
+    einer Technik. Erwartet: dasselbe ⓘ, dasselbe Blatt.
+
+### D · Die Bibliothek zum Stöbern (DECISIONS 88)
+
+13. **Der Eintrag ist da.** Einstellungen. Erwartet: ein Eintrag **„Wissen"**
+    mit Buch-Symbol, direkt über **Rechtliches**.
+
+14. **Die Liste ist vollständig.** Öffnen und ganz durchscrollen. Erwartet:
+    **37 Einträge**, jeder mit Namen und Takt darunter. Antippen öffnet
+    dasselbe Blatt wie aus einer Aufgabe.
+
+15. **Die Suche grenzt ein.** „Gua" eintippen. Erwartet: nur noch Gua Sha.
+    Dann „Quantenphysik" eintippen. Erwartet: „Dazu gibt es keinen Eintrag."
+
+16. **Auf Englisch ist alles englisch.** Sprache auf **English**, dann
+    Einstellungen → **Knowledge**. Erwartet: englische Titel **und**
+    englische Erklärungstexte im Blatt. Danach zurück auf Deutsch.
+    *Kriterium:* Deutsche Erklärung unter englischer Überschrift — oder
+    umgekehrt — notieren.
+
+17. **Ein Blick auf den Inhalt.** Drei Einträge lesen, darunter
+    **Zähne aufhellen** und **Gesichtsyoga**. Erwartet: nichts Invasives,
+    keine verschreibungspflichtigen Mittel, kein Mewing, kein
+    Kiefer-Kautraining — und bei „WORAUF ACHTEN" ein echter Hinweis und
+    keine Floskel.
+    *Kriterium:* Steht dort etwas, das über die Grenze aus DECISIONS 79
+    hinausgeht, notieren mit dem ganzen Satz.
+
+### E · Der eine echte Lauf
+
+> Ab hier kostet es: eine der zehn Analysen des Monats plus Tokens.
+> **Genau ein Lauf.** Vorher sicherstellen, dass die Functions in der neuen
+> Fassung laufen.
+
+18. **Eine Analyse mit zwei Richtungen.** Module: **Basis**. Bei
+    „Deine Richtung" **zwei** Richtungen antippen, zum Beispiel
+    „Streetwear & lässig" und „Markant & maskulin". Fotos aufnehmen,
+    Analyse starten.
+
+    Erwartet im fertigen Report:
+    - Oben die Auswahl-Zeile mit beiden Richtungen und dem Modus.
+    - **Mindestens einmal je Kapitel** ein halber Satz, der die Wahl nennt —
+      „Passend zu deiner Richtung ‚Streetwear & lässig'" oder ähnlich.
+    - **Höchstens zweimal je Kapitel.**
+
+    *Kriterien:*
+    - Kommt der Bezug in keinem Kapitel vor: notieren — dann greift die
+      Regel nicht.
+    - Beginnt gefühlt jeder zweite Satz damit: notieren, mit Screenshot —
+      das ist der Formbrief-Fall, vor dem die Obergrenze schützen soll.
+    - Steht dort eine Richtung, die du **nicht** gewählt hast: **Blocker**.
+
+19. **Und nachschlagen im echten Report.** Denselben Report durchgehen.
+    Erwartet: Überall dort, wo eine bekannte Technik mit Namen steht, ein
+    ⓘ. Wo das Modell umschrieben hat, fehlt es — das ist **kein Fehler**,
+    sondern die gewählte Grenze (DECISIONS 88).
+
+### Was ein Fund ist
+
+| Fund | Reaktion |
+|---|---|
+| Die alten Untertexte stehen noch da | Blocker. |
+| Der Stil-Fragebogen zeigt Pillen statt Zeilen | Blocker. |
+| Im Auswahl-Echo steht etwas, das niemand gewählt hat | Blocker. |
+| Das Info-Zeichen hakt die Aufgabe ab | Blocker. |
+| Ein Bibliothekseintrag empfiehlt etwas Invasives | Blocker. |
+| Ein Untertext bricht um oder wird abgeschnitten | Vor dem Launch beheben. |
+| Deutscher Text unter englischer Überschrift | Vor dem Launch beheben. |
+| Die Richtungs-Pillen stehen zweimal auf einem Schirm | Notieren. |
+| Der Bezug auf die Richtung kommt in keinem Kapitel vor | Notieren. |
+| Der Bezug kommt in jedem zweiten Satz vor | Notieren, mit Screenshot. |

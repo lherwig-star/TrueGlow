@@ -822,6 +822,45 @@ class LEn extends L {
       'This takes about 20 seconds. Please do not close the app.';
 
   @override
+  String get wissenTitel => 'Knowledge';
+
+  @override
+  String get wissenText =>
+      'Short explanations of the techniques that appear in your report and your plan.';
+
+  @override
+  String get wissenSuche => 'Search';
+
+  @override
+  String get wissenLeer => 'There is no entry for that.';
+
+  @override
+  String get wissenLaedt => 'Loading …';
+
+  @override
+  String get wissenWasIstDas => 'WHAT IT IS';
+
+  @override
+  String get wissenSoGehts => 'HOW TO DO IT';
+
+  @override
+  String get wissenWieOft => 'HOW OFTEN';
+
+  @override
+  String get wissenWomit => 'WHAT YOU NEED';
+
+  @override
+  String get wissenWoraufAchten => 'WHAT TO WATCH FOR';
+
+  @override
+  String wissenWasIst(String name) {
+    return 'What is $name?';
+  }
+
+  @override
+  String get einstellungenWissen => 'Knowledge';
+
+  @override
   String get ergebnisTitel => 'Your analysis';
 
   @override

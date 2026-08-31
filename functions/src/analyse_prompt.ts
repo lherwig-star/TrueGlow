@@ -426,6 +426,15 @@ const TAEGLICH = /täglich|jede nacht|jedem tag|nach jeder/i;
  * — mindestens ein Vorschlag je Kapitel — und sagt am Beispiel, was mit
  * dem Niveau gemeint ist.
  *
+ * **Warum die Namen woertlich gelten sollen (DECISIONS 88).** Zu jeder
+ * Technik aus dem Katalog liegt in der App eine feste Erklaerung; gefunden
+ * wird sie ueber den Namen im Text. Ein abgewandelter Name findet sie nicht.
+ * Der Prompt bittet deshalb um die genaue Schreibweise — er *zwingt* aber
+ * nicht dazu, und er listet auch nicht alle 32 Namen auf: Was der Prompt
+ * aufzaehlt, waehlt das Modell aus (DECISIONS 36), und aus einer Tiefe-Regel
+ * wuerde so eine Speisekarte. Die Robustheit kommt von der anderen Seite —
+ * die Bibliothek kennt zu jedem Eintrag Schreibvarianten.
+ *
  * **Warum die Beispiele mit einer Warnung kommen.** Was der Prompt
  * woertlich nennt, schreibt das Modell woertlich ab (DECISIONS 36). Ohne
  * den Zusatz „nicht abschreiben" stuende in jedem Haut-Kapitel Gua Sha,
@@ -459,7 +468,10 @@ function tiefeRegel(module: readonly Modul[], sprache: Sprache): string {
 - So sieht das Niveau aus (Muster für das NIVEAU, nicht für den Inhalt –
   übernimm keinen dieser Namen, wenn etwas anderes besser zu der Person
   passt):
-${zeilen.join('\n')}`;
+${zeilen.join('\n')}
+- Meinst du aber wirklich eine der oben genannten Techniken, dann schreib
+  ihren Namen genau so, wie er dort steht. Die App hat zu diesen Namen eine
+  Erklärung hinterlegt und zeigt sie dem Nutzer an der Aufgabe an.`;
 }
 
 /** Die Zeile fuer "neu" im Schema. Ohne Auswahl gibt es das Feld nicht. */

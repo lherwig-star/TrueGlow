@@ -1,0 +1,710 @@
+[
+  {
+    "id": "kopfhautmassage",
+    "titel": "Kopfhautmassage",
+    "synonyme": [
+      "Kopfhaut-Massage"
+    ],
+    "wasIstDas": "Mit den Fingerkuppen wird die Kopfhaut gegen den Schädel bewegt. Das löst Verspannungen und regt die Durchblutung an. Dichteres Haar wächst davon nicht nach, aber eine ruhige, gut durchblutete Kopfhaut ist die bessere Grundlage für alles andere.",
+    "schritte": [
+      "Die Finger flach aufsetzen – die Kuppen, nie die Nägel.",
+      "Die Haut in kleinen Kreisen bewegen; die Finger bleiben dabei an derselben Stelle und rutschen nicht über die Haare.",
+      "Von der Stirn zum Hinterkopf durcharbeiten, danach die Schläfen.",
+      "Zwei bis fünf Minuten, ruhig atmen."
+    ],
+    "wieOft": "Täglich, am besten abends oder unter der Dusche.",
+    "womit": "Nichts nötig. Wer mag, nimmt ein leichtes Kopfhautöl oder macht es beim Einshampoonieren.",
+    "woraufAchten": "Ohne Nägel und ohne Zug am Haar. Bei entzündeter, stark schuppender oder juckender Kopfhaut vorher ärztlich abklären lassen – Reiben macht eine gereizte Kopfhaut schlimmer, nicht besser."
+  },
+  {
+    "id": "rosmarinoel",
+    "titel": "Rosmarinöl für die Kopfhaut",
+    "synonyme": [
+      "Rosmarinöl",
+      "Rosmarin-Öl"
+    ],
+    "wasIstDas": "Verdünntes Rosmarinöl wird in die Kopfhaut einmassiert. Es gibt kleinere Studien, die es mit einem gängigen Wirkstoff gegen Haarausfall vergleichen; die Ergebnisse sind vorsichtig positiv. Ein Ersatz für eine ärztliche Behandlung ist es nicht.",
+    "schritte": [
+      "Ätherisches Rosmarinöl in einem Trägeröl verdünnen – wenige Tropfen auf einen Esslöffel.",
+      "Erst an einer kleinen Stelle in der Armbeuge testen und 24 Stunden abwarten.",
+      "Auf die Kopfhaut geben und ein bis zwei Minuten einmassieren.",
+      "20 bis 30 Minuten einwirken lassen.",
+      "Auswaschen; bei fettigem Ansatz zweimal shampoonieren."
+    ],
+    "wieOft": "Ein- bis zweimal die Woche, über mindestens zwei bis drei Monate. Vorher lässt sich nichts beurteilen.",
+    "womit": "Ätherisches Rosmarinöl und ein Trägeröl, zum Beispiel Jojoba- oder Kokosöl.",
+    "woraufAchten": "Niemals unverdünnt auftragen. Nicht in die Augen, nicht auf offene oder gereizte Haut. In Schwangerschaft und Stillzeit sowie bei Epilepsie vorher ärztlich fragen."
+  },
+  {
+    "id": "foehnRundbuerste",
+    "titel": "Föhnen mit der Rundbürste",
+    "synonyme": [
+      "Rundbürste",
+      "Föhnen mit Rundbürste"
+    ],
+    "wasIstDas": "Das Haar wird über eine runde Bürste gezogen und dabei geföhnt. Die Form kommt nicht aus einem Produkt, sondern daraus, dass das Haar in der gewünschten Form abkühlt – deshalb ist die Kaltstufe der wichtigste Knopf am Föhn.",
+    "schritte": [
+      "Handtuchtrocken anfangen, nicht klatschnass – sonst dauert es zu lange und die Hitze wirkt zu lange.",
+      "Hitzeschutz ins feuchte Haar geben.",
+      "Partie für Partie arbeiten: Bürste an den Ansatz, der Föhn folgt der Bürste, mit leichtem Zug nach oben oder außen.",
+      "Jede Strähne noch auf der Bürste kurz kalt nachföhnen – erst dann sitzt sie.",
+      "Zum Schluss mit den Fingern durchschütteln statt durchkämmen."
+    ],
+    "wieOft": "So oft du die Haare wäschst. Täglich föhnen ist mehr Hitze, als nötig ist.",
+    "womit": "Rundbürste (kleiner Durchmesser gibt mehr Spannung), Föhn mit Kaltstufe, Hitzeschutzspray.",
+    "woraufAchten": "Mittlere Hitze reicht. Nicht auf einer Stelle stehen bleiben, Abstand halten. Wird das Haar strohig oder bricht es an den Spitzen, war es zu heiß."
+  },
+  {
+    "id": "haaroelkur",
+    "titel": "Haar-Ölkur über Nacht",
+    "synonyme": [
+      "Ölkur",
+      "Haaröl-Kur"
+    ],
+    "wasIstDas": "Öl bleibt über Nacht in den Längen und wird morgens ausgewaschen. Das Haar wird geschmeidiger und lässt sich besser kämmen. Es pflegt die Oberfläche – reparieren kann es nichts, gespaltene Spitzen bleiben gespalten.",
+    "schritte": [
+      "Wenig Öl in den Händen verteilen und anwärmen.",
+      "Nur in Längen und Spitzen geben, den Ansatz auslassen.",
+      "Die Haare locker zusammennehmen oder flechten.",
+      "Das Kissen mit einem alten Handtuch schützen.",
+      "Morgens gründlich auswaschen, notfalls zweimal shampoonieren."
+    ],
+    "wieOft": "Einmal die Woche, am Abend vor dem Waschtag.",
+    "womit": "Ein leichtes Pflanzenöl – Kokos-, Mandel- oder Arganöl.",
+    "woraufAchten": "Weniger ist mehr: Zu viel Öl geht erst nach mehreren Wäschen wieder heraus. Bei fettiger Kopfhaut wirklich nur die Längen."
+  },
+  {
+    "id": "seidenkissen",
+    "titel": "Seidenkissenbezug",
+    "synonyme": [
+      "Seidenkissen",
+      "Satinkissenbezug",
+      "Seiden-Kissenbezug"
+    ],
+    "wasIstDas": "Ein Bezug aus Seide oder Satin lässt die Haare gleiten statt reiben. Weniger Reibung heißt weniger Bruch und weniger Knick am Morgen – und die Haut bekommt weniger Schlaffalten ins Gesicht gedrückt.",
+    "schritte": [
+      "Einen Bezug in der passenden Kissengröße besorgen.",
+      "Aufziehen – das ist der ganze Aufwand.",
+      "Alle ein bis zwei Wochen kalt und schonend waschen.",
+      "Zwei Bezüge im Wechsel sparen Wäsche und halten länger."
+    ],
+    "wieOft": "Jede Nacht.",
+    "womit": "Kissenbezug aus Maulbeerseide oder aus Satin.",
+    "woraufAchten": "Satin ist die deutlich günstigere Alternative und tut für Haare und Falten denselben Dienst. Wer zu unreiner Haut neigt, sollte den Bezug trotzdem regelmäßig wechseln."
+  },
+  {
+    "id": "bartoelRoutine",
+    "titel": "Bartöl & Balsam",
+    "synonyme": [
+      "Bartöl",
+      "Bartbalsam"
+    ],
+    "wasIstDas": "Öl pflegt die Haut unter dem Bart, Balsam legt sich um das Haar und hält die Form. Das meiste Bartjucken kommt von trockener Haut darunter und nicht vom Haar – deshalb ist das Öl der wichtigere Teil.",
+    "schritte": [
+      "Nach dem Duschen anwenden, wenn der Bart noch leicht feucht ist.",
+      "Wenige Tropfen Öl in die Handflächen, dann in die Haut unter dem Bart einmassieren.",
+      "Mit den Fingern durch das Barthaar ziehen, damit sich der Rest verteilt.",
+      "Nur bei Bedarf eine kleine Menge Balsam in Wuchsrichtung einarbeiten.",
+      "Mit Bürste oder Kamm in Form bringen."
+    ],
+    "wieOft": "Öl täglich nach dem Duschen. Balsam nur, wenn die Form gehalten werden soll.",
+    "womit": "Bartöl auf Pflanzenölbasis, Bartbalsam mit Wachsanteil.",
+    "woraufAchten": "Sparsam dosieren, sonst wirkt der Bart fettig. Bei geröteter, schuppender oder entzündeter Haut unter dem Bart hilft kein Öl – das gehört angesehen."
+  },
+  {
+    "id": "bartbuerste",
+    "titel": "Bartbürste",
+    "synonyme": [
+      "Bart-Bürste"
+    ],
+    "wasIstDas": "Eine Bürste mit festen Borsten richtet die Haare in eine Richtung, verteilt das Öl bis auf die Haut und trägt lose Schuppen ab. Sie macht mehr für das Erscheinungsbild eines Barts als jedes Produkt.",
+    "schritte": [
+      "Den Bart trocken oder leicht feucht bürsten.",
+      "Erst gegen die Wuchsrichtung, um Verfilzungen zu lösen.",
+      "Dann in Wuchsrichtung, um zu formen.",
+      "Zum Schluss die Kanten sauber ausbürsten."
+    ],
+    "wieOft": "Ein- bis zweimal am Tag.",
+    "womit": "Bürste mit Wildschwein- oder festen Pflanzenborsten. Für lange Bärte zusätzlich ein grober Kamm.",
+    "woraufAchten": "Nicht mit Gewalt durchziehen. Reißt es, ist die Bürste zu hart oder der Bart zu trocken – dann erst Öl, dann bürsten."
+  },
+  {
+    "id": "guaSha",
+    "titel": "Gua Sha",
+    "synonyme": [
+      "Gua-Sha",
+      "Guasha",
+      "Gua Sha Stein"
+    ],
+    "wasIstDas": "Ein flacher Stein wird mit leichtem Druck über das Gesicht gezogen. Das unterstützt den Abfluss von Flüssigkeit, das Gesicht wirkt morgens weniger gedunsen. Die Knochenstruktur oder die Gesichtsform verändert er nicht.",
+    "schritte": [
+      "Öl oder ein gleitfähiges Serum auftragen – ohne Gleitmittel zieht der Stein an der Haut.",
+      "Am Hals anfangen und von oben nach unten ausstreichen.",
+      "Die Kieferlinie vom Kinn zum Ohr führen.",
+      "Die Wange von der Nase zum Ohr, die Stirn von der Mitte zum Haaransatz.",
+      "Jede Bahn drei- bis fünfmal, immer nach außen und am Ende Richtung Hals."
+    ],
+    "wieOft": "Zwei- bis dreimal die Woche, gern morgens. Täglich ist möglich, solange die Haut ruhig bleibt.",
+    "womit": "Gua-Sha-Stein und ein Gesichtsöl oder ein Serum mit genug Gleitfähigkeit.",
+    "woraufAchten": "Sanft arbeiten – die Haut soll nicht rot werden, das gehört nicht dazu. Nicht über Entzündungen, Pickel oder gereizte Stellen ziehen. Bei Hautkrankheiten oder frischen Eingriffen im Gesicht vorher fragen."
+  },
+  {
+    "id": "gesichtsyoga",
+    "titel": "Gesichtsyoga",
+    "synonyme": [
+      "Gesichts-Yoga",
+      "Face Yoga"
+    ],
+    "wasIstDas": "Gezielte Übungen für die Gesichtsmuskeln, meist mit leichtem Gegendruck der Hände. Sie können Verspannungen lösen und schärfen die Wahrnehmung für den eigenen Ausdruck. Ein Ersatz für kosmetische Eingriffe sind sie nicht.",
+    "schritte": [
+      "Hände waschen, Gesicht sauber und ohne Make-up.",
+      "Stirn: die Handflächen auf die Stirn legen und die Augenbrauen gegen den Widerstand heben, zehnmal.",
+      "Wangen: den Mund zu einem breiten O formen, die Wangenmuskeln anspannen und zehn Sekunden halten.",
+      "Kiefer und Hals: das Kinn leicht anheben, die Zungenspitze an den Gaumen legen und schlucken.",
+      "Zum Schluss das ganze Gesicht bewusst locker lassen."
+    ],
+    "wieOft": "Fünf Minuten an fünf Tagen die Woche. Was sich verändert, zeigt sich in Wochen, nicht in Tagen.",
+    "womit": "Nichts. Saubere Hände genügen.",
+    "woraufAchten": "Ohne Zerren an der Haut arbeiten. Wer zu Kiefergelenkbeschwerden neigt, lässt die Kieferübungen weg. Kiefertraining mit Kaugummi und Zungenpressen gegen den Gaumen gehören ausdrücklich nicht dazu."
+  },
+  {
+    "id": "iceRolling",
+    "titel": "Ice Rolling am Morgen",
+    "synonyme": [
+      "Ice Rolling",
+      "Ice Roller",
+      "Eisrolle"
+    ],
+    "wasIstDas": "Eine gekühlte Rolle wird über das Gesicht geführt. Die Kälte lässt geschwollene Augen abschwellen und macht wach. Der Effekt hält Stunden, nicht Tage – er ist echt, aber kurzfristig.",
+    "schritte": [
+      "Die Rolle über Nacht ins Gefrierfach legen.",
+      "Morgens auf sauberer Haut anwenden.",
+      "Von der Mitte nach außen rollen, die Augenpartie zuletzt.",
+      "Ein bis drei Minuten, dann die gewohnte Pflege."
+    ],
+    "wieOft": "Täglich am Morgen, solange es guttut.",
+    "womit": "Ein Ice Roller; ersatzweise ein in ein dünnes Tuch gewickeltes Kühlpad.",
+    "woraufAchten": "Nicht anwenden, wenn es schmerzt, und nicht länger als ein paar Minuten. Bei Rosazea oder Kälteempfindlichkeit vorsichtig sein – Kälte kann Rötungen verstärken statt beruhigen."
+  },
+  {
+    "id": "lymphmassage",
+    "titel": "Lymph-Gesichtsmassage",
+    "synonyme": [
+      "Lymphmassage",
+      "Lymphdrainage"
+    ],
+    "wasIstDas": "Sehr leichtes Ausstreichen der Haut in Richtung Hals. Es unterstützt den Abtransport von Flüssigkeit. Der Druck ist deutlich geringer als bei einer normalen Massage – das ist der häufigste Fehler.",
+    "schritte": [
+      "Am Schlüsselbein beginnen und mit flachen Fingern ein paar Mal ausstreichen.",
+      "Den Hals von oben nach unten ausstreichen.",
+      "Vom Kinn entlang des Kiefers zum Ohr, von dort hinunter zum Hals.",
+      "Wangen und Augenpartie, immer nach außen und dann nach unten.",
+      "Fünf bis zehn Minuten insgesamt."
+    ],
+    "wieOft": "Zwei- bis dreimal die Woche, am besten morgens.",
+    "womit": "Ein Tropfen Öl oder Creme, damit die Finger gleiten.",
+    "woraufAchten": "Federleicht arbeiten – die Lymphgefäße liegen direkt unter der Haut. Nicht bei Infekten mit geschwollenen Lymphknoten und nicht über entzündeter Haut."
+  },
+  {
+    "id": "sanftesPeeling",
+    "titel": "Sanftes chemisches Peeling",
+    "synonyme": [
+      "chemisches Peeling",
+      "Fruchtsäurepeeling",
+      "AHA-Peeling",
+      "BHA-Peeling"
+    ],
+    "wasIstDas": "Eine milde Säure löst abgestorbene Hautzellen, statt sie abzurubbeln. Das Hautbild wirkt gleichmäßiger und glatter. „Chemisch“ heißt hier mild und niedrig dosiert – nicht das, was in einer Praxis gemacht wird.",
+    "schritte": [
+      "Mit einem Produkt in niedriger Konzentration anfangen.",
+      "Abends auf gereinigter, trockener Haut anwenden.",
+      "Zuerst nur an einer kleinen Stelle testen und 24 Stunden abwarten.",
+      "Dünn auftragen, die Augenpartie aussparen.",
+      "Am nächsten Morgen unbedingt Sonnenschutz auftragen."
+    ],
+    "wieOft": "Ein- bis zweimal die Woche, langsam gesteigert. Öfter wirkt nicht schneller, sondern reizt.",
+    "womit": "Milde Fruchtsäure (AHA) oder Salicylsäure (BHA) in niedriger Konzentration.",
+    "woraufAchten": "Nicht am selben Abend mit weiteren Säuren oder mit Retinoiden kombinieren. Brennt es länger als kurz, abwaschen. Höher dosierte und rezeptpflichtige Mittel gehören in ärztliche Hand – darum geht es hier ausdrücklich nicht."
+  },
+  {
+    "id": "sheetMaske",
+    "titel": "Sheet-Masken-Ritual",
+    "synonyme": [
+      "Sheet-Maske",
+      "Sheet Mask",
+      "Tuchmaske"
+    ],
+    "wasIstDas": "Ein getränktes Tuch liegt zwanzig Minuten auf dem Gesicht. Die Haut nimmt Feuchtigkeit auf und wirkt danach praller. Der Effekt ist angenehm und kurzfristig – ein Teil des Werts liegt in den zwanzig ruhigen Minuten.",
+    "schritte": [
+      "Das Gesicht reinigen.",
+      "Die Maske auflegen und die Kanten andrücken.",
+      "15 bis 20 Minuten liegen lassen, nicht länger.",
+      "Abnehmen und den Rest einklopfen statt abzuwaschen.",
+      "Danach die gewohnte Pflege."
+    ],
+    "wieOft": "Einmal die Woche, an einem festen Abend.",
+    "womit": "Sheet-Maske mit Feuchtigkeitswirkstoffen. Bei empfindlicher Haut auf Duftstoffe achten.",
+    "woraufAchten": "Trocknet die Maske auf dem Gesicht an, entzieht sie wieder Feuchtigkeit – rechtzeitig abnehmen. Nicht auf gereizte oder frisch gepeelte Haut legen."
+  },
+  {
+    "id": "lippenpeeling",
+    "titel": "Lippen-Peeling",
+    "synonyme": [
+      "Lippenpeeling"
+    ],
+    "wasIstDas": "Lose Hautschüppchen werden sanft abgetragen, danach wird gepflegt. Glatte Lippen halten Farbe besser und reißen weniger ein.",
+    "schritte": [
+      "Die Lippen anfeuchten.",
+      "Mit einem feinen Peeling oder einer weichen Bürste zehn bis zwanzig Sekunden in kleinen Kreisen arbeiten.",
+      "Abnehmen oder abspülen.",
+      "Sofort Balsam auftragen.",
+      "Abends eine dickere Schicht Balsam als Maske über Nacht."
+    ],
+    "wieOft": "Ein- bis zweimal die Woche, nicht öfter.",
+    "womit": "Feines Lippenpeeling auf Zucker- oder Enzymbasis, Lippenbalsam ohne Menthol und Kampfer.",
+    "woraufAchten": "Nicht bei aufgerissenen oder entzündeten Lippen. Wer ständig peelen muss, hat eher ein Feuchtigkeitsproblem – dann pflegen statt reiben."
+  },
+  {
+    "id": "nagelpflege",
+    "titel": "Nagelpflege-Routine",
+    "synonyme": [
+      "Nagelpflege"
+    ],
+    "wasIstDas": "Feilen, Nagelhaut pflegen, ölen. Hände sind auf Fotos und im Gespräch ständig sichtbar; gepflegte Nägel fallen mehr auf, als die meisten vermuten.",
+    "schritte": [
+      "Die Nägel in eine Form feilen, immer in eine Richtung statt hin und her.",
+      "Die Hände kurz in warmes Wasser halten.",
+      "Die Nagelhaut sanft zurückschieben – nicht schneiden.",
+      "Nagelöl in den Nagelfalz einmassieren.",
+      "Handcreme nachlegen."
+    ],
+    "wieOft": "Einmal die Woche. Öl gern täglich.",
+    "womit": "Feine Feile, Rosenholzstäbchen, Nagelöl, Handcreme.",
+    "woraufAchten": "Die Nagelhaut ist eine Barriere und kein Überstand – wer sie schneidet, riskiert Entzündungen. Verfärbungen, Rillen oder weiße Flecken, die bleiben, gehören angesehen."
+  },
+  {
+    "id": "augenbrauenWimpern",
+    "titel": "Augenbrauen- & Wimpernpflege",
+    "synonyme": [
+      "Augenbrauenpflege",
+      "Wimpernpflege",
+      "Brauenpflege"
+    ],
+    "wasIstDas": "Bürsten, ölen und die Form halten, statt sie jedes Mal nachzuziehen. Brauen rahmen das Gesicht, und ihre eigene Form ist fast immer die passendste – sie folgt dem Knochenbau darunter.",
+    "schritte": [
+      "Die Brauen mit einem Spoolie in Wuchsrichtung bürsten.",
+      "Nur die offensichtlichen Ausreißer unterhalb der Linie entfernen.",
+      "Abends einen Hauch Öl in Brauen und Wimpernkranz geben.",
+      "Lücken mit kleinen Härchenstrichen füllen statt mit einer durchgezogenen Linie."
+    ],
+    "wieOft": "Bürsten täglich, Zupfen alle zwei bis drei Wochen.",
+    "womit": "Spoolie, schräge Pinzette, ein leichtes Öl wie Rizinusöl, Brauenstift oder -puder.",
+    "woraufAchten": "Oberhalb der Braue kaum etwas wegnehmen – das ist die Linie, die die Form trägt. Wachsen fällt aus, solange die Haut Säuren oder Retinoide bekommt. Seren, die Wimpernwachstum versprechen, sind teils verschreibungspflichtig und gehören nicht ohne ärztliche Rücksprache ins Gesicht."
+  },
+  {
+    "id": "pinselhygiene",
+    "titel": "Pinsel sauber halten",
+    "synonyme": [
+      "Pinselhygiene",
+      "Pinsel reinigen"
+    ],
+    "wasIstDas": "Make-up-Pinsel sammeln Fett, Hautzellen und Bakterien. Ungewaschen tragen sie das jedes Mal zurück ins Gesicht – und sie legen Farbe schlechter auf, weil die Haare verkleben.",
+    "schritte": [
+      "Nur die Haare nass machen, nicht die Metallzwinge.",
+      "Milde Seife oder Shampoo in die Handfläche geben und den Pinsel darin kreisen lassen.",
+      "Klar spülen, bis kein Schaum mehr kommt.",
+      "Das Wasser vorsichtig ausdrücken und die Form richten.",
+      "Liegend über eine Tischkante trocknen lassen, nie stehend."
+    ],
+    "wieOft": "Alle ein bis zwei Wochen. Pinsel für flüssige Produkte häufiger.",
+    "womit": "Milde Seife oder ein Pinselreiniger und ein Handtuch.",
+    "woraufAchten": "Stehend zu trocknen lässt Wasser in die Zwinge laufen – der Kleber löst sich und der Pinsel haart. Nicht föhnen."
+  },
+  {
+    "id": "lidschattenbasis",
+    "titel": "Grundierung für die Lider",
+    "synonyme": [
+      "Lidschattenbasis",
+      "Lidschatten-Base",
+      "Eyeshadow Primer"
+    ],
+    "wasIstDas": "Eine dünne Schicht auf dem beweglichen Lid, bevor Farbe kommt. Sie gleicht die Lidfarbe aus, hält den Lidschatten und verhindert, dass er sich im Laufe des Tages in der Lidfalte absetzt.",
+    "schritte": [
+      "Das Lid sauber und trocken vorbereiten.",
+      "Sehr wenig Produkt mit dem Finger auftragen.",
+      "Bis zur Braue verblenden und dünn auslaufen lassen.",
+      "Kurz antrocknen lassen.",
+      "Erst dann Farbe darüber geben."
+    ],
+    "wieOft": "Immer dann, wenn Lidschatten halten soll.",
+    "womit": "Lidschattenbase; ersatzweise ein Hauch Concealer, gut abgepudert.",
+    "woraufAchten": "Zu viel Produkt knickt genau dort, wo es das verhindern soll. Bei empfindlichen Augen auf Duftstoffe achten."
+  },
+  {
+    "id": "rougePlatzierung",
+    "titel": "Rouge bewusst platzieren",
+    "synonyme": [
+      "Rouge",
+      "Blush"
+    ],
+    "wasIstDas": "Wo das Rouge sitzt, verändert die Wirkung des Gesichts stärker als die Farbe. Höher aufgetragen wirkt das Gesicht angehoben, tiefer auf dem Wangenapfel runder und jugendlicher.",
+    "schritte": [
+      "Wenig Produkt aufnehmen und den Überschuss abklopfen.",
+      "Lächeln und den Wangenapfel suchen.",
+      "Von dort in Richtung Schläfe verblenden – nicht Richtung Nase.",
+      "Die Kanten mit einem sauberen Pinsel weichzeichnen.",
+      "Lieber zweimal dünn auftragen als einmal dick."
+    ],
+    "wieOft": "Wenn du Make-up trägst.",
+    "womit": "Rouge als Puder oder Creme und ein weicher Pinsel oder die Finger.",
+    "woraufAchten": "Creme auf Creme, Puder auf Puder – sonst wird es fleckig. Der ehrliche Test ist Tageslicht am Fenster, nicht das Licht im Bad."
+  },
+  {
+    "id": "oelziehen",
+    "titel": "Ölziehen",
+    "synonyme": [
+      "Öl ziehen",
+      "Oil Pulling"
+    ],
+    "wasIstDas": "Ein Löffel Öl wird morgens einige Minuten im Mund bewegt und dann ausgespuckt. Viele empfinden den Mund danach als frischer. Zähneputzen und Zahnseide ersetzt es nicht – belastbare Belege für mehr gibt es nicht.",
+    "schritte": [
+      "Morgens vor dem Zähneputzen, am besten auf nüchternen Magen.",
+      "Einen Teelöffel bis Esslöffel Öl in den Mund nehmen.",
+      "Fünf bis zehn Minuten ruhig durch die Zähne ziehen – nicht gurgeln.",
+      "In ein Papiertuch und in den Müll ausspucken, nicht ins Waschbecken.",
+      "Den Mund mit Wasser ausspülen und dann normal putzen."
+    ],
+    "wieOft": "Täglich am Morgen oder ein paar Mal die Woche.",
+    "womit": "Kokos-, Sesam- oder Sonnenblumenöl in Lebensmittelqualität.",
+    "woraufAchten": "Nicht schlucken. Ins Waschbecken gespuckt verstopft das Öl mit der Zeit den Abfluss. Bei Kieferbeschwerden kürzer machen. Zahnfleischbluten oder Schmerzen gehören in die Zahnarztpraxis und nicht in eine Ölkur."
+  },
+  {
+    "id": "zungenschaber",
+    "titel": "Zungenschaber",
+    "synonyme": [
+      "Zungenreiniger",
+      "Zunge schaben"
+    ],
+    "wasIstDas": "Ein Schaber trägt den Belag auf dem Zungenrücken ab. Dieser Belag ist eine Hauptquelle für Mundgeruch, und Zähneputzen allein erreicht ihn nicht.",
+    "schritte": [
+      "Morgens vor dem Zähneputzen anwenden.",
+      "Die Zunge herausstrecken.",
+      "Den Schaber so weit hinten ansetzen, wie es ohne Würgereiz geht.",
+      "Mit leichtem Druck nach vorn ziehen und abspülen.",
+      "Drei- bis fünfmal wiederholen."
+    ],
+    "wieOft": "Täglich am Morgen.",
+    "womit": "Zungenschaber aus Edelstahl oder Kunststoff. Zur Not tut es ein Löffelrücken.",
+    "woraufAchten": "Leichter Druck genügt, es soll nicht bluten. Eine dauerhaft stark belegte, schmerzende oder brennende Zunge gehört ärztlich angesehen."
+  },
+  {
+    "id": "laechelntraining",
+    "titel": "Lächeln vor dem Spiegel üben",
+    "synonyme": [
+      "Lächeltraining",
+      "Lächeln üben"
+    ],
+    "wasIstDas": "Das eigene Lächeln kennenlernen, damit es auf Fotos nicht angestrengt wirkt. Der Unterschied zwischen echt und gestellt liegt fast immer in den Augen und nicht im Mund.",
+    "schritte": [
+      "Vor dem Spiegel an etwas Konkretes denken, das dich freut.",
+      "Beobachten, was die Augen tun – ein echtes Lächeln schiebt die Wangen hoch und zieht die Augen leicht zusammen.",
+      "Verschiedene Stärken ausprobieren: geschlossen, halb, offen.",
+      "Sich die Variante merken, die sich richtig anfühlt.",
+      "Kurz vor einem Foto einmal tief ausatmen und den Kiefer lockern."
+    ],
+    "wieOft": "Zwei Minuten, ein paar Mal die Woche. Vor Foto-Anlässen einmal kurz.",
+    "womit": "Ein Spiegel. Wer mag, macht Serien mit dem Selbstauslöser.",
+    "woraufAchten": "Es geht ums Lockerwerden, nicht ums Posieren. Wer sein Lächeln wegen der Zähne versteckt, findet in der Zahnarztpraxis bessere Antworten als in einer Übung."
+  },
+  {
+    "id": "aufhellung",
+    "titel": "Zähne aufhellen",
+    "synonyme": [
+      "Bleaching",
+      "Zahnaufhellung"
+    ],
+    "wasIstDas": "Verfärbungen werden mit peroxidhaltigen Mitteln aufgehellt. Das wirkt, ist aber nicht harmlos: Für die Anwendung zu Hause gelten in der EU strenge Grenzen, und der erste Schritt gehört in die Zahnarztpraxis.",
+    "schritte": [
+      "Einen Kontrolltermin machen – Karies und freiliegende Zahnhälse müssen vorher behandelt sein.",
+      "Eine professionelle Zahnreinigung machen lassen; oft reicht sie schon.",
+      "Das Verfahren mit der Praxis besprechen: Schiene für zu Hause oder Behandlung vor Ort.",
+      "Die Anwendungszeiten genau einhalten, nicht verlängern.",
+      "In den ersten Tagen danach färbende Getränke meiden."
+    ],
+    "wieOft": "Als Kur nach Anleitung, danach lange Pausen. Nichts für dauerhaft.",
+    "womit": "Nur Produkte, die in der EU zugelassen sind – am sichersten über die Praxis.",
+    "woraufAchten": "Kronen, Füllungen und Veneers hellen nicht mit auf und fallen danach auf. Empfindliche Zähne und gereiztes Zahnfleisch sind häufig. Finger weg von Aktivkohle und Backpulver: Beides schmirgelt den Schmelz ab, und der wächst nicht nach."
+  },
+  {
+    "id": "chinTuck",
+    "titel": "Chin Tucks für den Nacken",
+    "synonyme": [
+      "Chin Tuck",
+      "Chin-Tucks",
+      "Kinn-Rückzug"
+    ],
+    "wasIstDas": "Das Kinn wird waagerecht nach hinten geschoben, als wolle man ein Doppelkinn machen. Die Übung kräftigt die tiefen Halsmuskeln und arbeitet gegen die vorgeschobene Kopfhaltung, die vom Blick auf den Bildschirm kommt.",
+    "schritte": [
+      "Aufrecht sitzen oder stehen, die Schultern locker lassen.",
+      "Den Blick geradeaus richten, das Kinn parallel zum Boden.",
+      "Den Kopf gerade nach hinten schieben, ohne ihn nach unten zu kippen.",
+      "Drei bis fünf Sekunden halten und wieder lösen.",
+      "Zehn Wiederholungen."
+    ],
+    "wieOft": "Ein- bis dreimal am Tag, gut im Sitzen am Schreibtisch.",
+    "womit": "Nichts.",
+    "woraufAchten": "Kein Schmerz und kein Schwindel – bei beidem aufhören. Nichts mit Gewalt drücken. Das ist eine Haltungsübung und hat mit Mewing oder Kiefertraining nichts zu tun."
+  },
+  {
+    "id": "mobilityMinuten",
+    "titel": "Tägliche Mobility-Minuten",
+    "synonyme": [
+      "Mobility",
+      "Mobility-Minuten",
+      "Beweglichkeitsübungen"
+    ],
+    "wasIstDas": "Fünf Minuten Beweglichkeit statt eines Programms. Kurze tägliche Bewegung hält Schultern, Brustwirbelsäule und Hüfte beweglicher als ein langes Training einmal die Woche – und sie fällt nicht aus.",
+    "schritte": [
+      "Schulterkreisen, zehnmal in jede Richtung.",
+      "Brustwirbelsäule: im Sitzen zur Seite drehen, je fünfmal.",
+      "Hüftbeuger: Ausfallschritt, dreißig Sekunden je Seite.",
+      "Katze-Kuh im Vierfüßlerstand, zehnmal.",
+      "Zum Schluss eine Minute aufrecht stehen und tief atmen."
+    ],
+    "wieOft": "Täglich fünf Minuten. Lieber kurz und immer als lang und selten.",
+    "womit": "Nichts. Eine Matte ist bequemer.",
+    "woraufAchten": "Beweglichkeit ist kein Dehnungswettbewerb – bis zum Zug arbeiten, nicht bis zum Schmerz. Bei akuten Rücken- oder Gelenkbeschwerden vorher abklären lassen."
+  },
+  {
+    "id": "wandstand",
+    "titel": "Wandstand für die Haltung",
+    "synonyme": [
+      "Wandstand",
+      "Wall Stand"
+    ],
+    "wasIstDas": "Mit dem Rücken an der Wand stehen und spüren, was „gerade“ eigentlich heißt. Die Wand gibt die Rückmeldung, die der Spiegel nicht geben kann, weil man sich beim Hinschauen automatisch aufrichtet.",
+    "schritte": [
+      "Die Fersen etwa eine Handbreit vor die Wand setzen.",
+      "Gesäß, Schulterblätter und Hinterkopf an die Wand bringen.",
+      "Das Kinn leicht zurücknehmen, der Blick bleibt geradeaus.",
+      "Zwischen unteren Rücken und Wand soll gerade eine flache Hand passen.",
+      "Zwei Minuten halten und ruhig weiteratmen."
+    ],
+    "wieOft": "Täglich zwei Minuten.",
+    "womit": "Eine freie Wand.",
+    "woraufAchten": "Nicht ins Hohlkreuz drücken und die Schultern nicht hochziehen. Fühlt sich der Nacken unangenehm an, den Hinterkopf lieber lösen als die Position erzwingen."
+  },
+  {
+    "id": "kaltDuschen",
+    "titel": "Kalt abduschen",
+    "synonyme": [
+      "Kaltdusche",
+      "kalt duschen"
+    ],
+    "wasIstDas": "Die letzten Sekunden der Dusche kalt. Das macht wach, und viele empfinden die Haut danach als straffer. Versprechen über Stoffwechsel oder Immunsystem gehen weit über das hinaus, was belegt ist.",
+    "schritte": [
+      "Normal warm zu Ende duschen.",
+      "Das Wasser auf kalt stellen.",
+      "Bei den Füßen anfangen, dann Beine, Arme und zuletzt der Rumpf.",
+      "Etwa dreißig Sekunden, dabei ruhig weiteratmen.",
+      "Abtrocknen und in Bewegung kommen."
+    ],
+    "wieOft": "Täglich am Ende der Dusche, solange es guttut.",
+    "womit": "Nichts.",
+    "woraufAchten": "Nicht mit Kopf oder Brust anfangen. Bei Herz-Kreislauf-Erkrankungen, Bluthochdruck oder in der Schwangerschaft vorher ärztlich fragen. Wird dir schwindelig, sofort aufhören."
+  },
+  {
+    "id": "schlafhygiene",
+    "titel": "Schlafhygiene-Routine",
+    "synonyme": [
+      "Schlafhygiene"
+    ],
+    "wasIstDas": "Feste Zeiten, dunkles Zimmer, kein Bildschirm kurz vor dem Schlafen. Kein Pflegeprodukt wirkt so sichtbar auf Augenringe, Hautbild und Ausstrahlung wie ausreichender Schlaf.",
+    "schritte": [
+      "Eine feste Aufstehzeit wählen – sie trägt mehr als die Zubettgehzeit.",
+      "Die letzte Stunde ohne Bildschirm verbringen und das Licht dimmen.",
+      "Das Schlafzimmer kühl und dunkel halten.",
+      "Koffein spätestens am frühen Nachmittag stehen lassen.",
+      "Wenn du nach zwanzig Minuten wach liegst: aufstehen, etwas Ruhiges tun, zurückgehen."
+    ],
+    "wieOft": "Jeden Tag, auch am Wochenende.",
+    "womit": "Verdunkelung oder eine Schlafmaske; ein Wecker außerhalb der Reichweite.",
+    "woraufAchten": "Anhaltende Schlafprobleme, Schnarchen mit Atemaussetzern oder Tagesmüdigkeit trotz genug Stunden gehören ärztlich abgeklärt."
+  },
+  {
+    "id": "kleiderschrankAudit",
+    "titel": "Kleiderschrank-Audit",
+    "synonyme": [
+      "Kleiderschrank ausmisten",
+      "Schrank-Audit"
+    ],
+    "wasIstDas": "Einmal alles durchgehen und ehrlich sortieren. Die meisten Menschen tragen einen kleinen Teil ihrer Kleidung regelmäßig; der Rest verstellt die Sicht auf das, was funktioniert.",
+    "schritte": [
+      "Alles aus einer Kategorie herausnehmen, zum Beispiel nur die Oberteile.",
+      "Drei Stapel bilden: trage ich, trage ich nicht, unsicher.",
+      "Bei „unsicher“ anprobieren und in den Spiegel schauen – passt es heute, zu diesem Leben?",
+      "Den Stapel „trage ich nicht“ weggeben oder verkaufen.",
+      "Notieren, was jetzt fehlt, damit die nächste Anschaffung eine Lücke schließt."
+    ],
+    "wieOft": "Zweimal im Jahr, am besten beim Wechsel der Jahreszeit.",
+    "womit": "Zeit, ein Spiegel und Kisten oder Taschen für den Abtransport.",
+    "woraufAchten": "„Vielleicht passt es wieder“ ist kein Grund zum Behalten. Ein Kleidungsstück, das dich jedes Mal beim Öffnen des Schranks daran erinnert, kostet mehr, als es wert ist."
+  },
+  {
+    "id": "capsuleWardrobe",
+    "titel": "Capsule Wardrobe",
+    "synonyme": [
+      "Capsule-Wardrobe",
+      "Kapselgarderobe"
+    ],
+    "wasIstDas": "Eine kleine Zahl von Teilen, die alle zueinander passen. Aus 25 bis 35 Stücken entstehen so mehr tragbare Kombinationen als aus einem vollen Schrank ohne Linie – weil jedes Teil mit jedem geht.",
+    "schritte": [
+      "Zwei bis drei Grundfarben festlegen, die zu dir passen, plus eine Akzentfarbe.",
+      "Nur Schnitte wählen, die du tatsächlich trägst.",
+      "Pro Kategorie eine feste Zahl setzen, etwa sieben Oberteile, drei Hosen, zwei Jacken, drei Paar Schuhe.",
+      "Prüfen: Lässt sich jedes Oberteil mit jeder Hose tragen?",
+      "Lücken gezielt nachkaufen statt spontan."
+    ],
+    "wieOft": "Einmal aufsetzen, danach je Saison nachschärfen.",
+    "womit": "Was du bereits hast – der erste Schritt ist Sortieren, nicht Kaufen.",
+    "woraufAchten": "Es ist eine Auswahl, kein Verzicht. Eine Kapsel, die einen Anlass in deinem Alltag nicht abdeckt – Sport, Arbeit, Feiern –, ist zu klein gedacht und hält keine zwei Wochen."
+  },
+  {
+    "id": "schuhpflege",
+    "titel": "Schuhpflege-Ritual",
+    "synonyme": [
+      "Schuhpflege",
+      "Schuhe pflegen"
+    ],
+    "wasIstDas": "Bürsten, pflegen, in Form bringen. Schuhe sind das Teil, an dem ein Outfit am schnellsten alt aussieht – und das mit dem geringsten Aufwand wieder gut.",
+    "schritte": [
+      "Losen Schmutz trocken abbürsten.",
+      "Den Rest mit einem feuchten Tuch abnehmen und trocknen lassen.",
+      "Creme oder Wachs dünn auftragen, in passender Farbe.",
+      "Einziehen lassen und dann mit einer weichen Bürste auf Glanz bürsten.",
+      "Schuhspanner einsetzen und nicht an die Heizung stellen."
+    ],
+    "wieOft": "Alle zwei bis vier Wochen. Nach Regen immer.",
+    "womit": "Rosshaarbürste, Schuhcreme oder Wachs, ein Tuch, Schuhspanner. Für Wildleder eine Kreppbürste und Imprägnierspray.",
+    "woraufAchten": "Nasse Schuhe nie an der Heizung trocknen – das Leder wird spröde und reißt. Zwei Paar im Wechsel halten deutlich länger als ein Paar jeden Tag."
+  },
+  {
+    "id": "accessoireEinstieg",
+    "titel": "Das erste Accessoire",
+    "synonyme": [
+      "Accessoire"
+    ],
+    "wasIstDas": "Ein einzelnes Schmuckstück, das immer dabei ist. Es macht ein schlichtes Outfit fertig, ohne dass es nach Aufwand aussieht – und es ist die kleinste Änderung mit der größten Wirkung.",
+    "schritte": [
+      "Eine Metallfarbe wählen und dabei bleiben: Silber oder Gold.",
+      "Mit einem Stück anfangen – schmale Kette, schlichter Ring oder eine Uhr.",
+      "Es eine Woche lang jeden Tag tragen und schauen, ob es sich richtig anfühlt.",
+      "Erst dann ein zweites Stück dazunehmen, in derselben Metallfarbe.",
+      "Höchstens drei sichtbare Stücke gleichzeitig."
+    ],
+    "wieOft": "Täglich tragen – der Sinn ist, dass es selbstverständlich dazugehört.",
+    "womit": "Ein Stück in guter, hautverträglicher Qualität ist besser als fünf, die anlaufen.",
+    "woraufAchten": "Bei empfindlicher Haut auf nickelfreie Legierungen achten. Ringe vor dem Sport und beim Handwaschen abnehmen, sonst verkratzen sie schnell."
+  },
+  {
+    "id": "meersalzspray",
+    "titel": "Meersalzspray-Styling",
+    "synonyme": [
+      "Meersalzspray",
+      "Salzspray",
+      "Sea Salt Spray"
+    ],
+    "wasIstDas": "Ein Salzwasser-Spray im feuchten Haar gibt Textur und mattes Volumen – der Effekt, den Haare nach einem Tag am Meer haben. Es strukturiert, es pflegt nicht.",
+    "schritte": [
+      "Mit handtuchtrockenem Haar anfangen.",
+      "Zwei bis vier Sprühstöße aus etwa 20 cm Abstand, vor allem in die Längen.",
+      "Mit den Fingern kneten statt kämmen.",
+      "An der Luft trocknen lassen oder mit dem Diffusor arbeiten.",
+      "Zum Schluss die Struktur mit den Fingern lockern."
+    ],
+    "wieOft": "An Tagen, an denen du Textur willst. Nicht täglich.",
+    "womit": "Meersalzspray. Sehr trockenes Haar verträgt es besser mit einem Leave-in darunter.",
+    "woraufAchten": "Salz trocknet aus. Bei sprödem oder gefärbtem Haar sparsam einsetzen und mit Pflege ausgleichen."
+  },
+  {
+    "id": "lagenlook",
+    "titel": "Lagenlook",
+    "synonyme": [
+      "Layering",
+      "Zwiebellook",
+      "Lagen-Look"
+    ],
+    "wasIstDas": "Mehrere dünne Schichten übereinander statt eines dicken Teils. Das schafft Tiefe im Outfit, macht es wetterfest und lässt sich über den Tag anpassen. Auf Englisch heißt es Layering.",
+    "schritte": [
+      "Unten dünn anfangen – T-Shirt oder feines Hemd.",
+      "Eine mittlere Lage darüber: Strick, offenes Hemd, leichte Weste.",
+      "Außen die kräftigste Lage: Jacke oder Mantel.",
+      "Von innen nach außen etwas länger oder kräftiger werden – nicht umgekehrt.",
+      "Die Farben in einer Familie halten, damit die Schichten zusammengehören."
+    ],
+    "wieOft": "Ganzjährig; im Übergang zwischen den Jahreszeiten am nützlichsten.",
+    "womit": "Was du hast. Lagenlook ist eine Kombinationsfrage und keine Anschaffung.",
+    "woraufAchten": "Drei Lagen sind meist genug. Trägt es zu sehr auf, wirkt die Silhouette breiter – dann lieber eine Lage weglassen als eine dünnere suchen."
+  },
+  {
+    "id": "doppelreinigung",
+    "titel": "Doppelreinigung",
+    "synonyme": [
+      "Double Cleansing",
+      "doppelte Reinigung"
+    ],
+    "wasIstDas": "Zuerst wird mit einem öligen Produkt gereinigt, danach mit einem wasserbasierten. Öl löst Sonnenschutz und Make-up, Wasser löst Schweiß und Reste. Einer allein bekommt nicht beides ab.",
+    "schritte": [
+      "Auf trockener Haut Reinigungsöl oder -balsam verteilen und eine Minute einmassieren.",
+      "Mit wenig Wasser aufschäumen – dabei löst sich alles.",
+      "Gründlich abspülen.",
+      "Einen milden Waschschaum oder ein Gel nachlegen.",
+      "Abspülen und sanft abtupfen statt trocken zu reiben."
+    ],
+    "wieOft": "Abends, wenn du Sonnenschutz oder Make-up getragen hast. Morgens reicht ein Schritt.",
+    "womit": "Reinigungsöl oder -balsam plus ein mildes, pH-freundliches Reinigungsgel.",
+    "woraufAchten": "Zweimal reinigen heißt nicht zweimal schrubben. Spannt die Haut danach, war es zu viel oder das Produkt zu scharf."
+  },
+  {
+    "id": "lichtschutzfaktor",
+    "titel": "Lichtschutzfaktor (LSF)",
+    "synonyme": [
+      "Lichtschutzfaktor",
+      "LSF",
+      "SPF",
+      "Sonnenschutz"
+    ],
+    "wasIstDas": "Die Zahl sagt, um welchen Faktor sich die Zeit verlängert, bis die Haut rot wird. Sonnenschutz ist das eine Mittel, dessen Wirkung gegen vorzeitige Hautalterung wirklich belegt ist – vor jedem Serum.",
+    "schritte": [
+      "Morgens als letzten Pflegeschritt auftragen, vor dem Make-up.",
+      "Genug nehmen: für das Gesicht etwa zwei Fingerlängen aus der Tube.",
+      "Ohren, Hals und Nacken nicht vergessen.",
+      "15 bis 20 Minuten vor dem Rausgehen auftragen.",
+      "Draußen alle zwei Stunden nachlegen."
+    ],
+    "wieOft": "Täglich und das ganze Jahr, auch bei Wolken.",
+    "womit": "Breitbandschutz gegen UVA und UVB ab LSF 30. Für den Alltag reicht eine leichte Textur.",
+    "woraufAchten": "Zu wenig Produkt halbiert den Schutz – das ist der häufigste Fehler. Angebrochene Flaschen aus dem Vorjahr besser ersetzen. Ein Muttermal, das sich verändert, gehört ärztlich angesehen; kein Sonnenschutz ersetzt das."
+  },
+  {
+    "id": "farbtyp",
+    "titel": "Warmer und kalter Unterton",
+    "synonyme": [
+      "Unterton",
+      "Farbtyp",
+      "warmer Unterton",
+      "kalter Unterton"
+    ],
+    "wasIstDas": "Der Unterton der Haut entscheidet, welche Farben neben dem Gesicht wach aussehen und welche fahl. Er ändert sich nicht mit der Bräune – deshalb lohnt es sich, ihn einmal zu bestimmen.",
+    "schritte": [
+      "Bei Tageslicht ans Fenster stellen, ohne Make-up.",
+      "Die Adern am Handgelenk ansehen: eher grünlich heißt warm, eher bläulich heißt kühl, beides heißt neutral.",
+      "Gegenprobe mit Schmuck: Wirkt Gold oder Silber neben dem Gesicht frischer?",
+      "Gegenprobe mit Stoff: ein reinweißes und ein cremefarbenes Tuch ans Gesicht halten.",
+      "Das Ergebnis notieren – es gilt für Kleidung, Brillen und Haarfarbe gleichermaßen."
+    ],
+    "wieOft": "Einmal bestimmen, dann gilt es.",
+    "womit": "Tageslicht, ein Stück Gold, ein Stück Silber und zwei Tücher.",
+    "woraufAchten": "Kein Test ist für sich eindeutig, und viele Menschen sind neutral und können beides tragen. Widersprechen sich zwei Tests, entscheidet der Eindruck im Spiegel und nicht die Regel."
+  }
+]

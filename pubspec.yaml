@@ -119,6 +119,10 @@ flutter:
     # Sie liegen im Bundle und nicht nur im Netz, damit sie auch ohne
     # Verbindung lesbar sind (SECURITY_AUDIT F2).
     - assets/rechtstexte/
+    # Die Wissens-Bibliothek: feste Erklaerungen zu jeder Technik, je Sprache
+    # eine Datei. Im Bundle und nicht im Netz, damit das Nachschlagen weder
+    # Geld noch eine Verbindung kostet (DECISIONS 88).
+    - assets/wissen/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

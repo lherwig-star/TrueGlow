@@ -1,0 +1,711 @@
+[
+  {
+    "id": "kopfhautmassage",
+    "titel": "Scalp massage",
+    "synonyme": [
+      "scalp-massage"
+    ],
+    "wasIstDas": "You move the scalp against the skull with your fingertips. It releases tension and gets the blood moving. It will not grow you thicker hair, but a calm, well-supplied scalp is the better foundation for everything else.",
+    "schritte": [
+      "Place your fingers flat – the pads, never the nails.",
+      "Move the skin in small circles; your fingers stay in one place instead of sliding over the hair.",
+      "Work from the forehead to the back of the head, then the temples.",
+      "Two to five minutes, breathing calmly."
+    ],
+    "wieOft": "Daily, ideally in the evening or in the shower.",
+    "womit": "Nothing needed. If you like, use a light scalp oil or do it while shampooing.",
+    "woraufAchten": "No nails, no pulling on the hair. If your scalp is inflamed, badly flaking or itchy, have it looked at first – rubbing makes an irritated scalp worse, not better."
+  },
+  {
+    "id": "rosmarinoel",
+    "titel": "Rosemary oil for the scalp",
+    "synonyme": [
+      "rosemary oil"
+    ],
+    "wasIstDas": "Diluted rosemary oil is massaged into the scalp. There are smaller studies comparing it with a common hair-loss ingredient, and the results are cautiously positive. It is not a replacement for medical treatment.",
+    "schritte": [
+      "Dilute the essential rosemary oil in a carrier oil – a few drops per tablespoon.",
+      "Test a small patch on the inside of your arm first and wait 24 hours.",
+      "Apply to the scalp and massage in for one to two minutes.",
+      "Leave on for 20 to 30 minutes.",
+      "Wash out; shampoo twice if your roots feel greasy."
+    ],
+    "wieOft": "Once or twice a week, over at least two to three months. Nothing can be judged before that.",
+    "womit": "Essential rosemary oil and a carrier oil such as jojoba or coconut oil.",
+    "woraufAchten": "Never apply undiluted. Keep it out of your eyes and off broken or irritated skin. Ask a doctor first during pregnancy, while breastfeeding, or if you have epilepsy."
+  },
+  {
+    "id": "foehnRundbuerste",
+    "titel": "Blow-drying with a round brush",
+    "synonyme": [
+      "round brush",
+      "blow-dry with a round brush"
+    ],
+    "wasIstDas": "The hair is pulled over a round brush while you blow-dry it. The shape does not come from a product but from the hair cooling down in the shape you want – which makes the cool setting the most important button on the dryer.",
+    "schritte": [
+      "Start towel-dry rather than soaking wet, so the heat does not have to work for as long.",
+      "Work heat protection into the damp hair.",
+      "Section by section: brush at the roots, dryer following the brush, with light tension upwards or outwards.",
+      "Give each section a short blast of cool air while it is still on the brush – only then does it hold.",
+      "Finish by shaking it out with your fingers instead of combing it through."
+    ],
+    "wieOft": "As often as you wash your hair. Drying it every day is more heat than anyone needs.",
+    "womit": "A round brush (a smaller barrel gives more tension), a dryer with a cool setting, heat protection spray.",
+    "woraufAchten": "Medium heat is enough. Keep the dryer moving and keep your distance. If the hair turns straw-like or breaks at the ends, it was too hot."
+  },
+  {
+    "id": "haaroelkur",
+    "titel": "Overnight hair oil treatment",
+    "synonyme": [
+      "hair oil treatment",
+      "overnight oil"
+    ],
+    "wasIstDas": "Oil stays in the lengths overnight and is washed out in the morning. The hair becomes softer and easier to comb. It conditions the surface – it repairs nothing, and split ends stay split.",
+    "schritte": [
+      "Spread a small amount of oil between your hands to warm it.",
+      "Apply to the lengths and ends only, leaving the roots out.",
+      "Tie or braid the hair loosely.",
+      "Protect your pillow with an old towel.",
+      "Wash out thoroughly in the morning, shampooing twice if needed."
+    ],
+    "wieOft": "Once a week, on the evening before wash day.",
+    "womit": "A light plant oil – coconut, almond or argan.",
+    "woraufAchten": "Less is more: too much oil takes several washes to come out again. With a greasy scalp, stay strictly on the lengths."
+  },
+  {
+    "id": "seidenkissen",
+    "titel": "Silk pillowcase",
+    "synonyme": [
+      "silk pillow case",
+      "satin pillowcase"
+    ],
+    "wasIstDas": "A silk or satin case lets hair glide instead of catching. Less friction means less breakage and fewer kinks in the morning – and your skin gets fewer sleep creases pressed into it.",
+    "schritte": [
+      "Get a case in the right pillow size.",
+      "Put it on – that is the whole effort.",
+      "Wash it cool and gentle every one to two weeks.",
+      "Two cases in rotation save laundry and last longer."
+    ],
+    "wieOft": "Every night.",
+    "womit": "A pillowcase in mulberry silk or in satin.",
+    "woraufAchten": "Satin is the far cheaper alternative and does the same job for hair and creases. If you are prone to breakouts, change the case regularly anyway."
+  },
+  {
+    "id": "bartoelRoutine",
+    "titel": "Beard oil & balm",
+    "synonyme": [
+      "beard oil",
+      "beard balm"
+    ],
+    "wasIstDas": "Oil looks after the skin under the beard, balm wraps around the hair and holds the shape. Most beard itch comes from dry skin underneath rather than from the hair – which makes the oil the more important half.",
+    "schritte": [
+      "Apply after showering, while the beard is still slightly damp.",
+      "Put a few drops of oil in your palms, then massage into the skin under the beard.",
+      "Run your fingers through the beard so the rest is distributed.",
+      "Only if needed, work a small amount of balm in along the direction of growth.",
+      "Shape with a brush or comb."
+    ],
+    "wieOft": "Oil daily after showering. Balm only when the shape needs holding.",
+    "womit": "A plant-oil-based beard oil and a beard balm containing wax.",
+    "woraufAchten": "Use sparingly, or the beard looks greasy. If the skin under the beard is red, flaking or inflamed, no oil will fix it – that needs looking at."
+  },
+  {
+    "id": "bartbuerste",
+    "titel": "Beard brush",
+    "synonyme": [
+      "beard-brush"
+    ],
+    "wasIstDas": "A brush with firm bristles lines the hairs up in one direction, carries the oil down to the skin and lifts away loose flakes. It does more for how a beard looks than any product.",
+    "schritte": [
+      "Brush the beard dry or slightly damp.",
+      "Go against the direction of growth first, to loosen any tangles.",
+      "Then with the direction of growth, to shape it.",
+      "Finish by brushing the edges clean."
+    ],
+    "wieOft": "Once or twice a day.",
+    "womit": "A brush with boar or firm plant bristles. For long beards, add a wide-toothed comb.",
+    "woraufAchten": "Do not force it through. If it tears, the brush is too hard or the beard is too dry – oil first, then brush."
+  },
+  {
+    "id": "guaSha",
+    "titel": "Gua sha",
+    "synonyme": [
+      "gua-sha",
+      "guasha",
+      "gua sha stone"
+    ],
+    "wasIstDas": "A flat stone is drawn across the face with light pressure. It supports fluid drainage, so the face looks less puffy in the morning. It does not change your bone structure or the shape of your face.",
+    "schritte": [
+      "Apply oil or a slippery serum – without slip the stone drags on the skin.",
+      "Start at the neck and stroke downwards.",
+      "Take the jawline from the chin towards the ear.",
+      "Work the cheek from the nose to the ear, and the forehead from the middle to the hairline.",
+      "Three to five passes per line, always outwards and finally down towards the neck."
+    ],
+    "wieOft": "Two to three times a week, ideally in the morning. Daily is fine as long as the skin stays calm.",
+    "womit": "A gua sha stone and a facial oil or a serum with enough slip.",
+    "woraufAchten": "Work gently – the skin should not go red, that is not part of it. Do not drag over inflammation, spots or irritated areas. Ask first if you have a skin condition or a recent procedure on your face."
+  },
+  {
+    "id": "gesichtsyoga",
+    "titel": "Face yoga",
+    "synonyme": [
+      "facial yoga",
+      "face-yoga"
+    ],
+    "wasIstDas": "Targeted exercises for the facial muscles, usually with light counter-pressure from your hands. They can release tension and sharpen your sense of your own expression. They are not a substitute for cosmetic procedures.",
+    "schritte": [
+      "Wash your hands; face clean and free of make-up.",
+      "Forehead: place your palms on your forehead and raise your eyebrows against the resistance, ten times.",
+      "Cheeks: shape your mouth into a wide O, tense the cheek muscles and hold for ten seconds.",
+      "Jaw and neck: lift the chin slightly, place the tip of your tongue on the palate and swallow.",
+      "Finish by deliberately letting the whole face go slack."
+    ],
+    "wieOft": "Five minutes on five days a week. Whatever changes shows up in weeks, not days.",
+    "womit": "Nothing. Clean hands are enough.",
+    "woraufAchten": "Work without dragging the skin. If you are prone to jaw joint trouble, leave the jaw exercises out. Jaw training with chewing gum and pressing the tongue against the palate are explicitly not part of this."
+  },
+  {
+    "id": "iceRolling",
+    "titel": "Ice rolling in the morning",
+    "synonyme": [
+      "ice rolling",
+      "ice roller",
+      "Morning ice rolling"
+    ],
+    "wasIstDas": "A chilled roller is guided across the face. The cold brings down puffy eyes and wakes you up. The effect lasts hours rather than days – it is real, but short-lived.",
+    "schritte": [
+      "Leave the roller in the freezer overnight.",
+      "Use it on clean skin in the morning.",
+      "Roll from the middle outwards, the eye area last.",
+      "One to three minutes, then your usual skincare."
+    ],
+    "wieOft": "Every morning, for as long as it feels good.",
+    "womit": "An ice roller; a cool pack wrapped in a thin cloth will do instead.",
+    "woraufAchten": "Do not use it if it hurts, and not for longer than a few minutes. Be careful with rosacea or cold sensitivity – cold can deepen redness instead of calming it."
+  },
+  {
+    "id": "lymphmassage",
+    "titel": "Facial lymphatic massage",
+    "synonyme": [
+      "lymphatic massage",
+      "lymphatic drainage"
+    ],
+    "wasIstDas": "Very light stroking of the skin towards the neck. It supports the removal of fluid. The pressure is far lower than in a normal massage – that is the mistake people make most often.",
+    "schritte": [
+      "Start at the collarbone and stroke a few times with flat fingers.",
+      "Stroke the neck from top to bottom.",
+      "Go from the chin along the jaw to the ear, then down to the neck.",
+      "Cheeks and eye area, always outwards and then down.",
+      "Five to ten minutes in total."
+    ],
+    "wieOft": "Two to three times a week, ideally in the morning.",
+    "womit": "A drop of oil or cream so your fingers glide.",
+    "woraufAchten": "Feather-light – the lymph vessels sit just under the skin. Not while you have an infection with swollen lymph nodes, and not over inflamed skin."
+  },
+  {
+    "id": "sanftesPeeling",
+    "titel": "Gentle chemical exfoliant",
+    "synonyme": [
+      "chemical exfoliation",
+      "chemical peel",
+      "AHA exfoliant",
+      "BHA exfoliant",
+      "Gentle chemical exfoliation"
+    ],
+    "wasIstDas": "A mild acid dissolves dead skin cells instead of scrubbing them off. The skin looks more even and smoother. “Chemical” here means mild and low-strength – not what is done in a clinic.",
+    "schritte": [
+      "Start with a product at a low concentration.",
+      "Use it in the evening on cleansed, dry skin.",
+      "Test one small area first and wait 24 hours.",
+      "Apply thinly, avoiding the eye area.",
+      "Wear sun protection the next morning, without exception."
+    ],
+    "wieOft": "Once or twice a week, built up slowly. More often does not work faster, it just irritates.",
+    "womit": "A mild fruit acid (AHA) or salicylic acid (BHA) at a low concentration.",
+    "woraufAchten": "Do not combine with other acids or with retinoids on the same evening. If it stings for more than a moment, wash it off. Stronger and prescription-only products belong in medical hands – that is explicitly not what this is about."
+  },
+  {
+    "id": "sheetMaske",
+    "titel": "Sheet mask ritual",
+    "synonyme": [
+      "sheet mask"
+    ],
+    "wasIstDas": "A soaked cloth sits on your face for twenty minutes. The skin takes up moisture and looks plumper afterwards. The effect is pleasant and short-lived – part of the value is the twenty quiet minutes.",
+    "schritte": [
+      "Cleanse your face.",
+      "Lay the mask on and press the edges down.",
+      "Leave it on for 15 to 20 minutes, no longer.",
+      "Take it off and pat the remainder in rather than washing it off.",
+      "Follow with your usual skincare."
+    ],
+    "wieOft": "Once a week, on a fixed evening.",
+    "womit": "A sheet mask with hydrating ingredients. Watch out for fragrance if your skin is sensitive.",
+    "woraufAchten": "If the mask dries out on your face it starts drawing moisture back out – take it off in time. Do not use it on irritated or freshly exfoliated skin."
+  },
+  {
+    "id": "lippenpeeling",
+    "titel": "Lip scrub",
+    "synonyme": [
+      "lip exfoliation",
+      "lip-scrub"
+    ],
+    "wasIstDas": "Loose flakes are lifted away gently, then the lips are cared for. Smooth lips hold colour better and crack less.",
+    "schritte": [
+      "Dampen your lips.",
+      "Work in small circles for ten to twenty seconds with a fine scrub or a soft brush.",
+      "Wipe or rinse off.",
+      "Apply balm immediately.",
+      "In the evening, use a thicker layer of balm as an overnight mask."
+    ],
+    "wieOft": "Once or twice a week, no more.",
+    "womit": "A fine sugar- or enzyme-based lip scrub and a lip balm without menthol or camphor.",
+    "woraufAchten": "Not on cracked or inflamed lips. If you constantly need to exfoliate, the real problem is dryness – care for them instead of rubbing them."
+  },
+  {
+    "id": "nagelpflege",
+    "titel": "Nail care routine",
+    "synonyme": [
+      "nail care"
+    ],
+    "wasIstDas": "Filing, caring for the cuticles, oiling. Hands are on show constantly, in photos and in conversation, and cared-for nails register more than most people assume.",
+    "schritte": [
+      "File the nails into shape, always in one direction rather than back and forth.",
+      "Hold your hands in warm water briefly.",
+      "Push the cuticles back gently – do not cut them.",
+      "Massage nail oil into the cuticle line.",
+      "Follow with hand cream."
+    ],
+    "wieOft": "Once a week. Oil daily if you like.",
+    "womit": "A fine file, an orange stick, nail oil, hand cream.",
+    "woraufAchten": "The cuticle is a barrier, not an overhang – cutting it invites infection. Discolouration, ridges or white marks that stay belong in front of a doctor."
+  },
+  {
+    "id": "augenbrauenWimpern",
+    "titel": "Brow & lash care",
+    "synonyme": [
+      "brow care",
+      "lash care",
+      "eyebrow care"
+    ],
+    "wasIstDas": "Brushing, oiling and holding the shape instead of redrawing it every time. Brows frame the face, and their own shape is almost always the most flattering one – it follows the bone underneath.",
+    "schritte": [
+      "Brush the brows through with a spoolie, following the growth.",
+      "Remove only the obvious strays below the line.",
+      "In the evening, work a trace of oil into the brows and lash line.",
+      "Fill gaps with small hair-like strokes rather than a drawn line."
+    ],
+    "wieOft": "Brush daily, tweeze every two to three weeks.",
+    "womit": "A spoolie, slanted tweezers, a light oil such as castor oil, a brow pencil or powder.",
+    "woraufAchten": "Take almost nothing from above the brow – that is the line carrying the shape. Skip waxing while your skin is on acids or retinoids. Serums promising lash growth are partly prescription-only and do not belong on your face without medical advice."
+  },
+  {
+    "id": "pinselhygiene",
+    "titel": "Keeping the brushes clean",
+    "synonyme": [
+      "brush hygiene",
+      "cleaning brushes",
+      "Keeping brushes clean",
+      "Keep your brushes clean"
+    ],
+    "wasIstDas": "Make-up brushes collect oil, skin cells and bacteria. Unwashed, they carry all of that back onto your face every time – and they lay colour down worse, because the bristles clump.",
+    "schritte": [
+      "Wet only the bristles, never the metal ferrule.",
+      "Put mild soap or shampoo in your palm and swirl the brush in it.",
+      "Rinse until no more foam comes out.",
+      "Squeeze the water out carefully and reshape the head.",
+      "Dry them lying flat over the edge of a table, never standing upright."
+    ],
+    "wieOft": "Every one to two weeks. More often for brushes used with liquid products.",
+    "womit": "Mild soap or a brush cleaner, and a towel.",
+    "woraufAchten": "Drying upright lets water run into the ferrule – the glue loosens and the brush starts shedding. Do not use a hairdryer on them."
+  },
+  {
+    "id": "lidschattenbasis",
+    "titel": "Eyeshadow primer",
+    "synonyme": [
+      "eyeshadow primer",
+      "eyeshadow base",
+      "lid primer",
+      "Eyelid primer"
+    ],
+    "wasIstDas": "A thin layer on the mobile lid before any colour goes on. It evens out the lid tone, holds the eyeshadow and stops it creasing into the fold over the course of the day.",
+    "schritte": [
+      "Start with a clean, dry lid.",
+      "Apply very little product with your finger.",
+      "Blend up to the brow and let it fade out thinly.",
+      "Let it set for a moment.",
+      "Only then apply colour."
+    ],
+    "wieOft": "Whenever eyeshadow needs to last.",
+    "womit": "An eyeshadow primer; a trace of concealer, well powdered, will do instead.",
+    "woraufAchten": "Too much product creases in exactly the place it is meant to prevent. Watch for fragrance if your eyes are sensitive."
+  },
+  {
+    "id": "rougePlatzierung",
+    "titel": "Placing blush deliberately",
+    "synonyme": [
+      "blush",
+      "blusher",
+      "Place blush deliberately"
+    ],
+    "wasIstDas": "Where the blush sits changes the effect of a face more than its colour does. Placed higher it lifts, placed lower on the apple of the cheek it reads rounder and younger.",
+    "schritte": [
+      "Pick up a little product and tap off the excess.",
+      "Smile and find the apple of your cheek.",
+      "Blend from there towards the temple – not towards the nose.",
+      "Soften the edges with a clean brush.",
+      "Two thin layers beat one thick one."
+    ],
+    "wieOft": "Whenever you wear make-up.",
+    "womit": "Blush as powder or cream, and a soft brush or your fingers.",
+    "woraufAchten": "Cream over cream, powder over powder – otherwise it goes patchy. The honest test is daylight at a window, not the bathroom light."
+  },
+  {
+    "id": "oelziehen",
+    "titel": "Oil pulling",
+    "synonyme": [
+      "oil-pulling"
+    ],
+    "wasIstDas": "A spoonful of oil is moved around the mouth for a few minutes in the morning and then spat out. Many people find their mouth feels fresher afterwards. It does not replace brushing or flossing – there is no solid evidence for more than that.",
+    "schritte": [
+      "In the morning before brushing, ideally on an empty stomach.",
+      "Take a teaspoon to a tablespoon of oil into your mouth.",
+      "Pull it calmly through your teeth for five to ten minutes – do not gargle.",
+      "Spit it into a paper tissue and into the bin, not into the sink.",
+      "Rinse your mouth with water, then brush as normal."
+    ],
+    "wieOft": "Daily in the morning, or a few times a week.",
+    "womit": "Food-grade coconut, sesame or sunflower oil.",
+    "woraufAchten": "Do not swallow it. Spat into the sink, the oil clogs the drain over time. Shorten it if your jaw complains. Bleeding gums or pain belong at the dentist, not in an oil routine."
+  },
+  {
+    "id": "zungenschaber",
+    "titel": "Tongue scraper",
+    "synonyme": [
+      "tongue cleaner",
+      "tongue scraping"
+    ],
+    "wasIstDas": "A scraper lifts the coating off the back of the tongue. That coating is a main source of bad breath, and brushing your teeth alone does not reach it.",
+    "schritte": [
+      "Use it in the morning before brushing.",
+      "Stick your tongue out.",
+      "Set the scraper as far back as you can without gagging.",
+      "Draw it forward with light pressure and rinse it.",
+      "Repeat three to five times."
+    ],
+    "wieOft": "Every morning.",
+    "womit": "A stainless steel or plastic tongue scraper. The back of a spoon works at a pinch.",
+    "woraufAchten": "Light pressure is enough; it should not bleed. A tongue that stays heavily coated, sore or burning belongs in front of a doctor."
+  },
+  {
+    "id": "laechelntraining",
+    "titel": "Practising a smile in the mirror",
+    "synonyme": [
+      "smile practice",
+      "practising smiling",
+      "Practising your smile in the mirror",
+      "Practise smiling in the mirror"
+    ],
+    "wasIstDas": "Getting to know your own smile so it does not look forced in photos. The difference between a real and a posed smile sits almost entirely in the eyes, not the mouth.",
+    "schritte": [
+      "In front of the mirror, think of something specific that makes you happy.",
+      "Watch what your eyes do – a real smile pushes the cheeks up and narrows the eyes slightly.",
+      "Try different strengths: closed, half, open.",
+      "Remember the version that feels right.",
+      "Just before a photo, breathe out fully once and loosen your jaw."
+    ],
+    "wieOft": "Two minutes, a few times a week. Once briefly before occasions with photos.",
+    "womit": "A mirror. Take self-timer series if you like.",
+    "woraufAchten": "This is about loosening up, not posing. If you hide your smile because of your teeth, a dentist has better answers than an exercise."
+  },
+  {
+    "id": "aufhellung",
+    "titel": "Teeth whitening",
+    "synonyme": [
+      "teeth whitening",
+      "bleaching",
+      "tooth whitening",
+      "Whitening your teeth"
+    ],
+    "wasIstDas": "Stains are lightened with peroxide-based products. It works, but it is not harmless: home use is tightly limited by law in the EU, and the first step belongs at the dentist.",
+    "schritte": [
+      "Book a check-up – decay and exposed necks of teeth have to be treated first.",
+      "Have a professional cleaning; often that alone is enough.",
+      "Discuss the method with the practice: a tray for home use or in-clinic treatment.",
+      "Keep to the stated application times exactly, do not extend them.",
+      "Avoid staining drinks for the first few days afterwards."
+    ],
+    "wieOft": "As a course of treatment per the instructions, with long breaks after. Not something to do permanently.",
+    "womit": "Only products approved in the EU – safest through the practice.",
+    "woraufAchten": "Crowns, fillings and veneers do not lighten with the rest and will stand out afterwards. Sensitive teeth and irritated gums are common. Stay away from charcoal and baking soda: both grind away enamel, and enamel does not grow back."
+  },
+  {
+    "id": "chinTuck",
+    "titel": "Chin tucks for the neck",
+    "synonyme": [
+      "chin tuck",
+      "chin-tucks"
+    ],
+    "wasIstDas": "The chin is drawn straight back, as if making a double chin. The exercise strengthens the deep neck muscles and works against the forward head posture that comes from looking at screens.",
+    "schritte": [
+      "Sit or stand upright with your shoulders relaxed.",
+      "Look straight ahead, chin parallel to the floor.",
+      "Push your head straight back without tipping it down.",
+      "Hold for three to five seconds, then release.",
+      "Ten repetitions."
+    ],
+    "wieOft": "One to three times a day, easy to do sitting at a desk.",
+    "womit": "Nothing.",
+    "woraufAchten": "No pain and no dizziness – stop at either. Do not force anything. This is a posture exercise and has nothing to do with mewing or jaw training."
+  },
+  {
+    "id": "mobilityMinuten",
+    "titel": "Daily mobility minutes",
+    "synonyme": [
+      "mobility",
+      "mobility minutes"
+    ],
+    "wasIstDas": "Five minutes of mobility instead of a programme. Short daily movement keeps shoulders, upper back and hips more mobile than one long session a week – and it does not get skipped.",
+    "schritte": [
+      "Shoulder circles, ten in each direction.",
+      "Upper back: seated rotation to each side, five times per side.",
+      "Hip flexors: a lunge, thirty seconds per side.",
+      "Cat-cow on all fours, ten times.",
+      "Finish by standing tall for a minute and breathing deeply."
+    ],
+    "wieOft": "Five minutes daily. Short and always beats long and rarely.",
+    "womit": "Nothing. A mat is more comfortable.",
+    "woraufAchten": "Mobility is not a stretching contest – work to tension, not to pain. With acute back or joint trouble, get it checked first."
+  },
+  {
+    "id": "wandstand",
+    "titel": "Wall stand for posture",
+    "synonyme": [
+      "wall stand"
+    ],
+    "wasIstDas": "Standing with your back against a wall to feel what “straight” actually means. The wall gives the feedback a mirror cannot, because you automatically straighten up the moment you look at yourself.",
+    "schritte": [
+      "Place your heels about a hand's width from the wall.",
+      "Bring your bottom, shoulder blades and the back of your head to the wall.",
+      "Draw the chin back slightly; the gaze stays level.",
+      "A flat hand should just fit between your lower back and the wall.",
+      "Hold for two minutes and keep breathing calmly."
+    ],
+    "wieOft": "Two minutes daily.",
+    "womit": "A clear wall.",
+    "woraufAchten": "Do not push into an arched back and do not hunch the shoulders up. If your neck feels uncomfortable, let the head come off the wall rather than forcing the position."
+  },
+  {
+    "id": "kaltDuschen",
+    "titel": "Finishing the shower cold",
+    "synonyme": [
+      "cold shower",
+      "cold showers",
+      "Finishing cold",
+      "Finish your shower cold"
+    ],
+    "wasIstDas": "The last seconds of your shower run cold. It wakes you up, and many people find their skin feels firmer afterwards. Claims about metabolism or the immune system go far beyond what is actually established.",
+    "schritte": [
+      "Finish showering at your normal temperature.",
+      "Turn the water to cold.",
+      "Start at your feet, then legs, arms and the torso last.",
+      "About thirty seconds, breathing calmly throughout.",
+      "Dry off and get moving."
+    ],
+    "wieOft": "Daily at the end of your shower, for as long as it feels good.",
+    "womit": "Nothing.",
+    "woraufAchten": "Do not start with your head or chest. Ask a doctor first if you have cardiovascular disease or high blood pressure, or during pregnancy. If you feel dizzy, stop immediately."
+  },
+  {
+    "id": "schlafhygiene",
+    "titel": "Sleep hygiene routine",
+    "synonyme": [
+      "sleep hygiene",
+      "Sleep routine"
+    ],
+    "wasIstDas": "Fixed times, a dark room, no screens shortly before bed. No skincare product shows on dark circles, skin and general presence the way enough sleep does.",
+    "schritte": [
+      "Pick a fixed wake-up time – it carries more than the bedtime does.",
+      "Spend the last hour without screens and dim the lights.",
+      "Keep the bedroom cool and dark.",
+      "Stop caffeine by the early afternoon at the latest.",
+      "If you are still awake after twenty minutes: get up, do something calm, go back."
+    ],
+    "wieOft": "Every day, weekends included.",
+    "womit": "Blackout curtains or a sleep mask; an alarm clock out of arm's reach.",
+    "woraufAchten": "Persistent sleep problems, snoring with pauses in breathing, or daytime tiredness despite enough hours belong in front of a doctor."
+  },
+  {
+    "id": "kleiderschrankAudit",
+    "titel": "Wardrobe audit",
+    "synonyme": [
+      "wardrobe clear-out",
+      "closet audit"
+    ],
+    "wasIstDas": "Going through everything once and sorting it honestly. Most people wear a small fraction of their clothes regularly; the rest blocks the view of what actually works.",
+    "schritte": [
+      "Take out everything in one category, for example just the tops.",
+      "Make three piles: I wear it, I do not wear it, unsure.",
+      "For “unsure”, try it on and look in the mirror – does it fit this life, today?",
+      "Give away or sell the “I do not wear it” pile.",
+      "Write down what is missing now, so the next purchase closes a gap."
+    ],
+    "wieOft": "Twice a year, ideally at the change of season.",
+    "womit": "Time, a mirror, and boxes or bags to carry things out.",
+    "woraufAchten": "“It might fit again” is not a reason to keep something. A garment that reminds you of that every time you open the wardrobe costs more than it is worth."
+  },
+  {
+    "id": "capsuleWardrobe",
+    "titel": "Capsule wardrobe",
+    "synonyme": [
+      "capsule-wardrobe"
+    ],
+    "wasIstDas": "A small number of pieces that all work with each other. Twenty-five to thirty-five items produce more wearable combinations than a full wardrobe without a line – because every piece goes with every other.",
+    "schritte": [
+      "Settle on two or three base colours that suit you, plus one accent colour.",
+      "Choose only cuts you actually wear.",
+      "Set a fixed number per category, for instance seven tops, three trousers, two jackets, three pairs of shoes.",
+      "Check it: does every top work with every pair of trousers?",
+      "Fill gaps deliberately rather than spontaneously."
+    ],
+    "wieOft": "Set it up once, then sharpen it each season.",
+    "womit": "What you already own – the first step is sorting, not buying.",
+    "woraufAchten": "It is a selection, not a sacrifice. A capsule that fails to cover an occasion in your actual life – sport, work, going out – is thought too small and will not last a fortnight."
+  },
+  {
+    "id": "schuhpflege",
+    "titel": "Shoe care ritual",
+    "synonyme": [
+      "shoe care",
+      "caring for shoes"
+    ],
+    "wasIstDas": "Brushing, conditioning, keeping the shape. Shoes are the item that makes an outfit look old fastest – and the one that comes back with the least effort.",
+    "schritte": [
+      "Brush off loose dirt while they are dry.",
+      "Take the rest off with a damp cloth and let them dry.",
+      "Apply cream or wax thinly, in a matching colour.",
+      "Let it sink in, then buff to a shine with a soft brush.",
+      "Put shoe trees in, and keep them away from the radiator."
+    ],
+    "wieOft": "Every two to four weeks. Always after rain.",
+    "womit": "A horsehair brush, shoe cream or wax, a cloth, shoe trees. For suede, a crepe brush and a protector spray.",
+    "woraufAchten": "Never dry wet shoes on a radiator – the leather goes brittle and cracks. Two pairs in rotation last considerably longer than one pair worn every day."
+  },
+  {
+    "id": "accessoireEinstieg",
+    "titel": "A first accessory",
+    "synonyme": [
+      "accessory",
+      "Your first accessory"
+    ],
+    "wasIstDas": "A single piece of jewellery that is always with you. It finishes a plain outfit without looking like effort – the smallest change with the largest effect.",
+    "schritte": [
+      "Pick one metal colour and stay with it: silver or gold.",
+      "Start with one piece – a fine chain, a plain ring or a watch.",
+      "Wear it every day for a week and see whether it feels right.",
+      "Only then add a second piece, in the same metal.",
+      "At most three visible pieces at once."
+    ],
+    "wieOft": "Wear it daily – the point is that it becomes a given.",
+    "womit": "One piece in good, skin-friendly quality beats five that tarnish.",
+    "woraufAchten": "With sensitive skin, look for nickel-free alloys. Take rings off before sport and when washing your hands, or they scratch quickly."
+  },
+  {
+    "id": "meersalzspray",
+    "titel": "Sea salt spray styling",
+    "synonyme": [
+      "sea salt spray",
+      "salt spray"
+    ],
+    "wasIstDas": "A salt-water spray in damp hair gives texture and matte volume – the effect hair has after a day by the sea. It structures; it does not condition.",
+    "schritte": [
+      "Start with towel-dry hair.",
+      "Two to four sprays from about 20 cm away, mainly into the lengths.",
+      "Scrunch with your fingers instead of combing.",
+      "Let it air-dry or work with a diffuser.",
+      "Finish by loosening the texture with your fingers."
+    ],
+    "wieOft": "On days when you want texture. Not daily.",
+    "womit": "Sea salt spray. Very dry hair takes it better with a leave-in underneath.",
+    "woraufAchten": "Salt is drying. Use it sparingly on brittle or coloured hair and balance it with conditioning."
+  },
+  {
+    "id": "lagenlook",
+    "titel": "Layering",
+    "synonyme": [
+      "layered look",
+      "layers"
+    ],
+    "wasIstDas": "Several thin layers on top of each other instead of one thick piece. It creates depth in an outfit, makes it weatherproof and lets you adjust through the day.",
+    "schritte": [
+      "Start thin underneath – a T-shirt or a fine shirt.",
+      "Add a middle layer: knitwear, an open shirt, a light gilet.",
+      "Put the heaviest layer on the outside: jacket or coat.",
+      "Let each layer get slightly longer or heavier from the inside out – not the other way round.",
+      "Keep the colours in one family so the layers belong together."
+    ],
+    "wieOft": "All year; most useful between seasons.",
+    "womit": "What you already have. Layering is a question of combination, not of shopping.",
+    "woraufAchten": "Three layers are usually enough. If it bulks up, the silhouette reads wider – then drop a layer rather than hunting for a thinner one."
+  },
+  {
+    "id": "doppelreinigung",
+    "titel": "Double cleansing",
+    "synonyme": [
+      "double cleanse"
+    ],
+    "wasIstDas": "You cleanse first with an oil-based product, then with a water-based one. Oil dissolves sunscreen and make-up, water lifts sweat and residue. Neither one alone gets both.",
+    "schritte": [
+      "Spread cleansing oil or balm on dry skin and massage for a minute.",
+      "Emulsify with a little water – everything lifts.",
+      "Rinse thoroughly.",
+      "Follow with a mild foam or gel cleanser.",
+      "Rinse and pat dry gently rather than rubbing."
+    ],
+    "wieOft": "In the evening, whenever you have worn sunscreen or make-up. One step is enough in the morning.",
+    "womit": "A cleansing oil or balm plus a mild, pH-friendly cleansing gel.",
+    "woraufAchten": "Cleansing twice does not mean scrubbing twice. If your skin feels tight afterwards, it was too much or the product was too harsh."
+  },
+  {
+    "id": "lichtschutzfaktor",
+    "titel": "Sun protection factor (SPF)",
+    "synonyme": [
+      "SPF",
+      "sun protection factor",
+      "sunscreen"
+    ],
+    "wasIstDas": "The number tells you by what factor the time until your skin burns is extended. Sun protection is the one product whose effect against premature skin ageing is genuinely established – ahead of any serum.",
+    "schritte": [
+      "Apply in the morning as the last skincare step, before make-up.",
+      "Use enough: about two finger-lengths from the tube for the face.",
+      "Do not forget ears, throat and the back of the neck.",
+      "Apply 15 to 20 minutes before going out.",
+      "Reapply every two hours while outdoors."
+    ],
+    "wieOft": "Daily, all year round, cloudy days included.",
+    "womit": "Broad-spectrum protection against UVA and UVB from SPF 30 upwards. A light texture is fine for everyday use.",
+    "woraufAchten": "Using too little halves the protection – that is the most common mistake. Replace bottles opened last year. A mole that changes belongs in front of a doctor; no sunscreen replaces that."
+  },
+  {
+    "id": "farbtyp",
+    "titel": "Warm and cool undertone",
+    "synonyme": [
+      "undertone",
+      "skin undertone",
+      "warm undertone",
+      "cool undertone"
+    ],
+    "wasIstDas": "Your skin's undertone decides which colours look alive next to your face and which look washed out. It does not change with a tan – which is why it is worth working out once.",
+    "schritte": [
+      "Stand by a window in daylight, without make-up.",
+      "Look at the veins on your wrist: greenish means warm, bluish means cool, both means neutral.",
+      "Cross-check with jewellery: does gold or silver look fresher next to your face?",
+      "Cross-check with fabric: hold a pure white and a cream cloth up to your face.",
+      "Write the result down – it applies to clothes, glasses and hair colour alike."
+    ],
+    "wieOft": "Work it out once; it then stands.",
+    "womit": "Daylight, a piece of gold, a piece of silver and two cloths.",
+    "woraufAchten": "No single test is conclusive, and plenty of people are neutral and can wear both. If two tests disagree, the impression in the mirror decides, not the rule."
+  }
+]

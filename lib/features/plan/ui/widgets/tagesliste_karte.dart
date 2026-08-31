@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../wissen/ui/wissens_blatt.dart';
 import '../../../../core/widgets/section_card.dart';
 import '../../../../core/l10n/texte.dart';
 import '../../../modules/models/analyse_modul.dart';
@@ -198,6 +199,10 @@ class HabitZeile extends StatelessWidget {
                 ),
               ),
             ),
+            // Das Info-Zeichen sitzt vor dem Themen-Abzeichen: Es ist
+            // antippbar, das Abzeichen nicht, und Antippbares gehoert
+            // naeher an den Text, um den es geht (DECISIONS 88).
+            WissenLink(text: text),
             if (thema case final modul?) ...[
               const SizedBox(width: AppTheme.gapXs),
               Semantics(
