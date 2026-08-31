@@ -174,6 +174,19 @@ void main() {
       }
     });
 
+    testWidgets('samt Untertext – dieselbe Quelle, kein zweiter Wortlaut',
+        (tester) async {
+      // DECISIONS 86: Der Untertext ist das, was „Smart & hochwertig" für
+      // jemanden ohne Modewissen überhaupt erst lesbar macht. Er stand nur
+      // bei „Deine Richtung", nicht hier.
+      await zeige(tester);
+
+      for (final ziel in Richtungsziel.values) {
+        expect(find.text(ziel.untertext(texte)), findsOneWidget,
+            reason: ziel.name);
+      }
+    });
+
     testWidgets('und die alte Liste kommt nirgends mehr vor', (tester) async {
       await zeige(tester);
 

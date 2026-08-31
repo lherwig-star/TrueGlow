@@ -79,11 +79,16 @@ extension RichtungszielText on Richtungsziel {
         Richtungsziel.kreativAuffaellig => texte.richtungszielKreativ,
       };
 
-  /// Drei bis sechs Wörter, die den Stil greifbar machen.
+  /// Drei bis sieben Wörter, die den Stil greifbar machen.
   ///
   /// Ohne sie ist „Smart & hochwertig" für jemanden ohne Modewissen eine
-  /// leere Hülle. Mit „Polo, Strick, klare Silhouetten" weiß man, worauf man
-  /// tippt.
+  /// leere Hülle.
+  ///
+  /// **Neu gefasst in DECISIONS 86.** Die alten Untertexte beschrieben fast
+  /// nur Kleidung („Baggy, Oversized, Sneaker"). Eine Richtung prägt aber
+  /// Frisur, Bart, Ausstrahlung *und* Kleidung – der Server sagt das in
+  /// `RICHTUNGSVORGABE` längst so, die App sagte es nicht. Jetzt ist der
+  /// Untertext die Kurzfassung derselben Vorgabe.
   String untertext(L texte) => switch (this) {
         Richtungsziel.cleanGepflegt => texte.richtungszielCleanUnter,
         Richtungsziel.markantMaskulin => texte.richtungszielMarkantUnter,

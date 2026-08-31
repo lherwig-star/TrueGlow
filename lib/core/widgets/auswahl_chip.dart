@@ -39,12 +39,12 @@ class AuswahlChip extends StatelessWidget {
   final bool aktiv;
   final VoidCallback onTap;
 
-  /// Drei bis sechs Wörter unter der Beschriftung.
+  /// Drei bis sieben Wörter unter der Beschriftung.
   ///
   /// Ohne ihn ist „Smart & hochwertig" für jemanden ohne Modewissen eine
-  /// leere Hülle. Mit „Polo, Strick, klare Silhouetten" weiß man, worauf man
-  /// tippt. Nur in der Form [vollBreite] sichtbar — in einer Pille hätte er
-  /// keinen Platz.
+  /// leere Hülle. Mit „Gepflegt-edel von Schnitt bis Schuh" weiß man,
+  /// worauf man tippt. Nur in der Form [vollBreite] sichtbar — in einer
+  /// Pille hätte er keinen Platz.
   final String? untertext;
 
   /// Eine Zeile über die ganze Breite statt einer Pille.

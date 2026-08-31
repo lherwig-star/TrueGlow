@@ -69,23 +69,28 @@ class _StilFragebogenState extends ConsumerState<StilFragebogen> {
         const SizedBox(height: AppTheme.gapM),
 
         // --- Stilrichtung: dieselbe Liste wie bei „Deine Richtung" ---
+        //
+        // Und dieselbe Darstellung: volle Breite mit Untertext. Dass hier
+        // acht Pillen ohne zweite Zeile standen und zwei Bildschirme weiter
+        // dieselben acht als beschriftete Zeilen, war kein Entwurf, sondern
+        // ein Versehen – und der Untertext ist genau die Stelle, an der
+        // „Smart & hochwertig" aufhört, eine leere Hülle zu sein
+        // (DECISIONS 86).
         _Frage(titel: texte.stilZiel, untertitel: texte.stilZielText),
-        Wrap(
-          spacing: AppTheme.gapS,
-          runSpacing: AppTheme.gapS,
-          children: [
-            for (final ziel in Richtungsziel.values)
-              AuswahlChip(
-                label: ziel.label(texte),
-                aktiv: stil.ziele.contains(ziel),
-                onTap: () {
-                  final neu = Set<Richtungsziel>.from(stil.ziele);
-                  neu.contains(ziel) ? neu.remove(ziel) : neu.add(ziel);
-                  ctrl.setzeStil(stil.copyWith(ziele: neu));
-                },
-              ),
-          ],
-        ),
+        for (final ziel in Richtungsziel.values) ...[
+          AuswahlChip(
+            label: ziel.label(texte),
+            untertext: ziel.untertext(texte),
+            vollBreite: true,
+            aktiv: stil.ziele.contains(ziel),
+            onTap: () {
+              final neu = Set<Richtungsziel>.from(stil.ziele);
+              neu.contains(ziel) ? neu.remove(ziel) : neu.add(ziel);
+              ctrl.setzeStil(stil.copyWith(ziele: neu));
+            },
+          ),
+          const SizedBox(height: AppTheme.gapS),
+        ],
         const SizedBox(height: AppTheme.gapL),
 
         // --- Wofuer der Stil funktionieren soll (ueberspringbar) ---

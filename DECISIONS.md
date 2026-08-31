@@ -4220,6 +4220,42 @@ zusätzlichen Datenbankzugriff bei **jedem** Aufruf. Ob uns das eine Stunde
 wert ist, steht als Frage im Bericht — es ist eine Produktentscheidung, keine
 Programmieraufgabe.
 
+## 86 · Eine Richtung ist mehr als ein Outfit
+
+Die acht Stilrichtungen tragen seit DECISIONS 58 einen Untertext, damit
+„Smart & hochwertig" nicht als leere Hülle dasteht. Nur beschrieb dieser
+Untertext fast ausschließlich Kleidung: „Baggy, Oversized, Sneaker",
+„Polo, Strick, klare Silhouetten".
+
+Das ist zu eng, und zwar nachweisbar zu eng: Der Server sagt in
+`RICHTUNGSVORGABE` zu genau derselben Richtung längst *Schnitt, Bart und
+Kleidung*. Wer „Streetwear & lässig" antippt, bekommt also einen Report über
+seine Frisur – nachdem die App ihm Sneaker versprochen hat. Die Erwartung,
+die der Chip setzt, und das, was danach passiert, gingen auseinander.
+
+**Neu:** Jeder Untertext beschreibt den ganzen Look in vier bis sieben
+Wörtern – „Entspannter Campus-Look, easy Frisur, Sneaker",
+„Klare Kanten – Kiefer, Kurzhaar, Kontur", „Gepflegt-edel von Schnitt bis
+Schuh". Er ist damit die Kurzfassung dessen, was der Server ohnehin
+verlangt, und nicht mehr eine zweite, engere Aussage daneben.
+
+### Und derselbe Text an beiden Stellen
+
+Die acht Richtungen erscheinen zweimal: bei „Deine Richtung" und im
+Stil-Fragebogen. Die Liste war schon dieselbe (DECISIONS 72) – die
+Darstellung nicht. Der Fragebogen zeigte acht nackte Pillen ohne Untertext,
+also genau die Form, die DECISIONS 61 für diese Liste verworfen hat, weil
+sie ausfranst. Das war kein Entwurf, sondern ein Versehen.
+
+Jetzt steht dort dieselbe Zeile in voller Breite, mit Untertext, aus
+derselben Quelle (`RichtungszielText.untertext`). Eine zweite Wortliste
+wäre die eigentliche Gefahr gewesen: zwei Orte, die dasselbe behaupten und
+irgendwann nicht mehr.
+
+**Preis:** Der Fragebogen wird länger – acht Zeilen statt zweier Pillenreihen.
+Das ist der Preis dafür, dass man dort nicht raten muss, was man antippt.
+Ein Test hält fest, dass beide Bildschirme denselben Untertext zeigen.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`
