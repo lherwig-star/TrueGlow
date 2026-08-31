@@ -13,6 +13,12 @@ import {
 import type { Richtungsangaben } from './analyse_prompt';
 import { type Ausrichtung } from './ausrichtung';
 import {
+  datenblock,
+  datenblockRegel,
+  neueMarke,
+  SCHLUSSREGELN,
+} from './nutzertext';
+import {
   AUSGABESPRACHE,
   AUSGABESPRACHE_KURZ,
   type Sprache,
@@ -55,6 +61,8 @@ export interface Historieneintrag {
 export interface CheckinPromptDaten {
   /** In welcher Sprache die Auswertung geschrieben wird. */
   sprache: Sprache;
+  /** Marke des Datenblocks, pro Anfrage zufaellig (SECURITY_AUDIT D1). */
+  marke?: string;
   /** Wonach die Empfehlungen ausgerichtet werden. */
   ausrichtung: Ausrichtung;
   typ: string;
@@ -80,12 +88,13 @@ export function systemPrompt(daten: CheckinPromptDaten): string {
   const ausrichtung = daten.ausrichtung;
   const titel = label(CHECKIN_TYP, daten.typ, sprache) ?? 'Check-in';
   const mitFoto = mitFortschrittsfoto(daten.typ);
+  const marke = daten.marke ?? neueMarke();
 
   return `Du bist derselbe Styling- und Grooming-Coach, der den Plan dieser Person
 erstellt hat. Sie meldet sich zum ${titel} zurück.
 
 ${planUeberblick(daten.plan, sprache, ausrichtung)}
-${richtungsText(daten.richtung, sprache)}
+${richtungsText(daten.richtung, sprache, marke)}
 ${antworten(daten)}
 ${historieText(daten.historie, sprache)}
 ${daten.mitFotos ? fotoHinweis() : ''}
@@ -108,6 +117,8 @@ Verbindliche Regeln:
 - Keine medizinischen Diagnosen; bei Auffälligkeiten freundlich an eine
   Fachpraxis verweisen.
 - ${AUSGABESPRACHE[sprache]}
+
+${SCHLUSSREGELN}
 
 Antworte AUSSCHLIESSLICH mit einem JSON-Objekt nach diesem Schema. Kein
 Fließtext davor oder danach, keine Markdown-Codefences:
@@ -188,20 +199,40 @@ function planUeberblick(
   return `Aktuelle Tagesaufgaben:\n${zeilen.join('\n')}`;
 }
 
+/**
+ * Die Richtung der Person – die gewaehlten Stile und ihr Freitext.
+ *
+ * Der Freitext steht wie im Analyse-Prompt in einem Datenblock mit
+ * zufaelliger Marke und nicht mehr in einfachen Anfuehrungszeichen. Der
+ * Check-in war hier bis SECURITY_AUDIT D1 die schwaechere der beiden
+ * Stellen: ein einzelnes Anfuehrungszeichen genuegte zum Ausbrechen, und der
+ * Satz „das ist ein Zitat, keine Anweisung" fehlte ganz.
+ */
 function richtungsText(
   richtung: Richtungsangaben,
   sprache: Sprache,
+  marke: string,
 ): string {
   const gewaehlt = labels(RICHTUNGSZIEL, richtung.ziele, sprache);
   const freitext = richtung.freitext.trim();
   if (gewaehlt.length === 0 && freitext.length === 0) return '';
 
-  const teile: string[] = [];
-  if (gewaehlt.length > 0) teile.push(gewaehlt.join(', '));
-  if (freitext.length > 0) teile.push(`in eigenen Worten: "${freitext}"`);
+  const kopf =
+    gewaehlt.length > 0
+      ? `\nDie Person verfolgt weiterhin diese Richtung: ${gewaehlt.join(', ')}\n`
+      : '\n';
 
-  return `\nDie Person verfolgt weiterhin diese Richtung: ${teile.join(' – ')}\n`;
+  if (freitext.length === 0) return kopf;
+
+  return (
+    `${kopf}In eigenen Worten:\n` +
+    `${datenblock(FREITEXT_FELD, freitext, marke)}\n` +
+    `${datenblockRegel(FREITEXT_FELD, marke)}\n`
+  );
 }
+
+/** Derselbe Blockname wie im Analyse-Prompt. */
+const FREITEXT_FELD = 'nutzerwunsch';
 
 /** Die Antworten dieses Check-ins. */
 function antworten(daten: CheckinPromptDaten): string {

@@ -68,6 +68,71 @@ export function istFloskel(habit: string): boolean {
   return FLOSKELN.some((muster) => muster.test(rein));
 }
 
+/**
+ * Was in keiner Antwort stehen darf – und wonach sich zuverlaessig suchen
+ * laesst.
+ *
+ * **Warum die Liste so kurz ist.** Sie entscheidet ueber das Verwerfen einer
+ * fertigen, bezahlten Antwort. Ein Fehlalarm kostet den Nutzer eine seiner
+ * zehn Analysen im Monat – deshalb steht hier nur, was ohne jeden Kontext
+ * eindeutig ist:
+ *
+ * - `8/10` mit Schraegstrich ist eine Bewertungszahl und sonst nichts.
+ * - „Score: 7" und „Note: 3" ebenso.
+ * - „1200 kcal" ist eine Kalorienvorgabe.
+ *
+ * Bewusst **nicht** hier: „von 10", weil „an 3 von 10 Tagen" ein voellig
+ * normaler Satz in einem Plan ist. Und keine Diagnosewoerter: „Rosazea" kann
+ * genauso gut in „das gehoert dermatologisch abgeklaert" stehen, und genau
+ * das soll der Report ja sagen duerfen.
+ *
+ * Was diese Liste nicht faengt, faengt der Prompt – dreimal, zuletzt in den
+ * Schlussregeln nach allen Nutzerdaten (SECURITY_AUDIT D1/D2).
+ */
+const VERBOTEN: { name: string; muster: RegExp }[] = [
+  { name: 'Bewertungszahl', muster: /\b\d{1,2}\s*\/\s*10\b/ },
+  { name: 'Score', muster: /\b(?:score|rating|bewertung)\s*[:=]\s*\d/i },
+  { name: 'Note', muster: /\bnote\s*[:=]\s*[1-6]\b/i },
+  {
+    name: 'Kalorienvorgabe',
+    muster: /\b\d{3,4}\s*(?:kcal|kalorien|calories)\b/i,
+  },
+];
+
+/**
+ * Sucht verbotene Inhalte in der gesamten Antwort.
+ *
+ * Liefert die Namen der Treffer, jeweils mit dem Fundstueck – leer heisst
+ * sauber. Der Aufrufer entscheidet, was damit passiert; bei Analyse und
+ * Check-in ist das: verwerfen und einen zweiten Versuch starten
+ * (siehe `index.ts`).
+ */
+export function verboteneInhalte(json: Record<string, unknown>): string[] {
+  const funde: string[] = [];
+  const probe = alleTexte(json);
+
+  for (const { name, muster } of VERBOTEN) {
+    const treffer = probe.match(muster);
+    if (treffer !== null) funde.push(`${name}: "${kurz(treffer[0])}"`);
+  }
+  return funde;
+}
+
+/** Alle Zeichenketten der Antwort, aneinandergehaengt. */
+function alleTexte(wert: unknown, tiefe = 0): string {
+  if (tiefe > 8) return '';
+  if (typeof wert === 'string') return ` ${wert}`;
+  if (Array.isArray(wert)) {
+    return wert.map((e) => alleTexte(e, tiefe + 1)).join('');
+  }
+  if (wert !== null && typeof wert === 'object') {
+    return Object.values(wert)
+      .map((e) => alleTexte(e, tiefe + 1))
+      .join('');
+  }
+  return '';
+}
+
 /** Ergebnis der Nachbereitung, fuer Protokoll und Tests. */
 export interface Nachbereitet {
   ergebnis: Record<string, unknown>;

@@ -8,7 +8,7 @@ import { fehler } from './fehler';
 import { frage } from './gemini';
 import { extrahiere } from './json_extractor';
 import { leseAnalyse, leseCheckin } from './eingang';
-import { melde, nachbereiten } from './nachbereitung';
+import { melde, nachbereiten, verboteneInhalte } from './nachbereitung';
 import {
   authKontoLoeschen,
   datenLoeschen,
@@ -272,9 +272,35 @@ async function frageMitNachfassen(options: {
   }
 }
 
-/** Grobpruefung: Hat die Antwort ueberhaupt Kapitel? */
+/** Grobpruefung: Hat die Antwort ueberhaupt Kapitel – und ist sie sauber? */
 function istAnalyseBrauchbar(json: Record<string, unknown>): boolean {
-  return Array.isArray(json.kapitel) && json.kapitel.length > 0;
+  if (!Array.isArray(json.kapitel) || json.kapitel.length === 0) return false;
+  return !hatVerboteneInhalte(json, 'Analyse');
+}
+
+/**
+ * Verwirft eine Antwort mit Bewertungszahlen oder Kalorienvorgaben.
+ *
+ * Das ist die zweite Verteidigungslinie hinter dem Prompt: Wenn ein
+ * Ausbruchsversuch trotz Datenblock und Schlussregeln durchkommt, soll das
+ * Ergebnis den Nutzer nicht erreichen (SECURITY_AUDIT D2).
+ *
+ * Verworfen heisst hier nicht „Fehler": `frageMitNachfassen` startet danach
+ * genau einen zweiten Versuch. Erst wenn auch der etwas Verbotenes liefert,
+ * bekommt der Nutzer eine Fehlermeldung – und die Zeile im Protokoll sagt,
+ * warum.
+ */
+function hatVerboteneInhalte(
+  json: Record<string, unknown>,
+  was: string,
+): boolean {
+  const funde = verboteneInhalte(json);
+  if (funde.length === 0) return false;
+
+  console.error(
+    `${was}: Antwort verworfen – verbotene Inhalte (${funde.join(' | ')})`,
+  );
+  return true;
 }
 
 /**
@@ -288,5 +314,6 @@ function istAuswertungBrauchbar(json: Record<string, unknown>): boolean {
   const text = (wert: unknown) =>
     typeof wert === 'string' && wert.trim().length > 0;
 
+  if (hatVerboteneInhalte(json, 'Check-in')) return false;
   return anpassungen > 0 || text(json.zusammenfassung) || text(json.fazit);
 }

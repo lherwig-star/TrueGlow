@@ -2,6 +2,12 @@
 
 Geprüft am **31.08.2026** am Stand von Commit `fa2e682`.
 
+> **Stand der Behebung, 31.08.2026 (Stufe 2 läuft):** Die Ampeln
+> unten werden nachgezogen, sobald ein Punkt behoben und getestet
+> ist. Jede Änderung steht in einem eigenen Commit; die
+> ursprüngliche Fassung dieses Berichts ist der Commit
+> `35a6910`.
+
 **In dieser Stufe wurde nichts am Projekt geändert.** Keine Zeile Code, keine
 Regel, kein Deploy. Die einzige neue Datei ist dieser Bericht. Zwei
 Hilfsdateien wurden für die praktischen Proben angelegt und sofort wieder
@@ -34,8 +40,8 @@ Prompt-Baukasten, ohne das Modell zu rufen.
 | **C1** Schlüssel und Git-Historie | 🟢 | Alle 105 Commits durchsucht: Es war nie ein echter Schlüssel im Repo. |
 | **C2** Release-Hygiene | 🟡 | Debug-Provider und Demo-Modus sind im Release sicher aus; die Protokollzeilen der App laufen dort aber weiter. |
 | **C3** `google-services.json` | 🟢 | Bestätigt: Die Sicherheit hängt an Regeln und App Check, nicht an der Geheimhaltung dieser Datei. |
-| **D1** Prompt Injection | 🔴 | Der Freitext kann seinen Zitatrahmen verlassen — praktisch nachgewiesen; eigene Anweisungen stehen danach gleichrangig neben unseren. |
-| **D2** Ausgabe-Prüfung | 🟡 | Die Struktur der Antwort wird gründlich geprüft, der Inhalt nicht: Eine Note oder ein Diätplan käme durch. |
+| **D1** Prompt Injection | 🟢 **behoben** | Nutzertext steht in einem Datenblock mit zufälliger Marke; 38 Tests belegen, dass sieben Angriffsvarianten ihn nicht verlassen (DECISIONS 81). |
+| **D2** Ausgabe-Prüfung | 🟢 **behoben** | Antworten mit Bewertungszahlen oder Kalorienvorgaben werden verworfen und protokolliert; ein zweiter Versuch läuft automatisch (DECISIONS 81). |
 | **E1** Bilder und Anfragegrößen | 🟡 | Anzahl und Gesamtgröße werden vor dem Modellaufruf begrenzt; dass die Daten wirklich ein Bild sind, prüft niemand. |
 | **E2** Fehlermeldungen | 🟢 | Beim Nutzer landen nur kurze Fallnamen, Einzelheiten bleiben im Server-Protokoll. |
 | **F1** Protokolle | 🟡 | Keine Fotos, keine E-Mails, keine Namen, keine Freitexte — aber die Konto-ID und einzelne Report-Bruchstücke. |
@@ -46,7 +52,8 @@ Prompt-Baukasten, ohne das Modell zu rufen.
 | **G4** Abhängigkeiten | 🟡 | 8 mittlere Meldungen im Server-Betrieb, die schweren betreffen nur Werkzeuge; 58 Flutter-Pakete sind veraltet. |
 | **H** Konto und Sitzung | 🟡 | Alle Functions prüfen das Token — ein gelöschtes Konto kann seines aber noch bis zu einer Stunde weiterbenutzen. |
 
-**Zwei rote Punkte, elf gelbe, acht grüne.**
+**Ursprünglich zwei rote Punkte, elf gelbe, acht grüne.**
+Der jeweils aktuelle Stand steht in der Spalte „Ampel".
 
 ---
 
@@ -364,6 +371,16 @@ des Prompts. **Aufwand: klein** (ein Tag mit Tests).
 
 ---
 
+> **Behoben am 31.08.2026 (DECISIONS 81).** Der Freitext steht
+> jetzt in einem Datenblock, dessen Etikett eine pro Anfrage zufällige Marke
+> trägt; Steuerzeichen, unsichtbare Zeichen und spitze Klammern werden vorher
+> entfernt, einzeilige Felder verlieren zusätzlich Umbrüche und
+> Anführungszeichen. Der Check-in ist an dieselbe Form angeglichen. Die
+> Verbotsliste steht jetzt als letzte Regel **nach** allen Nutzerdaten.
+> 38 Tests fahren sieben Angriffsvarianten durch beide Prompts — darunter die
+> Probe von oben im Wortlaut — und belegen, dass kein zusätzliches Etikett
+> entsteht und hinter dem Block nichts vom Nutzer steht.
+
 ### D2 · Prüfung der Modellantwort 🟡
 
 **Geprüft:** Was mit der Antwort passiert, bevor sie gespeichert und angezeigt
@@ -409,6 +426,15 @@ meldet — und `affiliateUrl` bis auf Weiteres serverseitig immer auf `null`
 setzen. **Aufwand: klein bis mittel.**
 
 ---
+
+> **Behoben am 31.08.2026 (DECISIONS 81).** `verboteneInhalte`
+> durchsucht die fertige Antwort nach Bewertungszahlen (`8/10`), „Score:",
+> „Note:" und Kalorienvorgaben. Bei einem Treffer wird die Antwort verworfen,
+> ein zweiter Versuch läuft automatisch, und die Zeile steht im Protokoll.
+> Bewusst kurz gehalten: Ein Fehlalarm kostet den Nutzer eine Analyse —
+> deshalb kein Muster wie „von 10" und keine Diagnosewörter. Ein Test hält
+> sieben harmlose Sätze fest, die durchkommen müssen. `affiliateUrl` bleibt
+> als Punkt offen (siehe Fix-Liste).
 
 ## E · Eingaben, Fotos und Fehlermeldungen
 

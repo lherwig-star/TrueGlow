@@ -44,7 +44,7 @@ describe('Freitext steuert die Tagesaufgaben', () => {
     // bekommen, der sich nicht veraendert hat.
     const prompt = systemPrompt(daten({}));
 
-    expect(prompt).not.toContain('Der Freitext ist der wichtigste Teil');
+    expect(prompt).not.toContain('ist der wichtigste Teil der Ziele');
     expect(prompt).not.toContain(SEKTIONEN.ziel.de);
     expect(prompt).not.toContain(SEKTIONEN.ziel.en);
   });
@@ -54,13 +54,13 @@ describe('Freitext steuert die Tagesaufgaben', () => {
     // rechtfertigen keine eigene Zielsektion.
     const prompt = systemPrompt(daten({ ziele: ['markanter'] }));
 
-    expect(prompt).not.toContain('Der Freitext ist der wichtigste Teil');
+    expect(prompt).not.toContain('ist der wichtigste Teil der Ziele');
   });
 
   it('mit Freitext verlangt der Prompt Aufgaben daraus', () => {
     const prompt = systemPrompt(daten({ freitext: 'Ich will aufhören zu rauchen' }));
 
-    expect(prompt).toContain('Der Freitext ist der wichtigste Teil');
+    expect(prompt).toContain('ist der wichtigste Teil der Ziele');
     expect(prompt).toContain('"habits"');
     expect(prompt).toContain('heute abhakbar');
   });

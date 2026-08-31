@@ -7,6 +7,7 @@ import {
   technikenFuer,
   type Modul,
 } from './labels';
+import { neueMarke, saeubere } from './nutzertext';
 import { leseSprache } from './sprache';
 import { leseAusrichtung, type Ausrichtung } from './ausrichtung';
 import { leseModus } from './modus';
@@ -30,9 +31,14 @@ import type {
  *
  * Grundhaltung: Der Client ist nicht vertrauenswuerdig. Alles, was hier nicht
  * ausdruecklich erlaubt wird, faellt weg – unbekannte Enum-Namen, ueberlange
- * Texte, zusaetzliche Felder. In den Prompt gelangt am Ende nur ein einziges
- * freies Textfeld (der Richtungs-Freitext), und das wird dort als Zitat
- * eingerahmt.
+ * Texte, zusaetzliche Felder.
+ *
+ * **Jeder Text, den ein Mensch selbst geschrieben hat, laeuft durch
+ * [saeubere]** – der Richtungs-Freitext, die Anmerkungen im Check-in, die
+ * Aufgabentexte. Das ist die eine Stelle, an der Nutzertext ins System
+ * kommt, und deshalb die richtige Stelle zum Putzen. Warum das noetig ist
+ * und was es genau entfernt, steht in `nutzertext.ts`; der Anlass steht in
+ * SECURITY_AUDIT.md unter D1.
  */
 
 /** Summe aller base64-Bilddaten pro Aufruf. */
@@ -44,7 +50,10 @@ const MAX_BILDER_ANALYSE = Object.keys(AUFNAHMEN).length;
 /** Erstfoto plus Fortschrittsfoto. */
 const MAX_BILDER_CHECKIN = 2;
 
-/** Grosszuegige Obergrenzen gegen aufgeblaehte Prompts. */
+/**
+ * Grosszuegige Obergrenzen gegen aufgeblaehte Prompts – und gegen den
+ * Versuch, den Prompt mit einem sehr langen Text zu ertraenken.
+ */
 const MAX_FREITEXT = 1000;
 const MAX_HABIT_LAENGE = 200;
 const MAX_HABITS = 60;
@@ -77,6 +86,8 @@ export function leseAnalyse(roh: unknown): AnalyseEingang {
   return {
     prompt: {
       sprache: leseSprache(daten.sprache),
+      // Die Marke des Datenblocks entsteht hier, einmal pro Anfrage.
+      marke: neueMarke(),
       ausrichtung,
       modus: leseModus(daten.modus),
       module,
@@ -189,7 +200,12 @@ export function leseRichtung(roh: unknown): Richtungsangaben {
     // deren Nutzer soll seine Richtung trotzdem im Report wiederfinden
     // (DECISIONS 58).
     ziele: normalisiereRichtungsziele(namensliste(richtung.ziele)),
-    freitext: gekuerzt(richtung.freitext, MAX_FREITEXT),
+    // Das einzige mehrzeilige Feld: Es ist als Nachricht an den Coach
+    // gedacht, und Absaetze gehoeren dazu.
+    freitext: saeubere(richtung.freitext, {
+      max: MAX_FREITEXT,
+      mehrzeilig: true,
+    }),
   };
 }
 
@@ -209,6 +225,7 @@ export function leseCheckin(roh: unknown): CheckinEingang {
   return {
     prompt: {
       sprache: leseSprache(daten.sprache),
+      marke: neueMarke(),
       ausrichtung: leseAusrichtung(daten.ausrichtung),
       typ,
       habits: leseHabits(checkin.habits),
@@ -252,7 +269,7 @@ function leseHabits(roh: unknown): HabitRueckmeldung[] {
   const gelesen: HabitRueckmeldung[] = [];
   for (const eintrag of roh.slice(0, MAX_HABITS)) {
     const feedback = objektOderLeer(eintrag);
-    const habit = gekuerzt(feedback.habit, MAX_HABIT_LAENGE);
+    const habit = einzeilig(feedback.habit, MAX_HABIT_LAENGE);
     const bewertung = text(feedback.bewertung);
     if (habit.length === 0 || bewertung === undefined) continue;
 
@@ -260,7 +277,7 @@ function leseHabits(roh: unknown): HabitRueckmeldung[] {
       habit,
       bewertung,
       grund: text(feedback.grund),
-      notiz: gekuerzt(feedback.notiz, MAX_NOTIZ),
+      notiz: einzeilig(feedback.notiz, MAX_NOTIZ),
     });
   }
   return gelesen;
@@ -272,11 +289,11 @@ function leseWirkung(roh: unknown): WirkungsRueckmeldung[] {
   const gelesen: WirkungsRueckmeldung[] = [];
   for (const eintrag of roh.slice(0, MAX_HABITS)) {
     const w = objektOderLeer(eintrag);
-    const frage = gekuerzt(w.frage, MAX_FRAGE);
+    const frage = einzeilig(w.frage, MAX_FRAGE);
     const antwort = text(w.antwort);
     if (frage.length === 0 || antwort === undefined) continue;
 
-    gelesen.push({ frage, antwort, notiz: gekuerzt(w.notiz, MAX_NOTIZ) });
+    gelesen.push({ frage, antwort, notiz: einzeilig(w.notiz, MAX_NOTIZ) });
   }
   return gelesen;
 }
@@ -290,7 +307,7 @@ function lesePlan(roh: unknown): Kapitelplan[] {
     const habits = Array.isArray(k.habits)
       ? k.habits
           .slice(0, MAX_HABITS)
-          .map((h: unknown) => gekuerzt(h, MAX_HABIT_LAENGE))
+          .map((h: unknown) => einzeilig(h, MAX_HABIT_LAENGE))
           .filter((h: string) => h.length > 0)
       : [];
     kapitel.push({ modul: k.modul, habits });
@@ -312,13 +329,15 @@ function leseHistorie(roh: unknown): Historieneintrag[] {
     if (Array.isArray(h.probleme)) {
       for (const p of h.probleme.slice(0, MAX_HABITS)) {
         const problem = objektOderLeer(p);
-        const habit = gekuerzt(problem.habit, MAX_HABIT_LAENGE);
+        const habit = einzeilig(problem.habit, MAX_HABIT_LAENGE);
         if (habit.length === 0) continue;
         probleme.push({ habit, grund: text(problem.grund) });
       }
     }
 
-    eintraege.push({ datum: text(h.datum) ?? '', typ, probleme });
+    // Das Datum wird nur formatiert und nie ausgewertet – gesaeubert
+    // gehoert es trotzdem, es kommt aus derselben Anfrage.
+    eintraege.push({ datum: einzeilig(h.datum, 40), typ, probleme });
   }
   return eintraege;
 }
@@ -345,10 +364,16 @@ function text(roh: unknown): string | undefined {
   return wert.length === 0 ? undefined : wert;
 }
 
-function gekuerzt(roh: unknown, max: number): string {
-  if (typeof roh !== 'string') return '';
-  const wert = roh.trim();
-  return wert.length <= max ? wert : wert.substring(0, max);
+/**
+ * Ein einzeiliges Nutzertextfeld.
+ *
+ * Anmerkungen und Aufgabentexte stehen im Prompt mitten in einer Zeile, in
+ * Anfuehrungszeichen. Ein Zeilenumbruch oder ein Anfuehrungszeichen darin
+ * waere kein Inhalt, sondern der Versuch, eine eigene Zeile zu schreiben –
+ * [saeubere] nimmt beides heraus.
+ */
+function einzeilig(roh: unknown, max: number): string {
+  return saeubere(roh, { max });
 }
 
 function namensliste(roh: unknown): string[] {
