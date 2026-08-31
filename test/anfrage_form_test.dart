@@ -42,9 +42,12 @@ void main() {
       // Die Bilddaten sind hier Platzhalter: Was geprueft wird, ist die
       // Form der Nutzlast, nicht der Inhalt eines JPEGs.
       bilder: const {
-        AufnahmeTyp.basisFrontal: 'AAAA',
-        AufnahmeTyp.basisProfilLinks: 'BBBB',
-        AufnahmeTyp.figurGanzkoerperFrontal: 'CCCC',
+        // Sehen aus wie JPEGs: base64 eines JPEG faengt immer mit
+        // "/9j/" an, und genau darauf schaut der Server seit
+        // SECURITY_AUDIT E1.
+        AufnahmeTyp.basisFrontal: '/9j/AAAA',
+        AufnahmeTyp.basisProfilLinks: '/9j/BBBB',
+        AufnahmeTyp.figurGanzkoerperFrontal: '/9j/CCCC',
       },
       module: const {
         AnalyseModul.basis,

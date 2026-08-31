@@ -43,7 +43,7 @@ function daten(options: {
   };
 }
 
-const BILD = { typ: 'basisFrontal', daten: 'AAAA' };
+const BILD = { typ: 'basisFrontal', daten: '/9j/AAAA' };
 
 describe('Der Katalog spiegelt die App', () => {
   it('jede Technik haengt an einem Kapitel, das es gibt', () => {

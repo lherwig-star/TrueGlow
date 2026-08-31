@@ -4137,6 +4137,35 @@ und ohne den Emulator wäre der wichtigste Satz dieses Tests eine Behauptung.
 sein Monatskontingent aufgebraucht hat, bekommt es damit nicht zurück — und
 genau das ist der Punkt.
 
+## 84 · Ein Foto muss ein Foto sein
+
+Behebt SECURITY_AUDIT E1.
+
+**Der Fund:** Die Eingangsprüfung schaute auf Name, Länge und Anzahl der
+Bilder — nicht auf den Inhalt. In der Probe kam die Zeichenkette „das ist
+kein Bild, sondern Text" anstandslos als Foto durch, ging an Gemini und
+wurde erst dort abgelehnt. Der Aufruf war da schon passiert: Kontingent weg,
+Tokens verbraucht.
+
+**Die Prüfung:** Die ersten drei Bytes einer JPEG-Datei sind immer `FF D8
+FF`; in base64 werden daraus die Zeichen `/9j/`, unabhängig von allem
+Weiteren. Zusätzlich wird der Anfang gegen die base64-Zeichenmenge gehalten.
+
+**Warum nur der Anfang.** Acht Megabyte vollständig zu dekodieren kostet Zeit
+und Speicher in einer Function, die ohnehin an ihrer Zeitgrenze arbeitet. Ein
+Foto, das erst in der Mitte kaputtgeht, fällt bei Gemini heraus — das ist
+ärgerlich, aber selten. Der Fall, der wirklich vorkommt, sind Daten, die von
+Anfang an kein Bild sind, und den fängt diese Prüfung vollständig.
+
+**Ein Nebeneffekt, der die Sache besser macht:** Alle Testfixtures mussten
+angepasst werden, weil `AAAA` kein Bild ist. Die eingecheckte Nutzlast, an
+der sich App und Server messen (`functions/test/fixtures/`), sieht jetzt aus
+wie eine echte Anfrage statt wie ein Platzhalter.
+
+**Preis:** Ein Client, der ein anderes Bildformat schickte, bekäme jetzt eine
+Absage. Die App nimmt ausschließlich JPEG auf — sollte sich das ändern,
+gehört die Kennung erweitert.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

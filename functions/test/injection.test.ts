@@ -297,7 +297,7 @@ describe('Der Weg durch leseAnalyse', () => {
       ausrichtung: 'maennlich',
       module: ['basis'],
       richtung: { ziele: [], freitext: 'a\u0000<b>\u200b' },
-      bilder: [{ typ: 'basisFrontal', daten: 'AAAA' }],
+      bilder: [{ typ: 'basisFrontal', daten: '/9j/AAAA' }],
     });
 
     // eslint-disable-next-line no-control-regex -- genau darum geht es
@@ -310,7 +310,7 @@ describe('Der Weg durch leseAnalyse', () => {
         sprache: 'de',
         ausrichtung: 'maennlich',
         module: ['basis'],
-        bilder: [{ typ: 'basisFrontal', daten: 'AAAA' }],
+        bilder: [{ typ: 'basisFrontal', daten: '/9j/AAAA' }],
       }).prompt.marke;
 
     expect(anfrage()).not.toBe(anfrage());

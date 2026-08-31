@@ -58,7 +58,7 @@ describe('leseModus', () => {
       ausrichtung: 'maennlich',
       modus: 'entdecken',
       module: ['basis'],
-      bilder: [{ typ: 'basisFrontal', daten: 'abc' }],
+      bilder: [{ typ: 'basisFrontal', daten: '/9j/abc' }],
     });
 
     expect(eingang.prompt.modus).toBe('entdecken');
@@ -69,7 +69,7 @@ describe('leseModus', () => {
       sprache: 'de',
       ausrichtung: 'maennlich',
       module: ['basis'],
-      bilder: [{ typ: 'basisFrontal', daten: 'abc' }],
+      bilder: [{ typ: 'basisFrontal', daten: '/9j/abc' }],
     });
 
     expect(eingang.prompt.modus).toBe('verfeinern');

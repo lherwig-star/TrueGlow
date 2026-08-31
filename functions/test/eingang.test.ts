@@ -1,9 +1,16 @@
 import { describe, expect, it } from 'vitest';
 
-import { leseAnalyse, leseCheckin, MAX_BILD_BYTES } from '../src/eingang';
+import {
+  istJpeg,
+  leseAnalyse,
+  leseCheckin,
+  MAX_BILD_BYTES,
+} from '../src/eingang';
 import { GRENZEN, schluessel, stand } from '../src/limit';
 
-const BILD = 'AAAA';
+// Sieht aus wie ein JPEG: Die ersten drei Bytes FF D8 FF werden in
+// base64 zu "/9j/". Genau darauf schaut leseAnalyse (SECURITY_AUDIT E1).
+const BILD = '/9j/AAAA';
 
 function analysePayload(zusatz: Record<string, unknown> = {}) {
   return {
@@ -101,10 +108,37 @@ describe('leseAnalyse', () => {
   });
 
   it('lehnt zu grosse Bilddaten ab', () => {
-    const riesig = 'A'.repeat(MAX_BILD_BYTES + 1);
+    const riesig = BILD + 'A'.repeat(MAX_BILD_BYTES + 1);
     expect(() =>
       leseAnalyse(analysePayload({ bilder: [{ typ: 'basisFrontal', daten: riesig }] })),
     ).toThrowError(/apiFehler/);
+  });
+
+  it('lehnt Daten ab, die gar kein Bild sind', () => {
+    // Vorher kam „das ist kein Bild, sondern Text" als Foto durch, ging an
+    // Gemini und kostete dort Kontingent (SECURITY_AUDIT E1).
+    for (const unsinn of [
+      'das ist kein Bild, sondern Text',
+      'AAAA',
+      'iVBORw0KGgo=',
+    ]) {
+      expect(
+        () =>
+          leseAnalyse(
+            analysePayload({
+              bilder: [{ typ: 'basisFrontal', daten: unsinn }],
+            }),
+          ),
+        unsinn,
+      ).toThrowError(/fotosFehlen/);
+    }
+  });
+
+  it('laesst ein echtes JPEG durch', () => {
+    expect(istJpeg('/9j/4AAQSkZJRgABAQAAAQ')).toBe(true);
+    expect(istJpeg('/9j/')).toBe(true);
+    expect(istJpeg('/9j/ nicht base64 !!!')).toBe(false);
+    expect(istJpeg('')).toBe(false);
   });
 
   it('kuerzt den Freitext auf die Obergrenze', () => {

@@ -44,6 +44,31 @@ import type {
 /** Summe aller base64-Bilddaten pro Aufruf. */
 export const MAX_BILD_BYTES = 8 * 1024 * 1024;
 
+/**
+ * Woran ein base64-kodiertes JPEG zu erkennen ist.
+ *
+ * Die ersten drei Bytes einer JPEG-Datei sind immer `FF D8 FF`. In base64
+ * werden daraus die Zeichen `/9j/` – unabhaengig davon, was danach kommt.
+ *
+ * **Warum das geprueft wird** (SECURITY_AUDIT E1): Vorher schaute die
+ * Pruefung nur auf Name, Laenge und Anzahl. Die Zeichenkette „das ist kein
+ * Bild, sondern Text" kam als Foto durch, ging an Gemini und kostete dort
+ * Kontingent und Tokens, bevor sie abgelehnt wurde. Ein Angriff auf Daten
+ * ist das nicht, ein Kostenhebel schon.
+ */
+const JPEG_KENNUNG = '/9j/';
+
+/**
+ * Was in base64 ueberhaupt vorkommen darf.
+ *
+ * Bewusst nur ein Blick auf die ersten Zeichen und die Zeichenmenge: Eine
+ * vollstaendige Dekodierung von acht Megabyte kostet Zeit und Speicher, und
+ * ein Foto, das erst in der Mitte kaputtgeht, faellt ohnehin bei Gemini
+ * heraus. Geprueft wird der Fall, der wirklich vorkommt – Daten, die gar
+ * kein Bild sind.
+ */
+const BASE64 = /^[A-Za-z0-9+/=\s]+$/;
+
 /** So viele Aufnahmetypen gibt es insgesamt. */
 const MAX_BILDER_ANALYSE = Object.keys(AUFNAHMEN).length;
 
@@ -137,6 +162,9 @@ function leseAnalyseBilder(roh: unknown): { typen: string[]; bilder: string[] } 
     const daten = bild.daten;
     if (typeof daten !== 'string' || daten.length === 0) {
       throw fehler('fotosFehlen', `Leeres Bild fuer ${typ}`);
+    }
+    if (!istJpeg(daten)) {
+      throw fehler('fotosFehlen', `Kein JPEG fuer ${typ}`);
     }
 
     bytes += daten.length;
@@ -343,6 +371,14 @@ function leseHistorie(roh: unknown): Historieneintrag[] {
 }
 
 // --- Bausteine ---------------------------------------------------------
+
+/** Ob diese Zeichenkette wirklich ein base64-kodiertes JPEG ist. */
+export function istJpeg(daten: string): boolean {
+  if (!daten.startsWith(JPEG_KENNUNG)) return false;
+  // Nur der Anfang wird auf die Zeichenmenge geprueft – das genuegt, um
+  // Text von base64 zu unterscheiden, und kostet nichts.
+  return BASE64.test(daten.substring(0, 256));
+}
 
 function objekt(roh: unknown): Record<string, unknown> {
   if (roh === null || typeof roh !== 'object' || Array.isArray(roh)) {

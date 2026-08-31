@@ -50,15 +50,15 @@
   "bilder": [
     {
       "typ": "basisFrontal",
-      "daten": "AAAA"
+      "daten": "/9j/AAAA"
     },
     {
       "typ": "basisProfilLinks",
-      "daten": "BBBB"
+      "daten": "/9j/BBBB"
     },
     {
       "typ": "figurGanzkoerperFrontal",
-      "daten": "CCCC"
+      "daten": "/9j/CCCC"
     }
   ]
 }

@@ -42,7 +42,7 @@ Prompt-Baukasten, ohne das Modell zu rufen.
 | **C3** `google-services.json` | 🟢 | Bestätigt: Die Sicherheit hängt an Regeln und App Check, nicht an der Geheimhaltung dieser Datei. |
 | **D1** Prompt Injection | 🟢 **behoben** | Nutzertext steht in einem Datenblock mit zufälliger Marke; 38 Tests belegen, dass sieben Angriffsvarianten ihn nicht verlassen (DECISIONS 81). |
 | **D2** Ausgabe-Prüfung | 🟢 **behoben** | Antworten mit Bewertungszahlen oder Kalorienvorgaben werden verworfen und protokolliert; ein zweiter Versuch läuft automatisch (DECISIONS 81). |
-| **E1** Bilder und Anfragegrößen | 🟡 | Anzahl und Gesamtgröße werden vor dem Modellaufruf begrenzt; dass die Daten wirklich ein Bild sind, prüft niemand. |
+| **E1** Bilder und Anfragegrößen | 🟢 **behoben** | Zusätzlich zu Anzahl und Größe wird jetzt vor dem Modellaufruf geprüft, dass die Daten wirklich ein JPEG sind (DECISIONS 84). |
 | **E2** Fehlermeldungen | 🟢 | Beim Nutzer landen nur kurze Fallnamen, Einzelheiten bleiben im Server-Protokoll. |
 | **F1** Protokolle | 🟡 | Keine Fotos, keine E-Mails, keine Namen, keine Freitexte — aber die Konto-ID und einzelne Report-Bruchstücke. |
 | **F2** DSGVO | 🟡 **teilweise behoben** | Datenschutzerklärung, Nutzungsbedingungen und Impressum liegen als Entwurf in beiden Sprachen bei, die Datenauskunft gibt es; offen bleiben die juristische Prüfung und die Angaben im Impressum (DECISIONS 82). |
@@ -481,6 +481,14 @@ mit der JPEG-Kennung (`/9j/`) beginnen. **Aufwand: sehr klein** (ein paar
 Zeilen in `leseAnalyseBilder`).
 
 ---
+
+> **Behoben am 31.08.2026 (DECISIONS 84).** `leseAnalyse` prüft jetzt vor
+> dem Modellaufruf, ob die Bilddaten mit der JPEG-Kennung `/9j/` beginnen und
+> aus base64-Zeichen bestehen. Was das nicht erfüllt, wird abgelehnt, bevor
+> es Kontingent kostet. Bewusst nur der Anfang: Acht Megabyte vollständig zu
+> dekodieren kostet Zeit und Speicher, und ein Foto, das erst in der Mitte
+> kaputtgeht, fällt ohnehin bei Gemini heraus. Geprüft wird der Fall, der
+> wirklich vorkommt — Daten, die gar kein Bild sind.
 
 ### E2 · Fehlermeldungen 🟢
 
