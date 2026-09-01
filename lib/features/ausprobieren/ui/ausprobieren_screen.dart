@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/l10n/texte.dart';
 import '../../../core/router/app_router.dart';
+import '../../analysis/logic/neuberechnung.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_page.dart';
@@ -49,17 +50,24 @@ class AusprobierenScreen extends ConsumerWidget {
 
     final anzahl = gewaehlt.where(angebot.contains).length;
 
+    // Der letzte Schritt vor der Kamera – oder vor der Berechnung. Bei einer
+    // Neuberechnung liegen die Fotos schon vor, und die Kamera entfällt
+    // (DECISIONS 91).
+    final weiter = ref.watch(neuberechnungProvider)
+        ? Routes.analysis
+        : Routes.aufnahme;
+
     return AppPage(
       title: texte.ausprobierenTitel,
       bottomFade: true,
       actions: [
         TextButton(
-          onPressed: () => context.push(Routes.aufnahme),
+          onPressed: () => context.push(weiter),
           child: Text(texte.flowUeberspringen),
         ),
       ],
       bottomBar: FilledButton(
-        onPressed: () => context.push(Routes.aufnahme),
+        onPressed: () => context.push(weiter),
         style: FilledButton.styleFrom(shape: const StadiumBorder()),
         child: Text(texte.ausprobierenWeiter),
       ),

@@ -25,6 +25,11 @@
   "homeLeerTitel": "Noch keine Analyse",
   "homeLeerText": "Mach zwei Fotos und erhalte deinen persönlichen Verbesserungsplan.",
   "homeAnalyseStarten": "Analyse starten",
+  "homeNeuBerechnen": "Mit vorhandenen Fotos neu berechnen",
+  "@homeNeuBerechnen": {
+    "description": "Zweite, leisere Aktion im Analyse-Tab."
+  },
+  "homeNeuBerechnenText": "Andere Richtung oder Technik wählen, ohne neue Aufnahmen – kostet einen Analyse-Lauf",
   "homeNeueAnalyse": "Neue Analyse",
   "homePlanAnsehen": "Plan ansehen",
   "fotoTitelFrontal": "Frontalfoto",

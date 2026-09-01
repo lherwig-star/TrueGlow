@@ -229,6 +229,18 @@ abstract class L {
   /// **'Analyse starten'**
   String get homeAnalyseStarten;
 
+  /// Zweite, leisere Aktion im Analyse-Tab.
+  ///
+  /// In de, this message translates to:
+  /// **'Mit vorhandenen Fotos neu berechnen'**
+  String get homeNeuBerechnen;
+
+  /// No description provided for @homeNeuBerechnenText.
+  ///
+  /// In de, this message translates to:
+  /// **'Andere Richtung oder Technik wählen, ohne neue Aufnahmen – kostet einen Analyse-Lauf'**
+  String get homeNeuBerechnenText;
+
   /// No description provided for @homeNeueAnalyse.
   ///
   /// In de, this message translates to:

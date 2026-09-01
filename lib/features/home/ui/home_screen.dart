@@ -6,6 +6,7 @@ import '../../../core/l10n/texte.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../analysis/logic/analysis_controller.dart';
+import '../../analysis/logic/neuberechnung.dart';
 import '../../analysis/logic/modus_controller.dart';
 import '../../capture/logic/capture_controller.dart';
 import '../../checkin/logic/checkin_benachrichtigung.dart';
@@ -137,10 +138,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         );
     ref.read(modusControllerProvider.notifier).zuruecksetzen();
     ref.read(analysisControllerProvider.notifier).zuruecksetzen();
+    ref.read(neuberechnungProvider.notifier).state = false;
     // Ein neuer Plan heisst ein neuer Check-in-Zyklus. Der Termin steht erst,
     // wenn die Analyse da ist – bis dahin bleibt der alte Zyklus stehen.
     _checkinGeprueft = false;
     context.push(Routes.modus);
+  }
+
+  /// Denselben Weg noch einmal gehen, aber mit den Fotos von letztem Mal.
+  ///
+  /// Zwei Unterschiede zu [_neueAnalyse], und beide sind der ganze Punkt:
+  /// Die Aufnahmen bleiben stehen (kein `alleVerwerfen`), und der Weg beginnt
+  /// bei der Modulauswahl statt beim Modus – wer neu rechnet, will die
+  /// Richtung ändern und nicht die Frage. Vorbelegt sind die Bereiche des
+  /// letzten Reports (DECISIONS 91).
+  void _neuBerechnen() {
+    neuberechnungVorbereiten(ref);
+    _checkinGeprueft = false;
+    context.push(Routes.module);
   }
 
   @override
@@ -212,7 +227,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               children: [
                 HeuteTab(onNeueAnalyse: _neueAnalyse),
                 const PlanTab(),
-                AnalyseTab(onNeueAnalyse: _neueAnalyse),
+                AnalyseTab(
+                  onNeueAnalyse: _neueAnalyse,
+                  onNeuBerechnen: _neuBerechnen,
+                ),
                 const FortschrittTab(),
               ],
             ),

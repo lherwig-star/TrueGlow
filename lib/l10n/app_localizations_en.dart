@@ -79,6 +79,13 @@ class LEn extends L {
   String get homeAnalyseStarten => 'Start analysis';
 
   @override
+  String get homeNeuBerechnen => 'Recalculate from your existing photos';
+
+  @override
+  String get homeNeuBerechnenText =>
+      'Pick a different direction or technique, no new shots – uses one analysis run';
+
+  @override
   String get homeNeueAnalyse => 'New analysis';
 
   @override

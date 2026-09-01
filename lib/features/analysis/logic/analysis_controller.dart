@@ -17,6 +17,7 @@ import '../../direction/logic/direction_controller.dart';
 import '../../direction/models/richtung.dart';
 import '../../history/logic/analysis_repository.dart';
 import '../../modules/logic/module_controller.dart';
+import 'neuberechnung.dart';
 import '../../modules/models/analyse_modul.dart';
 import '../../onboarding/logic/onboarding_controller.dart';
 import '../models/analyse_modus.dart';
@@ -96,6 +97,10 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
       state = const AnalyseFehlgeschlagen(AnalysisFehler.einwilligungFehlt);
       return;
     }
+
+    // Der Merker hat seinen Zweck erfüllt, sobald gerechnet wird – er soll
+    // den nächsten Durchgang nicht mehr beeinflussen (DECISIONS 91).
+    _ref.read(neuberechnungProvider.notifier).state = false;
 
     final aufnahmen = _ref.read(captureControllerProvider);
     final modulZustand = _ref.read(moduleControllerProvider);

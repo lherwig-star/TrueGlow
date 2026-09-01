@@ -9,6 +9,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/datum.dart';
 import '../../../../core/widgets/section_card.dart';
 import '../../../analysis/logic/kontingent.dart';
+import '../../../capture/logic/capture_controller.dart';
 import '../../../analysis/models/analyse_modus.dart';
 import '../../../analysis/models/analysis_result.dart';
 import '../../../history/logic/analysis_repository.dart';
@@ -22,9 +23,16 @@ import '../widgets/tab_leiste.dart';
 /// Stand des Tageskontingents steht darüber statt versteckt in der
 /// Modulauswahl.
 class AnalyseTab extends ConsumerWidget {
-  const AnalyseTab({super.key, required this.onNeueAnalyse});
+  const AnalyseTab({
+    super.key,
+    required this.onNeueAnalyse,
+    required this.onNeuBerechnen,
+  });
 
   final VoidCallback onNeueAnalyse;
+
+  /// Derselbe Weg, aber ohne Kamera – siehe [_NeuBerechnen].
+  final VoidCallback onNeuBerechnen;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,6 +42,9 @@ class AnalyseTab extends ConsumerWidget {
     // `null` heisst „unbekannt" (Demo, offline, nicht angemeldet) und darf
     // niemanden aufhalten – massgeblich bleibt die Cloud Function.
     final kontingent = ref.watch(kontingentProvider).valueOrNull;
+
+    // Ohne gespeicherte Fotos gibt es nichts neu zu rechnen.
+    final hatFotos = ref.watch(captureControllerProvider).fotos.isNotEmpty;
 
     return TabInhalt(
       tab: HomeTab.analyse,
@@ -45,6 +56,14 @@ class AnalyseTab extends ConsumerWidget {
           icon: const Icon(Icons.photo_camera_outlined),
           label: Text(texte.homeNeueAnalyse),
         ),
+        // Nur, wenn es überhaupt etwas neu zu rechnen gibt: ein früherer
+        // Report und die Fotos dazu (DECISIONS 91).
+        if (analysen.isNotEmpty && hatFotos) ...[
+          const SizedBox(height: AppTheme.gapS),
+          _NeuBerechnen(
+            onTap: (kontingent?.erschoepft ?? false) ? null : onNeuBerechnen,
+          ),
+        ],
         const SizedBox(height: AppTheme.gapL),
         Text(
           texte.verlaufTitel,
@@ -272,4 +291,68 @@ Future<void> loescheAnalyse(
 
   if (bestaetigt != true) return;
   await ref.read(analysenProvider.notifier).loeschen(analyse.id);
+}
+
+/// „Mit vorhandenen Fotos neu berechnen" – die zweite, leisere Aktion
+/// (DECISIONS 91).
+///
+/// Bewusst kein zweiter Knopf: Zwei gleich laute Knöpfe untereinander lassen
+/// beide gleich wichtig aussehen, und das sind sie nicht. Der Normalfall ist
+/// eine neue Analyse mit neuen Fotos; das hier ist der Sonderfall für den,
+/// der nur die Richtung ändern will.
+///
+/// Der Untertext nennt den Preis. Ein Weg, der aussieht, als wäre er umsonst,
+/// weil keine Kamera aufgeht, wäre eine Falle: Ein Lauf ist ein Lauf.
+class _NeuBerechnen extends StatelessWidget {
+  const _NeuBerechnen({required this.onTap});
+
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final texte = context.texte;
+    final farben = context.farben;
+    final aus = onTap == null;
+
+    return SectionCard(
+      padding: const EdgeInsets.all(AppTheme.gapS),
+      onTap: onTap,
+      child: Row(
+        children: [
+          Icon(
+            Icons.refresh,
+            size: 20,
+            color: aus ? farben.textSekundaer : farben.akzent,
+          ),
+          const SizedBox(width: AppTheme.gapS),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  texte.homeNeuBerechnen,
+                  style: TextStyle(
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.w700,
+                    color: aus ? farben.textSekundaer : farben.textPrimaer,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  texte.homeNeuBerechnenText,
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    height: 1.35,
+                    color: farben.textSekundaer,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppTheme.gapXs),
+          Icon(Icons.chevron_right, size: 20, color: farben.textSekundaer),
+        ],
+      ),
+    );
+  }
 }

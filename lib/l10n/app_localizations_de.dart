@@ -80,6 +80,13 @@ class LDe extends L {
   String get homeAnalyseStarten => 'Analyse starten';
 
   @override
+  String get homeNeuBerechnen => 'Mit vorhandenen Fotos neu berechnen';
+
+  @override
+  String get homeNeuBerechnenText =>
+      'Andere Richtung oder Technik wählen, ohne neue Aufnahmen – kostet einen Analyse-Lauf';
+
+  @override
   String get homeNeueAnalyse => 'Neue Analyse';
 
   @override

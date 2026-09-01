@@ -4628,6 +4628,59 @@ tiefer. Beides ist gewollt: Die Seite gehört dem, was die Analyse
 herausgefunden hat – nicht dem, was man ihr vorher mitgegeben hat, und nicht
 dem, was noch fehlt.
 
+## 91 · Der Weg zurück zu denselben Fotos
+
+Mit der Richtungskarte (DECISIONS 90) ist ein Weg verschwunden, der nicht
+hätte verschwinden sollen: „Plan mit neuer Richtung aktualisieren" war die
+einzige Möglichkeit, eine Analyse mit den **vorhandenen** Fotos noch einmal
+rechnen zu lassen. Die Route gab es weiter, nur rief sie niemand mehr auf.
+
+Sie ist jetzt im Analyse-Tab, und dort gehört sie auch hin: Der Report ist
+das Ergebnis, der Analyse-Tab ist der Ort, an dem Analysen beginnen.
+
+### Leiser als „Neue Analyse"
+
+Kein zweiter Knopf. Zwei gleich laute Knöpfe untereinander lassen beide
+gleich wichtig aussehen, und das sind sie nicht: Der Normalfall ist eine
+neue Analyse mit neuen Fotos. Das hier ist der Sonderfall für den, der nur
+die Richtung wechseln will. Also eine ruhige Zeile mit Untertitel darunter.
+
+**Der Untertitel nennt den Preis.** „Kostet einen Analyse-Lauf" steht dort,
+weil ein Weg, der aussieht, als wäre er umsonst – es geht ja keine Kamera
+auf –, eine Falle wäre. Ein Lauf ist ein Lauf.
+
+**Und die Aktion erscheint nur, wenn sie etwas kann:** wenn es einen früheren
+Report gibt **und** die Fotos dazu noch da sind. Ein Knopf, der beim Tippen
+„Fotos fehlen" sagt, ist schlechter als keiner.
+
+### Ein Merker, kein Wegparameter
+
+Der Weg führt über Modulauswahl, Richtung und „Das will ich ausprobieren";
+erst am Ende entscheidet sich, ob die Kamera kommt oder gleich gerechnet
+wird. Ein Parameter müsste durch jede dieser Routen durchgereicht und an
+jedem Weiter-Knopf mitgeschrieben werden – vier Stellen, an denen er
+vergessen werden kann. Der Merker steht an einer.
+
+Er wird **nicht gespeichert**: Ein abgebrochener Durchgang soll den nächsten
+nicht beeinflussen. „Neue Analyse" setzt ihn zurück, und die Berechnung
+selbst löscht ihn, sobald sie läuft – sonst führte der nächste reguläre
+Durchgang ebenfalls an der Kamera vorbei, mit den Fotos von vorletztem Mal.
+Ein eigener Test hält genau das fest.
+
+**Der Unterschied zu „Neue Analyse" sind zwei Zeilen**, und beide sind der
+ganze Punkt: Die Aufnahmen bleiben stehen (kein `alleVerwerfen`), und
+vorbelegt sind die Bereiche des letzten Reports. Der Modus bleibt ebenfalls,
+wie er war – der Weg beginnt bei der Modulauswahl und nicht bei der Frage
+„verfeinern oder entdecken": Wer neu rechnet, will die Richtung ändern und
+nicht die Fragestellung.
+
+**Preis:** Wählt jemand dabei einen Bereich, dessen Fotos nie aufgenommen
+wurden, scheitert der Lauf mit „Fotos fehlen". Das kostet **kein**
+Kontingent – die Prüfung steht vor dem Aufruf –, aber es ist eine Sackgasse,
+die man erst am Ende sieht. Sie hier vorher abzufangen hätte bedeutet, die
+Modulauswahl für diesen einen Weg umzubauen; das ist es nicht wert, solange
+der Fehler ehrlich und kostenlos ist.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`
