@@ -202,6 +202,10 @@ class HabitZeile extends StatelessWidget {
             // Das Info-Zeichen sitzt vor dem Themen-Abzeichen: Es ist
             // antippbar, das Abzeichen nicht, und Antippbares gehoert
             // naeher an den Text, um den es geht (DECISIONS 88).
+            //
+            // Es bringt seine eigene Trefferflaeche mit (DECISIONS 94) und
+            // steht deshalb ohne zusaetzlichen Abstand da: Der Platz
+            // gehoert ihm ganz, und der Text daneben schrumpft dafuer.
             WissenLink(text: text),
             if (thema case final modul?) ...[
               const SizedBox(width: AppTheme.gapXs),

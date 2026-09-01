@@ -4813,6 +4813,44 @@ deshalb in einer zweiten Zeile und nur beim unerwarteten Fehler – bei
 „keine Verbindung" oder „bitte neu anmelden" wäre er Ballast, denn dort ist
 schon klar, was zu tun ist.
 
+## 94 · Das Zeichen ist klein, die Trefferfläche nicht
+
+Das Info-Zeichen an den Tagesaufgaben hakte beim Antippen manchmal die
+Aufgabe ab, statt die Erklärung zu öffnen.
+
+Der Grund ist Arithmetik: Das Symbol maß 16 Punkte, dazu zwei Punkte Rand –
+eine Fläche von 20×20. Ein Fingerkuppen-Tipp trifft eine Fläche von rund
+sieben Millimetern Durchmesser, das sind je nach Gerät 40 bis 50 Punkte. Wer
+danebentraf, traf die Zeile darunter, und die ist ganz antippbar – ein
+Wisch­ziel, das „erledigt" bedeutet.
+
+**Jetzt sitzt das Zeichen in einem Feld von 48×48 Punkten.** Das ist die
+Untergrenze aus den Material-Richtlinien und zugleich die Zahl, die Android
+für Bedienhilfen prüft. Sie hängt ausdrücklich **nicht** an der Größe des
+Symbols: Das darf klein bleiben, es soll ja nicht mit dem Aufgabentext
+konkurrieren.
+
+Innerhalb dieses Feldes gewinnt immer das Zeichen – die innere Fläche liegt
+in der Gestenerkennung vor der äußeren. Was daneben liegt, gehört weiterhin
+der Aufgabe. Beides steht als Test da, und der eine prüft nicht die Mitte,
+sondern die **vier Ecken**: Ein Zeichen, das nur mittig funktioniert, ist
+genau das Problem, das hier weggehen sollte. Der Gegentest tippt vier Punkte
+links daneben und verlangt, dass die Aufgabe abgehakt wird.
+
+**Und das Zeichen selbst ist einen Tick größer und deutlicher:** 20 statt 16
+Punkte, dazu eine schwache Scheibe in der Akzentfarbe dahinter. Sie hebt es
+vom Fließtext ab und sagt „hier kann man drücken", ohne so laut zu werden
+wie ein Knopf. Gold kommt nicht vor – das gehört weiterhin dem Erreichten.
+
+Beide Stellen mit dem Zeichen teilen sich dasselbe Widget, Tagesaufgaben wie
+Empfehlungen im Report. Es gab also nur eine Stelle zu ändern, und es kann
+keine zweite geben, die es anders macht.
+
+**Preis:** Die Zeile einer Tagesaufgabe verliert rund 28 Punkte Breite an
+den Text. Bei den längsten Aufgaben bricht dadurch eher eine Zeile um. Das
+ist der billigere von zwei Preisen – der andere wäre ein Haken, den niemand
+setzen wollte.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

@@ -266,6 +266,90 @@ void main() {
       expect(abgehakt, 0);
     });
 
+    testWidgets('die Trefferflaeche misst mindestens 48 Punkte',
+        (tester) async {
+      // DECISIONS 94: Das Zeichen maß 16 Punkte plus zwei Punkte Rand. Wer
+      // knapp danebentraf, hakte die Aufgabe ab.
+      await zeigeAufgabe(tester, 'Morgens: Gua Sha, 3 Minuten');
+
+      final flaeche = tester.getSize(find.byType(WissenLink));
+      expect(flaeche.width, greaterThanOrEqualTo(48));
+      expect(flaeche.height, greaterThanOrEqualTo(48));
+    });
+
+    // Der eigentliche Beleg: nicht die Mitte, sondern die vier Ecken – je
+    // Ecke ein eigener Test, damit kein offenes Blatt aus dem vorigen
+    // Durchgang den nächsten Tipp abfängt.
+    for (final ecke in ['oben links', 'oben rechts', 'unten links',
+      'unten rechts']) {
+      testWidgets('$ecke trifft noch das Zeichen', (tester) async {
+        var abgehakt = 0;
+
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: speicherOverrides(),
+            child: testHuelle(
+              Scaffold(
+                body: HabitZeile(
+                  text: 'Morgens: Gua Sha, 3 Minuten',
+                  erledigt: false,
+                  onTap: () => abgehakt++,
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        final rechteck = tester.getRect(find.byType(WissenLink));
+        // Einen Punkt innerhalb der Kante – näher kommt kein Finger.
+        final punkt = switch (ecke) {
+          'oben links' => rechteck.topLeft + const Offset(1, 1),
+          'oben rechts' => rechteck.topRight + const Offset(-1, 1),
+          'unten links' => rechteck.bottomLeft + const Offset(1, -1),
+          _ => rechteck.bottomRight + const Offset(-1, -1),
+        };
+
+        await tester.tapAt(punkt);
+        await tester.pumpAndSettle();
+
+        expect(find.byType(WissensBlatt), findsOneWidget, reason: ecke);
+        expect(abgehakt, 0, reason: ecke);
+      });
+    }
+
+    testWidgets('daneben gehört der Platz weiter der Aufgabe',
+        (tester) async {
+      // Die Kehrseite: Die Trefferfläche darf sich nicht über die Zeile
+      // legen. Ein Tipp links daneben hakt weiterhin ab.
+      var abgehakt = 0;
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: speicherOverrides(),
+          child: testHuelle(
+            Scaffold(
+              body: HabitZeile(
+                text: 'Morgens: Gua Sha, 3 Minuten',
+                erledigt: false,
+                onTap: () => abgehakt++,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final rechteck = tester.getRect(find.byType(WissenLink));
+      await tester.tapAt(
+        Offset(rechteck.left - 4, rechteck.center.dy),
+      );
+      await tester.pumpAndSettle();
+
+      expect(abgehakt, 1);
+      expect(find.byType(WissensBlatt), findsNothing);
+    });
+
     testWidgets('eine Aufgabe ohne Technik bleibt schmucklos', (tester) async {
       await zeigeAufgabe(tester, 'Nach dem Zähneputzen: ein Glas Wasser');
 

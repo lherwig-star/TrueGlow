@@ -13,17 +13,34 @@ import '../models/wissenseintrag.dart';
 /// Steht in [text] nichts, das die Bibliothek kennt, entsteht überhaupt kein
 /// Widget – kein Platzhalter, keine graue Fläche. Das Zeichen ist damit auch
 /// ein Signal: Wo eines ist, gibt es etwas zu lesen.
+///
+/// **Das Zeichen ist klein, die Trefferfläche ist es nicht** (DECISIONS 94).
+/// Am Gerät hakte ein Tipp auf das Zeichen manchmal die Aufgabe ab, statt die
+/// Erklärung zu öffnen: Das Symbol maß 16 Punkte plus zwei Punkte Rand, und
+/// wer daneben traf, traf die Zeile darunter – die ist ganz antippbar. Jetzt
+/// sitzt es in einem Feld von [trefferflaeche] Punkten, der Norm für
+/// Bedienelemente. Innerhalb dieses Feldes gewinnt immer das Zeichen; was
+/// dane­ben liegt, gehört weiterhin der Aufgabe.
 class WissenLink extends ConsumerWidget {
-  const WissenLink({super.key, required this.text, this.groesse = 16});
+  const WissenLink({super.key, required this.text, this.groesse = 20});
 
   /// Der Satz, in dem gesucht wird – eine Aufgabe oder eine Empfehlung.
   final String text;
 
+  /// Die Größe des Symbols. Die Trefferfläche hängt nicht daran.
   final double groesse;
+
+  /// Kantenlänge der Trefferfläche in logischen Punkten.
+  ///
+  /// 48 ist die Untergrenze aus den Material-Richtlinien und zugleich die
+  /// Zahl, die Android für Bedienhilfen prüft. Sie gilt hier unabhängig
+  /// davon, wie groß das Symbol gezeichnet wird.
+  static const double trefferflaeche = 48;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final texte = context.texte;
+    final farben = context.farben;
     final eintrag = ref
         .watch(wissenProvider(texte.localeName))
         .valueOrNull
@@ -33,15 +50,30 @@ class WissenLink extends ConsumerWidget {
     return Semantics(
       button: true,
       label: texte.wissenWasIst(eintrag.titel),
-      child: InkResponse(
-        onTap: () => zeigeWissensblatt(context, eintrag),
-        radius: groesse + 6,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-          child: Icon(
-            Icons.info_outline,
-            size: groesse,
-            color: context.farben.akzent,
+      child: SizedBox(
+        width: trefferflaeche,
+        height: trefferflaeche,
+        child: InkResponse(
+          onTap: () => zeigeWissensblatt(context, eintrag),
+          radius: trefferflaeche / 2,
+          child: Center(
+            // Eine schwache Scheibe hinter dem Zeichen: Sie hebt es vom
+            // Fließtext ab und sagt „hier kann man drücken", ohne so laut zu
+            // werden wie ein Knopf.
+            child: Container(
+              width: groesse + 10,
+              height: groesse + 10,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: farben.akzent.withValues(alpha: 0.14),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.info_outline,
+                size: groesse,
+                color: farben.akzent,
+              ),
+            ),
           ),
         ),
       ),

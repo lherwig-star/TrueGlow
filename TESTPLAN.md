@@ -3038,3 +3038,113 @@ flutter run --dart-define=TRUEGLOW_MOCK=true
 | Die Bereiche des letzten Reports sind nicht vorbelegt | Notieren. |
 | Die zweite Aktion wirkt so laut wie „Neue Analyse" | Notieren. |
 | `flutter test` meldet einen roten Test | Notieren, mit dem Namen. |
+
+## 43 · Kontolöschung und das Info-Zeichen
+
+Prüft DECISIONS 93 und 94. **Kein Analyse-Lauf, keine Kosten.**
+
+> **Bevor du Abschnitt A anfängst, lies den Kasten unter Schritt 1.** Eine
+> Kontolöschung nimmt die Fortschritts-Fotos mit, und die gibt es nur auf
+> diesem Gerät.
+
+### A · Konto löschen – gefahrlos prüfen
+
+1. **Erst ein Testkonto herstellen.**
+
+   > **Was eine Kontolöschung wirklich mitnimmt:** alle Analysen, den Plan,
+   > die Serie – und die **Fortschritts-Fotos**. Die liegen nur auf dem
+   > Gerät und sind danach weg (CLAUDE.md). Was sie **nicht** mitnimmt: dein
+   > Google-Konto. Gelöscht wird ausschließlich das TrueGlow-Konto; bei
+   > Google ändert sich nichts, und du kannst dich jederzeit wieder anmelden
+   > – dann als neuer, leerer Nutzer.
+
+   **Der sichere Weg:**
+   - Einstellungen → ganz unten **abmelden** (oder die App neu starten und
+     auf dem Anmelde-Bildschirm bleiben).
+   - **Weiter als Gast** wählen. Das legt ein frisches, leeres Konto an –
+     dein bisheriges bleibt unberührt.
+   - Falls du den Google-Weg prüfen willst: Nimm im Anmelde-Dialog **ein
+     zweites Google-Konto**, nicht dein Hauptkonto. Android bietet die Wahl
+     an; notfalls legst du in den Android-Einstellungen eines an.
+
+2. **Als Gast: Konto löschen.** Einstellungen → **Konto endgültig löschen**
+   → bestätigen.
+   Erwartet: kein Fehler, und die App landet auf dem **Anmelde-Bildschirm**.
+   *Kriterium:* Kommt „Löschen nicht möglich", notieren – mit der zweiten
+   Zeile („Technischer Hinweis: …").
+
+3. **Nichts Altes bleibt übrig.** Nach Schritt 2 wieder als Gast anmelden.
+   Erwartet: Onboarding von vorn, **keine** alten Analysen, kein Plan, keine
+   Serie.
+   *Kriterium:* Taucht irgendwo der alte Stand auf, ist das ein **Blocker**.
+
+4. **Dasselbe mit Google.** Mit dem zweiten Google-Konto anmelden, kurz
+   irgendetwas anlegen (eine Demo-Analyse genügt), dann **Konto endgültig
+   löschen**.
+   Erwartet: dasselbe wie in Schritt 2. Verlangt Firebase eine frische
+   Anmeldung, geht der Google-Dialog **von selbst** auf und danach läuft die
+   Löschung weiter.
+   *Kriterium:* Bricht es mit einer Fehlermeldung ab, statt die Anmeldung
+   anzubieten, notieren.
+
+5. **Zweimal löschen tut nicht weh.** Der Fall, an dem es gescheitert ist:
+   Falls die App nach einer Löschung noch beim alten Konto steht, tippe
+   **noch einmal** auf „Konto endgültig löschen".
+   Erwartet: kein Fehler – der gewünschte Zustand ist ja schon erreicht.
+   *Kriterium:* Kommt jetzt „etwas ist schiefgelaufen", notieren.
+
+6. **„Alle Daten löschen" kann es weiterhin.** Mit einem frischen Gastkonto:
+   Einstellungen → **Alle Daten löschen**. Erwartet: Daten weg, Konto bleibt,
+   App landet im Onboarding.
+
+7. **Das Protokoll gegenlesen**, bei angeschlossenem Rechner:
+
+   ```bash
+   firebase functions:log --only kontoLoeschen --project trueglow-b2c1c -n 10
+   ```
+
+   | Zeile | Bedeutung |
+   |---|---|
+   | `Loeschung abgeschlossen (konto).` | So soll es aussehen |
+   | `Konto war bereits geloescht – nichts mehr zu tun.` | Der zweite Versuch aus Schritt 5. Kein Fehler, sondern der Beleg |
+   | `Unhandled error` | Dürfte nicht mehr vorkommen – wenn doch, notieren mit der ganzen Zeile |
+
+### B · Das Info-Zeichen
+
+8. **Es ist größer und deutlicher.** Tab **Heute**, eine Aufgabe mit ⓘ.
+   Erwartet: ein etwas größeres Zeichen auf einer schwachen runden Fläche.
+
+9. **Der Rand trifft auch.** Nicht mittig tippen, sondern **knapp an der
+   Kante** des Zeichens – oben, unten, links, rechts.
+   Erwartet: Jedes Mal öffnet sich die Erklärung, und die Aufgabe bleibt
+   **nicht** abgehakt.
+   *Kriterium:* Wird die Aufgabe abgehakt, ist das **derselbe Fehler wie
+   vorher** – Blocker, mit der Angabe, an welcher Kante.
+
+10. **Zehnmal hintereinander.** Blatt schließen, wieder tippen – zehnmal,
+    ruhig etwas schludrig. Erwartet: zehn von zehn öffnen die Erklärung.
+    *Kriterium:* Auch ein einziger Fehlgriff gehört notiert.
+
+11. **Daneben hält die Aufgabe.** Bewusst **links neben** das Zeichen
+    tippen, in den Aufgabentext. Erwartet: Die Aufgabe wird abgehakt und es
+    öffnet sich **nichts**.
+
+12. **Auch im Report.** Einen Report öffnen, einen Bereich, eine Empfehlung
+    mit ⓘ. Erwartet: dasselbe Verhalten.
+
+13. **Die Zeile bricht sauber.** Eine lange Tagesaufgabe mit ⓘ ansehen.
+    Erwartet: Der Text bricht um oder wird sauber gekürzt – nichts läuft
+    über den Rand.
+
+### Was ein Fund ist
+
+| Fund | Reaktion |
+|---|---|
+| „Konto endgültig löschen" schlägt fehl | Blocker, mit dem technischen Hinweis. |
+| Nach dem Löschen sind alte Daten noch da | Blocker. |
+| Die App bleibt nach dem Löschen beim alten Konto stehen | Blocker. |
+| Der zweite Löschversuch meldet einen Fehler | Blocker. |
+| Ein Tipp aufs ⓘ hakt die Aufgabe ab | Blocker. |
+| Der Google-Weg bricht ab, statt neu anzumelden | Vor dem Launch beheben. |
+| Ein Tipp neben dem ⓘ öffnet die Erklärung | Notieren. |
+| Eine Aufgabenzeile läuft über den Rand | Notieren, mit Screenshot. |
