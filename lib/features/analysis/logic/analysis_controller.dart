@@ -17,6 +17,7 @@ import '../../direction/logic/direction_controller.dart';
 import '../../direction/models/richtung.dart';
 import '../../history/logic/analysis_repository.dart';
 import '../../modules/logic/module_controller.dart';
+import 'kontingent.dart';
 import 'neuberechnung.dart';
 import '../../modules/models/analyse_modul.dart';
 import '../../onboarding/logic/onboarding_controller.dart';
@@ -175,6 +176,7 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
       await _ref.read(analysenProvider.notifier).speichern(ergebnis);
       _laufmarke(null);
       _melde(DiagnoseEreignis.analyseFertig);
+      _kontingentNeuLesen();
       if (!mounted) return;
       state = AnalyseFertig(ergebnis);
     } on AbbruchException {
@@ -184,6 +186,10 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
     } on AnalysisException catch (e) {
       debugPrint('Analyse fehlgeschlagen: $e');
       _laufmarke(null);
+      // Auch hier: Eine Zeitüberschreitung hat auf dem Server gerechnet und
+      // reserviert. Wer danach den alten Stand sähe, hätte eine Analyse
+      // weniger, als die Anzeige verspricht.
+      _kontingentNeuLesen();
       if (!mounted) return;
       state = AnalyseFehlgeschlagen(e.fehler);
     } catch (e, s) {
@@ -197,6 +203,15 @@ class AnalysisController extends StateNotifier<AnalyseZustand> {
   /// Meldet ein Funnel-Ereignis. Ohne Einwilligung passiert dabei nichts.
   void _melde(DiagnoseEreignis ereignis) =>
       _ref.read(diagnoseDienstProvider).melde(ereignis);
+
+  /// Wirft den gemerkten Kontingentstand weg, damit er neu geholt wird.
+  ///
+  /// Der Stand steht in `users/{uid}/kontingent/analyse` und wird
+  /// ausschließlich vom Server geschrieben. Die App erfährt von der
+  /// Änderung nichts – sie muss nachsehen. Ohne diese Zeile stand nach zwei
+  /// echten Läufen immer noch „3 von 3 heute" auf dem Schirm
+  /// (DECISIONS 95).
+  void _kontingentNeuLesen() => _ref.invalidate(kontingentProvider);
 
   /// Haelt fest, dass gerade eine Analyse laeuft – oder raeumt die Marke weg.
   ///

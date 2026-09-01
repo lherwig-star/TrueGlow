@@ -109,6 +109,12 @@ class KontingentStand {
 /// zeigt dann keinen Hinweis und sperrt nichts – der Server weist notfalls ab.
 /// Andersherum waere es schlimmer: ein Hinweis, der jemanden aussperrt, obwohl
 /// noch Kontingent da ist.
+/// **Er wird nach jedem Lauf neu gelesen** – und genau das fehlte
+/// (DECISIONS 95). Der Provider ist `autoDispose`, aber die Analyse-Ansicht
+/// hängt in einem `IndexedStack`, der alle vier Tabs am Leben hält: Der
+/// Provider wurde beim ersten Aufbau der Startseite einmal gelesen und dann
+/// nie wieder losgelassen. Der Server zählte richtig, die App zeigte
+/// stundenlang dieselbe Zahl.
 final kontingentProvider =
     FutureProvider.autoDispose<KontingentStand?>((ref) async {
   final speicher = ref.watch(cloudSpeicherProvider);

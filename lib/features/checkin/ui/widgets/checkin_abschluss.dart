@@ -15,6 +15,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/section_card.dart';
 import '../../../analysis/logic/analysis_service.dart';
+import '../../../analysis/logic/kontingent.dart';
 import '../../../analysis/models/analysis_result.dart';
 import '../../../capture/logic/capture_controller.dart';
 import '../../../history/logic/analysis_repository.dart';
@@ -116,6 +117,11 @@ class _CheckinAbschlussState extends ConsumerState<CheckinAbschluss> {
                 fortschrittsfoto: neu == null ? null : File(neu),
                 abbruch: abbruch,
               );
+
+      // Ein Check-in ausserhalb des Takts geht auf das Analyse-Kontingent
+      // (siehe `checkinAuswerten` auf dem Server). Die Anzeige muss das
+      // erfahren – sie erfaehrt es nur, wenn sie nachsieht (DECISIONS 95).
+      ref.invalidate(kontingentProvider);
 
       if (!mounted) return;
       setState(() {

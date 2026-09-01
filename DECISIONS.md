@@ -4851,6 +4851,78 @@ den Text. Bei den längsten Aufgaben bricht dadurch eher eine Zeile um. Das
 ist der billigere von zwei Preisen – der andere wäre ein Haken, den niemand
 setzen wollte.
 
+## 95 · Der Server hat gezählt, die App hat nicht hingesehen
+
+Zwei echte Analysen am 01.09.2026, und danach stand weiterhin „3 von 3
+heute" und „10 von 10 diesen Monat" auf dem Schirm.
+
+### Was die Protokolle sagen
+
+Beide Läufe waren **echt**, kein Demo-Modus – die installierte Fassung war
+die vom 15:14 (`lastUpdateTime=2026-09-01 15:14:49`, kein
+`flutter run --dart-define=TRUEGLOW_MOCK=true` dazwischen). Und sie haben
+Tokens gekostet:
+
+```
+2026-09-01T13:30:41Z analysiere: Verbrauch gemini-3.7-flash:
+    Eingabe 12937, Ausgabe 4462, davon Denken 769, gesamt 18168
+2026-09-01T13:33:40Z analysiere: Verbrauch gemini-3.7-flash:
+    Eingabe 12980, Ausgabe 4320, davon Denken 409, gesamt 17709
+```
+
+Keine `Tagesgrenze`-Zeile, kein Fehler. Die Reservierung läuft in einer
+Transaktion **vor** dem Modellaufruf; hätte sie nicht committet, hätte es
+diese beiden Zeilen nicht gegeben.
+
+### Der Verdacht war naheliegend und falsch
+
+Verdächtigt war der Umbau, der den Zähler löschfest gemacht hat
+(SECURITY_AUDIT B1, DECISIONS 83) – ob Schreiben und Lesen seitdem an
+verschiedenen Stellen passieren. Tun sie nicht: Der Server schreibt
+`users/{uid}/kontingent/analyse`, die App liest genau diesen Pfad, und die
+Feldnamen stimmen überein. Sieben neue Emulator-Tests rechnen es nach.
+
+**Der Fehler sitzt in der App, und zwar nicht beim Lesen, sondern beim
+Wiederlesen.**
+
+`kontingentProvider` ist ein `FutureProvider.autoDispose`. Die
+Analyse-Ansicht hängt aber in einem `IndexedStack`, und der hält
+ausdrücklich alle vier Tabs am Leben (DECISIONS 65 – damit jeder Tab seine
+Scroll-Position behält). Der Provider wurde also beim ersten Aufbau der
+Startseite **einmal** gelesen und danach nie wieder losgelassen. `autoDispose`
+greift nur, wenn niemand mehr zuhört – und es hörte immer jemand zu.
+
+Dazu kommt: Den Zähler schreibt ausschließlich der Server. Die App erfährt
+von einer Änderung nichts. Sie muss nachsehen – und niemand hat ihr gesagt,
+wann.
+
+### Was jetzt anders ist
+
+Nach jedem Lauf wird der gemerkte Stand weggeworfen: bei einer fertigen
+Analyse, bei einer fehlgeschlagenen (eine Zeitüberschreitung hat auf dem
+Server gerechnet und reserviert) und nach einem Check-in außerhalb des
+Takts, der ebenfalls auf das Analyse-Kontingent geht.
+
+**Warum kein Datenstrom auf das Dokument.** Ein `snapshots()`-Abo würde jede
+Änderung von selbst melden, hält aber eine dauerhafte Verbindung offen und
+kostet bei jedem App-Start ein zusätzliches Lesen. Der Stand ändert sich
+höchstens zehnmal im Monat, und zwar immer genau dann, wenn die App selbst
+etwas ausgelöst hat. Ein gezieltes Nachlesen an drei Stellen ist billiger
+und leichter nachzuvollziehen als ein Abo, das immer läuft.
+
+### Warum es niemandem aufgefallen ist
+
+Weil die Tests genau um diese Stelle herum gebaut waren: Der Server hatte
+Unit-Tests für die Grenzen, die App hatte Tests für das Lesen – und niemand
+prüfte, ob die Anzeige einem geschriebenen Zähler **folgt**. Genau das ist
+jetzt ein Test, und dazu sieben gegen den Emulator: ein Lauf erhöht den
+Zähler, der nächste Aufruf sieht den erhöhten Stand, bei null verbleibenden
+wird abgelehnt, am nächsten Tag fängt es wieder an.
+
+**Preis:** Ein zusätzliches Firestore-Lesen je Analyse – also höchstens zehn
+im Monat und Nutzer. Das ist nichts gegen die Alternative: eine Anzeige, der
+niemand glauben kann.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

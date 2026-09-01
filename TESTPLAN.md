@@ -3148,3 +3148,81 @@ Prüft DECISIONS 93 und 94. **Kein Analyse-Lauf, keine Kosten.**
 | Der Google-Weg bricht ab, statt neu anzumelden | Vor dem Launch beheben. |
 | Ein Tipp neben dem ⓘ öffnet die Erklärung | Notieren. |
 | Eine Aufgabenzeile läuft über den Rand | Notieren, mit Screenshot. |
+
+## 44 · Der Kontingentzähler
+
+Prüft DECISIONS 95. **Ein einziger echter Lauf**, und der ist der Nachweis
+selbst – alles andere geht ohne Kosten.
+
+### A · Der Stand vor dem Lauf
+
+1. **App neu starten**, dann Tab **Analyse**. Erwartet: eine Zeile wie
+   „Noch X von 3 Analysen heute".
+   *Kriterium:* Steht dort **3 von 3**, obwohl du heute schon analysiert
+   hast, ist der Fehler wieder da – **Blocker**.
+
+   > Am 01.09. hattest du zwei echte Läufe. Steht dort jetzt **1 von 3**,
+   > ist das der Beleg, dass der Server die beiden mitgezählt hat und die
+   > App es jetzt sieht.
+
+2. **Die Zahl merken.** Schreib sie auf – sie ist der Vergleichswert.
+
+### B · Der eine echte Lauf
+
+> Ab hier kostet es: eine der zehn Analysen des Monats plus Tokens.
+
+3. **Eine Analyse starten.** Module: **Basis** genügt. Durchlaufen lassen,
+   bis der Report da ist.
+
+4. **Zurück zum Analyse-Tab – ohne die App neu zu starten.**
+   Erwartet: Die Zahl ist um **eins gesunken**.
+   *Kriterium:* Steht dort noch die alte Zahl, ist der Fehler nicht behoben –
+   **Blocker**, mit Screenshot.
+
+5. **Und im Modul-Bildschirm auch.** Eine neue Analyse anfangen (nur bis zur
+   Modulauswahl, dann zurück). Erwartet: dieselbe, neue Zahl.
+
+6. **Gegenprobe im Protokoll**, bei angeschlossenem Rechner:
+
+   ```bash
+   firebase functions:log --only analysiere --project trueglow-b2c1c -n 15
+   ```
+
+   Erwartet: eine frische Zeile `Verbrauch gemini-3.7-flash: …`.
+   *Kriterium:* Steht dort eine Verbrauchszeile, aber die App zeigt
+   unverändert die alte Zahl, laufen Server und Anzeige wieder auseinander –
+   **Blocker**.
+
+### C · Ohne weitere Kosten
+
+7. **Nach einem Neustart bleibt die Zahl.** App schließen, neu öffnen, Tab
+   Analyse. Erwartet: dieselbe Zahl wie in Schritt 4 – der Stand kommt vom
+   Server und nicht aus dem Gerätespeicher.
+
+8. **Der Demo-Modus zählt nicht mit.**
+
+   ```bash
+   flutter run --dart-define=TRUEGLOW_MOCK=true
+   ```
+
+   Dort eine Analyse durchlaufen lassen. Erwartet: **keine** Zahl im
+   Analyse-Tab – im Demo-Modus gibt es kein Konto und damit keinen Stand.
+   *Kriterium:* Sinkt dort eine Zahl, würde der Demo-Modus etwas anzeigen,
+   das es nicht gibt – notieren.
+
+   > **Danach wieder die echte Fassung installieren**, sonst testest du beim
+   > nächsten Mal die Demo:
+   >
+   > ```bash
+   > flutter build apk --debug
+   > ```
+
+### Was ein Fund ist
+
+| Fund | Reaktion |
+|---|---|
+| Die Zahl ändert sich nach einem echten Lauf nicht | Blocker, mit Screenshot. |
+| Das Protokoll zeigt Verbrauch, die App zeigt die alte Zahl | Blocker. |
+| Die Zahl springt nach einem Neustart zurück | Blocker. |
+| Der Demo-Modus zeigt einen Kontingentstand | Notieren. |
+| Die Zahl sinkt um mehr als eins | Notieren – dann zählt etwas doppelt. |
