@@ -2727,8 +2727,14 @@ abstract class L {
   /// No description provided for @kontoFehlgeschlagenTipp.
   ///
   /// In de, this message translates to:
-  /// **'Da ist etwas schiefgelaufen. Deine Daten sind unverändert – bitte versuch es später noch einmal.'**
+  /// **'Der Server hat das Löschen abgebrochen. Deine Daten sind unverändert – versuch es gleich noch einmal.'**
   String get kontoFehlgeschlagenTipp;
+
+  /// Zweite Zeile der Fehlermeldung beim Loeschen – der Code, nach dem sich suchen laesst.
+  ///
+  /// In de, this message translates to:
+  /// **'Technischer Hinweis: {code}'**
+  String kontoTechnischerHinweis(String code);
 
   /// No description provided for @analyseKeinInternetTitel.
   ///

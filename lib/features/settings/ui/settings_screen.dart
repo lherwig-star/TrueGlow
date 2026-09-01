@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/l10n/sprache.dart';
 import '../../../core/l10n/texte.dart';
 import '../../../core/router/app_router.dart';
-import '../../../core/storage/hive_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_controller.dart';
@@ -13,8 +12,7 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../account/logic/daten_export.dart';
 import '../../account/logic/konto_dienst.dart';
-import '../../analysis/logic/analysis_controller.dart';
-import '../../analysis/logic/modus_controller.dart';
+import '../../account/logic/loeschablauf.dart';
 import '../../analysis/logic/analysis_service.dart';
 import '../../auth/logic/auth_repository.dart';
 import '../../consent/logic/einwilligung_controller.dart';
@@ -22,15 +20,8 @@ import '../../consent/models/einwilligung.dart';
 import '../../consent/ui/einwilligungs_auswahl.dart';
 import '../../auth/models/trueglow_nutzer.dart';
 import '../../migration/ui/migration_dialog.dart';
-import '../../capture/logic/capture_controller.dart';
-import '../../checkin/logic/checkin_benachrichtigung.dart';
-import '../../checkin/logic/checkin_controller.dart';
-import '../../direction/logic/direction_controller.dart';
-import '../../modules/logic/module_controller.dart';
-import '../../history/logic/analysis_repository.dart';
 import '../../onboarding/logic/onboarding_controller.dart';
 import '../../onboarding/models/onboarding_profile.dart';
-import '../../plan/logic/plan_progress_repository.dart';
 import '../../streak/logic/erinnerung_einstellung.dart';
 import '../../streak/logic/tages_erinnerung.dart';
 import '../../../core/utils/datum.dart';
@@ -210,38 +201,24 @@ class SettingsScreen extends ConsumerWidget {
 
     final messenger = ScaffoldMessenger.maybeOf(context);
 
+    // **Alles, was danach gebraucht wird, wird jetzt geholt.** Nach dem
+    // ersten `await` kann dieser Bildschirm weg sein – und war es am
+    // 01.09.2026 auch, mitten im Aufräumen (DECISIONS 93). Router und
+    // Aufräum-Funktion hängen am Container und überleben das.
+    final router = ref.read(routerProvider);
+    final aufraeumen = ref.read(aufraeumenNachLoeschenProvider);
+
     // Zuerst die Cloud. Scheitert sie, wird lokal nichts angefasst: Ein
     // halbes Loeschen waere schlimmer als keins, weil der Nutzer glaubt,
     // es sei erledigt.
     if (!await _cloudRaeumen(ref, modus, messenger, texte)) return;
 
-    await ref.read(alleDatenLoeschenProvider)();
-    await ref.read(imageQualityServiceProvider).fotosLoeschen();
+    await aufraeumen(kontoWeg: kontoWeg);
 
-    // Alle Zustaende zuruecksetzen, damit nichts Altes im Speicher bleibt.
-    ref.read(captureControllerProvider.notifier).alleVerwerfen();
-    ref.read(moduleControllerProvider.notifier).zuruecksetzen();
-    ref.read(modusControllerProvider.notifier).zuruecksetzen();
-    ref.read(directionControllerProvider.notifier).zuruecksetzen();
-    ref.read(checkinControllerProvider.notifier).zuruecksetzen();
-    await ref.read(checkinBenachrichtigungProvider).abbrechen();
-    ref.read(analysisControllerProvider.notifier).zuruecksetzen();
-    ref.read(analysenProvider.notifier).neuLaden();
-    ref.read(planFortschrittProvider.notifier).neuLaden();
-    ref.read(onboardingControllerProvider.notifier).zuruecksetzen();
-    ref.read(einwilligungControllerProvider.notifier).zuruecksetzen();
-    // Theme und Sprache liegen in derselben Box und wurden mitgeloescht.
-    ref.read(themeControllerProvider.notifier).neuLaden();
-    ref.read(sprachControllerProvider.notifier).neuLaden();
-    ref.read(erinnerungProvider.notifier).neuLaden();
-    await ref.read(tagesErinnerungProvider).abbrechen();
-
-    if (kontoWeg) {
-      await ref.read(authRepositoryProvider).abmelden();
-    }
-
-    if (!context.mounted) return;
-    context.go(kontoWeg ? Routes.login : Routes.onboarding);
+    // Über den Router und nicht über den Kontext: Der kann inzwischen weg
+    // sein, und dann bliebe die App auf einem Bildschirm stehen, hinter dem
+    // nichts mehr steht.
+    router.go(kontoWeg ? Routes.login : Routes.onboarding);
   }
 
   /// Raeumt den Cloud-Anteil. Gibt zurueck, ob weitergemacht werden darf.
@@ -262,7 +239,7 @@ class SettingsScreen extends ConsumerWidget {
       return true;
     } on KontoException catch (e) {
       if (e.fehler != KontoFehler.neuAnmelden) {
-        _melden(messenger, e.fehler, texte);
+        _melden(messenger, e.fehler, texte, technisch: e.details);
         return false;
       }
     }
@@ -274,7 +251,7 @@ class SettingsScreen extends ConsumerWidget {
       await dienst.loeschen(modus);
       return true;
     } on KontoException catch (e) {
-      _melden(messenger, e.fehler, texte);
+      _melden(messenger, e.fehler, texte, technisch: e.details);
       return false;
     } on AuthException catch (e) {
       messenger?.showSnackBar(
@@ -291,15 +268,29 @@ class SettingsScreen extends ConsumerWidget {
     }
   }
 
+  /// Sagt, was los ist – und bei einem unerwarteten Fehler auch, wie er
+  /// heißt.
+  ///
+  /// „Etwas ist schiefgelaufen" war die Meldung, mit der die kaputte
+  /// Kontolöschung tagelang unentdeckt blieb: Sie sagt weder dem Nutzer
+  /// noch uns, wonach zu suchen wäre (DECISIONS 93).
   static void _melden(
     ScaffoldMessengerState? messenger,
     KontoFehler fehler,
-    L texte,
-  ) {
+    L texte, {
+    String? technisch,
+  }) {
+    final grund =
+        texte.settingsFehlerMeldung(fehler.titel(texte), fehler.tipp(texte));
+    final code = technisch?.trim() ?? '';
+
     messenger?.showSnackBar(
       SnackBar(
+        duration: const Duration(seconds: 8),
         content: Text(
-          texte.settingsFehlerMeldung(fehler.titel(texte), fehler.tipp(texte)),
+          code.isEmpty || fehler != KontoFehler.fehlgeschlagen
+              ? grund
+              : '$grund\n${texte.kontoTechnischerHinweis(code)}',
         ),
       ),
     );

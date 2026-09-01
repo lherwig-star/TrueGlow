@@ -1499,7 +1499,12 @@ class LDe extends L {
 
   @override
   String get kontoFehlgeschlagenTipp =>
-      'Da ist etwas schiefgelaufen. Deine Daten sind unverändert – bitte versuch es später noch einmal.';
+      'Der Server hat das Löschen abgebrochen. Deine Daten sind unverändert – versuch es gleich noch einmal.';
+
+  @override
+  String kontoTechnischerHinweis(String code) {
+    return 'Technischer Hinweis: $code';
+  }
 
   @override
   String get analyseKeinInternetTitel => 'Keine Verbindung';

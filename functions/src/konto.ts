@@ -166,12 +166,45 @@ function zahl(wert: unknown): number {
  * Der Widerruf steht in einem eigenen `try`: Scheitert er, ist das
  * ärgerlich, aber kein Grund, das Löschen selbst abzubrechen — das wäre die
  * schlechtere von zwei Hälften.
+ *
+ * **Ein Konto, das es nicht mehr gibt, ist kein Fehler** (DECISIONS 93). Am
+ * 01.09.2026 hat genau das den zweiten Versuch zerschossen: Der erste Lauf
+ * war durchgegangen (`Loeschung abgeschlossen (konto)`), die App war danach
+ * an anderer Stelle stehen geblieben, und der zweite Aufruf traf auf
+ *
+ *     FirebaseAuthError: There is no user record corresponding to the
+ *     provided identifier.  (auth/user-not-found)
+ *
+ * Das flog als „Unhandled error" durch und kam beim Nutzer als
+ * „etwas ist schiefgelaufen" an — obwohl der gewünschte Zustand längst
+ * erreicht war. Löschen ist überall sonst in dieser Datei idempotent; hier
+ * war es die eine Stelle, die es nicht war.
  */
 export async function authKontoLoeschen(uid: string): Promise<void> {
   try {
     await getAuth().revokeRefreshTokens(uid);
   } catch (e) {
-    console.warn(`Sitzungen nicht widerrufen: ${e}`);
+    if (!istUnbekannterNutzer(e)) console.warn(`Sitzungen nicht widerrufen: ${e}`);
   }
-  await getAuth().deleteUser(uid);
+
+  try {
+    await getAuth().deleteUser(uid);
+  } catch (e) {
+    if (!istUnbekannterNutzer(e)) throw e;
+    console.info('Konto war bereits geloescht – nichts mehr zu tun.');
+  }
+}
+
+/**
+ * Ob der Fehler bedeutet: Zu dieser Kennung gibt es kein Konto (mehr).
+ *
+ * Exportiert, damit sich die Form des Fehlers pruefen laesst, ohne die
+ * Auth-Verwaltung anzufassen: `firebase-admin` legt den Code unter
+ * `errorInfo.code` ab, nicht unter `code` – wer nur `e.code` liest, sieht
+ * `undefined` und wirft weiter.
+ */
+export function istUnbekannterNutzer(fehler: unknown): boolean {
+  const code = (fehler as { errorInfo?: { code?: string }; code?: string })
+    ?.errorInfo?.code ?? (fehler as { code?: string })?.code;
+  return code === 'auth/user-not-found';
 }

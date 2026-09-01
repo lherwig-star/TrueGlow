@@ -1486,7 +1486,12 @@ class LEn extends L {
 
   @override
   String get kontoFehlgeschlagenTipp =>
-      'Something went wrong. Your data is unchanged — please try again later.';
+      'The server stopped the deletion. Your data is unchanged — try again in a moment.';
+
+  @override
+  String kontoTechnischerHinweis(String code) {
+    return 'Technical detail: $code';
+  }
 
   @override
   String get analyseKeinInternetTitel => 'No connection';

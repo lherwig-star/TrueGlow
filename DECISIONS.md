@@ -4723,6 +4723,96 @@ Stück bleiben drei Tage am Stück) und belegen nebenbei, dass die Kette von
 Hive bis zur Zahl steht. Wo das Datum das Ergebnis ändern kann, steht jetzt
 ein festes.
 
+## 93 · Zwei Fehler, die sich gegenseitig versteckt haben
+
+„Konto endgültig löschen" meldete am Gerät „Löschen nicht möglich – etwas
+ist schiefgelaufen". Die Vermutung war das anonyme Gastkonto. **Sie war
+falsch**, und das ließ sich aus den Protokollen zeigen statt raten.
+
+### Was wirklich passiert ist
+
+Im Server-Protokoll steht der erste Versuch, und er war **erfolgreich**:
+
+```
+2026-09-01T11:52:25Z  kontoloeschen: Loeschung abgeschlossen (konto).
+```
+
+Im Geräteprotokoll steht, was eine Sekunde später in der App geschah:
+
+```
+09-01 13:52:24  StateError: Cannot use "ref" after the widget was disposed.
+                #2 SettingsScreen._loeschen (settings_screen.dart:218)
+```
+
+**Das ist Fehler eins.** Das Aufräumen nach dem Löschen war eine Kette aus
+zwei Dutzend `ref.read` hinter mehreren `await` – alle am
+Einstellungs-Bildschirm. Der verschwand mittendrin, und mit ihm alles, was
+danach kam: das Abmelden, der Weg zurück zur Anmeldung. Zurück blieb eine
+App, die auf ein Konto zeigte, das es auf dem Server nicht mehr gab –
+sichtbar an den Zeilen, die danach im Sekundentakt folgten:
+
+```
+Sync: Loeschen von einstellungen/aufnahmen fehlgeschlagen
+      ([cloud_firestore/permission-denied])
+```
+
+Der Nutzer sah eine App, die nicht fertig geworden war, und tippte noch
+einmal auf Löschen. **Das ist Fehler zwei:**
+
+```
+2026-09-01T12:36:56Z E kontoloeschen: Unhandled error FirebaseAuthError:
+    There is no user record corresponding to the provided identifier.
+    errorInfo: { code: 'auth/user-not-found' }
+    at async authKontoLoeschen (/workspace/lib/konto.js:137:5)
+```
+
+Und in der App, im selben Moment:
+
+```
+09-01 14:36:56  Loeschung fehlgeschlagen: FunctionsFehler(internal)
+```
+
+Ein Konto, das schon weg ist, noch einmal zu löschen, flog als unbehandelte
+Ausnahme durch und kam als `internal` an – als „etwas ist schiefgelaufen".
+
+**Das Gastkonto hatte damit nichts zu tun.** Der Server nimmt anonyme Konten
+ohnehin von der Frische-Prüfung aus, und beide Fehler hätten eine
+Google-Anmeldung genauso getroffen.
+
+### Was jetzt anders ist
+
+**Ein Konto, das es nicht mehr gibt, ist kein Fehler.** `authKontoLoeschen`
+behandelt `auth/user-not-found` als erreichtes Ziel. Löschen ist überall
+sonst in dieser Datei idempotent – das war die eine Stelle, die es nicht
+war. Der Code steckt bei `firebase-admin` unter `errorInfo.code` und nicht
+unter `code`; wer nur `e.code` liest, sieht `undefined` und wirft weiter.
+Genau dafür gibt es einen Test mit der echten Fehlerform.
+
+**Das Aufräumen hängt nicht mehr an einem Bildschirm.** Es steht als
+`aufraeumenNachLoeschenProvider` am Container. Ein Provider-`Ref` lebt so
+lange wie die App, nicht so lange wie ein Widget – was dort drinsteht,
+läuft zu Ende, auch wenn der Bildschirm mitten im Ablauf zumacht. Der Test
+dazu kommt ohne jedes Widget aus; läuft es am nackten Container durch, kann
+kein Bildschirm es mehr abwürgen.
+
+**Der Weg zurück geht über den Router, nicht über den Kontext.** Aus
+demselben Grund: Ein `context`, den es nicht mehr gibt, navigiert nicht.
+
+**Das Abmelden steht in einem eigenen `try`.** Scheitert es – etwa weil das
+Konto serverseitig schon weg ist –, wird der Weg zur Anmeldung trotzdem
+gegangen. Ein Nutzer, der in einer App auf ein totes Konto starrt, ist der
+schlechtere von zwei Ausgängen.
+
+**Und die Meldung nennt ihren Namen.** „Etwas ist schiefgelaufen" sagt weder
+dem Nutzer noch uns, wonach zu suchen wäre – mit dieser Meldung blieb der
+Fehler tagelang unentdeckt. Jetzt steht der Code darunter:
+„Technischer Hinweis: internal: null".
+
+**Preis:** Der technische Hinweis ist Kauderwelsch für die meisten. Er steht
+deshalb in einer zweiten Zeile und nur beim unerwarteten Fehler – bei
+„keine Verbindung" oder „bitte neu anmelden" wäre er Ballast, denn dort ist
+schon klar, was zu tun ist.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`
