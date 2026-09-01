@@ -225,8 +225,15 @@ class StreakRepository {
   Set<String> get jokerTage => _tagesliste(_kJoker);
 
   /// Wie viele Joker dieser Kalendermonat noch hergibt.
-  int get jokerUebrig {
-    final monat = PlanProgressRepository.schluessel(heute()).substring(0, 7);
+  int get jokerUebrig => jokerUebrigAm(heute());
+
+  /// Dasselbe für einen beliebigen Tag.
+  ///
+  /// Mit Datum und nicht nur für heute, damit sich die Regel „am Ersten
+  /// wieder zwei" prüfen lässt, ohne auf den Monatswechsel zu warten: Ein
+  /// Test, der `DateTime.now()` benutzt, sagt am 15. etwas anderes als am 1.
+  int jokerUebrigAm(DateTime tag) {
+    final monat = PlanProgressRepository.schluessel(tag).substring(0, 7);
     final verbraucht = jokerTage.where((t) => t.startsWith(monat)).length;
     return (jokerProMonat - verbraucht).clamp(0, jokerProMonat);
   }

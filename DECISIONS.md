@@ -4681,6 +4681,48 @@ die man erst am Ende sieht. Sie hier vorher abzufangen hätte bedeutet, die
 Modulauswahl für diesen einen Weg umzubauen; das ist es nicht wert, solange
 der Fehler ehrlich und kostenlos ist.
 
+## 92 · Ein Test, der am Ersten umfällt, prüft das Datum
+
+Der Joker-Test in `storage_test.dart` scheiterte am 01.09.2026 – und hätte
+das an jedem Ersten getan. Die App rechnete richtig; der Test tat es nicht.
+
+**Warum.** Er hakte Tage relativ zu `DateTime.now()` ab und verlangte danach,
+dass das Monatskontingent aufgebraucht ist. Am Ersten liegen die
+überbrückten Tage aber im **Vormonat** und verbrauchen dessen Kontingent –
+während die Zusicherung den laufenden Monat ansah, in dem noch beide Joker
+frei sind. Genau die Regel aus DECISIONS 42, „am Ersten wieder zwei", hat den
+Test umgeworfen.
+
+Derselbe Fehler steckte in „nach zwei Jokern ist Schluss": Am Zweiten und am
+Dritten eines Monats verteilt sich die Lücke auf zwei Monatskontingente, und
+dann wird eben doch überbrückt.
+
+**Die Reparatur rechnet mit festen Tagen.** `serieRechnen` ist seit jeher
+eine freie Funktion, die Start, Tage und Kontingent von außen bekommt und
+kein Heute kennt – die Tests hätten von Anfang an dort ansetzen können. Jetzt
+tun sie es: 15.05. mit einer Lücke am 13. und 14., alles nachrechenbar.
+
+**Der Monatswechsel ist ein eigener Fall geworden**, statt eine Falle zu
+sein. Eine Lücke vom 29.05. bis zum 03.06. überbrückt **vier** Tage – zwei
+aus dem Mai, zwei aus dem Juni. Dieselbe Lücke ganz im Juni überbrückt nur
+zwei. Das ist die Regel, und so steht sie jetzt da.
+
+**Eine kleine Änderung am Code war nötig**, und sie ist ihr Geld wert:
+`jokerUebrig` liest weiterhin `heute()`, delegiert aber an `jokerUebrigAm(tag)`.
+Damit lässt sich „am Letzten null, am Ersten wieder zwei" prüfen, ohne auf
+den Monatswechsel zu warten.
+
+**Und die Zusage wird nachgerechnet, nicht behauptet:** Ein Test läuft
+365 Starttage durch und verlangt jedes Mal dasselbe Ergebnis. „Besteht an
+jedem Tag des Jahres" ist damit kein Vorsatz mehr, sondern eine geprüfte
+Eigenschaft.
+
+**Preis:** Die verbleibenden Serientests rechnen weiter mit `heute` –
+bewusst. Sie prüfen Dinge, an denen das Datum nichts ändert (drei Tage am
+Stück bleiben drei Tage am Stück) und belegen nebenbei, dass die Kette von
+Hive bis zur Zahl steht. Wo das Datum das Ergebnis ändern kann, steht jetzt
+ein festes.
+
 ## Mock vs. Live
 
 Erhoben am 24.08.2026 über drei echte Analysen gegen `gemini-2.5-flash`

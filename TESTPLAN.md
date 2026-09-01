@@ -2954,3 +2954,87 @@ liefert. Kosten: eine der zehn Analysen des Monats plus Tokens.
 | Der Goldrahmen am Gesamtbild ist noch da | Notieren. |
 | Der Knopf heißt weiter „Plan erstellen" | Notieren. |
 | Das `kurzfazit` fehlt im echten Report | Notieren, mit Screenshot. |
+
+## 42 · Zwei Nacharbeiten
+
+Prüft DECISIONS 91 und 92. **Kein echter Analyse-Lauf nötig, kein Deploy,
+keine Kosten** – bis auf den freiwilligen Schritt 8, der einen Lauf kostet.
+
+```bash
+flutter run --dart-define=TRUEGLOW_MOCK=true
+```
+
+### A · Der Weg zurück zu denselben Fotos
+
+> Voraussetzung: Es gibt schon einen Report **und** die Fotos dazu. Im
+> Demo-Modus also einmal eine Analyse durchlaufen lassen, bevor du anfängst.
+
+1. **Die Aktion steht da.** Startseite → Tab **Analyse**. Erwartet: unter dem
+   Knopf „Neue Analyse" eine zweite, ruhigere Zeile
+   **„Mit vorhandenen Fotos neu berechnen"** mit einem Untertext darunter.
+   *Kriterium:* Sieht sie genauso laut aus wie „Neue Analyse", notieren –
+   sie soll die leisere von beiden sein.
+
+2. **Der Preis steht dabei.** Den Untertext lesen. Erwartet: Er endet mit
+   **„kostet einen Analyse-Lauf"**.
+   *Kriterium:* Fehlt der Hinweis, ist das ein **Blocker** – ein Weg ohne
+   Kamera darf nicht aussehen, als wäre er umsonst.
+
+3. **Der Weg.** Antippen. Erwartet in dieser Folge:
+   **Modulauswahl → Deine Richtung → Das will ich ausprobieren → Berechnung.**
+   Die Kamera kommt **nicht**.
+   *Kriterium:* Geht der Aufnahme-Bildschirm auf, ist das ein **Blocker**.
+
+4. **Vorbelegt ist, was der letzte Report hatte.** Auf der Modulauswahl.
+   Erwartet: Die Bereiche des letzten Reports sind schon angehakt.
+
+5. **Auch über „Überspringen".** Noch einmal von vorn, diesmal bei
+   „Das will ich ausprobieren" oben rechts auf **Überspringen** tippen.
+   Erwartet: ebenfalls direkt die Berechnung, keine Kamera.
+
+6. **Der normale Weg bleibt normal.** Zurück zum Analyse-Tab, diesmal
+   **„Neue Analyse"**. Erwartet: Modus → Module → Richtung → Ausprobieren →
+   **Kamera**. Wie immer.
+   *Kriterium:* Springt auch dieser Weg an der Kamera vorbei, ist das ein
+   **Blocker** – dann steht der Merker noch.
+
+7. **Auf Englisch.** Einstellungen → Sprache **English** → Tab Analyse.
+   Erwartet: englische Beschriftung und englischer Untertext. Danach zurück.
+
+8. **Freiwillig, kostet einen Lauf.** Wenn du es wirklich sehen willst: den
+   Demo-Modus verlassen, im Analyse-Tab „Mit vorhandenen Fotos neu berechnen"
+   antippen, eine andere Richtung wählen und durchlaufen lassen. Erwartet: ein
+   neuer Report aus denselben Fotos, mit der neuen Richtung in der
+   Auswahl-Zeile.
+
+### B · Der Joker-Test
+
+> Reine Kopfsache, kein Gerät nötig – aber der Punkt, an dem sich zeigt, ob
+> die Reparatur gehalten hat.
+
+9. **Alle Tests laufen durch:**
+
+   ```bash
+   flutter test
+   ```
+
+   Erwartet: **All tests passed** – und zwar unabhängig vom Datum. Der Test,
+   der bis zum 01.09.2026 am Monatsersten umfiel, rechnet jetzt mit festen
+   Tagen.
+
+10. **Die Gegenprobe.** Im Ergebnis steht ein Test namens
+    **„die Regel hält an jedem Tag des Jahres"**. Er rechnet 365 Starttage
+    durch. Wenn der grün ist, ist die Zusage nachgerechnet und nicht
+    behauptet.
+
+### Was ein Fund ist
+
+| Fund | Reaktion |
+|---|---|
+| Der Weg über „neu berechnen" öffnet die Kamera | Blocker. |
+| Der normale Weg öffnet die Kamera **nicht** mehr | Blocker. |
+| Der Preishinweis fehlt | Blocker. |
+| Die Aktion erscheint, obwohl es keinen Report oder keine Fotos gibt | Blocker. |
+| Die Bereiche des letzten Reports sind nicht vorbelegt | Notieren. |
+| Die zweite Aktion wirkt so laut wie „Neue Analyse" | Notieren. |
+| `flutter test` meldet einen roten Test | Notieren, mit dem Namen. |

@@ -159,31 +159,136 @@ void main() {
     test('eine Luecke ueberbruecken die Joker', () async {
       // Zwei verpasste Tage faengt das Monatskontingent ab – gezaehlt
       // werden weiterhin nur die beiden Tage mit echtem Haken.
+      //
+      // Dieser Fall darf mit `heute` rechnen: Zwei verpasste Tage werden
+      // überbrückt, egal ob sie in einen Monat fallen oder in zwei. Wo das
+      // Datum das Ergebnis ändert, stehen unten feste Tage.
       await hakeAb(0);
       await hakeAb(3);
       expect(streakRepo().berechneAktuell(const []), 2);
     });
 
-    test('nach zwei Jokern ist Schluss', () async {
-      await hakeAb(0);
-      await hakeAb(4);
-      expect(streakRepo().berechneAktuell(const []), 1);
+    test('ein verbrauchter Joker springt nicht zweimal ein', () {
+      // **Mit festem Datum, nicht mit `heute`.** Vorher rechnete dieser Test
+      // von `DateTime.now()` rückwärts – und fiel damit an jedem Ersten eines
+      // Monats um: Die überbrückten Tage lagen dann im Vormonat und
+      // verbrauchten dessen Kontingent, während die Zusicherung den laufenden
+      // Monat ansah. Die App rechnete richtig, der Test nicht (DECISIONS 92).
+      //
+      // Geprüft wird die Regel selbst: `serieRechnen` bekommt Start, Tage und
+      // Kontingent von außen und kennt kein Heute.
+      const geschafft = {'2026-05-15', '2026-05-12'};
+      bool erledigt(DateTime tag) =>
+          geschafft.contains(PlanProgressRepository.schluessel(tag));
+
+      // Erster Lauf: Die Lücke am 13. und 14. wird überbrückt.
+      final erst = serieRechnen(
+        start: DateTime(2026, 5, 15),
+        geschafft: erledigt,
+        jokerTage: const {},
+        jokerProMonat: StreakRepository.jokerProMonat,
+      );
+      expect(erst.laenge, 2);
+      expect(erst.neueJoker..sort(), ['2026-05-13', '2026-05-14']);
+
+      // Zweiter Lauf mit denselben Tagen: Sie sind schon gerettet und werden
+      // nicht erneut abgerechnet – aber es kommt auch nichts dazu.
+      final zweit = serieRechnen(
+        start: DateTime(2026, 5, 15),
+        geschafft: erledigt,
+        jokerTage: const {'2026-05-13', '2026-05-14'},
+        jokerProMonat: StreakRepository.jokerProMonat,
+      );
+      expect(zweit.laenge, 2);
+      expect(zweit.neueJoker, isEmpty);
+
+      // Und das Kontingent des Monats ist damit aufgebraucht: Eine zweite
+      // Lücke im selben Mai wird nicht mehr überbrückt.
+      const mitLuecke = {'2026-05-15', '2026-05-12', '2026-05-10'};
+      final dritt = serieRechnen(
+        start: DateTime(2026, 5, 15),
+        geschafft: (tag) =>
+            mitLuecke.contains(PlanProgressRepository.schluessel(tag)),
+        jokerTage: const {'2026-05-13', '2026-05-14'},
+        jokerProMonat: StreakRepository.jokerProMonat,
+      );
+      expect(dritt.laenge, 2);
+      expect(dritt.neueJoker, isEmpty);
     });
 
-    test('ein verbrauchter Joker springt nicht zweimal ein', () async {
-      // Die Serie wird bei jedem Laden neu gerechnet. Ohne Festschreiben
-      // waere das Monatskontingent wertlos.
-      await hakeAb(0);
-      await hakeAb(3);
+    test('das Kontingent gilt je Kalendermonat, nicht je Lücke', () {
+      // Der Fall, der den alten Test umgeworfen hat, jetzt ausdrücklich:
+      // eine Lücke über den Monatswechsel. Vier verpasste Tage werden
+      // überbrückt, weil zwei davon dem Mai gehören und zwei dem Juni.
+      const geschafft = {'2026-06-03', '2026-05-29'};
+      final stand = serieRechnen(
+        start: DateTime(2026, 6, 3),
+        geschafft: (tag) =>
+            geschafft.contains(PlanProgressRepository.schluessel(tag)),
+        jokerTage: const {},
+        jokerProMonat: StreakRepository.jokerProMonat,
+      );
+
+      expect(stand.laenge, 2);
+      expect(
+        stand.neueJoker..sort(),
+        ['2026-05-30', '2026-05-31', '2026-06-01', '2026-06-02'],
+      );
+    });
+
+    test('innerhalb eines Monats ist nach zwei Jokern Schluss', () {
+      // Dieselbe Lücke, aber ganz im Juni: Nach zwei geretteten Tagen reißt
+      // die Kette.
+      const geschafft = {'2026-06-10', '2026-06-05'};
+      final stand = serieRechnen(
+        start: DateTime(2026, 6, 10),
+        geschafft: (tag) =>
+            geschafft.contains(PlanProgressRepository.schluessel(tag)),
+        jokerTage: const {},
+        jokerProMonat: StreakRepository.jokerProMonat,
+      );
+
+      expect(stand.laenge, 1);
+    });
+
+    test('die Regel hält an jedem Tag des Jahres', () {
+      // Der eigentliche Auftrag: Der Test soll nicht davon abhängen, wann er
+      // läuft. Statt es zu behaupten, wird es durchgerechnet – 365 Starttage,
+      // jedes Mal dieselbe Lücke von zwei Tagen, jedes Mal dasselbe Ergebnis.
+      for (var i = 0; i < 365; i += 1) {
+        final start = DateTime(2026, 1, 1).add(Duration(days: i));
+        final vorher = start.subtract(const Duration(days: 3));
+        final geschafft = {
+          PlanProgressRepository.schluessel(start),
+          PlanProgressRepository.schluessel(vorher),
+        };
+
+        final stand = serieRechnen(
+          start: start,
+          geschafft: (tag) =>
+              geschafft.contains(PlanProgressRepository.schluessel(tag)),
+          jokerTage: const {},
+          jokerProMonat: StreakRepository.jokerProMonat,
+        );
+
+        expect(stand.laenge, 2, reason: '$start');
+        expect(stand.neueJoker.length, 2, reason: '$start');
+      }
+    });
+
+    test('am Letzten aufgebraucht, am Ersten wieder zwei', () async {
+      // Die Zusage aus DECISIONS 42 in einem Satz – und der Grund, warum der
+      // Zähler ein Datum entgegennimmt statt `heute` zu lesen.
+      final box = Hive.box<dynamic>(HiveService.boxFortschritt);
+      await box.put('streakJokerTage', ['2026-05-30', '2026-05-31']);
 
       final repo = streakRepo();
-      repo.laden(const []);
-      expect(repo.jokerUebrig, 0);
+      expect(repo.jokerUebrigAm(DateTime(2026, 5, 31)), 0);
+      expect(repo.jokerUebrigAm(DateTime(2026, 6, 1)), 2);
 
-      // Zweiter Lauf: dieselben Tage, kein weiterer Verbrauch.
-      final stand = streakRepo().laden(const []);
-      expect(stand.aktuell, 2);
-      expect(stand.jokerUebrig, 0);
+      // Und ein einzelner verbrauchter Joker lässt genau einen übrig.
+      await box.put('streakJokerTage', ['2026-06-04']);
+      expect(streakRepo().jokerUebrigAm(DateTime(2026, 6, 30)), 1);
     });
 
     test('ohne jeden Haken ist die Serie null', () {
