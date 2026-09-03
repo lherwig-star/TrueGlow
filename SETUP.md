@@ -849,8 +849,16 @@ liegt jetzt im Repo statt erst beim ersten Bau zu entstehen, mit
 ☑ **7.5 Xcode-Projekt**, soweit ohne Apple-Konto möglich — erledigt am
 03.09.2026. Capability **Sign in with Apple** liegt als
 `ios/Runner/Runner.entitlements` und ist in allen drei
-Runner-Konfigurationen als `CODE_SIGN_ENTITLEMENTS` eingehängt;
-`GoogleService-Info.plist` liegt im Runner-Ordner und im Repo (DECISIONS 96).
+Runner-Konfigurationen als `CODE_SIGN_ENTITLEMENTS` eingehängt.
+`GoogleService-Info.plist` liegt im Runner-Ordner, im Repo (DECISIONS 96)
+**und im Xcode-Ziel** — Datei-Verweis, Bau-Datei, Projektgruppe und
+Resources-Bauphase.
+
+> **Nachtrag vom selben Tag.** Dieser Punkt war am Vormittag zu früh
+> abgehakt: Die Datei lag im Ordner, war im Projekt aber mit keinem einzigen
+> Verweis eingetragen und wäre in keiner gebauten App gelandet. Xcode kopiert
+> nur, was im Projekt steht. Aufgefallen wäre es erst auf dem Gerät, beim
+> Google-Login — Firebase selbst kommt ohne die Datei aus (DECISIONS 100).
 
 > **Offen bleibt das Signing-Team.** Es ist die Kennung des
 > Apple-Developer-Kontos und kann erst eingetragen werden, wenn 7.1 steht.
@@ -877,6 +885,25 @@ Vorarbeit liegt in `store/data-safety.md`), Altersfreigabe, Listing-Texte
 (`store/listing-de.md`) und — leicht zu vergessen und ein häufiger
 Ablehnungsgrund — ein **Prüf-Zugang für die Apple-Prüfer**. Die App verlangt
 eine Anmeldung; ohne Testkonto in den Prüfhinweisen kommt sie zurück.
+
+☐ **7.9 Crashlytics: Symboldatei hochladen** — offen, braucht erst das
+Apple-Konto.
+
+Ohne diesen Schritt kommen iOS-Abstürze zwar in der Konsole an, aber ohne
+lesbare Zeilenangaben — statt „`camera_screen.dart`, Zeile 412" steht dort
+eine Speicheradresse. Der Absturz ist gemeldet, nur nicht auffindbar.
+
+Nötig ist eine zusätzliche Bauphase im Runner-Ziel, die
+`${PODS_ROOT}/FirebaseCrashlytics/run` aufruft. Das Paket bringt sie nicht
+von selbst mit — die `.podspec` von `firebase_crashlytics` 5.2.7 enthält
+keine `script_phase`, und die Paket-Anleitung erwähnt iOS nicht.
+
+> **Warum das noch nicht eingebaut ist:** Eine Bauphase, die auf einen Pfad
+> innerhalb der Pods zeigt, lässt sich von diesem Rechner aus nicht prüfen.
+> Sie käme genau in dem Moment dazu, in dem der iOS-Bau gerade erst zum
+> Laufen gebracht wird — ein zusätzlicher Grund für einen roten Lauf, den
+> man dann vom eigentlichen unterscheiden müsste. Sie gehört in den ersten
+> ruhigen Lauf nach dem ersten grünen.
 
 ---
 

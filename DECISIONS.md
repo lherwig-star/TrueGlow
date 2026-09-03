@@ -5304,16 +5304,31 @@ iOS-Umsetzung, Swift-Versionskonflikte — genau die Klasse von Fehlern, die
 sonst erst beim ersten Upload auftaucht, dann aber unter Zeitdruck. Für
 öffentliche Repos sind diese Rechner kostenlos.
 
-*Der Berechtigungs-Filter* ist der unscheinbarste und der wichtigste Punkt.
-Ohne ihn übersetzt `permission_handler` alle Berechtigungen mit, die es
-kennt — Standort, Kontakte, Kalender, Mikrofon, Gesundheit. Apple sucht im
-fertigen Programm nach den zugehörigen Systemaufrufen und verlangt für jeden
-gefundenen einen Erklärtext im `Info.plist`; fehlt er, wird der Upload
-abgelehnt. Die App braucht davon nichts: `permission_handler` wird hier
-ausschließlich für `openAppSettings` benutzt (`camera_screen.dart:1361`).
-Kamera, Fotos und Benachrichtigungen bleiben trotzdem auf `1` — ihre
-Erklärtexte sind gepflegt, und so wirkt eine später ergänzte Abfrage sofort,
-statt still „dauerhaft verweigert" zu liefern.
+*Die Berechtigungs-Liste* im Podfile nennt für jede Berechtigung, die
+`permission_handler` kennt, ausdrücklich `1` oder `0`.
+
+> **Korrigiert am 03.09.2026, noch am selben Tag.** Hier stand zuerst, ohne
+> diese Liste würde `permission_handler` *alle* Berechtigungen mitübersetzen
+> — Standort, Kontakte, Kalender, Mikrofon — und Apple lehne den Upload ab,
+> wenn der zugehörige Erklärtext fehlt. Das galt für ältere Fassungen. In der
+> hier gepinnten (`permission_handler` 12.0.0 →
+> `permission_handler_apple` 9.6.1) steht in `PermissionHandlerEnums.h` für
+> **jede** Berechtigung `#ifndef … #define … 0`. Voreingestellt ist also
+> nichts an, und die Liste nimmt nichts weg — die drei Einsen schalten sogar
+> etwas *zu*. Nachgesehen wurde das erst, als die Namen der Schalter auf
+> Tippfehler geprüft wurden; die ursprüngliche Begründung war aus der
+> Erinnerung geschrieben und nicht am Paket nachgeprüft.
+
+Die Liste bleibt trotzdem, aus zwei Gründen. Erstens sagt sie ausdrücklich,
+was gewollt ist, statt sich auf eine Voreinstellung zu verlassen, die das
+Paket zwischen zwei Fassungen schon einmal umgedreht hat. Zweitens sind
+Kamera, Fotos und Benachrichtigungen bewusst auf `1`: Die App fragt heute
+nichts davon über `permission_handler` ab — es wird ausschließlich für
+`openAppSettings` benutzt (`camera_screen.dart:1361`) —, aber ihre
+Erklärtexte sind gepflegt, und eine später ergänzte Abfrage wirkt damit
+sofort, statt still „dauerhaft verweigert" zu liefern. Die APIs dahinter
+stecken über `camera` und `image_picker` ohnehin schon im Programm; die drei
+Einsen vergrößern also nicht, was Apple beim Prüfen findet.
 
 *iPhone allein* folgt daraus, dass wer iPad anmeldet, es auch prüfen lassen
 muss: eigene Bildschirmfotos im Store, und Apples Prüfer nehmen ein iPad in
@@ -5428,7 +5443,14 @@ Projekt: `google_mlkit_commons`, `google_mlkit_face_detection` und
 `deployment_target = 15.5`. CocoaPods bricht in so einem Fall ab, bevor eine
 einzige Datei übersetzt wird. Gefunden wurde das nicht im Protokoll, sondern
 durch Nachsehen in den Podspecs im lokalen Paket-Cache — die drei ML-Kit-
-Pakete sind die einzigen im Projekt, die über 15.0 hinausgehen.
+Pakete sind die einzigen im Projekt, die über 15.0 hinausgehen. Der Lauf,
+der noch mit 15.0 unterwegs war, hat es anschließend wörtlich bestätigt:
+
+```
+[!] CocoaPods could not find compatible versions for pod "google_mlkit_commons"
+    Specs satisfying the dependency were found, but they
+    required a higher minimum deployment target.
+```
 
 Für Nutzer ist der Unterschied klein: Jedes Gerät, das iOS 15 bekommt,
 bekommt auch 15.5.
@@ -5445,3 +5467,73 @@ niemand, aber es ist eine Einschränkung. Und `npx firebase-tools` ohne feste
 Fassung bleibt eine offene Flanke: Der nächste Sprung der Werkzeugkette kann
 die CI wieder ohne Zutun rot färben. Das ist bewusst so belassen — eine
 festgenagelte Fassung veraltet ebenso still, nur unsichtbar.
+
+---
+
+## 100 · Was ein Bau nicht findet
+
+Der Mac-Bau prüft, ob sich die App übersetzen lässt. Er sagt nichts darüber,
+ob sie sich auf einem iPhone richtig verhält. Deshalb ein zweiter Durchgang
+von Hand: Für jedes Paket mit iOS-Anteil nachlesen, welche Einrichtung im
+`Runner`-Projekt es verlangt, und mit dem vergleichen, was dort steht.
+
+Gefunden wurde eine Lücke — und ein Schritt, der ausdrücklich nicht gebraucht
+wird.
+
+**Was:** In `ios/Runner/AppDelegate.swift` steht jetzt
+
+```swift
+UNUserNotificationCenter.current().delegate =
+  self as? UNUserNotificationCenterDelegate
+```
+
+**Warum:** Das ist der Pflichtschritt aus der iOS-Anleitung von
+`flutter_local_notifications`. Ohne ihn blendet iOS eine fällige Erinnerung
+nicht ein, solange die App im Vordergrund steht. Die Tageserinnerung
+verhielte sich auf dem iPhone also anders als auf Android — und zwar
+lautlos: Kein Bau, kein Test und keine Fehlermeldung zeigt es an, es
+passiert schlicht nichts. Das ist die Sorte Fehler, die man erst auf dem
+Gerät bemerkt, wenn man weiß, wonach man sucht.
+
+`as?` statt `as`: Sollte `FlutterAppDelegate` das Protokoll in einer
+künftigen Flutter-Fassung nicht mehr erfüllen, bleibt die Zuweisung
+wirkungslos, statt beim Start abzustürzen.
+
+**Was bewusst fehlt:** Dieselbe Anleitung nennt einen zweiten Schritt,
+`FlutterLocalNotificationsPlugin.setPluginRegistrantCallback`. Der wird nur
+für den Hintergrund-Isolate von Benachrichtigungs-Aktionen gebraucht.
+Die App hat keine: Sie plant Erinnerungen, wertet aber weder Schaltflächen
+darin noch das Antippen aus — `onDidReceiveNotificationResponse` kommt im
+ganzen Projekt nicht vor. Der Schritt bliebe wirkungslos und würde nur
+suggerieren, hier gäbe es etwas zu warten.
+
+**Preis:** Zwei Zeilen, die niemand testet — der Fall tritt nur ein, wenn
+eine Erinnerung fällig wird, während die App offen ist. Nachweisbar ist das
+nur auf dem Gerät; ein Prüfschritt dafür gehört in `TESTPLAN.md`, sobald die
+App auf einem iPhone läuft.
+
+### Der zweite Fund: eine Datei, die nie im Paket gelandet wäre
+
+`ios/Runner/GoogleService-Info.plist` lag im richtigen Ordner, war im Repo,
+war in SETUP 7.5 abgehakt — und im Xcode-Projekt **mit keinem einzigen
+Verweis eingetragen**. Kein `PBXFileReference`, kein `PBXBuildFile`, nichts
+in der Resources-Bauphase. Xcode kopiert nur, was im Projekt steht; die Datei
+wäre also in keiner gebauten App gewesen.
+
+Der Bau hätte das nie gemeldet, und selbst ein Start der App hätte zunächst
+nichts gezeigt: Firebase bekommt seine Zugangsdaten aus
+`lib/firebase_options.dart` und kommt ohne die Datei aus. Auffliegen würde es
+erst beim **Google-Login** — `GoogleSignIn.instance.initialize()` wird ohne
+Argumente aufgerufen (`firebase_auth_repository.dart:129`) und liest die
+`CLIENT_ID` genau aus dieser Datei. Ohne sie schlägt die Anmeldung fehl, und
+zwar erst auf dem Gerät, im letzten Schritt vor dem Store.
+
+Eingetragen an allen vier nötigen Stellen (Datei-Verweis, Bau-Datei,
+Projektgruppe, Resources-Phase). `Runner.entitlements` ist gleich mit in die
+Gruppe gewandert — für den Bau reicht `CODE_SIGN_ENTITLEMENTS`, aber wer das
+Projekt in Xcode öffnet, soll die Datei sehen.
+
+**Was daraus zu lernen ist:** „Die Datei liegt da, wo sie hingehört" ist bei
+Xcode keine Aussage über den Bau. Der Haken an SETUP 7.5 war am 03.09.2026
+vormittags gesetzt worden, weil die Datei im Ordner lag — geprüft war nur
+die halbe Bedingung. Der Eintrag ist entsprechend korrigiert.
