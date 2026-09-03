@@ -879,6 +879,17 @@ findet trotzdem die Fehlerklasse, die sonst erst beim ersten Upload auftaucht
 > <https://github.com/lherwig-star/TrueGlow/actions> → Auftrag
 > "iOS-Bau (unsigniert)". Grüner Haken heißt: Die App baut für iPhone.
 
+> **Zum ersten Mal grün am 03.09.2026, 17:04 UTC** — Lauf #6, Commit
+> `e1e6bb6`, Bauzeit 8 Minuten 26 Sekunden. Damit ist zum ersten Mal
+> nachgewiesen, dass sich TrueGlow für das iPhone übersetzen lässt: alle
+> Pods aufgelöst, alle 21 Plugins mit iOS-Anteil gebaut, `Runner.app`
+> entstanden.
+>
+> Was das **nicht** zeigt: Signieren, Provisioning und Upload (dafür fehlt
+> das Konto, 7.1) und ob sich die App auf einem echten iPhone richtig
+> **verhält**. Der Bau prüft die Übersetzung, nicht das Verhalten — was
+> dabei zu prüfen bleibt, steht in DECISIONS 100.
+
 ☐ **7.8 App-Store-Material** — kommt, sobald das Konto steht:
 Bildschirmfotos in iPhone-Größen, Apples Datenschutz-Fragebogen (die
 Vorarbeit liegt in `store/data-safety.md`), Altersfreigabe, Listing-Texte
