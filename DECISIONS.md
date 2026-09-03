@@ -5378,3 +5378,34 @@ das Falsche.
 selbst der einen oder anderen Gruppe zuordnen. Ein Kommentar an beiden
 Stellen benennt jetzt die Abhängigkeit — das nächste Mal fällt es beim
 Eintragen auf, und wenn nicht, dann in der CI.
+
+---
+
+## 98 · Ein Fehlschlag, der von außen nur „exit code 1" sagt
+
+Der erste iOS-Bau ist gescheitert, und der Emulator-Schritt der Functions
+auch. Beides ohne erkennbaren Grund: Die Protokolle eines GitHub-Laufs sind
+nur mit Anmeldung lesbar, und über die Schnittstelle liefert der Server
+darauf `403 Forbidden`. Was ohne Anmeldung herauskommt, sind die
+**Anmerkungen** einer fehlgeschlagenen Prüfung — und darin stand genau ein
+Satz: „Process completed with exit code 1."
+
+**Was:** Beide Schritte schreiben ihre Ausgabe zusätzlich in eine Datei
+(`ios-build.log`, `emulator.log`). Scheitert der Schritt, hängt ein
+`if: failure()`-Schritt die letzten 50 Zeilen als Fehler-Anmerkung an den
+Lauf.
+
+**Warum:** Ohne das ist jeder Fehlschlag eine Ratestunde. Mit ihm steht der
+Grund dort, wo er auch ohne Konto sichtbar ist — im selben Kasten, in dem
+GitHub sonst nur die Abbruchmeldung zeigt. Der Umweg über eine Anmerkung
+statt über das Protokoll ist nicht schön, aber er ist der einzige Kanal, der
+ohne Anmeldung trägt.
+
+Nebenbefund aus demselben Versuch: In der Anmerkung dürfen keine echten
+Zeilenumbrüche stehen, GitHub schneidet nach der ersten Zeile ab. Sie werden
+deshalb als `%0A` kodiert, und `%` davor als `%25` — sonst frisst der Parser
+Prozentzeichen aus dem Protokoll.
+
+**Preis:** Zwei Schritte mehr je Auftrag und eine Protokolldatei, die im
+Erfolgsfall niemand ansieht. Dafür kostet der nächste rote Lauf keine
+Rückfrage mehr.

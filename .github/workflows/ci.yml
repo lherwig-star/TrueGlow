@@ -61,7 +61,22 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - run: npx firebase-tools emulators:exec --only firestore --project trueglow-regeltest "npx vitest run --config vitest.rules.config.ts"
+      - name: Rules-Tests gegen den Emulator
+        run: |
+          set -o pipefail
+          npx firebase-tools emulators:exec --only firestore --project trueglow-regeltest "npx vitest run --config vitest.rules.config.ts" 2>&1 | tee emulator.log
+
+      # Warum dieser Schritt existiert: Das Protokoll eines Laufs ist nur mit
+      # GitHub-Anmeldung lesbar. Die Anmerkungen einer fehlgeschlagenen
+      # Pruefung sind es ohne. Ohne ihn steht bei einem Fehlschlag nach aussen
+      # nur "Process completed with exit code 1" und man muss raten
+      # (DECISIONS 98).
+      - name: Fehler sichtbar machen
+        if: failure()
+        run: |
+          tail -80 emulator.log || true
+          MSG=$(tail -50 emulator.log | tr -d '\015' | sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+          echo "::error title=Rules-Tests gescheitert::${MSG}"
 
   # ---------------------------------------------------------------------------
   # iOS: baut die App auf einem Mac-Mietrechner von GitHub. Fuer oeffentliche
@@ -100,7 +115,21 @@ jobs:
           xcodebuild -version
 
       - name: iOS bauen
-        run: flutter build ios --release --no-codesign
+        run: |
+          set -o pipefail
+          flutter build ios --release --no-codesign 2>&1 | tee ios-build.log
+
+      # Warum dieser Schritt existiert: Das Protokoll eines Laufs ist nur mit
+      # GitHub-Anmeldung lesbar. Die Anmerkungen einer fehlgeschlagenen
+      # Pruefung sind es ohne. Ohne ihn steht bei einem Fehlschlag nach aussen
+      # nur "Process completed with exit code 1" und man muss raten
+      # (DECISIONS 98).
+      - name: Fehler sichtbar machen
+        if: failure()
+        run: |
+          tail -80 ios-build.log || true
+          MSG=$(tail -50 ios-build.log | tr -d '\015' | sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+          echo "::error title=iOS-Bau gescheitert::${MSG}"
 
       # Damit sich die Groesse ueber die Zeit verfolgen laesst und im Fehlerfall
       # sichtbar ist, ob ueberhaupt etwas entstanden ist.
