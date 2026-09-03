@@ -220,29 +220,42 @@ jobs:
           flutter build ios --simulator --debug 2>&1 | tee simbau.log
 
       # Laeuft auch nach einem Fehlschlag, denn genau dann wird sie gebraucht.
-      - name: Beweismittel sichern
+      #
+      # Zwei getrennte Anmerkungen: GitHub kuerzt eine lange, und im ersten
+      # Anlauf war ausgerechnet der Bau-Fehler das Abgeschnittene. Die
+      # wichtigere kommt zuerst.
+      - name: Fehlerzeilen des Simulator-Baus
+        if: always()
+        run: |
+          echo "--- alle Zeilen mit error/failed ---"
+          grep -inE "error|failed|cannot|unable|no such" simbau.log \
+            | head -40 > fehler.txt || true
+          cat fehler.txt
+          MSG=$(head -35 fehler.txt | tr -d '\015' | sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+          echo "::error title=Simulator-Bau Fehlerzeilen::${MSG:-nichts gefunden}"
+
+      - name: Umfeld des Simulator-Baus
         if: always()
         run: |
           {
-            echo "### ios/Flutter/Debug.xcconfig"
-            cat ios/Flutter/Debug.xcconfig || true
-            echo "### Podfile.lock vorhanden?"
-            ls -la ios/Podfile.lock ios/Pods/Manifest.lock 2>&1 || true
-            echo "### Target Support Files"
-            ls "ios/Pods/Target Support Files" 2>&1 || true
-            echo "### Linker-Zeilen aus Pods-Runner.debug.xcconfig"
-            grep -E "OTHER_LDFLAGS|FRAMEWORK_SEARCH_PATHS|LIBRARY_SEARCH_PATHS" \
+            echo "Pods_Runner in OTHER_LDFLAGS?"
+            grep -c "Pods_Runner" \
               "ios/Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig" 2>&1 || true
-            echo "### Was heisst das Pods-Ergebnis - Framework oder Bibliothek?"
-            find ios/Pods -maxdepth 3 -name "Pods_Runner*" -o -name "libPods-Runner*" 2>/dev/null || true
-            echo "### Workspace"
-            cat ios/Runner.xcworkspace/contents.xcworkspacedata || true
-            echo "### Letzte Zeilen des Simulator-Baus"
-            tail -25 simbau.log 2>/dev/null || echo "(kein simbau.log)"
-          } > beweise.txt 2>&1
-          cat beweise.txt
-          MSG=$(tail -90 beweise.txt | tr -d '\015' | sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
-          echo "::error title=Beweismittel Simulator-Bau::${MSG}"
+            echo "Pods_Runner im Xcode-Projekt (von pod install ergaenzt)?"
+            grep -c "Pods_Runner" ios/Runner.xcodeproj/project.pbxproj 2>&1 || true
+            echo "Gebaute Pods-Erzeugnisse:"
+            find ~/Library/Developer/Xcode/DerivedData -name "Pods_Runner.framework" \
+              -maxdepth 6 2>/dev/null | head -5 || true
+            find ios/Pods -maxdepth 2 -name "*.xcframework" 2>/dev/null | head -10 || true
+            echo "Rechnerarchitektur:"
+            uname -m
+            echo "Simulator-Scheiben von MLKitFaceDetection:"
+            ls ios/Pods/MLKitFaceDetection/Frameworks/*.xcframework 2>/dev/null || true
+            ls ios/Pods/MLKitFaceDetection/Frameworks/*/*/ 2>/dev/null | head -20 || true
+          } > umfeld.txt 2>&1
+          cat umfeld.txt
+          MSG=$(head -35 umfeld.txt | tr -d '\015' | sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+          echo "::error title=Umfeld Simulator-Bau::${MSG}"
 
       - name: Durchlauf und Aufnahmen
         run: |
