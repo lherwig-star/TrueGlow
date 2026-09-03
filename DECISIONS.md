@@ -5261,3 +5261,83 @@ und die Check-in-Logik ordnet Habits ihrem Modul zu
 (`checkin_service.dart:153`), was bei modul-losen Plan-Habits nicht ginge. Der
 Ausbau ist nicht dringend, aber er sollte vor der Einreichung passieren,
 solange das Datenformat noch keine veröffentlichte Version hat.
+
+---
+
+## 96 · iOS bauen, ohne einen Mac zu besitzen
+
+Die App ist von Aussehen und Funktion her startbereit, und sie soll auf das
+iPhone. Der Entwicklungsrechner ist ein Windows-10-Gerät. Eine iOS-App lässt
+sich dort nicht bauen — das ist keine Einstellung, sondern Apples
+Lizenzbedingung für Xcode.
+
+**Was:** Der iOS-Bau läuft als eigener Auftrag `ios` in
+`.github/workflows/ci.yml` auf einem Mac-Mietrechner von GitHub, mit
+`flutter build ios --release --no-codesign`. Dazu fünf Vorbereitungen im
+`ios/`-Verzeichnis, die vorher nie gemacht wurden — das Projekt war für iOS
+konfiguriert, aber noch nie gebaut:
+
+1. `ios/Runner/Runner.entitlements` mit `com.apple.developer.applesignin`,
+   in allen drei Runner-Konfigurationen als `CODE_SIGN_ENTITLEMENTS`
+   eingehängt.
+2. `CFBundleURLTypes` in `ios/Runner/Info.plist` mit der
+   `REVERSED_CLIENT_ID` — der Rückweg des Google-Logins (SETUP.md 7.6).
+3. `ITSAppUsesNonExemptEncryption = false`. Die App verschlüsselt nichts
+   selbst, sie benutzt HTTPS. Ohne den Schlüssel hält App Store Connect
+   jeden Upload an und fragt nach der Ausfuhrgenehmigung.
+4. `ios/Podfile` mit `platform :ios, '15.0'` und einem Berechtigungs-Filter
+   für `permission_handler`.
+5. `TARGETED_DEVICE_FAMILY` von `"1,2"` auf `1` — nur iPhone. Und
+   `UISupportedInterfaceOrientations` auf Hochformat allein, passend zu dem,
+   was `main.dart` zur Laufzeit ohnehin erzwingt.
+
+Dazu liegt `ios/Runner/GoogleService-Info.plist` jetzt im Repo, statt
+ausgeschlossen zu sein.
+
+**Warum:** Der Reihe nach.
+
+*Der Mac in der Cloud* ist nicht die zweitbeste Lösung, sondern die, die
+zuerst etwas liefert. Das Apple-Developer-Konto hängt an einer beantragten
+D-U-N-S-Nummer und kann Wochen brauchen. Der unsignierte Bau braucht kein
+Konto: Er findet Pods, die sich auf iOS 15 nicht übersetzen, Plugins ohne
+iOS-Umsetzung, Swift-Versionskonflikte — genau die Klasse von Fehlern, die
+sonst erst beim ersten Upload auftaucht, dann aber unter Zeitdruck. Für
+öffentliche Repos sind diese Rechner kostenlos.
+
+*Der Berechtigungs-Filter* ist der unscheinbarste und der wichtigste Punkt.
+Ohne ihn übersetzt `permission_handler` alle Berechtigungen mit, die es
+kennt — Standort, Kontakte, Kalender, Mikrofon, Gesundheit. Apple sucht im
+fertigen Programm nach den zugehörigen Systemaufrufen und verlangt für jeden
+gefundenen einen Erklärtext im `Info.plist`; fehlt er, wird der Upload
+abgelehnt. Die App braucht davon nichts: `permission_handler` wird hier
+ausschließlich für `openAppSettings` benutzt (`camera_screen.dart:1361`).
+Kamera, Fotos und Benachrichtigungen bleiben trotzdem auf `1` — ihre
+Erklärtexte sind gepflegt, und so wirkt eine später ergänzte Abfrage sofort,
+statt still „dauerhaft verweigert" zu liefern.
+
+*iPhone allein* folgt daraus, dass wer iPad anmeldet, es auch prüfen lassen
+muss: eigene Bildschirmfotos im Store, und Apples Prüfer nehmen ein iPad in
+die Hand. Getestet wurde bisher ein einzelnes Android-Telefon im Hochformat.
+Die Richtung ist außerdem asymmetrisch — später erweitern kostet eine Zeile,
+später einschränken nimmt bestehenden iPad-Nutzern die App weg.
+
+*Die Firebase-Datei im Repo* kehrt eine frühere Entscheidung um. Ihre
+Begründung in der `.gitignore` war, die Datei „benenne das private Projekt".
+Das trägt nicht mehr: `lib/firebase_options.dart` nennt `trueglow-b2c1c`
+samt beider API-Schlüssel, und das Repo ist seit dem 03.09.2026 öffentlich.
+Entscheidend ist aber ein anderes Argument — die `REVERSED_CLIENT_ID` aus
+dieser Datei **muss** in die versionierte `Info.plist`. Sie wird also so oder
+so öffentlich. Die Datei zusätzlich als verschlüsseltes Geheimnis durch die
+CI zu schleusen, hätte denselben Wert öffentlich gemacht und dafür ein Teil
+mehr eingebaut, das auseinanderlaufen kann. Der Schutz liegt ohnehin nicht
+bei diesen Kennungen, sondern bei den Firestore-Regeln und App Check
+(SECURITY_AUDIT A1, A3).
+
+**Preis:** Ein CI-Auftrag, der rund eine Viertelstunde braucht und bei einem
+privaten Repo Geld kosten würde — Mac-Minuten zählen zehnfach. Der Bau ist
+unsigniert und beweist deshalb nichts über Signieren, Provisioning und
+Upload; das bleibt offen, bis das Konto steht. Nur iPhone heißt: iPad-Nutzer
+sehen die App nicht. Und die beiden API-Schlüssel des Firebase-Projekts sind
+öffentlich einsehbar — kein Geheimnis nach Googles eigener Dokumentation,
+aber sie gehören in der Google-Cloud-Konsole auf die tatsächlich genutzten
+Dienste eingeschränkt. Das ist offen und steht in SETUP.md 16.8.

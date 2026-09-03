@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- „Sign in with Apple“. Pflicht, sobald die App Google Sign-In
+	     anbietet (App-Store-Richtlinie 4.8) – der Code kann es bereits,
+	     siehe firebase_auth_repository.dart, AuthAnbieter.apple.
+
+	     Ohne diesen Eintrag bricht ASAuthorizationController zur Laufzeit
+	     mit Fehler 1000 ab. Die Capability muss zusaetzlich im
+	     Apple-Developer-Portal an der Bundle-ID aktiviert sein
+	     (SETUP.md 7.2), sonst schlaegt schon das Signieren fehl. -->
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
+</dict>
+</plist>

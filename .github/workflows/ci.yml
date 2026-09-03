@@ -21,9 +21,10 @@ jobs:
       - name: Abhaengigkeiten
         run: flutter pub get
 
-      # firebase_options.dart liegt als Platzhalter im Repo, google-services.json
-      # nicht - fuer analyze und die Unit-/Widget-Tests wird beides nicht
-      # gebraucht, weil kein Test Firebase initialisiert.
+      # analyze und die Unit-/Widget-Tests brauchen keine Firebase-Konfiguration,
+      # weil kein Test Firebase initialisiert. `android/app/google-services.json`
+      # fehlt hier also folgenlos; `lib/firebase_options.dart` und die iOS-Fassung
+      # `ios/Runner/GoogleService-Info.plist` liegen im Repo (DECISIONS 96).
       - name: Analyse
         run: flutter analyze
 
@@ -58,3 +59,47 @@ jobs:
           distribution: temurin
           java-version: '17'
       - run: npx firebase-tools emulators:exec --only firestore --project trueglow-regeltest "npx vitest run --config vitest.rules.config.ts"
+
+  # ---------------------------------------------------------------------------
+  # iOS: baut die App auf einem Mac-Mietrechner von GitHub. Fuer oeffentliche
+  # Repos sind diese Rechner kostenlos; bei einem privaten Repo zaehlt jede
+  # Mac-Minute zehnfach.
+  #
+  # `--no-codesign` heisst: bauen ohne zu signieren. Genau deshalb laeuft der
+  # Auftrag schon jetzt – ein Apple-Developer-Konto gibt es noch nicht. Was er
+  # findet, sind die Fehler, die sonst erst beim ersten Upload auftauchen:
+  # Pods, die sich auf iOS 15 nicht bauen, Plugins ohne iOS-Umsetzung,
+  # Swift-Versionen, Berechtigungen.
+  #
+  # Nicht gedeckt: Signieren, Provisioning, App Store Connect. Das kommt,
+  # sobald das Konto steht (SETUP.md 7).
+  ios:
+    name: iOS-Bau (unsigniert)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.1'
+          channel: stable
+          cache: true
+
+      - name: Abhaengigkeiten
+        run: flutter pub get
+
+      # GoogleService-Info.plist liegt seit DECISIONS 96 im Repo, es muss also
+      # nichts entpackt werden. Zur Laufzeit gebraucht wird sie hier ohnehin
+      # nicht - der Auftrag baut, er startet die App nicht.
+      - name: CocoaPods-Fassungen anzeigen
+        run: |
+          pod --version
+          xcodebuild -version
+
+      - name: iOS bauen
+        run: flutter build ios --release --no-codesign
+
+      # Damit sich die Groesse ueber die Zeit verfolgen laesst und im Fehlerfall
+      # sichtbar ist, ob ueberhaupt etwas entstanden ist.
+      - name: Ergebnis
+        run: du -sh build/ios/iphoneos/Runner.app

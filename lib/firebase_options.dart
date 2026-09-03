@@ -1,13 +1,24 @@
-// PLATZHALTER — diese Datei wird von der FlutterFire CLI erzeugt.
+// Erzeugt von der FlutterFire CLI - nicht von Hand bearbeiten:
 //
-//   flutterfire configure --project=DEINE-PROJEKT-ID \
+//   flutterfire configure --project=trueglow-b2c1c \
 //       --platforms=android,ios --out=lib/firebase_options.dart
 //
-// Bis dahin stehen hier bewusst ungueltige Werte. Sie halten das Projekt
-// kompilierbar (analyze und die Tests laufen ohne Firebase-Projekt durch),
-// erlauben aber keine echte Verbindung: [FirebaseStart] erkennt den
-// Platzhalter an der Projekt-ID und zeigt statt eines Absturzes einen
-// Hinweis auf SETUP.md, Abschnitt 2.
+// ACHTUNG: Hier stehen die ECHTEN Werte des Projekts trueglow-b2c1c, nicht
+// mehr die Platzhalter. Der Kopf dieser Datei behauptete bis zum 03.09.2026
+// das Gegenteil. Aufgefallen ist es beim Hochladen ins oeffentliche Repo -
+// da wurde die Frage "was wird hier eigentlich sichtbar" zum ersten Mal
+// gestellt.
+//
+// Die beiden `apiKey` sind keine Geheimnisse: Sie benennen das Projekt und
+// stecken in jeder ausgelieferten App-Datei, aus der sie jeder auslesen
+// kann. Der Schutz liegt bei den Firestore-Regeln und App Check
+// (SECURITY_AUDIT A1, A3); zusaetzlich einschraenken lassen sie sich in der
+// Google-Cloud-Konsole, siehe SETUP.md 16.8.
+//
+// [platzhalterProjektId] unten bleibt trotzdem stehen und wird weiter
+// gebraucht: In einer frischen Arbeitskopie ohne `flutterfire configure`
+// erkennt [FirebaseStart] daran, dass keine Konfiguration vorliegt, und
+// zeigt statt eines Absturzes einen Hinweis auf SETUP.md, Abschnitt 2.
 //
 // ignore_for_file: type=lint
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;

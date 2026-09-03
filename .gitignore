@@ -57,11 +57,15 @@ android/key.properties
 *.keystore
 
 # --- Firebase ---
-# Plattform-Konfiguration: enthaelt zwar keine geheimen Schluessel, benennt
-# aber das private Projekt. Wird per `flutterfire configure` erzeugt, siehe
-# SETUP.md.
+# Plattform-Konfiguration: enthaelt keine geheimen Schluessel. Wird per
+# `flutterfire configure` erzeugt, siehe SETUP.md.
+#
+# Die iOS-Fassung liegt seit dem 03.09.2026 bewusst IM Repo (DECISIONS 96):
+# Der iOS-Bau laeuft auf einem Mietrechner in der CI, und die darin
+# enthaltene REVERSED_CLIENT_ID muss ohnehin in die versionierte
+# Info.plist wandern. Die Android-Fassung bleibt draussen - sie wird
+# ausserhalb dieses Rechners nirgends gebraucht.
 android/app/google-services.json
-ios/Runner/GoogleService-Info.plist
 macos/Runner/GoogleService-Info.plist
 
 # Echte Geheimnisse: Service-Account-Schluessel und lokale Function-Configs.

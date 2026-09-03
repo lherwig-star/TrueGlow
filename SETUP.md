@@ -831,34 +831,67 @@ Capabilities **Sign in with Apple** und **App Attest** aktivieren
 > auch „Sign in with Apple" anbieten. Der Code ist darauf vorbereitet — es
 > kommt nur ein weiterer Eintrag in `AuthAnbieter` dazu, kein Umbau.
 
-☐ **7.4 Mindest-iOS-Version**: Firebase verlangt iOS 15 oder neuer. In
-`ios/Podfile` `platform :ios, '15.0'` setzen (die Datei entsteht beim ersten
-`flutter build ios`) und im Xcode-Target dasselbe eintragen.
+☑ **7.4 Mindest-iOS-Version** — erledigt am 03.09.2026. `ios/Podfile` liegt
+jetzt im Repo statt erst beim ersten Bau zu entstehen, mit
+`platform :ios, '15.0'`; im Xcode-Target stand `IPHONEOS_DEPLOYMENT_TARGET =
+15.0` bereits.
 
-☐ **7.5 Xcode-Projekt**: Signing-Team setzen, Capability
-**Sign in with Apple** hinzufügen, `GoogleService-Info.plist` ins Runner-Target
-ziehen
+☑ **7.5 Xcode-Projekt**, soweit ohne Apple-Konto möglich — erledigt am
+03.09.2026. Capability **Sign in with Apple** liegt als
+`ios/Runner/Runner.entitlements` und ist in allen drei
+Runner-Konfigurationen als `CODE_SIGN_ENTITLEMENTS` eingehängt;
+`GoogleService-Info.plist` liegt im Runner-Ordner und im Repo (DECISIONS 96).
 
-☐ **7.6 URL-Schema für Google Sign-In**: den Wert `REVERSED_CLIENT_ID` aus
-`GoogleService-Info.plist` in `ios/Runner/Info.plist` unter `CFBundleURLTypes`
-eintragen (macht `flutterfire configure` nicht automatisch)
+> **Offen bleibt das Signing-Team.** Es ist die Kennung des
+> Apple-Developer-Kontos und kann erst eingetragen werden, wenn 7.1 steht.
+> Bis dahin baut die CI unsigniert (7.7).
+
+☑ **7.6 URL-Schema für Google Sign-In** — erledigt am 03.09.2026. Die
+`REVERSED_CLIENT_ID` steht in `ios/Runner/Info.plist` unter
+`CFBundleURLTypes`. Ohne sie bliebe der Google-Login auf dem iPhone im
+Browser hängen.
+
+☑ **7.7 iOS-Bau in der CI** — eingerichtet am 03.09.2026. Der Auftrag `ios`
+in `.github/workflows/ci.yml` baut die App bei jedem Stand auf Hauptzweig auf
+einem Mac-Mietrechner von GitHub, unsigniert. Er braucht kein Apple-Konto und
+findet trotzdem die Fehlerklasse, die sonst erst beim ersten Upload auftaucht
+(DECISIONS 96).
+
+> **Wo du das Ergebnis siehst:**
+> <https://github.com/lherwig-star/TrueGlow/actions> → Auftrag
+> "iOS-Bau (unsigniert)". Grüner Haken heißt: Die App baut für iPhone.
+
+☐ **7.8 App-Store-Material** — kommt, sobald das Konto steht:
+Bildschirmfotos in iPhone-Größen, Apples Datenschutz-Fragebogen (die
+Vorarbeit liegt in `store/data-safety.md`), Altersfreigabe, Listing-Texte
+(`store/listing-de.md`) und — leicht zu vergessen und ein häufiger
+Ablehnungsgrund — ein **Prüf-Zugang für die Apple-Prüfer**. Die App verlangt
+eine Anmeldung; ohne Testkonto in den Prüfhinweisen kommt sie zurück.
 
 ---
 
 ## 8 · Backup außerhalb des Rechners (Phase 0)
 
-☐ **8.1 Privates Remote-Repo anlegen**
+☑ **8.1 Remote-Repo** — erledigt am 03.09.2026:
+<https://github.com/lherwig-star/TrueGlow>, 125 Commits, 430 Dateien.
 
-GitHub → **New repository** → Name `trueglow` → **Private** → *ohne* README
-anlegen. Danach:
+> **Es ist öffentlich, nicht privat.** Ursprünglich war hier „Private"
+> vorgesehen; öffentlich hat einen konkreten Vorteil, der den Ausschlag gab:
+> GitHubs Mac-Mietrechner sind für öffentliche Repos kostenlos, und ohne die
+> lässt sich die iOS-App von diesem Windows-Rechner aus nicht bauen
+> (DECISIONS 96).
 
-```bash
-git remote add origin https://github.com/DEIN-KONTO/trueglow.git
-git push -u origin main
-```
-
-> Das Repo enthält keine Secrets: `.env`, Keystore, `key.properties`,
-> `google-services.json` und Service-Account-Dateien sind ausgeschlossen.
+> Keine Geheimnisse dabei — vor dem ersten Hochladen über alle 125 Commits
+> geprüft: `.env`, Keystore, `key.properties`, `android/app/google-services.json`
+> und Service-Account-Dateien sind ausgeschlossen, und es war nie ein echter
+> Schlüssel drin (deckt sich mit Audit C1).
+>
+> **Öffentlich sind:** die beiden Firebase-API-Schlüssel und die Projekt-ID
+> aus `lib/firebase_options.dart` sowie `ios/Runner/GoogleService-Info.plist`.
+> Das sind nach Googles eigener Dokumentation keine Geheimnisse — sie stecken
+> in jeder ausgelieferten App-Datei. Der Schutz liegt bei den
+> Firestore-Regeln und App Check. Einschränken lassen sie sich trotzdem,
+> siehe 16.8.
 
 ---
 
@@ -1365,7 +1398,7 @@ andere Prüfung bestehen.
 
 ## 16 · Sicherheits-Kontrollgang in der Google-Konsole
 
-Sechs Punkte, die **nur du** nachsehen kannst: Sie stehen in der Firebase-
+Sieben Punkte, die **nur du** nachsehen kannst: Sie stehen in der Firebase-
 bzw. Google-Cloud-Konsole und nicht im Code. Im Audit
 (`SECURITY_AUDIT.md`) sind sie als „nicht prüfbar" markiert — nicht als
 grün, weil ich sie von hier aus nicht sehen kann.
@@ -1527,18 +1560,45 @@ herabsetzen: auf den Eimer klicken → **Edit bucket** → **Retention period**.
 
 ### Und einer, der nicht in die Konsole gehört
 
-☐ **16.7 Den Quellcode aus diesem Rechner herausbekommen**
+☑ **16.7 Den Quellcode aus diesem Rechner herausbekommen** — erledigt am
+03.09.2026. `git remote` war leer, der Projektstand existierte nur auf
+diesem Rechner; ein Festplattenschaden wäre ein Totalverlust gewesen. Liegt
+jetzt unter <https://github.com/lherwig-star/TrueGlow>, Einzelheiten in
+Abschnitt 8.1.
 
-`git remote` ist leer. Der komplette Projektstand — Code, DECISIONS,
-TESTPLAN, SETUP, der Audit-Bericht — existiert **nur auf diesem einen
-Rechner**. Ein Festplattenschaden wäre ein Totalverlust.
+---
 
-Das ist streng genommen kein Sicherheitsthema, aber der gravierendere der
-beiden Backup-Punkte — und er ist in einer halben Stunde erledigt. Der
-Klickweg steht in Abschnitt 8.
+☐ **16.8 Die Firebase-API-Schlüssel einschränken**
 
-**Melde mir:** „Repo liegt bei GitHub" — dann hake ich 8.1 mit ab.
+Seit dem Repo öffentlich ist (8.1), sind die beiden Schlüssel aus
+`lib/firebase_options.dart` für jeden lesbar. Sie waren es vorher schon —
+aus jeder ausgelieferten App-Datei lassen sie sich auslesen, deshalb nennt
+Google sie ausdrücklich nicht geheim. Trotzdem: Ein Schlüssel, der nur die
+Dienste aufrufen darf, die die App wirklich braucht, ist für Fremde
+nutzlos.
 
+1. Google-Cloud-Konsole → Suchfeld → **APIs & Services → Credentials**
+2. Unter **API Keys** die beiden Schlüssel `Android key (auto created by
+   Firebase)` und `iOS key (auto created by Firebase)` öffnen
+3. Bei **Application restrictions** die passende Plattform wählen: beim
+   Android-Schlüssel **Android apps** mit Paketname `com.trueglow.app` und
+   dem SHA-1 aus Abschnitt 3; beim iOS-Schlüssel **iOS apps** mit der
+   Bundle-ID `com.trueglow.app`
+4. Bei **API restrictions** auf **Restrict key** stellen und nur die
+   Dienste anhaken, die in der Liste bereits auftauchen — üblicherweise
+   **Identity Toolkit API**, **Token Service API**, **Cloud Firestore API**,
+   **Firebase App Check API**, **Cloud Functions API** und **Firebase
+   Installations API**
+
+> **Vorsicht, das ist die Stelle, an der man sich aussperrt.** Hakst du einen
+> Dienst zu wenig an, hört die App an der entsprechenden Stelle auf zu
+> arbeiten — meist ohne verständliche Meldung. Deshalb: **erst
+> einschränken, dann sofort einen vollständigen Durchlauf** nach TESTPLAN,
+> Anmeldung inbegriffen. Wenn etwas klemmt, die Einschränkung wieder auf
+> **Don't restrict key** stellen und mir sagen, was gefehlt hat.
+
+**Melde mir:** welche Dienste du angehakt hast und ob der Durchlauf danach
+sauber war.
 ---
 
 ## Offen, sobald es soweit ist

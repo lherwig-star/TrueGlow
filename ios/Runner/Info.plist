@@ -24,6 +24,28 @@
 		<string>????</string>
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
+		<!-- Rueckweg des Google-Logins. Google oeffnet fuer die Anmeldung ein
+		     Browserfenster; danach muss iOS wissen, ueber welche Adresse es
+		     zurueck in diese App findet. Der Wert ist die REVERSED_CLIENT_ID
+		     aus GoogleService-Info.plist - `flutterfire configure` traegt ihn
+		     nicht selbst ein (SETUP.md 7.6). Ohne ihn bleibt der Login auf
+		     dem iPhone im Browser haengen. -->
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.732767304100-kla0806tj9i6qo4qk10v141neuah3su2</string>
+				</array>
+			</dict>
+		</array>
+		<!-- Die App benutzt keine eigene Verschluesselung, sondern nur HTTPS.
+		     Ohne diesen Schluessel fragt App Store Connect bei jedem Upload
+		     nach der Ausfuhrgenehmigung und haelt den Build an. -->
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
 		<key>UIApplicationSceneManifest</key>
@@ -57,11 +79,13 @@
 		<string>LaunchScreen</string>
 		<key>UIMainStoryboardFile</key>
 		<string>Main</string>
+		<!-- Nur Hochformat – dasselbe, was main.dart zur Laufzeit erzwingt
+		     (SystemChrome.setPreferredOrientations). Stand hier auf drei
+		     Lagen, wodurch der Startbildschirm auf einem quer gehaltenen
+		     Telefon kurz gedreht erschien, bevor Flutter zurueckdreht. -->
 		<key>UISupportedInterfaceOrientations</key>
 		<array>
 			<string>UIInterfaceOrientationPortrait</string>
-			<string>UIInterfaceOrientationLandscapeLeft</string>
-			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
 		<key>UISupportedInterfaceOrientations~ipad</key>
 		<array>

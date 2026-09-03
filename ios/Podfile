@@ -1,0 +1,88 @@
+# Mindest-iOS-Version. Firebase verlangt 15 oder neuer (SETUP.md 7.4); im
+# Xcode-Target steht derselbe Wert als IPHONEOS_DEPLOYMENT_TARGET.
+#
+# Diese Datei liegt bewusst im Repo, obwohl Flutter sie beim ersten
+# `flutter build ios` selbst anlegen wuerde: Der Bau laeuft auf einem
+# Mietrechner in der CI, und der soll nicht jedes Mal eine frische
+# Standardfassung ohne unseren Berechtigungs-Filter erzeugen.
+platform :ios, '15.0'
+
+# CocoaPods schickt sonst bei jedem Lauf Nutzungsstatistiken und macht den
+# Bau langsamer.
+ENV['COCOAPODS_DISABLE_STATS'] = 'true'
+
+project 'Runner', {
+  'Debug' => :debug,
+  'Profile' => :release,
+  'Release' => :release,
+}
+
+def flutter_root
+  generated_xcode_build_settings_path = File.expand_path(File.join('..', 'Flutter', 'Generated.xcconfig'), __FILE__)
+  unless File.exist?(generated_xcode_build_settings_path)
+    raise "#{generated_xcode_build_settings_path} must exist. If you're running pod install manually, make sure flutter pub get is executed first"
+  end
+
+  File.foreach(generated_xcode_build_settings_path) do |line|
+    matches = line.match(/FLUTTER_ROOT\=(.*)/)
+    return matches[1].strip if matches
+  end
+  raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Generated.xcconfig, then run flutter pub get"
+end
+
+require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
+
+flutter_ios_podfile_setup
+
+target 'Runner' do
+  use_frameworks!
+  use_modular_headers!
+
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+  target 'RunnerTests' do
+    inherit! :search_paths
+  end
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+
+    target.build_configurations.each do |config|
+      # --- Berechtigungs-Filter fuer permission_handler --------------------
+      #
+      # Ohne diese Liste uebersetzt permission_handler *alle* Berechtigungen
+      # mit – auch Standort, Kontakte, Kalender, Mikrofon und Gesundheit.
+      # Apple sucht im fertigen Programm nach den zugehoerigen Aufrufen und
+      # verlangt fuer jeden gefundenen einen Erklaertext im Info.plist. Fehlt
+      # er, wird der Upload abgelehnt.
+      #
+      # Die App braucht davon nichts: permission_handler wird hier
+      # ausschliesslich fuer `openAppSettings` benutzt
+      # (camera_screen.dart:1361). Kamera, Fotos und Benachrichtigungen
+      # stehen trotzdem auf 1 – ihre Erklaertexte sind gepflegt, und so
+      # funktioniert eine spaeter hinzugefuegte Abfrage sofort, statt still
+      # „dauerhaft verweigert“ zu liefern.
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] += [
+        'PERMISSION_CAMERA=1',
+        'PERMISSION_PHOTOS=1',
+        'PERMISSION_NOTIFICATIONS=1',
+
+        'PERMISSION_EVENTS=0',
+        'PERMISSION_EVENTS_FULL_ACCESS=0',
+        'PERMISSION_REMINDERS=0',
+        'PERMISSION_CONTACTS=0',
+        'PERMISSION_MICROPHONE=0',
+        'PERMISSION_SPEECH_RECOGNIZER=0',
+        'PERMISSION_LOCATION=0',
+        'PERMISSION_MEDIA_LIBRARY=0',
+        'PERMISSION_SENSORS=0',
+        'PERMISSION_BLUETOOTH=0',
+        'PERMISSION_APP_TRACKING_TRANSPARENCY=0',
+        'PERMISSION_CRITICAL_ALERTS=0',
+        'PERMISSION_ASSISTANT=0',
+      ]
+    end
+  end
+end
