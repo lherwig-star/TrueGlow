@@ -1,1 +1,12 @@
+// Die erste Zeile bindet ein, was CocoaPods erzeugt hat. Sie fehlte bis zum
+// 03.09.2026, weil dieses Projekt auf Swift Package Manager laeuft und
+// CocoaPods nie brauchte - bis mit dem Podfile die drei ML-Kit-Pakete
+// dazukamen, die SPM nicht unterstuetzen (DECISIONS 103).
+//
+// Ohne sie steht in den Linker-Einstellungen zwar `-framework Pods_Runner`,
+// aber kein Suchpfad dorthin: "Framework 'Pods_Runner' not found".
+//
+// `#include?` mit Fragezeichen: Die Datei entsteht erst bei `pod install`.
+// Vor dem ersten Lauf gibt es sie nicht, und dann soll das kein Fehler sein.
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
 #include "Generated.xcconfig"

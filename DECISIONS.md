@@ -5625,3 +5625,66 @@ bei jeder Oberflächenänderung veralten, ohne dass etwas darauf hinweist.
 Und die Bilder sind, was sie sind: nackte Bildschirmaufnahmen. Was im Store
 üblicherweise darum herum steht — Rahmen, Schlagzeile, Farbfläche — ist
 Gestaltungsarbeit und nicht Teil dieses Auftrags.
+
+---
+
+## 103 · Zwei Paketverwalter, und nur einer war verkabelt
+
+Der erste Foto-Lauf scheiterte am Simulator-Bau:
+
+```
+Error (Xcode): Framework 'Pods_Runner' not found
+Error (Xcode): Linker command failed with exit code 1
+```
+
+**Was:** `ios/Flutter/Debug.xcconfig` und `Release.xcconfig` binden jetzt die
+von CocoaPods erzeugten Einstellungen ein:
+
+```
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
+#include "Generated.xcconfig"
+```
+
+**Warum das gefehlt hat:** Dieses Projekt läuft auf **Swift Package
+Manager**. Fast alle Pakete kommen darüber — Firebase, Google Sign-In, der
+ganze Block. CocoaPods wurde nie gebraucht, also war auch nie eingebunden,
+was CocoaPods erzeugt. Beide Dateien enthielten genau eine Zeile.
+
+Mit dem Podfile aus DECISIONS 96 kam CocoaPods dazu, und zwar zwangsläufig:
+`google_mlkit_commons`, `google_mlkit_face_detection` und
+`google_mlkit_pose_detection` unterstützen Swift Package Manager nicht. Der
+Bau sagt es sogar selbst:
+
+```
+The following plugins do not support Swift Package Manager for ios:
+  - google_mlkit_commons
+  - google_mlkit_face_detection
+  - google_mlkit_pose_detection
+```
+
+`pod install` läuft dann zwar, kann seine Einstellungen aber nicht anhängen:
+Die Ziel-Konfiguration hat bereits eine eigene Basis (Flutters
+`Debug.xcconfig`), und CocoaPods überschreibt eine fremde Basis nicht — es
+warnt und bittet darum, seine Datei selbst einzubinden. Genau das steht jetzt
+dort.
+
+**Der unbequeme Teil:** Der Release-Bau fürs Gerät war mit demselben Mangel
+**grün**. Das ist kein beruhigender Befund, sondern ein beunruhigender — es
+heißt, dass „übersetzt ohne Fehler" hier nicht bedeutet, dass alle Pakete
+drin sind. Warum der Simulator-Bau nach `Pods_Runner` verlangt und der
+Gerätebau nicht, ist von außen nicht zu klären; die Protokolle beider Läufe
+sind ohne Anmeldung nicht einsehbar (DECISIONS 98), und die Anmerkung zeigt
+nur das Ende.
+
+Deshalb kommt ein zweiter Teil dazu: Der Ergebnis-Schritt des iOS-Auftrags
+durchsucht das fertige `Runner.app` nach Spuren von ML Kit und meldet den
+Fund als Hinweis-Anmerkung. Als Hinweis und nicht als Abbruchbedingung — ob
+ML Kit als Framework, als Ressourcen-Bündel oder statisch ins Programm
+gelinkt im Paket landet, hängt an den Podspecs, und eine Prüfung, die das
+falsch rät, färbte den Bau rot, ohne dass etwas kaputt wäre. Sichtbar machen
+genügt; beurteilen lässt es sich dann von außen.
+
+**Preis:** Der Nachweis für den ersten grünen iOS-Bau (SETUP 7.7,
+03.09.2026) steht damit unter Vorbehalt, bis der nächste Lauf zeigt, was
+tatsächlich im Paket liegt. Er belegt weiterhin, dass sich das Projekt
+übersetzen lässt — aber nicht mehr, als er belegt.

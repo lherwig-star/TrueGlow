@@ -137,8 +137,26 @@ jobs:
 
       # Damit sich die Groesse ueber die Zeit verfolgen laesst und im Fehlerfall
       # sichtbar ist, ob ueberhaupt etwas entstanden ist.
+      #
+      # Der zweite Teil beantwortet eine Frage, die "uebersetzt ohne Fehler"
+      # NICHT beantwortet: ob die drei ML-Kit-Pakete wirklich im Paket sind.
+      # Sie kommen als einzige ueber CocoaPods statt ueber Swift Package
+      # Manager, und genau diese Verdrahtung war bis zum 03.09.2026 nicht
+      # gesetzt (DECISIONS 103). Ergebnis als Hinweis-Anmerkung, weil die auch
+      # ohne GitHub-Anmeldung lesbar ist.
       - name: Ergebnis
-        run: du -sh build/ios/iphoneos/Runner.app
+        run: |
+          APP=build/ios/iphoneos/Runner.app
+          du -sh "$APP"
+          echo "--- Frameworks im Paket ---"
+          ls "$APP/Frameworks" 2>/dev/null || echo "(kein Frameworks-Ordner)"
+          echo "--- Spuren von ML Kit ---"
+          SPUREN=$(find "$APP" -iname "*mlkit*" -o -iname "*MLImage*" \
+            -o -iname "*face*detect*" 2>/dev/null | head -20)
+          echo "${SPUREN:-keine}"
+          MSG=$(printf '%s' "${SPUREN:-keine gefunden}" \
+            | sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+          echo "::notice title=ML Kit im App-Paket::${MSG}"
 
   # ---------------------------------------------------------------------------
   # Bildschirmfotos fuer den App Store.

@@ -890,6 +890,14 @@ findet trotzdem die Fehlerklasse, die sonst erst beim ersten Upload auftaucht
 > **verhält**. Der Bau prüft die Übersetzung, nicht das Verhalten — was
 > dabei zu prüfen bleibt, steht in DECISIONS 100.
 
+> **Nachtrag, wenige Stunden später: dieser Nachweis steht unter Vorbehalt.**
+> Am selben Abend zeigte der Simulator-Bau, dass die CocoaPods-Einstellungen
+> gar nicht eingebunden waren — und die drei ML-Kit-Pakete kommen als
+> einzige über CocoaPods. Der Gerätebau war trotzdem grün. „Uebersetzt ohne
+> Fehler“ heißt hier also nicht zwingend „alle Pakete drin“. Behoben und
+> begründet in DECISIONS 103; der Ergebnis-Schritt meldet seitdem, was
+> tatsächlich im `Runner.app` liegt.
+
 ☐ **7.8 App-Store-Material** — teilweise vorbereitet.
 
 **Bildschirmfotos: erledigt, und zwar selbstbedient.** Ein eigener CI-Auftrag

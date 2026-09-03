@@ -1,1 +1,7 @@
+// Gegenstueck zu Debug.xcconfig - dieselbe Begruendung steht dort.
+//
+// Diese Datei bedient in diesem Projekt zwei Konfigurationen: Release und
+// Profile (siehe baseConfigurationReference im Xcode-Projekt). Das Podfile
+// bildet Profile ohnehin auf :release ab, die Einstellungen passen also.
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
 #include "Generated.xcconfig"
