@@ -5789,6 +5789,30 @@ Pakets, das den Fehler verursacht — 40 Zeilen unter dem Hinweis auf
 hätte lesen können. Die Reihenfolge ist die Lehre: erst die Unterlagen der
 beteiligten Pakete, dann messen, dann vermuten.
 
+### Nachtrag: die Anleitung des Pakets setzt etwas voraus
+
+Der erste Versuch mit den zwei Zeilen hat den **Gerätebau** umgebracht:
+
+```
+[!] Invalid `Podfile` file: cannot load such file --
+    ios/.symlinks/plugins/google_mlkit_commons/ios/scripts/apple_silicon_simulator
+```
+
+Die README zeigt den Pfad über `ios/.symlinks/`. Diesen Ordner legt aber
+`pod install` erst während seines eigenen Laufs an (podhelper tut es in
+`flutter_install_all_ios_pods`) — das `require` am Dateianfang läuft davor.
+Auf einem Rechner, auf dem schon einmal gebaut wurde, liegt der Ordner vom
+letzten Mal noch da, und es fällt nicht auf. Auf einem frischen CI-Rechner
+scheitert der allererste `pod install`, und zwar für **jedes** Ziel:
+Geräte- wie Simulator-Bau. Ein Auftrag, der seit gestern grün war, stand
+damit auf Rot.
+
+Der Pfad kommt jetzt aus `.flutter-plugins-dependencies`. Die schreibt
+`flutter pub get`, also lange vor `pod install`, und sie nennt zu jedem Paket
+den vollen Pfad. Findet sich der Helfer trotzdem nicht, wird nur gewarnt
+statt abgebrochen: Der Simulator ist verzichtbar, der Gerätebau nicht. Diese
+Rangfolge gehört in die Datei, nicht in den Kopf des Nächsten, der sie liest.
+
 **Preis:** Ein Helfer, der an den Binärpaketen im `Pods`-Ordner arbeitet —
 also an Dateien, die niemand von uns geschrieben hat. Er läuft bei jedem Bau
 mit und wird still, sobald Google die fehlenden Scheiben nachliefert; dann

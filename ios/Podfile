@@ -51,10 +51,38 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 # Simulator beim Simulator-Bau, Geraet beim Geraetebau. Deshalb bleibt der
 # Geraetebau unberuehrt, und es ist kein Umschalten von Hand noetig
 # (DECISIONS 104).
-require File.expand_path(
-  '.symlinks/plugins/google_mlkit_commons/ios/scripts/apple_silicon_simulator',
-  __dir__,
-)
+# Der Pfad kommt aus .flutter-plugins-dependencies und nicht aus
+# ios/.symlinks/, wie es die README zeigt. Grund: .symlinks entsteht erst
+# waehrend `pod install` selbst, dieses `require` laeuft aber vorher. Auf
+# einem Rechner, auf dem schon einmal gebaut wurde, faellt das nie auf - auf
+# einem frischen CI-Rechner scheitert der allererste pod install daran, und
+# zwar auch der fuer das Geraet. Genau das ist am 04.09.2026 passiert.
+#
+# .flutter-plugins-dependencies dagegen schreibt `flutter pub get`, also
+# lange vor pod install, und es nennt zu jedem Paket den vollen Pfad.
+def mlkit_helfer_pfad
+  # __FILE__ statt __dir__, wie es flutter_root weiter oben auch macht:
+  # CocoaPods liest das Podfile ueber instance_eval, und dabei ist __FILE__
+  # das Verlaessliche. File.expand_path schneidet den Dateinamen ab, deshalb
+  # zwei Ebenen hoch statt einer.
+  liste = File.expand_path(File.join('..', '..', '.flutter-plugins-dependencies'), __FILE__)
+  return nil unless File.exist?(liste)
+
+  require 'json'
+  eintraege = JSON.parse(File.read(liste)).dig('plugins', 'ios') || []
+  eintrag = eintraege.find { |p| p['name'] == 'google_mlkit_commons' }
+  return nil unless eintrag && eintrag['path']
+
+  pfad = File.join(eintrag['path'], 'ios', 'scripts', 'apple_silicon_simulator')
+  File.exist?("#{pfad}.rb") ? pfad : nil
+rescue StandardError
+  # Ein kaputter Helfer darf den Bau nicht aufhalten - er betrifft nur den
+  # Simulator. Der Geraetebau ist das Wichtigere von beiden.
+  nil
+end
+
+MLKIT_HELFER = mlkit_helfer_pfad
+require MLKIT_HELFER if MLKIT_HELFER
 
 flutter_ios_podfile_setup
 
@@ -122,5 +150,11 @@ post_install do |installer|
   # Muss ans Ende: Der Helfer liest die Einstellungen, die oben gesetzt
   # wurden, und entfernt unter anderem die Zeile, die arm64 fuer den
   # Simulator ausschliesst.
-  mlkit_apple_silicon_simulator_patch(installer)
+  if MLKIT_HELFER
+    mlkit_apple_silicon_simulator_patch(installer)
+  else
+    Pod::UI.warn 'ML-Kit-Helfer nicht gefunden: Bauten fuer den ' \
+                 'Apple-Silicon-Simulator werden fehlschlagen. Der ' \
+                 'Geraetebau ist davon nicht betroffen (DECISIONS 104).'
+  end
 end
