@@ -5741,3 +5741,56 @@ allein — scheitert schon das, ist `flutter drive` unschuldig — und sichert
 anschließend die Dateien, um die es geht, in einer Anmerkung: die
 Linker-Zeilen aus `Pods-Runner.debug.xcconfig`, ob das Pods-Ergebnis ein
 Framework oder eine Bibliothek ist, und den Inhalt des Workspace.
+
+---
+
+## 104 · Eine Fehlermeldung, die auf die falsche Datei zeigt
+
+Der Simulator-Bau scheiterte viermal mit derselben Zeile:
+
+```
+Error (Xcode): Framework 'Pods_Runner' not found
+```
+
+Die Meldung führt in die Irre. Mit `Pods_Runner` ist nichts. Sie erscheint,
+weil das Pods-Projekt gar nicht erst fertig gebaut wird — und warum, sagt sie
+nicht.
+
+**Was:** Zwei Zeilen im `ios/Podfile`: ein `require` auf
+`.symlinks/plugins/google_mlkit_commons/ios/scripts/apple_silicon_simulator`
+und der Aufruf `mlkit_apple_silicon_simulator_patch(installer)` am Ende von
+`post_install`.
+
+**Warum:** Die README von `google_mlkit_commons` schreibt es unmissverständlich
+hin:
+
+> Google's `GoogleMLKit/*` pods only ship `arm64-iphoneos` and
+> `x86_64-iphonesimulator` slices and exclude `arm64` from simulator builds.
+
+Der Mac-Mietrechner von GitHub läuft auf **arm64**, gemessen im Lauf selbst
+(`uname -m`). Ein arm64-Simulator plus ML Kit geht deshalb nicht — es fehlt
+schlicht die passende Scheibe im Binärpaket. Der Gerätebau ist davon nicht
+betroffen, denn `arm64-iphoneos` liegt bei. Genau das erklärt den ganzen
+Befund: Gerätebau grün, Simulator-Bau rot, und zwar unabhängig von
+`flutter drive`.
+
+Der Helfer stammt vom Paket selbst und ist dort ausdrücklich als Opt-in
+vorgesehen. Er beschriftet bei jedem Bau die arm64-Scheibe passend zum Ziel um
+und entfernt die Zeile, die arm64 für Simulator-Bauten ausschließt. Weil das
+je Bau und passend zum Ziel geschieht, bleibt der Gerätebau unberührt.
+
+**Was das über den Weg hierher sagt:** Bis zur README standen drei Vermutungen
+im Raum — eine fehlende `#include`-Zeile, `use_modular_headers!`, und zuletzt
+die Architektur. Die ersten beiden waren falsch und haben je einen Lauf und
+eine Korrektur in dieser Datei gekostet (DECISIONS 103). Richtig lag erst die
+Messung, und die eigentliche Antwort stand die ganze Zeit in der README des
+Pakets, das den Fehler verursacht — 40 Zeilen unter dem Hinweis auf
+`IPHONEOS_DEPLOYMENT_TARGET 15.5`, den ich am Vortag aus derselben Datei
+hätte lesen können. Die Reihenfolge ist die Lehre: erst die Unterlagen der
+beteiligten Pakete, dann messen, dann vermuten.
+
+**Preis:** Ein Helfer, der an den Binärpaketen im `Pods`-Ordner arbeitet —
+also an Dateien, die niemand von uns geschrieben hat. Er läuft bei jedem Bau
+mit und wird still, sobald Google die fehlenden Scheiben nachliefert; dann
+gehören die beiden Zeilen wieder heraus. Bis dahin hängt der
+Simulator-Durchlauf an einem Behelf, der nicht von Google stammt.
