@@ -897,24 +897,33 @@ Vorarbeit liegt in `store/data-safety.md`), Altersfreigabe, Listing-Texte
 Ablehnungsgrund — ein **Prüf-Zugang für die Apple-Prüfer**. Die App verlangt
 eine Anmeldung; ohne Testkonto in den Prüfhinweisen kommt sie zurück.
 
-☐ **7.9 Crashlytics: Symboldatei hochladen** — offen, braucht erst das
-Apple-Konto.
+☐ **7.9 Crashlytics: Symboldatei hochladen** — Bauphase eingebaut am
+03.09.2026, Nachweis in der Konsole steht noch aus.
 
 Ohne diesen Schritt kommen iOS-Abstürze zwar in der Konsole an, aber ohne
 lesbare Zeilenangaben — statt „`camera_screen.dart`, Zeile 412" steht dort
 eine Speicheradresse. Der Absturz ist gemeldet, nur nicht auffindbar.
 
-Nötig ist eine zusätzliche Bauphase im Runner-Ziel, die
-`${PODS_ROOT}/FirebaseCrashlytics/run` aufruft. Das Paket bringt sie nicht
-von selbst mit — die `.podspec` von `firebase_crashlytics` 5.2.7 enthält
-keine `script_phase`, und die Paket-Anleitung erwähnt iOS nicht.
+Das Runner-Ziel hat jetzt als **letzte** Bauphase „Crashlytics Symbole“, die
+`${PODS_ROOT}/FirebaseCrashlytics/run` aufruft (DECISIONS 101). Als letzte,
+weil die Symboldatei vorher noch nicht existiert. Das Paket bringt die Phase
+nicht von selbst mit — die `.podspec` von `firebase_crashlytics` 5.2.7
+enthält keine `script_phase`, und die Paket-Anleitung erwähnt iOS nicht.
 
-> **Warum das noch nicht eingebaut ist:** Eine Bauphase, die auf einen Pfad
-> innerhalb der Pods zeigt, lässt sich von diesem Rechner aus nicht prüfen.
-> Sie käme genau in dem Moment dazu, in dem der iOS-Bau gerade erst zum
-> Laufen gebracht wird — ein zusätzlicher Grund für einen roten Lauf, den
-> man dann vom eigentlichen unterscheiden müsste. Sie gehört in den ersten
-> ruhigen Lauf nach dem ersten grünen.
+> **Warum der Haken noch offen ist.** Dass die Phase läuft, heißt nicht, dass
+> die Symbole ankommen. Das sieht nur, wer nachschaut — und dafür braucht es
+> einen echten Absturz aus einer echten Fassung, also das Apple-Konto.
+
+**Wenn es soweit ist, prüfe das so:**
+
+1. Firebase-Konsole → **Release & Monitor → Crashlytics** → iOS-App wählen
+2. Oben rechts → **dSYMs** (bzw. der Hinweisbalken „Fehlende dSYMs“)
+
+**Sollwert:** Keine Liste fehlender dSYMs für die hochgeladene Fassung.
+Steht dort etwas, hat die Bauphase nicht gegriffen.
+
+**Melde mir:** ob die Liste leer ist — und falls im Bauprotokoll die Warnung
+„`FirebaseCrashlytics/run` nicht gefunden“ auftaucht, auch die.
 
 ---
 

@@ -5537,3 +5537,40 @@ Projekt in Xcode öffnet, soll die Datei sehen.
 Xcode keine Aussage über den Bau. Der Haken an SETUP 7.5 war am 03.09.2026
 vormittags gesetzt worden, weil die Datei im Ordner lag — geprüft war nur
 die halbe Bedingung. Der Eintrag ist entsprechend korrigiert.
+
+---
+
+## 101 · Ein Absturzbericht, den niemand lesen kann
+
+Crashlytics meldet iOS-Abstürze auch ohne weiteres Zutun — nur steht im
+Bericht dann eine Speicheradresse statt einer Zeilenangabe. Der Absturz ist
+gemeldet und trotzdem nicht auffindbar. Übersetzt wird die Adresse in eine
+Zeile durch die **Symboldatei** (dSYM), und die muss beim Bauen hochgeladen
+werden.
+
+**Was:** Das Runner-Ziel hat eine letzte Bauphase „Crashlytics Symbole"
+bekommen, die `${PODS_ROOT}/FirebaseCrashlytics/run` aufruft.
+
+**Warum als letzte Phase:** Vorher gibt es die dSYM-Datei noch nicht. Sie
+entsteht erst, wenn `Thin Binary` durch ist.
+
+**Warum mit Wenn-Abfrage:** Findet das Skript die Datei nicht, bricht der Bau
+nicht ab, sondern gibt eine Warnung aus. Der unsignierte CI-Bau soll nicht an
+etwas scheitern, das ausschließlich die Lesbarkeit späterer Absturzberichte
+betrifft. Eine Warnung ist dabei bewusst gewählt statt stillen Schweigens:
+Xcode zeigt sie an, und die CI schreibt sie ins Protokoll — sonst hinge hier
+eine Bauphase, die jahrelang nichts tut, ohne dass es jemandem auffiele.
+
+**Warum jetzt und nicht vorher:** Der Punkt stand seit heute Vormittag als
+SETUP 7.9 offen, mit der ausdrücklichen Begründung, er gehöre „in den ersten
+ruhigen Lauf nach dem ersten grünen". Genau das ist dies. Eine Bauphase, die
+auf einen Pfad innerhalb der Pods zeigt, lässt sich von einem Windows-Rechner
+aus nicht prüfen — sie muss sich im Bau beweisen. Solange der Bau aus anderen
+Gründen rot war, hätte ein Fehlschlag nichts ausgesagt; jetzt ist die
+Zuordnung eindeutig.
+
+**Preis:** Eine Bauphase mehr, die bei jedem Bau läuft. Und ein Rest
+Ungewissheit, den auch ein grüner Lauf nicht ausräumt: Dass das Skript
+gelaufen ist, heißt noch nicht, dass die Symbole in der Firebase-Konsole
+ankommen. Das sieht nur, wer dort nachschaut — deshalb steht es als
+Rückmeldepunkt in SETUP 7.9 und nicht als erledigt.
