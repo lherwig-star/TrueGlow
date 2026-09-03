@@ -266,7 +266,10 @@ jobs:
             -d ${{ steps.sim.outputs.udid }} \
             --dart-define=TRUEGLOW_MOCK=true 2>&1 | tee fotos.log
 
+      # Auch nach einem Fehlschlag: Dann ist das Startbild das Einzige, was
+      # zeigt, woran es lag.
       - name: Was entstanden ist
+        if: always()
         run: |
           ls -la store/screenshots/ios/ || true
           for f in store/screenshots/ios/*.png; do
@@ -280,6 +283,7 @@ jobs:
       # jedem ansehen (DECISIONS 98, gleiche Ursache wie beim Protokoll).
       # "[skip ci]" verhindert, dass dieser Commit die CI erneut ausloest.
       - name: Bilder einchecken
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

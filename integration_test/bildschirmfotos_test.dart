@@ -66,6 +66,11 @@ void main() {
     container.read(sprachControllerProvider.notifier).setzen(Sprache.deutsch);
     await tester.pumpAndSettle();
 
+    // Erstes Bild, bevor irgendetwas angetippt wird. Es dient nicht dem
+    // Store, sondern der Fehlersuche: Bricht der Durchlauf spaeter ab, zeigt
+    // es, auf welchem Bildschirm die App tatsaechlich stand.
+    await binding.takeScreenshot('00_start');
+
     // --- bis zum fertigen Plan -------------------------------------------
     await _tippe(tester, texte.loginGast);
 
@@ -143,8 +148,36 @@ void main() {
   });
 }
 
+/// Wartet, bis etwas auf dem Schirm ist - hoechstens [_grenze] lang.
+///
+/// Warum das noetig ist: `pumpAndSettle` kehrt zurueck, sobald keine
+/// Animation mehr laeuft. Eine noch laufende Anmeldung haelt es nicht auf.
+/// Auf dem Testgeraet ist die schnell durch, auf einem kalt gestarteten
+/// Simulator nicht - dort stand der Anmeldebildschirm noch gar nicht, als
+/// der erste Tipp kam, und der Durchlauf brach mit "Bad state: No element"
+/// ab (DECISIONS 105).
+const _grenze = Duration(seconds: 40);
+const _takt = Duration(milliseconds: 250);
+
+Future<void> _warteAuf(WidgetTester tester, Finder ziel, String was) async {
+  var gewartet = Duration.zero;
+  while (ziel.evaluate().isEmpty) {
+    if (gewartet >= _grenze) {
+      throw StateError(
+        'Nach ${_grenze.inSeconds} Sekunden nicht auf dem Schirm: "$was". '
+        'Steht die App noch auf einem anderen Bildschirm? Das Bild '
+        '00_start zeigt, womit der Durchlauf begonnen hat.',
+      );
+    }
+    await tester.pump(_takt);
+    gewartet += _takt;
+  }
+  await tester.pumpAndSettle();
+}
+
 Future<void> _tippe(WidgetTester tester, String text) async {
   final ziel = find.text(text);
+  await _warteAuf(tester, ziel, text);
   await tester.ensureVisible(ziel.first);
   await tester.pumpAndSettle();
   await tester.tap(ziel.first);
@@ -156,6 +189,7 @@ Future<void> _hakeAn(WidgetTester tester, String ueberschrift) async {
     of: find.text(ueberschrift),
     matching: find.byType(InkWell),
   );
+  await _warteAuf(tester, karte, 'Karte "$ueberschrift"');
   await tester.ensureVisible(karte.first);
   await tester.pumpAndSettle();
   await tester.tap(karte.first);

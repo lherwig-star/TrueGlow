@@ -5818,3 +5818,52 @@ also an Dateien, die niemand von uns geschrieben hat. Er läuft bei jedem Bau
 mit und wird still, sobald Google die fehlenden Scheiben nachliefert; dann
 gehören die beiden Zeilen wieder heraus. Bis dahin hängt der
 Simulator-Durchlauf an einem Behelf, der nicht von Google stammt.
+
+---
+
+## 105 · Ein Durchlauf, der zu früh tippt
+
+Mit dem Helfer aus DECISIONS 104 baut der Simulator. Die App startet, der
+Aufnahme-Durchlauf läuft an — und scheitert am ersten Tipp:
+
+```
+Bad state: No element
+_tippe (bildschirmfotos_test.dart:148)
+```
+
+Der gesuchte Text stand nicht auf dem Schirm.
+
+**Was:** `_tippe` und `_hakeAn` warten jetzt, bis ihr Ziel da ist — bis zu 40
+Sekunden, im Vierteltakt geprüft — statt es vorauszusetzen. Dazu ein Bild
+`00_start` gleich nach dem Start, und im Workflow laufen „Was entstanden ist"
+und „Bilder einchecken" auch nach einem Fehlschlag.
+
+**Warum:** `pumpAndSettle` kehrt zurück, sobald keine Animation mehr läuft.
+Das ist nicht dasselbe wie „die App ist bereit". Eine noch laufende Anmeldung
+hält es nicht auf; sie zeichnet ja nichts. Auf dem Testgerät des Nutzers ist
+sie schnell durch, weshalb `hauptpfad_test.dart` mit derselben Annahme seit
+jeher durchläuft. Auf einem kalt gestarteten Simulator im Mietrechner dauert
+sie länger — und dann tippt der Durchlauf auf einen Bildschirm, den es noch
+nicht gibt.
+
+Das Warten ist auf dem Gerät unschädlich: Ist das Ziel schon da, wird
+null-mal gewartet.
+
+**Warum das Startbild:** Ein Fehlschlag im Durchlauf sagt bisher nur, was
+*nicht* da war. Das Bild sagt, was *stattdessen* da war — und das ist die
+Frage, die man beim Lesen des Protokolls tatsächlich hat. Damit es im
+Fehlerfall auch ankommt, mussten die beiden letzten Schritte des Auftrags auf
+`if: always()`; sonst würde ausgerechnet das Diagnosebild als Einziges nie
+eingecheckt.
+
+**Was bewusst nicht geändert wurde:** `hauptpfad_test.dart` bekommt dasselbe
+Warten **nicht**. Er läuft auf einem angeschlossenen Gerät, dort tritt das
+Problem nicht auf, und er ist der Nachweis, dass die App funktioniert — an
+dem wird nichts geändert, weil ein Bildschirmfoto klemmt. Die Doppelung aus
+DECISIONS 102 kostet hier also zum ersten Mal etwas: Die beiden Dateien
+laufen auseinander. Das ist der bekannte Preis und kein neuer Befund.
+
+**Preis:** Ein Durchlauf, der im schlechtesten Fall 40 Sekunden je Schritt
+wartet, bevor er aufgibt — bei einem echten Fehler dauert der Fehlschlag
+damit länger als vorher. Dafür scheitert er nicht mehr an einem langsamen
+Rechner.
