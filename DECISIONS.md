@@ -5341,3 +5341,40 @@ sehen die App nicht. Und die beiden API-Schlüssel des Firebase-Projekts sind
 öffentlich einsehbar — kein Geheimnis nach Googles eigener Dokumentation,
 aber sie gehören in der Google-Cloud-Konsole auf die tatsächlich genutzten
 Dienste eingeschränkt. Das ist offen und steht in SETUP.md 16.8.
+
+---
+
+## 97 · Zwei Listen, die zusammenpassen müssen
+
+Der allererste CI-Lauf auf GitHub — ausgelöst dadurch, dass das Projekt
+überhaupt zum ersten Mal ein Remote bekam (DECISIONS 96) — war rot. Nicht
+wegen iOS: `functions build` scheiterte an `npm test`, sieben Tests in
+`test/kontingent.test.ts`, alle mit `1 delete failed`.
+
+**Was:** `test/kontingent.test.ts` steht jetzt auch in der `exclude`-Liste von
+`functions/vitest.config.ts`, nicht nur in der `include`-Liste von
+`functions/vitest.rules.config.ts`. Dazu läuft die CI für die Functions auf
+Node 22 statt 20.
+
+**Warum:** Die Emulator-Tests laufen über ein eigenes Kommando, weil sie
+einen Firestore brauchen. Welche Datei dazugehört, steht an **zwei** Stellen
+— einmal als `include` in der Emulator-Konfiguration, einmal als `exclude` in
+der normalen. Am 01.09.2026 kamen die sieben Kontingent-Tests dazu
+(DECISIONS 95) und wurden nur an der ersten Stelle eingetragen. Seitdem lief
+die Datei in beiden Durchgängen, und im normalen horcht kein Emulator.
+
+Lokal fiel das nicht auf: Der normale Durchgang dauerte damit 77 statt 4,6
+Sekunden, die Ausgabe scrollte, und ohne CI schaut niemand jeden Lauf zu
+Ende an. Genau das ist der Wert des Umzugs auf GitHub — der erste Lauf
+überhaupt hat den Fehler in Minuten gefunden.
+
+Die Node-Fassung war ein zweiter, stiller Widerspruch: `functions/package.json`
+verlangt unter `engines` die 22, bei Firebase laufen die Functions auf 22,
+die CI installierte 20. Es hat noch nichts kaputtgemacht — aber eine CI, die
+auf einer anderen Fassung prüft als die, auf der ausgeliefert wird, prüft
+das Falsche.
+
+**Preis:** Die Doppelnennung bleibt bestehen; Vitest kann eine Datei nicht
+selbst der einen oder anderen Gruppe zuordnen. Ein Kommentar an beiden
+Stellen benennt jetzt die Abhängigkeit — das nächste Mal fällt es beim
+Eintragen auf, und wenn nicht, dann in der CI.
