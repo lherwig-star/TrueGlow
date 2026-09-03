@@ -63,13 +63,16 @@ dart pub global activate flutterfire_cli
 Falls `flutterfire` danach nicht gefunden wird, muss
 `%LOCALAPPDATA%\Pub\Cache\bin` in die `PATH`-Variable.
 
-☐ **Java 17+ für die Firestore-Emulatoren** (nur für die Rules-Tests nötig)
+☐ **Java 21+ für die Firestore-Emulatoren** (nur für die Rules-Tests nötig)
 
 ```bash
 java -version
 ```
 
-Fehlt Java: Temurin 17 von <https://adoptium.net> installieren.
+Fehlt Java oder ist es älter als 21: Temurin 21 von
+<https://adoptium.net> installieren. **21 ist Pflicht**, nicht Empfehlung —
+`firebase-tools` ab Fassung 15 bricht mit älteren Fassungen ab
+("no longer supports Java version before 21").
 
 ---
 
@@ -831,10 +834,17 @@ Capabilities **Sign in with Apple** und **App Attest** aktivieren
 > auch „Sign in with Apple" anbieten. Der Code ist darauf vorbereitet — es
 > kommt nur ein weiterer Eintrag in `AuthAnbieter` dazu, kein Umbau.
 
-☑ **7.4 Mindest-iOS-Version** — erledigt am 03.09.2026. `ios/Podfile` liegt
-jetzt im Repo statt erst beim ersten Bau zu entstehen, mit
-`platform :ios, '15.0'`; im Xcode-Target stand `IPHONEOS_DEPLOYMENT_TARGET =
-15.0` bereits.
+☑ **7.4 Mindest-iOS-Version: 15.5** — erledigt am 03.09.2026. `ios/Podfile`
+liegt jetzt im Repo statt erst beim ersten Bau zu entstehen, mit
+`platform :ios, '15.5'`; im Xcode-Target steht derselbe Wert dreimal als
+`IPHONEOS_DEPLOYMENT_TARGET`.
+
+> **Warum 15.5 und nicht 15.** Den Ausschlag geben nicht die Firebase-Pakete,
+> die mit 15.0 auskämen, sondern **ML Kit**: `google_mlkit_commons`,
+> `google_mlkit_face_detection` und `google_mlkit_pose_detection` verlangen
+> 15.5. Liegt das Ziel darunter, bricht CocoaPods ab, bevor überhaupt
+> übersetzt wird. Für Nutzer ist der Unterschied gering: Jedes Gerät, das
+> iOS 15 bekommt, bekommt auch 15.5.
 
 ☑ **7.5 Xcode-Projekt**, soweit ohne Apple-Konto möglich — erledigt am
 03.09.2026. Capability **Sign in with Apple** liegt als

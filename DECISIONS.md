@@ -5409,3 +5409,39 @@ Prozentzeichen aus dem Protokoll.
 **Preis:** Zwei Schritte mehr je Auftrag und eine Protokolldatei, die im
 Erfolgsfall niemand ansieht. Dafür kostet der nächste rote Lauf keine
 Rückfrage mehr.
+
+---
+
+## 99 · Zwei Zahlen, die zu klein waren
+
+Mit der Fehlerausgabe aus DECISIONS 98 wurden beide roten Aufträge lesbar.
+Es waren zwei Versionsnummern, beide zu klein, beide an anderer Stelle.
+
+**Was:** Mindest-iOS-Version von 15.0 auf **15.5** — in `ios/Podfile` und
+dreimal als `IPHONEOS_DEPLOYMENT_TARGET` im Xcode-Projekt. Java in der CI
+von 17 auf **21**.
+
+**Warum:** Die iOS-Zahl stammte aus SETUP 7.4, und dort stand sie richtig —
+Firebase verlangt 15. Nur ist Firebase nicht das anspruchsvollste Paket im
+Projekt: `google_mlkit_commons`, `google_mlkit_face_detection` und
+`google_mlkit_pose_detection` tragen in ihrer `.podspec`
+`deployment_target = 15.5`. CocoaPods bricht in so einem Fall ab, bevor eine
+einzige Datei übersetzt wird. Gefunden wurde das nicht im Protokoll, sondern
+durch Nachsehen in den Podspecs im lokalen Paket-Cache — die drei ML-Kit-
+Pakete sind die einzigen im Projekt, die über 15.0 hinausgehen.
+
+Für Nutzer ist der Unterschied klein: Jedes Gerät, das iOS 15 bekommt,
+bekommt auch 15.5.
+
+Die Java-Zahl war ein anderer Fall — sie war einmal richtig und ist es
+stillschweigend nicht mehr geblieben. `firebase-tools` wird in der CI ohne
+feste Fassung geholt (`npx firebase-tools`), zog also die aktuelle 15.29 und
+die verlangt Java 21: *„firebase-tools no longer supports Java version
+before 21."* SETUP 0 nannte 17, die CI richtete 17 ein. Lokal fiel es nicht
+auf, weil hier eine neuere JDK liegt.
+
+**Preis:** iOS 15.0 und 15.4 fallen als Zielversionen weg — praktisch
+niemand, aber es ist eine Einschränkung. Und `npx firebase-tools` ohne feste
+Fassung bleibt eine offene Flanke: Der nächste Sprung der Werkzeugkette kann
+die CI wieder ohne Zutun rot färben. Das ist bewusst so belassen — eine
+festgenagelte Fassung veraltet ebenso still, nur unsichtbar.

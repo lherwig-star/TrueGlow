@@ -1,11 +1,15 @@
-# Mindest-iOS-Version. Firebase verlangt 15 oder neuer (SETUP.md 7.4); im
-# Xcode-Target steht derselbe Wert als IPHONEOS_DEPLOYMENT_TARGET.
+# Mindest-iOS-Version. Den Ausschlag geben nicht die Firebase-Pakete, die mit
+# 15.0 auskaemen, sondern die drei ML-Kit-Pakete: google_mlkit_commons,
+# google_mlkit_face_detection und google_mlkit_pose_detection tragen in ihrer
+# .podspec deployment_target 15.5. Liegt das Ziel darunter, bricht CocoaPods
+# ab, bevor ueberhaupt uebersetzt wird (DECISIONS 99). Im Xcode-Target steht
+# derselbe Wert als IPHONEOS_DEPLOYMENT_TARGET.
 #
 # Diese Datei liegt bewusst im Repo, obwohl Flutter sie beim ersten
 # `flutter build ios` selbst anlegen wuerde: Der Bau laeuft auf einem
 # Mietrechner in der CI, und der soll nicht jedes Mal eine frische
 # Standardfassung ohne unseren Berechtigungs-Filter erzeugen.
-platform :ios, '15.0'
+platform :ios, '15.5'
 
 # CocoaPods schickt sonst bei jedem Lauf Nutzungsstatistiken und macht den
 # Bau langsamer.

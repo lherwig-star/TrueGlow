@@ -60,7 +60,11 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          # 21 und nicht 17: firebase-tools ab 15.x bricht mit
+          # 'no longer supports Java version before 21' ab, bevor der
+          # Emulator ueberhaupt startet. Aufgefallen am 03.09.2026 im
+          # ersten CI-Lauf, der diesen Schritt erreicht hat (DECISIONS 99).
+          java-version: '21'
       - name: Rules-Tests gegen den Emulator
         run: |
           set -o pipefail
