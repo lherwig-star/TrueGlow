@@ -890,12 +890,30 @@ findet trotzdem die Fehlerklasse, die sonst erst beim ersten Upload auftaucht
 > **verhält**. Der Bau prüft die Übersetzung, nicht das Verhalten — was
 > dabei zu prüfen bleibt, steht in DECISIONS 100.
 
-☐ **7.8 App-Store-Material** — kommt, sobald das Konto steht:
-Bildschirmfotos in iPhone-Größen, Apples Datenschutz-Fragebogen (die
-Vorarbeit liegt in `store/data-safety.md`), Altersfreigabe, Listing-Texte
-(`store/listing-de.md`) und — leicht zu vergessen und ein häufiger
-Ablehnungsgrund — ein **Prüf-Zugang für die Apple-Prüfer**. Die App verlangt
-eine Anmeldung; ohne Testkonto in den Prüfhinweisen kommt sie zurück.
+☐ **7.8 App-Store-Material** — teilweise vorbereitet.
+
+**Bildschirmfotos: erledigt, und zwar selbstbedient.** Ein eigener CI-Auftrag
+nimmt sie auf einem iPhone-Simulator auf (DECISIONS 102). Er läuft nur, wenn
+**`[fotos]`** in der Commit-Zeile steht — ein Durchlauf kostet gut zehn
+Mac-Minuten. Die Bilder landen anschließend im Repo unter
+`store/screenshots/ios/` und sind dort auch ohne Anmeldung ansehbar.
+
+> Aufgenommen werden vier Ansichten in dieser Reihenfolge: Analyse, Plan,
+> Heute, Fortschritt. Die erste ist die wichtigste — sie ist bei vielen die
+> einzige, die überhaupt angesehen wird. Wenn du eine andere Auswahl oder
+> Reihenfolge willst, sag es; das steht in
+> `integration_test/bildschirmfotos_test.dart` an einer Stelle.
+
+> **Was die Bilder nicht sind:** gestaltete Store-Bilder. Es sind nackte
+> Bildschirmaufnahmen. Rahmen, Schlagzeile und Farbfläche drumherum sind
+> Gestaltungsarbeit und noch nicht gemacht.
+
+**Noch offen:** Apples Datenschutz-Fragebogen (die Vorarbeit liegt in
+`store/data-safety.md`, Apple fragt anders als Google), Altersfreigabe,
+Listing-Texte (`store/listing-de.md`) und — leicht zu vergessen und ein
+häufiger Ablehnungsgrund — ein **Prüf-Zugang für die Apple-Prüfer**. Die App
+verlangt eine Anmeldung; ohne Testkonto in den Prüfhinweisen kommt sie
+zurück.
 
 ☐ **7.9 Crashlytics: Symboldatei hochladen** — Bauphase eingebaut am
 03.09.2026, Nachweis in der Konsole steht noch aus.

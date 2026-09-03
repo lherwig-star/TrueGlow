@@ -139,3 +139,97 @@ jobs:
       # sichtbar ist, ob ueberhaupt etwas entstanden ist.
       - name: Ergebnis
         run: du -sh build/ios/iphoneos/Runner.app
+
+  # ---------------------------------------------------------------------------
+  # Bildschirmfotos fuer den App Store.
+  #
+  # Laeuft NICHT bei jedem Commit: Ein Simulator-Durchlauf kostet gut zehn
+  # Mac-Minuten, und die Bilder aendern sich nur, wenn sich die Oberflaeche
+  # aendert. Ausgeloest wird er, indem "[fotos]" in der Commit-Zeile steht.
+  # (Ein Knopf in der Actions-Oberflaeche waere eleganter, verlangt aber eine
+  # GitHub-Anmeldung - und die hat nicht jeder, der hier arbeitet.)
+  #
+  # TRUEGLOW_MOCK=true ist Pflicht und nicht Bequemlichkeit: Ohne den Schalter
+  # liefe jeder Durchlauf gegen die echte Analyse, verbrauchte Kontingent und
+  # Tokens - und die Bilder saehen bei jedem Lauf anders aus.
+  fotos:
+    name: App-Store-Bildschirmfotos
+    if: contains(github.event.head_commit.message, '[fotos]')
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.1'
+          channel: stable
+          cache: true
+
+      - name: Abhaengigkeiten
+        run: flutter pub get
+
+      # Der groesste verfuegbare iPhone-Simulator. Apple verlangt fuer den
+      # Store einen Satz in 6,9 Zoll; das ist die Pro-Max-Reihe. Welche
+      # Modelle der Mietrechner mitbringt, haengt an seiner Xcode-Fassung -
+      # deshalb wird gesucht statt geraten.
+      - name: Simulator waehlen und starten
+        id: sim
+        run: |
+          set -o pipefail
+          xcrun simctl list devices available
+          UDID=$(xcrun simctl list devices available \
+            | grep -E "iPhone .*Pro Max" \
+            | tail -1 \
+            | sed -E 's/.*\(([0-9A-F-]{36})\).*/\1/') || true
+          if [ -z "$UDID" ]; then
+            echo "Kein Pro-Max-Simulator gefunden. Vorhanden:"
+            xcrun simctl list devices available | grep iPhone || true
+            exit 1
+          fi
+          echo "Gewaehlt: $UDID"
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+
+      - name: Durchlauf und Aufnahmen
+        run: |
+          set -o pipefail
+          flutter drive \
+            --driver=test_driver/bildschirmfotos_driver.dart \
+            --target=integration_test/bildschirmfotos_test.dart \
+            -d ${{ steps.sim.outputs.udid }} \
+            --dart-define=TRUEGLOW_MOCK=true 2>&1 | tee fotos.log
+
+      - name: Was entstanden ist
+        run: |
+          ls -la store/screenshots/ios/ || true
+          for f in store/screenshots/ios/*.png; do
+            [ -e "$f" ] || continue
+            echo "$f: $(sips -g pixelWidth -g pixelHeight "$f" \
+              | tr '\n' ' ')"
+          done
+
+      # Ins Repo statt als Artefakt: Ein Artefakt laesst sich nur mit
+      # GitHub-Anmeldung herunterladen, eine Datei im oeffentlichen Repo von
+      # jedem ansehen (DECISIONS 98, gleiche Ursache wie beim Protokoll).
+      # "[skip ci]" verhindert, dass dieser Commit die CI erneut ausloest.
+      - name: Bilder einchecken
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add store/screenshots/ios/
+          if git diff --cached --quiet; then
+            echo "Keine Aenderung an den Bildern."
+            exit 0
+          fi
+          git commit -m "Bildschirmfotos neu aufgenommen [skip ci]"
+          git push
+
+      - name: Fehler sichtbar machen
+        if: failure()
+        run: |
+          tail -80 fotos.log || true
+          MSG=$(tail -50 fotos.log | tr -d '\015' | sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+          echo "::error title=Bildschirmfotos gescheitert::${MSG}"

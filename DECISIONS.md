@@ -5574,3 +5574,54 @@ Ungewissheit, den auch ein grüner Lauf nicht ausräumt: Dass das Skript
 gelaufen ist, heißt noch nicht, dass die Symbole in der Firebase-Konsole
 ankommen. Das sieht nur, wer dort nachschaut — deshalb steht es als
 Rückmeldepunkt in SETUP 7.9 und nicht als erledigt.
+
+---
+
+## 102 · Bildschirmfotos von einem iPhone, das es nicht gibt
+
+Der App Store verlangt Bildschirmfotos in festen Größen — für iPhone einen
+Satz in 6,9 Zoll. Es gibt kein iPhone im Haus und keinen Mac, um eines
+anzuschließen.
+
+**Was:** Ein vierter CI-Auftrag `fotos` startet auf dem Mac-Mietrechner einen
+iPhone-Simulator der Pro-Max-Reihe, fährt mit `flutter drive` den Weg bis zum
+fertigen Plan ab und nimmt vier Ansichten auf: Analyse, Plan, Heute,
+Fortschritt. Dazu `integration_test/bildschirmfotos_test.dart` und
+`test_driver/bildschirmfotos_driver.dart`.
+
+**Warum aus dem Simulator:** Apple nimmt Simulator-Aufnahmen an, und die
+Auflösung stimmt — der Simulator rechnet in denselben Punkten wie das Gerät.
+Was er nicht liefert, ist ein echtes Kamerabild; das betrifft die vier
+gewählten Ansichten aber nicht, denn keine davon zeigt ein Foto.
+
+**Warum im Demo-Modus:** `TRUEGLOW_MOCK=true` ist hier nicht Bequemlichkeit,
+sondern Bedingung. Ohne den Schalter liefe jeder Durchlauf gegen die echte
+Analyse — er verbrauchte Kontingent und Tokens, und die Bilder sähen bei
+jedem Lauf anders aus. Der Demo-Modus liefert immer dieselbe hinterlegte
+Antwort. Ein Store-Bild, das sich bei jeder Aufnahme ändert, wäre als
+Store-Bild unbrauchbar.
+
+**Warum nur auf Zuruf:** Der Auftrag läuft ausschließlich, wenn `[fotos]` in
+der Commit-Zeile steht. Ein Simulator-Durchlauf kostet gut zehn Mac-Minuten,
+und die Bilder ändern sich nur, wenn sich die Oberfläche ändert. Ein Knopf in
+der Actions-Oberfläche wäre eleganter, verlangt aber eine GitHub-Anmeldung —
+ein Stichwort in der Commit-Zeile funktioniert auch ohne.
+
+**Warum die Bilder ins Repo wandern:** Aus demselben Grund wie die
+Fehler-Anmerkungen in DECISIONS 98. Ein CI-Artefakt lässt sich nur mit
+Anmeldung herunterladen; eine Datei in einem öffentlichen Repo kann jeder
+ansehen — auch, wer die Bilder beurteilen soll, ohne ein Konto zu haben. Der
+Commit trägt `[skip ci]`, sonst löste er den nächsten Lauf aus.
+
+**Warum der Weg durchs Onboarding doppelt im Projekt steht:**
+`hauptpfad_test.dart` fährt denselben Weg ab. Ein gemeinsamer Unterbau wäre
+kürzer, würde aber den Nachweis, dass die App läuft, an die Frage binden, wie
+ein Bild aussehen soll. Ändert sich das Onboarding, sind jetzt zwei Dateien
+nachzuziehen — beide fallen dann laut um, keine still. Das ist der bewusst
+gewählte Preis.
+
+**Preis:** Zehn Mac-Minuten je Aufnahme-Lauf. Vier PNG-Dateien im Repo, die
+bei jeder Oberflächenänderung veralten, ohne dass etwas darauf hinweist.
+Und die Bilder sind, was sie sind: nackte Bildschirmaufnahmen. Was im Store
+üblicherweise darum herum steht — Rahmen, Schlagzeile, Farbfläche — ist
+Gestaltungsarbeit und nicht Teil dieses Auftrags.

@@ -86,6 +86,13 @@ dev_dependencies:
   integration_test:
     sdk: flutter
 
+  # Die Gegenstelle zu integration_test: laeuft auf dem Rechner, waehrend die
+  # App auf dem Geraet laeuft, und schreibt die Bildschirmfotos auf die Platte
+  # (test_driver/, DECISIONS 102). Kommt zwar ohnehin ueber integration_test
+  # mit - aber wer einen Import schreibt, soll das Paket auch nennen.
+  flutter_driver:
+    sdk: flutter
+
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
