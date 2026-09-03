@@ -1,10 +1,11 @@
-// Die erste Zeile bindet ein, was CocoaPods erzeugt hat. Sie fehlte bis zum
-// 03.09.2026, weil dieses Projekt auf Swift Package Manager laeuft und
-// CocoaPods nie brauchte - bis mit dem Podfile die drei ML-Kit-Pakete
-// dazukamen, die SPM nicht unterstuetzen (DECISIONS 103).
+// Die erste Zeile schreibt das Flutter-Werkzeug bei jedem Bau ohnehin selbst
+// an den Anfang dieser Datei, sobald ein Podfile existiert - nachzulesen in
+// packages/flutter_tools/lib/src/macos/cocoapods.dart,
+// _addPodsDependencyToFlutterXcconfig. Sie steht hier nur deshalb im Repo,
+// damit sichtbar ist, was sonst erst zur Laufzeit entsteht.
 //
-// Ohne sie steht in den Linker-Einstellungen zwar `-framework Pods_Runner`,
-// aber kein Suchpfad dorthin: "Framework 'Pods_Runner' not found".
+// Sie war NICHT die Ursache des Simulator-Fehlers vom 03.09.2026 - dieser
+// Irrtum ist in DECISIONS 103 aufgeschrieben und dort auch richtiggestellt.
 //
 // `#include?` mit Fragezeichen: Die Datei entsteht erst bei `pod install`.
 // Vor dem ersten Lauf gibt es sie nicht, und dann soll das kein Fehler sein.

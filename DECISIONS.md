@@ -5688,3 +5688,56 @@ genügt; beurteilen lässt es sich dann von außen.
 03.09.2026) steht damit unter Vorbehalt, bis der nächste Lauf zeigt, was
 tatsächlich im Paket liegt. Er belegt weiterhin, dass sich das Projekt
 übersetzen lässt — aber nicht mehr, als er belegt.
+
+### Nachtrag: die Diagnose oben war falsch
+
+Der nächste Lauf brachte **denselben Fehler**, Wort für Wort, mit den
+eingebundenen Zeilen. Zwei Befunde dazu:
+
+**Erstens** enthält Flutters eigene Vorlage
+(`templates/app/ios.tmpl/Flutter/Debug.xcconfig`) genau eine Zeile:
+`#include "Generated.xcconfig"`. Die Dateien waren also nicht beschädigt,
+sondern im Auslieferungszustand.
+
+**Zweitens** — und das ist der eigentliche Punkt — fügt das Flutter-Werkzeug
+die Pods-Zeile bei jedem Bau **selbst** hinzu. In
+`packages/flutter_tools/lib/src/macos/cocoapods.dart`:
+
+```dart
+void _addPodsDependencyToFlutterXcconfig(XcodeBasedProject xcodeProject, String mode) {
+  final include = '#include? "$includeFile"';
+  if (!content.contains('Pods/Target Support Files/Pods-')) {
+    file.writeAsStringSync('$include\n$content', flush: true);
+  }
+}
+```
+
+Die Zeile hat also nie gefehlt, als der Bau lief — sie stand nur nicht im
+Repo. Meine „Reparatur“ hat vorweggenommen, was ohnehin passiert wäre, und
+deshalb nichts geändert. Sie bleibt trotzdem stehen: identisch zu dem, was
+das Werkzeug schreibt, und im Repo ist sichtbar, was sonst erst zur Laufzeit
+entsteht. Aber sie war nicht die Ursache.
+
+**Was inzwischen belegt ist:** ML Kit liegt im Geräte-Paket. Der neue
+Ergebnis-Schritt hat es gezeigt:
+
+```
+Runner.app/GoogleMVFaceDetectorResources.bundle
+Runner.app/MLKitPoseDetectionFastResources.bundle
+Runner.app/MLKitPoseDetectionAccurateResources.bundle
+Runner.app/MLKitPoseDetectionCommonResources.bundle
+Runner.app/MLKitXenoResources.bundle
+```
+
+Damit ist die beunruhigende Frage von oben beantwortet: Der Gerätebau ist
+vollständig, der Vorbehalt auf SETUP 7.7 aufgehoben. Ob der Bau *davor*
+schon vollständig war, lässt sich nicht mehr feststellen — die Pakete sind
+weg, und den Nachweis gab es damals noch nicht.
+
+**Was offen bleibt:** Warum der Simulator-Bau `Pods_Runner` verlangt und
+nicht findet, während der Gerätebau ohne Klage durchläuft. Weiter geraten
+wird nicht. Der Foto-Auftrag baut jetzt erst `flutter build ios --simulator`
+allein — scheitert schon das, ist `flutter drive` unschuldig — und sichert
+anschließend die Dateien, um die es geht, in einer Anmerkung: die
+Linker-Zeilen aus `Pods-Runner.debug.xcconfig`, ob das Pods-Ergebnis ein
+Framework oder eine Bibliothek ist, und den Inhalt des Workspace.

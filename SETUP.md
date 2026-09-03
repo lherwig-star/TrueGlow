@@ -890,13 +890,22 @@ findet trotzdem die Fehlerklasse, die sonst erst beim ersten Upload auftaucht
 > **verhält**. Der Bau prüft die Übersetzung, nicht das Verhalten — was
 > dabei zu prüfen bleibt, steht in DECISIONS 100.
 
-> **Nachtrag, wenige Stunden später: dieser Nachweis steht unter Vorbehalt.**
-> Am selben Abend zeigte der Simulator-Bau, dass die CocoaPods-Einstellungen
-> gar nicht eingebunden waren — und die drei ML-Kit-Pakete kommen als
-> einzige über CocoaPods. Der Gerätebau war trotzdem grün. „Uebersetzt ohne
-> Fehler“ heißt hier also nicht zwingend „alle Pakete drin“. Behoben und
-> begründet in DECISIONS 103; der Ergebnis-Schritt meldet seitdem, was
-> tatsächlich im `Runner.app` liegt.
+> **Nachtrag vom 04.09.2026: geprüft und bestätigt.** Am selben Abend kam der
+> Verdacht auf, der Gerätebau könnte grün sein, ohne die drei ML-Kit-Pakete
+> zu enthalten — sie kommen als einzige über CocoaPods statt über Swift
+> Package Manager. Der Ergebnis-Schritt durchsucht das fertige `Runner.app`
+> seitdem und hat es widerlegt:
+>
+> ```
+> Runner.app/GoogleMVFaceDetectorResources.bundle
+> Runner.app/MLKitPoseDetectionFastResources.bundle
+> Runner.app/MLKitPoseDetectionAccurateResources.bundle
+> Runner.app/MLKitPoseDetectionCommonResources.bundle
+> Runner.app/MLKitXenoResources.bundle
+> ```
+>
+> Gesichts- und Körpererkennung liegen also wirklich im Paket. Der Nachweis
+> läuft ab jetzt bei jedem Bau mit (DECISIONS 103).
 
 ☐ **7.8 App-Store-Material** — teilweise vorbereitet.
 

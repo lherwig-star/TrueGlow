@@ -211,6 +211,39 @@ jobs:
           xcrun simctl boot "$UDID" || true
           xcrun simctl bootstatus "$UDID" -b
 
+      # Trennt zwei Fragen, die im ersten Anlauf vermischt waren: Scheitert
+      # der Simulator-Bau an sich, oder erst am Zusammenspiel mit
+      # flutter drive? Bricht dieser Schritt ab, ist der Treiber unschuldig.
+      - name: Simulator-Bau einzeln
+        run: |
+          set -o pipefail
+          flutter build ios --simulator --debug 2>&1 | tee simbau.log
+
+      # Laeuft auch nach einem Fehlschlag, denn genau dann wird sie gebraucht.
+      - name: Beweismittel sichern
+        if: always()
+        run: |
+          {
+            echo "### ios/Flutter/Debug.xcconfig"
+            cat ios/Flutter/Debug.xcconfig || true
+            echo "### Podfile.lock vorhanden?"
+            ls -la ios/Podfile.lock ios/Pods/Manifest.lock 2>&1 || true
+            echo "### Target Support Files"
+            ls "ios/Pods/Target Support Files" 2>&1 || true
+            echo "### Linker-Zeilen aus Pods-Runner.debug.xcconfig"
+            grep -E "OTHER_LDFLAGS|FRAMEWORK_SEARCH_PATHS|LIBRARY_SEARCH_PATHS" \
+              "ios/Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig" 2>&1 || true
+            echo "### Was heisst das Pods-Ergebnis - Framework oder Bibliothek?"
+            find ios/Pods -maxdepth 3 -name "Pods_Runner*" -o -name "libPods-Runner*" 2>/dev/null || true
+            echo "### Workspace"
+            cat ios/Runner.xcworkspace/contents.xcworkspacedata || true
+            echo "### Letzte Zeilen des Simulator-Baus"
+            tail -25 simbau.log 2>/dev/null || echo "(kein simbau.log)"
+          } > beweise.txt 2>&1
+          cat beweise.txt
+          MSG=$(tail -90 beweise.txt | tr -d '\015' | sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+          echo "::error title=Beweismittel Simulator-Bau::${MSG}"
+
       - name: Durchlauf und Aufnahmen
         run: |
           set -o pipefail
