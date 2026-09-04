@@ -925,6 +925,32 @@ Mac-Minuten. Die Bilder landen anschließend im Repo unter
 > Bildschirmaufnahmen. Rahmen, Schlagzeile und Farbfläche drumherum sind
 > Gestaltungsarbeit und noch nicht gemacht.
 
+**Erster Satz erzeugt am 04.09.2026**, 1320 × 2868 Bildpunkte — eine der
+beiden Größen, die Apple für 6,9 Zoll annimmt, ohne Nachbearbeitung.
+
+Durchgesehen, und zwei Schwächen sind bekannt und **bewusst stehengelassen**
+(Entscheidung vom 04.09.2026: erst nachbessern, wenn das Konto steht und
+sichtbar ist, wie die Bilder in App Store Connect wirken):
+
+1. `04_fortschritt` zeigt „0 Tage am Stück“ und „0 Längste Serie“. Nullen
+   sind ein leerer Zustand, kein Nutzen. Behebbar, indem der Durchlauf vor
+   der Aufnahme ein paar Tage Serie setzt.
+2. `01_analyse` zeigt nur den Einstiegsbildschirm mit einem Verlaufseintrag,
+   nicht die Auswertung selbst — die steckt hinter „Ganzen Report öffnen“.
+   Behebbar, indem der Durchlauf zusätzlich dorthin tippt.
+
+> **Die tragfähigste Reihenfolge nach Durchsicht** ist nicht die der
+> Dateinamen, sondern: **Plan, Heute, Fortschritt, Analyse**. Das Plan-Bild
+> ist das einzige, das den Nutzen der App auf einen Blick zeigt — eine
+> persönliche Einschätzung und lesbare Empfehlungen. Beim Hochladen in App
+> Store Connect entsprechend sortieren.
+
+> **Englische Bilder fehlen noch.** Der Store zeigt Aufnahmen je Sprache; ohne
+> englische bekommen englischsprachige Nutzer die deutschen zu sehen. Der
+> Durchlauf ist darauf vorbereitet — in
+> `integration_test/bildschirmfotos_test.dart` steht die Sprache an genau
+> einer Stelle.
+
 **Noch offen:** Apples Datenschutz-Fragebogen (die Vorarbeit liegt in
 `store/data-safety.md`, Apple fragt anders als Google), Altersfreigabe,
 Listing-Texte (`store/listing-de.md`) und — leicht zu vergessen und ein
